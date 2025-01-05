@@ -7,6 +7,9 @@ _tmp/
 # scikit-build-core
 src/pybes3/_version.py
 
+# cibuildwheel
+wheelhouse/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
