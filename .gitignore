@@ -1,3 +1,15 @@
+# VS Code
+.vscode/
+
+# Temporary files
+_tmp/
+
+# ROOT dictionaries
+*.pcm
+
+# Install directory
+install/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

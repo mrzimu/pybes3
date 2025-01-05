@@ -1,0 +1,781 @@
+Event:
+  TEvtHeader:
+    evtNo: int
+    runNo: int
+    evtTime: uint
+    evtTag: uint
+    flag1: uint
+    flag2: uint
+    etsT1: long
+    etsT2: long
+
+  TMcEvent:
+    Mdc(Array):
+      identify: uint
+      trackIndex: uint
+      currentTrkPID: int
+      isSecondary: int
+      x: double
+      y: double
+      z: double
+      px: double
+      py: double
+      pz: double
+      driftDistance: double
+      depositEnergy: double
+      posFlag: int
+      flightLength: double
+      creatorProcess: string
+      digiIndex: int
+
+    Emc(Array):
+      identify: uint
+      trackIndex: uint
+      hitEmc: int # whether hit Emc
+      PDGCode: int
+      PDGCharge: double
+      time: double
+      xPosition: double
+      yPosition: double
+      zPosition: double
+      px: double
+      py: double
+      pz: double
+      depositEnergy: double
+      hitMap: std::map<int, double>
+
+    Tof(Array):
+      identify: uint
+      trackIndex: uint
+      x: double
+      y: double
+      z: double
+      px: double
+      py: double
+      pz: double
+      trackLength: double
+      tof: double
+
+    Muc(Array):
+      identify: uint
+      trackIndex: uint
+      x: double
+      y: double
+      z: double
+      px: double
+      py: double
+      pz: double
+      depositEnergy: double
+
+    McParticle(Array):
+      PDGId: int
+      trackIndex: int
+      vertexIndex0: int
+      vertexIndex1: int
+      statusFlags: uint
+      motherIndex: int
+      daughterIndexes: vector<int>
+      xInit: double
+      yInit: double
+      zInit: double
+      tInit: double
+      pxInit: double
+      pyInit: double
+      pzInit: double
+      xFinal: double
+      yFinal: double
+      zFinal: double
+      tFinal: double
+      eInit: double
+
+  TDstEvent:
+    TMdcTrack(RaggedArray):
+      trackIndex: int
+      helix[5]: double
+      helixErr[15]: double
+      stat: int
+      chi2: double
+      ndof: int
+      nster: int
+      nlayer: int
+      firstLayer: int
+      lastLayer: int
+
+    TEmcTrack(RaggedArray):
+      trackIndex: int # Track Id wensp Add 2005-10-19
+      numHits: int # Total number of hits
+      status: int # Status
+      cellId: int # Cell ID
+      module: int # Module
+      x: double # Shower coordinates and errors
+      y: double
+      z: double
+      dTheta: double
+      dPhi: double
+      energy: double # Total energy observed in Emc
+      dE: double
+      eSeed: double # Energy of seed, only one
+      e3x3: double # Energy of 3x3 crystals, totally 9 ones
+      e5x5: double # Energy of 5x5 crystals, totally 25 ones
+      time: double # Time measurement
+      secondMoment: double # add 2006-07-03
+      latMoment: double # Lateral moment
+      a20Moment: double # Zernike moment
+      a42Moment: double
+      err: double[6] # Error Matrix: 0:dxx, 1:dyy, 2:dzz 3:dxy 4:dxz 5:dyz
+
+    TTofTrack(RaggedArray):
+      trackIndex: int
+      inTrackID: int # Track ID from MDC / Shower ID from EMC.
+      tofID: int
+      status: uint
+      path: double
+      zrhit: double
+      ph: double
+      tof: double
+      beta: double
+      texp: double[5]
+      toffset: double[6]
+      sigma: double[6]
+      quality: int
+      t0: double
+      errt0: double
+      errz: double
+      phi: double
+      errphi: double
+      energy: double
+      errenergy: double
+
+    TMucTrack(RaggedArray):
+      trackIndex: int # Track ID wensp Add 2005-10-19
+      id: int # Muc Identifier
+      status: int # Muc Status
+      type: int # Method of judge?
+      startPart: int # In which part does the start position of track locate
+      endPart: int # In which part does the end position of track locate
+      brLastLayer: int # Last layer with hits in barrel
+      ecLastLayer: int # Last layer with hits in endcap
+      numHits: int # Number of hits on track
+      numLayers: int # Number of layer with hits
+      maxHitsInLayer: int # Max number of hits in a layer
+      depth: double # Depth of iron penetrated
+      chi2: double # Fit parameters
+      dof: int
+      rms: double
+      xPos: double # x position of muc track vertex
+      yPos: double # y position of muc track vertex
+      zPos: double # z position of muc track vertex
+      xPosSigma: double
+      yPosSigma: double
+      zPosSigma: double
+      px: double # px on muc track vertex
+      py: double # py on muc track vertex
+      pz: double # pz on muc track vertex
+      distance: double
+      deltaPhi: double
+      kalrechi2: double
+      kaldof: int
+      kaldepth: double
+      kalbrLastLayer: int
+      kalecLastLayer: int
+
+    TMdcDedx(RaggedArray):
+      trackIndex: int # Track Id wensp Add 2005-10-19
+      particleId: int # Particle ID from De/Dx fit
+      status: int # Status
+      trunc_alg: int # truncate method
+      chiE: double # Number of sigama from e
+      chiMu: double # Number of sigama from muon
+      chiPi: double # Number of sigama from pion
+      chiK: double # Number of sigama from k
+      chiP: double # Number of sigama from p
+      numGoodHits: int # No. of good de/dx hits(exclude overflow)
+      numTotalHits: int # No. of good de/dx hits(include overflow)
+      probPH: double # Most probable pulse height from truncated mean
+      normPH: double # normalizd pulse height # Changed on Oct. 10 following by Wangdy
+      errorPH: double # resolution of truncated mean
+      twentyPH: double # de/dx value of bitrunction rate equal to 20%
+
+    TExtTrack(RaggedArray):
+      trackIndex: int # Track Id wensp Add 2005-10-19
+      Tof1PositionX: double # Position when the particle enters the TOF layer1.
+      Tof1PositionY: double # Position when the particle enters the TOF layer1
+      Tof1PositionZ: double # Position when the particle enters the TOF layer1
+      Tof1MomentumX: double # Momentum when the particle enters the TOF layer1.
+      Tof1MomentumY: double # Momentum when the particle enters the TOF layer1.
+      Tof1MomentumZ: double # Momentum when the particle enters the TOF layer1.
+      Tof1VolumeName: string # Scintillator volume name
+      Tof1VolumeNumber: int # Scintillator volume number
+      Tof1: double # Time of flight
+      Tof1Path: double # Path of flight
+      Tof1PosSigmaAlongZ: double # Sigma Z
+      Tof1PosSigmaAlongT: double # Sigma along Z x R
+      Tof1PosSigmaAlongX: double # Sigma X
+      Tof1PosSigmaAlongY: double # Sigma Y
+      Tof1ErrorMatrix: double[21] # Error matrix 6x6 (x,p)
+
+      Tof2PositionX: double # Position when the particle enters the TOF layer2.
+      Tof2PositionY: double # Position when the particle enters the TOF layer2
+      Tof2PositionZ: double # Position when the particle enters the TOF layer2
+      Tof2MomentumX: double # Momentum when the particle enters the TOF layer2
+      Tof2MomentumY: double # Momentum when the particle enters the TOF layer2
+      Tof2MomentumZ: double # Momentum when the particle enters the TOF layer2
+      Tof2VolumeName: string # Scintillator volume name
+      Tof2VolumeNumber: int # Scintillator volume number
+      Tof2: double # Time of flight
+      Tof2Path: double # Path of flight
+      Tof2PosSigmaAlongZ: double # Sigma Z
+      Tof2PosSigmaAlongT: double # Sigma along Z x R
+      Tof2PosSigmaAlongX: double # Sigma X
+      Tof2PosSigmaAlongY: double # Sigma Y
+      Tof2ErrorMatrix: double[21] # Error matrix 6x6 (x,p)
+
+      EmcPositionX: double # Position 2.
+      EmcPositionY: double # Position 2
+      EmcPositionZ: double # Position 2
+      EmcMomentumX: double # Momentum
+      EmcMomentumY: double # Momentum
+      EmcMomentumZ: double # Momentum
+      EmcVolumeName: string # Scintillator volume name
+      EmcVolumeNumber: int # Scintillator volume number
+      EmcPosSigmaAlongTheta: double
+      EmcPosSigmaAlongPhi: double
+      EmcErrorMatrix: double[21] # Error matrix 6x6 (x,p)
+      EmcPath: double
+
+      MucPositionX: double # Position 2.
+      MucPositionY: double # Position 2
+      MucPositionZ: double # Position 2
+      MucMomentumX: double # Momentum
+      MucMomentumY: double # Momentum
+      MucMomentumZ: double # Momentum
+      MucVolumeName: string # Scintillator volume name
+      MucVolumeNumber: int # Scintillator volume number
+      MucPosSigmaAlongZ: double
+      MucPosSigmaAlongT: double
+      MucPosSigmaAlongX: double
+      MucPosSigmaAlongY: double
+      MucErrorMatrix: double[21]
+
+  TDigiEvent:
+    fromMc: bool
+
+    Mdc(RaggedArray):
+      id: uint
+      adc: uint
+      tdc: uint
+      trackIndex: int
+      overflow: uint
+
+    Emc(RaggedArray):
+      id: uint
+      adc: uint
+      tdc: uint
+      trackIndex: int
+      measure: uint
+
+    Tof(RaggedArray):
+      id: uint
+      adc: uint
+      tdc: uint
+      trackIndex: int
+      overflow: uint
+
+    Muc(RaggedArray):
+      id: uint
+      adc: uint
+      tdc: uint
+      trackIndex: int
+
+    Lumi(RaggedArray):
+      id: uint
+      adc: uint
+      tdc: uint
+      trackIndex: int
+      overflow: uint
+
+  TEvtRecObject:
+    Event:
+      nTotal: int
+      nCharge: int
+      nNeutral: int
+      nVEE: int
+      npi0: int
+      nEta2gg: int
+      nDTag: int
+
+    Tracks:
+      trackId: int
+      partId: int
+      quality: int
+      mdcTrackId: int
+      mdcKalTrackId: int
+      mdcDedxId: int
+      extTrackId: int
+      emcShowerId: int
+      mucTrackId: int
+      tofTrackIds: vector<int>
+
+    PrimaryVertex:
+      isValid: bool
+      nTracks: int
+      trackIdList: vector<int>
+      chi2: double
+      ndof: int
+      fitMethod: int
+      x: double
+      y: double
+      z: double
+      errVtx: double[6]
+
+    VeeVertex(RaggedArray):
+      vtxId: int
+      vtxType: int
+      chi2: double
+      ndof: int
+      mass: double
+      px: double
+      py: double
+      pz: double
+      E: double
+      x: double
+      y: double
+      z: double
+      err: double[28] # Error matrix 7x7
+      pair: int[2] # daughters particle type (e,mu,pi,K,P) * 2
+      nCharge: int
+      nTracks: int
+      daughters: int[2]
+
+    Pi0(RaggedArray):
+      unconMass: double
+      chi2: double
+      hiPx: double
+      hiPy: double
+      hiPz: double
+      hiE: double
+      loPx: double
+      loPy: double
+      loPz: double
+      loE: double
+      hiEnGamma: int
+      loEnGamma: int
+
+    EtaToGG(RaggedArray):
+      unconMass: double
+      chi2: double
+      hiPx: double
+      hiPy: double
+      hiPz: double
+      hiE: double
+      loPx: double
+      loPy: double
+      loPz: double
+      loE: double
+      hiEnGamma: int
+      loEnGamma: int
+
+    DTag(RaggedArray):
+      decayMode: int
+      type: int
+      beamE: double
+      mass: double
+      mBC: double
+      deltaE: double
+      charge: int
+      charm: int
+      nChild: uint
+      px: double
+      py: double
+      pz: double
+      e: double
+      tracks: vector<int>
+      showers: vector<int>
+      otherTracks: vector<int>
+      otherShowers: vector<int>
+      pionId: vector<int>
+      kaonId: vector<int>
+
+  TRecTrackEvent:
+    MdcTrack(RaggedArray):
+      trackId: int
+      helix: double[5]
+      stat: int
+      chi2: double
+      ndof: int
+      err: double[15]
+      nhits: int
+      nster: int
+      nlayer: int
+      vx0: double
+      vy0: double
+      vz0: double
+      fiTerm: double
+
+    MdcHit(RaggedArray):
+      isGrouped: bool
+      id: int
+      trkId: int
+      driftDistLeft: double
+      driftDistRight: double
+      errDriftDistLeft: double
+      errDriftDistRight: double
+      chi2Contrib: double
+      leftOrRight: int # 0: left, 1: right, 2: ambig
+      stat: int
+      mdcId: uint
+      tdc: double
+      adc: double
+      driftTime: double
+      doca: double
+      entranceAngle: double
+      zHit: double
+      flightLength: double
+
+    TofTrack(RaggedArray):
+      trackId: int
+      inTrackId: int
+      tofId: int
+      status: uint
+      path: double
+      zrhit: double
+      ph: double
+      tof: double
+      beta: double
+      texp: double[5]
+      toffset: double[6]
+      sigma: double[6]
+      quality: int
+      t0: double
+      errt0: double
+      errz: double
+      phi: double
+      errphi: double
+      energy: double
+      errenergy: double
+
+    EmcHit(RaggedArray):
+      cellId: int
+      energy: double
+      time: double
+
+    EmcCluster(RaggedArray):
+      clusterId: int
+      hits: vector<int>
+      seeds: vector<int>
+      showers: vector<int>
+
+    EmcShower(RaggedArray):
+      trackId: int
+      nhits: int
+      status: int
+      cellId: int
+      module: int
+      x: double
+      y: double
+      z: double
+      dTheta: double
+      dPhi: double
+      energy: double
+      dE: double
+      eSeed: double
+      e3x3: double
+      e5x5: double
+      eall: double
+      eLepton: double
+      time: double
+      secondMoment: double
+      latMoment: double
+      a20Moment: double
+      a42Moment: double
+      err: double[6]
+      cellIdMap: std::map<int, double>
+      cellId3x3: vector<int>
+      cellId5x5: vector<int>
+      clusterId: int
+
+    MucTrack(RaggedArray):
+      trackId: int
+      id: int
+      status: int
+      type: int
+      startPart: int
+      endPart: int
+      brLastLayer: int
+      ecLastLayer: int
+      numHits: int
+      numLayers: int
+      maxHitsInLayer: int
+      depth: double
+      chi2: double
+      dof: int
+      rms: double
+      xPos: double
+      yPos: double
+      zPos: double
+      xPosSigma: double
+      yPosSigma: double
+      zPosSigma: double
+      px: double
+      py: double
+      pz: double
+      distance: double
+      deltaPhi: double
+      hits: vector<int>
+      expHits: vector<int>
+      distHits: vector<int>
+      kalrechi2: double
+      kaldof: int
+      kaldepth: double
+      kalbrLastLayer: int
+      kalecLastLayer: int
+
+    MdcDedx(RaggedArray):
+      dedx_hit: double
+      dedx_esat: double
+      dedx_norun: double
+      dedx_momentum: double
+      trackId: int
+      mdcTrackId: int
+      mdcKalTrackId: int
+      particleId: int
+      status: int
+      trunc_alg: int
+      chiE: double
+      chiMu: double
+      chiPi: double
+      chiK: double
+      chiP: double
+      numGoodHits: int
+      numTotalHits: int
+      probPH: double
+      normPH: double
+      errorPH: double
+      twentyPH: double
+      chi: double[5]
+      dedx_exp: double[5]
+      sigma_dedx: double[5]
+      pid_prob: double[5]
+
+    MdcDedxHit(RaggedArray):
+      isGrouped: bool
+      trkId: int
+      mdcHitId: int
+      mdcKalHelixSegId: int
+      leftOrRight: int
+      mdcId: uint
+      path: double
+      dedx: double
+
+    ExtTrack(RaggedArray):
+      trackId: int
+
+      tof1X: double[5]
+      tof1Y: double[5]
+      tof1Z: double[5]
+      tof1Px: double[5]
+      tof1Py: double[5]
+      tof1Pz: double[5]
+      tof1VolumeName: string[5]
+      tof1VolumeNumber: int[5]
+      tof1: double[5]
+      tof1Path: double[5]
+      tof1PosSigmaAlongZ: double[5]
+      tof1PosSigmaAlongT: double[5]
+      tof1PosSigmaAlongX: double[5]
+      tof1PosSigmaAlongY: double[5]
+      tof1ErrorMatrix: double[5][6][6]
+
+      tof2X: double[5]
+      tof2Y: double[5]
+      tof2Z: double[5]
+      tof2Px: double[5]
+      tof2Py: double[5]
+      tof2Pz: double[5]
+      tof2VolumeName: string[5]
+      tof2VolumeNumber: int[5]
+      tof2: double[5]
+      tof2Path: double[5]
+      tof2PosSigmaAlongZ: double[5]
+      tof2PosSigmaAlongT: double[5]
+      tof2PosSigmaAlongX: double[5]
+      tof2PosSigmaAlongY: double[5]
+      tof2ErrorMatrix: double[5][6][6]
+
+      emcX: double[5]
+      emcY: double[5]
+      emcZ: double[5]
+      emcPx: double[5]
+      emcPy: double[5]
+      emcPz: double[5]
+      emcVolumeName: string[5]
+      emcVolumeNumber: int[5]
+      emcPosSigmaAlongTheta: double[5]
+      emcPosSigmaAlongPhi: double[5]
+      emcErrorMatrix: double[5][6][6]
+      emcPath: double[5]
+
+      mucX: double[5]
+      mucY: double[5]
+      mucZ: double[5]
+      mucPx: double[5]
+      mucPy: double[5]
+      mucPz: double[5]
+      mucVolumeName: string[5]
+      mucVolumeNumber: int[5]
+      mucPosSigmaAlongZ: double[5]
+      mucPosSigmaAlongT: double[5]
+      mucPosSigmaAlongX: double[5]
+      mucPosSigmaAlongY: double[5]
+      mucErrorMatrix: double[5][6][6]
+
+      mucHitVecSize: int[5]
+      mucHitX: vector<double>[5]
+      mucHitY: vector<double>[5]
+      mucHitZ: vector<double>[5]
+      mucHitPx: vector<double>[5]
+      mucHitPy: vector<double>[5]
+      mucHitPz: vector<double>[5]
+      mucHitVolumeName: vector<string>[5]
+      mucHitVolumeNumber: vector<int>[5]
+      mucHitPosSigmaAlongZ: vector<double>[5]
+      mucHitPosSigmaAlongT: vector<double>[5]
+      mucHitPosSigmaAlongX: vector<double>[5]
+      mucHitPosSigmaAlongY: vector<double>[5]
+      mucHitErrorMatrix: vector<vector<double>>[5]
+
+    MdcKalTrack(RaggedArray):
+      trackId: int
+
+      mass: double[5]
+      path: double[5]
+      tof: double[5]
+      fiTerm: double[5]
+      pathSM: double[5]
+      nhits: int[5]
+      nlayer: int[5]
+      stat: int[2][5]
+      chi2: double[2][5]
+      ndof: int[2][5]
+      nSegs: int[5]
+
+      poca: double[3]
+      poca_e: double[3]
+      poca_mu: double[3]
+      poca_k: double[3]
+      poca_p: double[3]
+
+      lpoint: double[3]
+      lpoint_e: double[3]
+      lpoint_mu: double[3]
+      lpoint_k: double[3]
+      lpoint_p: double[3]
+
+      lpivot: double[3]
+      lpivot_e: double[3]
+      lpivot_mu: double[3]
+      lpivot_k: double[3]
+      lpivot_p: double[3]
+
+      zhelix: double[5]
+      zerror: double[5][5]
+      zhelix_e: double[5]
+      zerror_e: double[5][5]
+      zhelix_mu: double[5]
+      zerror_mu: double[5][5]
+      zhelix_k: double[5]
+      zerror_k: double[5][5]
+      zhelix_p: double[5]
+      zerror_p: double[5][5]
+
+      fhelix: double[5]
+      ferror: double[5][5]
+      fhelix_e: double[5]
+      ferror_e: double[5][5]
+      fhelix_mu: double[5]
+      ferror_mu: double[5][5]
+      fhelix_k: double[5]
+      ferror_k: double[5][5]
+      fhelix_p: double[5]
+      ferror_p: double[5][5]
+
+      lhelix: double[5]
+      lerror: double[5][5]
+      lhelix_e: double[5]
+      lerror_e: double[5][5]
+      lhelix_mu: double[5]
+      lerror_mu: double[5][5]
+      lhelix_k: double[5]
+      lerror_k: double[5][5]
+      lhelix_p: double[5]
+      lerror_p: double[5][5]
+
+      thelix: double[5]
+      terror: double[15]
+
+    MdcKalHelixSeg(RaggedArray):
+      trackId: int
+      leftOrRight: int
+      mdcId: uint
+      tdc: double
+      adc: double
+      zhit: double
+      tof: double
+      docaInCell: double
+      docaExCell: double
+      driftDistance: double
+      entranceAngle: double
+      driftTime: double
+      helixInCell: double[5]
+      helixExCell: double[5]
+
+    RecEvTime(RaggedArray):
+      status: int
+      estime: double
+      quality: double
+
+    RecZdd(RaggedArray):
+      channelId: int
+      scanCode: int
+      baseLine: int
+      phase: int
+      fragTime: vector<int>
+      fragEnergy: vector<float>
+
+  THltEvent:
+    Raw(RaggedArray):
+      id: uint
+      adc: uint
+      tdc: uint
+      trackIndex: int
+
+    Inf:
+      evtType: int
+      algProcess: int
+      criTable: int
+      verNumber: int
+      eTotal: double
+      subNumber: int
+      conNumber: int
+      mdcData: vector<int>
+      tofData: vector<int>
+      emcData: vector<int>
+      mucData: vector<int>
+      conData: vector<int>
+
+    DstHltInf:
+      evtType: int
+      algProcess: int
+      criTable: int
+      verNumber: int
+      eTotal: double
+      subNumber: int
+      conNumber: int
+
+  TTrigEvent:
+    TTrigData:
+      preScale: bool
+      trigConditions: int[48]
+      trigChannel: int[16]
+      timeWindows: int
+      timing: int

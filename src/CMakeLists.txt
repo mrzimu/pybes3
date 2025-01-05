@@ -1,0 +1,6 @@
+add_subdirectory(cpp)
+
+install(DIRECTORY ${CMAKE_CURRENT_LIST_DIR}/pybes/
+    DESTINATION ${PYBES_INSTALL_PYTHONDIR}
+    FILES_MATCHING PATTERN "*.py*"
+)
