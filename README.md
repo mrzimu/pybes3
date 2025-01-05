@@ -1,21 +1,21 @@
-# pybes
+# pybes3
 
 This project aims to make BES3 user easier to work with Python.
 
 **This is an unofficial project.**
 
-## besio
+## pybes3.besio
 
 `besio` is an I/O module for BES3. It wraps `uproot` so that user can directly read BES3 `rtraw`, `dst` and  `rec` files, and transfer them to `awkward` array. See [uproot documentation](https://uproot.readthedocs.io/en/stable/) and [awkward documentation](https://awkward-array.org/doc/stable/index.html) for further details.
 
 ### Usage
 
-To make `uproot` know about BES3 files,  call `pybes.wrap_uproot()` before opening any file:
+To make `uproot` know about BES3 files,  call `pybes3.wrap_uproot()` before opening any file:
 
 ```python
 >>> import uproot
->>> import pybes
->>> pybes.wrap_uproot()
+>>> import pybes3
+>>> pybes3.wrap_uproot()
 ```
 
 Then, open file as using `uproot`:
@@ -28,8 +28,8 @@ Then, open file as using `uproot`:
 There is a shorthand:
 
 ```python
->>> import pybes
->>> f = pybes.open("test.rtraw") # will automatically call `pybes.wrap_uproot()`
+>>> import pybes3
+>>> f = pybes3.open("test.rtraw") # will automatically call `pybes3.wrap_uproot()`
 >>> evt = f["Event"]
 ```
 
