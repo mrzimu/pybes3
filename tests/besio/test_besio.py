@@ -2,7 +2,7 @@ from pathlib import Path
 
 import uproot
 
-import pybes.besio as besio
+import pybes3.besio as besio
 
 besio.wrap_uproot()
 

@@ -15,7 +15,7 @@ project(${SKBUILD_PROJECT_NAME}
 set(PYBIND11_NEWPYTHON ON)
 find_package(pybind11 REQUIRED)
 
-pybind11_add_module(besio_cpp src/pybes/besio/besio_cpp.cc)
+pybind11_add_module(besio_cpp src/pybes3/besio/besio_cpp.cc)
 target_compile_definitions(besio_cpp PRIVATE
     SAFETY_PARSE # PRINT_DEBUG_INFO
 )

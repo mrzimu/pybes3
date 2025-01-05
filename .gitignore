@@ -4,6 +4,9 @@
 # Temporary files
 _tmp/
 
+# scikit-build-core
+src/pybes3/_version.py
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
