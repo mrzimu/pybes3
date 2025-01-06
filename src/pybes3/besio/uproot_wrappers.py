@@ -179,7 +179,7 @@ def get_map_subtypes(type_name: str) -> tuple[str, str]:
             break
 
     assert pos_split != 0, f"Unsupported type_name: {type_name}"
-    return type_name[4:pos_split].strip(), type_name[pos_split + 1 : -1].strip()
+    return type_name[4:pos_split].strip(), type_name[pos_split + 1: -1].strip()
 
 
 def recover_basic_element(
@@ -493,6 +493,15 @@ class BesInterpretation(uproot.interpretation.Interpretation):
             )
 
 
+##########################################################################################
+#                                       Wrappers
+##########################################################################################
+_is_TBranchElement_branches_wrapped = False
+_is_uproot_interpretation_of_wrapped = False
+
+_uproot_interpretation_of = uproot.interpretation.identify.interpretation_of
+
+
 def bes_interpretation_of(
     branch: uproot.behaviors.TBranch.TBranch, context: dict, simplify: bool = True
 ) -> uproot.interpretation.Interpretation:
@@ -511,16 +520,10 @@ def bes_interpretation_of(
     return BesInterpretation(full_branch_name=full_branch_name)
 
 
-##########################################################################################
-#                                       Wrappers
-##########################################################################################
-_uproot_interpretation_of = uproot.interpretation.identify.interpretation_of
-
-
 def wrap_uproot_interpretation():
-    global _uproot_interpretation_of
-    if _uproot_interpretation_of != bes_interpretation_of:
-        _uproot_interpretation_of = uproot.interpretation.identify.interpretation_of
+    global _is_uproot_interpretation_of_wrapped
+    if not _is_uproot_interpretation_of_wrapped:
+        _is_uproot_interpretation_of_wrapped = True
         uproot.interpretation.identify.interpretation_of = bes_interpretation_of
 
 
@@ -543,9 +546,12 @@ def wrap_uproot_TBranchElement_branches():
                     continue
             return res
 
-    uproot.models.TBranch.Model_TBranchElement.branches = property(branches)
-    for v in uproot.models.TBranch.Model_TBranchElement.known_versions.values():
-        v.branches = property(branches)
+    global _is_TBranchElement_branches_wrapped
+    if not _is_TBranchElement_branches_wrapped:
+        _is_TBranchElement_branches_wrapped = True
+        uproot.models.TBranch.Model_TBranchElement.branches = property(branches)
+        for v in uproot.models.TBranch.Model_TBranchElement.known_versions.values():
+            v.branches = property(branches)
 
 
 def wrap_uproot():
