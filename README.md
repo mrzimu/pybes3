@@ -10,47 +10,35 @@
 
 ## Installation
 
-### Preparation for users on lxlogin
+### On lxlogin
 
-If you are on `lxlogin` server, you need to firstly create a virtual environment for Python:
-
-```bash
-cd /path/to/install # somewhere you choose to install virtual environment
-
-# create virtual environment
-python3 -m venv myvenv
-
-# activate the virtual environment
-source myvenv/bin/activate
-
-# update pip
-python3 -m pip install --upgrade pip
-```
-
-**Every time you want to use `pybes3`, make sure you have activated this virtual environment with command `source /path/to/install/myvenv/bin/activate`.**
-
-
-
-Since there is a quota limitation on user's home path (`~/`), you may also need to create a symbolink for `~/.cache`, which will contain pip caches when installing python module.
+Since there is a quota limitation on user's home path (`~/`), you may also need to create a symbolink for `~/.local`, which will contain pip packages that installed in "user mode":
 
 ```bash
-# check whether a `.cache` directory already exists. If so, move it to somewhere else
+# Check whether a `.local` directory already exists. If so, move it to somewhere else
 ls -a ~
-mv ~/.cache /path/to/somewhere
+mv ~/.local /path/to/somewhere/
 
-# link it back to `~`
-ln -s /path/to/somewhere/.cache ~/.cache
+# If no `.local` exists, create one
+mkdir /path/to/somewhere/.local
+
+# Link it back to `~`
+ln -s /path/to/somewhere/.local ~/.local
 ```
 
-### Package install
+Then install `pybes3` in user mode:
 
-To install `pybes3`, directly run:
+```bash
+pip install --user pybes3
+```
+
+### On PC
+
+For PC users, it is sufficient to directly execute:
 
 ```bash
 pip install pybes3
 ```
-
-By so far, `pybes3` requires a C++ compiler to build its C++ binding. Make sure your environment has one.
 
 
 
