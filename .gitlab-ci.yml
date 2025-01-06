@@ -10,7 +10,7 @@ cache:
 stages:
   # - install
   # - test
-  - deploy
+  - release
 
 # install:
 #   stage: install
@@ -29,22 +29,30 @@ stages:
 #   needs:
 #     - install
 
-deploy:
-  stage: deploy
+build-wheel:
+  stage: release
   script:
-    - echo "deploying!"
+    - echo "building wheel!"
     - source .venv/bin/activate
     - pip install .[ci]
     - python3 -m build -w -o .cache/dist
     - python3 -m build -s -o dist
-    - repairwheel .cache/dist/*.whl -o dist
-    - twine check dist/*
-    - twine upload dist/* -u __token__ -p $CI_TWINE_TOKEN
+    - repairwheel .cache/dist/*.whl -o dist/
   rules:
-    - if: $CI_COMMIT_TAG && $CI_COMMIT_BRANCH == "test-ci"
-      when: on_success
+    - if: $CI_COMMIT_TAG_MESSAGE =~ /build/
   artifacts:
     paths:
       - dist/*
     when: on_success
     expire_in: 1 month
+
+deploy-to-pypi:
+  stage: release
+  script:
+    - echo "deploying!"
+    - source .venv/bin/activate
+    - pip install twine
+    - twine check dist/*
+    - twine upload dist/* -u __token__ -p $CI_TWINE_TOKEN
+  rules:
+    - if: $CI_COMMIT_TAG_MESSAGE =~ /deploy-pypi/
