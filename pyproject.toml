@@ -9,22 +9,17 @@ optional-dependencies = { "test" = [
     "pybind11",
     "uproot>=5.0",
     "awkward",
-    "scikit-build-core",
-    "setuptools_scm",
     "pytest",
+    "repairwheel",
+    "build",
+    "twine"
 ] }
 
 name = "pybes3"
 authors = [{ name = "Mingrun Li", email = "mrun_lee@foxmail.com" }]
 description = "Unofficial Python module for BES3"
 requires-python = ">=3.9"
-dependencies = [
-    "pybind11",
-    "uproot>=5.0",
-    "awkward",
-    "scikit-build-core",
-    "setuptools_scm",
-]
+dependencies = ["pybind11", "uproot>=5.0", "awkward"]
 readme = "README.md"
 dynamic = ["version"]
 classifiers = [

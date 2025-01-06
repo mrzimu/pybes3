@@ -19,7 +19,7 @@ install:
     - python --version ; pip --version # For debugging
     - python -m venv .venv
     - source .venv/bin/activate
-    - pip install .[all] repairwheel build
+    - pip install .
 
 test:
   stage: test
@@ -31,12 +31,17 @@ test:
     - install
 
 build:
-  stage: build
+  stage: deploy
   script:
     - source .venv/bin/activate
+    - pip install .[all] repairwheel build
     - python3 -m build -w -o .cache/dist
     - python3 -m build -s -o dist
     - repairwheel .cache/dist/*.whl -o dist
+    - twine check dist/*
+  rules:
+    - if: $CI_COMMIT_TAG && $CI_COMMIT_BRANCH == "main" && $CI_COMMIT_TAG_MESSAGE == "release"
+
   artifacts:
     paths:
       - dist/*
@@ -46,10 +51,8 @@ deploy:
   script:
     - echo "deploying!"
     - source .venv/bin/activate
+    - twine upload dist/* --username __token__ --password $CI_TWINE_TOKEN
   rules:
-    - if: $CI_COMMIT_BRANCH == "main"
-      when: on_success
-    - when: never
-  needs:
-    - install
-    - test
+    - when: manual
+  dependencies:
+    - build
