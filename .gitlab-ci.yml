@@ -21,8 +21,7 @@ prepare-venv:
     - source .venv/bin/activate
     - pip install .[ci]
   rules:
-    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "develop"
-    - when: manual
+    - if: $CI_COMMIT_BRANCH == "main"
   artifacts:
     expire_in: "3 days"
 
@@ -35,8 +34,7 @@ test-pybes3:
   needs:
     - prepare-venv
   rules:
-    - if: $CI_COMMIT_BRANCH == "main" || $CI_COMMIT_BRANCH == "develop"
-    - when: manual
+    - if: $CI_COMMIT_BRANCH == "main"
   artifacts:
     expire_in: "3 days"
 
