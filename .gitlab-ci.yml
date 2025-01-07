@@ -11,7 +11,8 @@ cache:
 
 stages:
   - test
-  - release
+  - build
+  - deploy
 
 prepare-venv:
   stage: test
@@ -21,7 +22,8 @@ prepare-venv:
     - source .venv/bin/activate
     - pip install .[ci]
   rules:
-    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_COMMIT_MESSAGE !~ /no-ci/
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/ || $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/
   artifacts:
     expire_in: "3 days"
 
@@ -34,12 +36,13 @@ test-pybes3:
   needs:
     - prepare-venv
   rules:
-    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_COMMIT_BRANCH == "main" && $CI_COMMIT_MESSAGE !~ /no-ci/
+    - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/ || $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/
   artifacts:
     expire_in: "3 days"
 
 build-wheel:
-  stage: release
+  stage: build
   script:
     - echo "building wheel!"
     - source .venv/bin/activate
@@ -54,12 +57,10 @@ build-wheel:
     when: on_success
     access: all
     expire_in: never
-  needs:
-    - test-pybes3
   when: on_success
 
 deploy-to-pypi:
-  stage: release
+  stage: deploy
   script:
     - echo "deploying!"
     - source .venv/bin/activate
@@ -68,8 +69,6 @@ deploy-to-pypi:
     - twine upload dist/* -u __token__ -p $CI_TWINE_TOKEN
   rules:
     - if: $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+$/ || $CI_COMMIT_TAG =~ /^v[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$/
-  needs:
-    - build-wheel
   when: on_success
   artifacts:
     expire_in: "3 days"
