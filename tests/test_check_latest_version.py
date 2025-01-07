@@ -1,4 +1,4 @@
-from pybes3._check_latest_version import get_all_tags, get_latest_version, check_latest_version
+from pybes3._check_latest_version import check_latest_version, get_all_tags, get_latest_version
 
 
 def test_get_all_tags():

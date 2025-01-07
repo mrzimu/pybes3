@@ -2,7 +2,6 @@ from typing import Union
 
 import requests
 
-
 GITLAB_URL = "https://code.ihep.ac.cn"
 PROJECT_ID = "5548"
 
