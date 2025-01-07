@@ -63,7 +63,7 @@ def check_latest_version(test_version_tuple: Union[tuple[int, int, int, int], No
     if test_version_tuple is None:
         # get current version
         try:
-            from ._version import __version_tuple__ as current_version_tuple
+            from ._version import version_tuple as current_version_tuple
         except ImportError:
             return
     else:
@@ -80,8 +80,13 @@ def check_latest_version(test_version_tuple: Union[tuple[int, int, int, int], No
         raise ValueError("Invalid version tuple")
 
     if current_version < latest_version:
+        new_version = (
+            ".".join(map(str, latest_version))
+            if latest_version[3] != 0
+            else ".".join(map(str, latest_version[:3]))
+        )
         print(
-            f"Warning: A newer version is available: \"{'.'.join(map(str, latest_version))}\". "
+            f"Warning: A newer version is available: v{new_version}. "
             "It is recommended to upgrade to latest version, since `pybes3` is still in beta version "
             "and there might be bug fixes and new features in the latest version."
         )
