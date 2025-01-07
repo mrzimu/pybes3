@@ -12,6 +12,7 @@ import uproot.interpretation.identify
 import uproot.interpretation.library
 from uproot.models.TBranch import Model_TBranchElement
 
+from .array_preprocess import preprocess_subbranch
 from .besio_cpp import read_bes_stl, read_bes_tobjarray, read_bes_tobject
 
 ##########################################################################################
@@ -94,8 +95,8 @@ branchname_to_element_type = {
     "TDigiEvent/m_tofDigiCol": (kTObjArray, "TTofDigi"),
     "TDigiEvent/m_mucDigiCol": (kTObjArray, "TMucDigi"),
     "TDigiEvent/m_lumiDigiCol": (kTObjArray, "TLumiDigi"),
-    "TDstEvent/m_emcTrackCol": (kTObjArray, "TEmcTrack"),
     "TDstEvent/m_mdcTrackCol": (kTObjArray, "TMdcTrack"),
+    "TDstEvent/m_emcTrackCol": (kTObjArray, "TEmcTrack"),
     "TDstEvent/m_tofTrackCol": (kTObjArray, "TTofTrack"),
     "TDstEvent/m_mucTrackCol": (kTObjArray, "TMucTrack"),
     "TDstEvent/m_mdcDedxCol": (kTObjArray, "TMdcDedx"),
@@ -179,7 +180,7 @@ def get_map_subtypes(type_name: str) -> tuple[str, str]:
             break
 
     assert pos_split != 0, f"Unsupported type_name: {type_name}"
-    return type_name[4:pos_split].strip(), type_name[pos_split + 1: -1].strip()
+    return type_name[4:pos_split].strip(), type_name[pos_split + 1 : -1].strip()
 
 
 def recover_basic_element(
@@ -321,27 +322,15 @@ def tobjarray_np2ak(
 
 
 def tobject_np2ak(
-    org_data_list: tuple, streamer_members_info: list[dict], all_streamer_info: dict
+    element_type_name: str, org_data_list: tuple, all_streamer_info: dict
 ) -> awkward.Array:
     field_names = []
     field_contents = []
-    for s, org_data in zip(streamer_members_info, org_data_list):
-        fTypeName = s["fTypeName"]
-        fArrayDim = s["fArrayDim"]
-
-        if fTypeName == kBASE:
-            assert (
-                s["fType"] == 65
-            ), f'fTypeName is "BASE" but fType is not TString: {s}'  # TString's fType is 65
+    element_streamer_info = all_streamer_info[element_type_name]
+    for s, org_data in zip(element_streamer_info, org_data_list):
+        element_content = recover_basic_element(s, org_data, all_streamer_info)
+        if element_content is None:
             continue
-
-        # Recover pure c-types array to "element" array
-        element_content = recover_basic_element(fTypeName, org_data)
-
-        if fArrayDim > 0:
-            fMaxIndex = s["fMaxIndex"]
-            shape = deque(fMaxIndex[fMaxIndex > 0].tolist())
-            element_content = recover_array_shape(element_content, shape)
 
         field_names.append(s["fName"])
         field_contents.append(element_content)
@@ -482,15 +471,18 @@ class BesInterpretation(uproot.interpretation.Interpretation):
         )
 
         if self.parse_rule == kTObjArray:
-            return tobjarray_np2ak(self.element_type_name, org_data, all_streamer_info)
+            ak_arr = tobjarray_np2ak(self.element_type_name, org_data, all_streamer_info)
         elif self.parse_rule == kTObject:
-            return tobject_np2ak(self.element_type_name, org_data, all_streamer_info)
+            ak_arr = tobject_np2ak(self.element_type_name, org_data, all_streamer_info)
         elif self.parse_rule == kSTL:
-            return stl_np2ak(org_data, self.element_type_name, all_streamer_info)
+            ak_arr = stl_np2ak(org_data, self.element_type_name, all_streamer_info)
         else:
             raise NotImplementedError(
                 f"Unsupported parse_rule: {self.parse_rule}, {self.element_type_name}"
             )
+
+        # preprocess awkward array
+        return preprocess_subbranch(self.full_branch_name, ak_arr)
 
 
 ##########################################################################################
