@@ -1,4 +1,4 @@
-from . import besio, detectors
+from . import analysis, besio, detectors
 from ._version import __version__, version
 from .besio import concatenate, concatenate_raw, open, open_raw, wrap_uproot
 from .detectors import (

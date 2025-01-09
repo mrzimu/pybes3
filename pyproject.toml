@@ -17,6 +17,9 @@ optional-dependencies = { "all" = [
     "mkdocs-material",
     "mkdocstrings",
     "mkdocstrings-python",
+], "ana" = [
+    "pymysql",
+    "vector",
 ] }
 
 name = "pybes3"
