@@ -15,15 +15,18 @@
 Since there is a quota limitation on user's home path (`~/`), you may also need to create a symbolink for `~/.local`, which will contain pip packages that installed in "user mode":
 
 ```bash
-# Check whether a `.local` directory already exists. If so, move it to somewhere else
+# Check whether a `.local` directory and `.cache` already exists. If so, move it to somewhere else
 ls -a ~
 mv ~/.local /path/to/somewhere/
+mv ~/.cache /path/to/somewhere
 
-# If no `.local` exists, create one
+# If no `.local` or `.cache` exists, create them
 mkdir /path/to/somewhere/.local
+mkdir /path/to/somewhere/.cache
 
-# Link it back to `~`
+# After moving or creating them, link them back to `~`
 ln -s /path/to/somewhere/.local ~/.local
+ln -s /path/to/somewhere/.cache ~/.cache
 ```
 
 Then install `pybes3` in user mode:
@@ -31,6 +34,8 @@ Then install `pybes3` in user mode:
 ```bash
 pip install --user pybes3
 ```
+
+> If you are using different python version, you need to install `pybes3` for each of version.
 
 ### On PC
 
