@@ -48,6 +48,14 @@ CTYPE_NAMES = {
     "unsigned short",
     "unsigned int",
     "unsigned long",
+    "int8_t",
+    "uint8_t",
+    "int16_t",
+    "uint16_t",
+    "int32_t",
+    "uint32_t",
+    "int64_t",
+    "uint64_t",
 }
 
 STL_NAMES = {kVector, kList, kDeque, kMap, kSet, kMultiMap, kMultiSet}
@@ -153,6 +161,8 @@ def get_top_type_name(type_name: str) -> str:
         return kTString
 
     else:
+        if type_name.endswith("*"):
+            type_name = type_name[:-1]
         return type_name
 
 
