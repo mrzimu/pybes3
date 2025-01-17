@@ -366,19 +366,11 @@ py::dict RawBinaryParser::arrays( std::vector<std::string> sub_detectors ) {
         m_activated_sub_det_ids.insert( sub_det_id );
     }
 
+    // - read data
+    py::gil_scoped_release release;
     fill_offsets(); // fill the first offset
-
-    // read data
-    int check_counter = 0;
-    while ( m_cursor < m_data_end )
-    {
-        if ( check_counter++ > 100 )
-        {
-            check_counter = 0;
-            if ( PyErr_CheckSignals() != 0 ) { throw py::error_already_set(); }
-        }
-        read_event();
-    }
+    while ( m_cursor < m_data_end ) { read_event(); }
+    py::gil_scoped_acquire acquire;
 
     // - convert data to numpy array
     py::dict res;

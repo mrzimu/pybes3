@@ -1,4 +1,5 @@
 #include "root_io.hh"
+#include <pybind11/pybind11.h>
 
 const bool is_ctype( const std::string& type_name ) {
     return CTYPE_NAMES.find( type_name ) != CTYPE_NAMES.end();
@@ -261,7 +262,10 @@ py::list py_read_bes_stl( py::array_t<uint8_t> data, py::array_t<uint32_t> offse
     tmp_info["fType"]     = -1;
 
     auto reader = create_reader( tmp_info, all_streamer_info );
+
+    py::gil_scoped_release release;
     for ( uint64_t i_evt = 0; i_evt < bparser.m_entries; i_evt++ ) { reader->read( bparser ); }
+    py::gil_scoped_acquire acquire;
 
     return reader->data();
 }
@@ -279,6 +283,7 @@ py::list py_read_bes_tobject( py::array_t<uint8_t> data, py::array_t<uint32_t> o
     }
     auto reader = std::make_unique<BaseObjectReader>( type_name, std::move( sub_readers ) );
 
+    py::gil_scoped_release release;
     for ( uint64_t i_evt = 0; i_evt < bparser.m_entries; i_evt++ )
     {
         reader->read( bparser );
@@ -293,6 +298,7 @@ py::list py_read_bes_tobject( py::array_t<uint8_t> data, py::array_t<uint32_t> o
         }
 #endif
     }
+    py::gil_scoped_acquire acquire;
 
     return reader->data();
 }
@@ -315,6 +321,7 @@ py::dict py_read_bes_tobjarray( py::array_t<uint8_t> data, py::array_t<uint32_t>
 
     std::vector<uint32_t> obj_offsets = { 0 };
 
+    py::gil_scoped_release release;
     for ( uint64_t i_evt = 0; i_evt < bparser.m_entries; i_evt++ )
     {
 #ifdef PRINT_DEBUG_INFO
@@ -345,6 +352,7 @@ py::dict py_read_bes_tobjarray( py::array_t<uint8_t> data, py::array_t<uint32_t>
         }
 #endif
     }
+    py::gil_scoped_acquire acquire;
 
     py::dict results;
 

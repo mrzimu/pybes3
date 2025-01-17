@@ -1,3 +1,4 @@
+import mmap
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass
 from pathlib import Path
@@ -60,9 +61,15 @@ class RawBinaryReader:
     def __init__(
         self,
         file: str,
+        use_mmap: bool = False,
     ):
         self.file = str(Path(file).resolve())
         self._file = open(file, "rb")
+        self._use_mmap = use_mmap
+        if use_mmap:
+            self._file = mmap.mmap(self._file.fileno(), 0, access=mmap.ACCESS_READ)
+            for i in range(0, len(self._file), 1024 * 1024):
+                self._file[i : i + 1024 * 1024]
 
         self.file_version: int = -1
         self.file_number: int = -1
