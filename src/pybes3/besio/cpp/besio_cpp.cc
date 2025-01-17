@@ -1,6 +1,11 @@
 #include <pybind11/pybind11.h>
+#include <pybind11/pytypes.h>
+#include <pybind11/stl.h>
 
-// #include "raw_io.hh"
+#include <string>
+#include <vector>
+
+#include "raw_io.hh"
 #include "root_io.hh"
 
 PYBIND11_MODULE( besio_cpp, m ) {
@@ -13,4 +18,6 @@ PYBIND11_MODULE( besio_cpp, m ) {
 
     m.def( "read_bes_stl", &py_read_bes_stl, "Read BES STL" );
 
+    m.def( "read_bes_raw", &py_read_bes_raw, "Read BES raw data", py::arg( "data" ),
+           py::arg( "sub_detectors" ) = std::vector<std::string>() );
 }

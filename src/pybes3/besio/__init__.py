@@ -1,10 +1,16 @@
 import uproot
 
-from .uproot_wrappers import wrap_uproot
+from .raw_io import RawBinaryReader, _is_raw
+from .root_io import wrap_uproot
 
 
 def open(file, **kwargs):
     wrap_uproot()
+
+    # check whether it's a RAW file
+    if _is_raw(file):
+        return RawBinaryReader(file)
+
     return uproot.open(file, **kwargs)
 
 

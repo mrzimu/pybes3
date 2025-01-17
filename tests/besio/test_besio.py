@@ -1,8 +1,10 @@
 from pathlib import Path
 
 import awkward
+import pytest
 import uproot
 
+import pybes3
 import pybes3.besio as besio
 
 besio.wrap_uproot()
@@ -146,3 +148,29 @@ def test_digi_expand_TRawData():
             continue
 
         assert "TRawData" not in arr_digi[field].fields
+
+
+@pytest.mark.skipif(
+    not Path(
+        "/bes3fs/offline/data/raw/round17/231117/run_0079017_All_file001_SFO-1.raw"
+    ).exists(),
+    reason="Test data is not available",
+)
+def test_raw():
+    f_raw: pybes3.besio.RawBinaryReader = pybes3.open(
+        "/bes3fs/offline/data/raw/round17/231117/run_0079017_All_file001_SFO-1.raw"
+    )
+
+    n_mdc_digis = awkward.Array([1872, 2768, 1641, 2542, 3331, 2672, 2257, 2470, 3635, 3689])
+
+    arr_full = f_raw.arrays(n_blocks=10)
+    assert set(arr_full.fields) == {"evt_header", "mdc", "tof", "emc", "muc"}
+    assert awkward.all(awkward.count(arr_full.mdc.id, axis=1) == n_mdc_digis)
+
+    arr_mdc = f_raw.arrays(n_blocks=10, sub_detectors=["mdc"])
+    assert set(arr_mdc.fields) == {"evt_header", "mdc"}
+    assert awkward.all(awkward.count(arr_mdc.mdc.id, axis=1) == n_mdc_digis)
+
+    arr_batch = f_raw.arrays(n_blocks=10, n_block_per_batch=5)
+    assert set(arr_batch.fields) == {"evt_header", "mdc", "tof", "emc", "muc"}
+    assert awkward.all(awkward.count(arr_batch.mdc.id, axis=1) == n_mdc_digis)

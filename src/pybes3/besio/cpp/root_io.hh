@@ -652,8 +652,23 @@ class ObjArrayReader : public IItemReader {
     std::unique_ptr<IItemReader> m_reader;
 };
 
+/**
+ * @brief Reader for a base object.
+ *
+ * Base object is what a custom object inherits from. It has fNBytes(4), fVersion(2) at the
+ * beginning.
+ *
+ */
 class BaseObjectReader : public IItemReader {
   public:
+    /**
+     * @brief Constructs a BaseObjectReader object.
+     *
+     * BaseObjectReader reads an object with fNBytes(4), fVersion(2) at the beginning.
+     *
+     * @param name Reader's name.
+     * @param sub_readers The readers for the object's members.
+     */
     BaseObjectReader( std::string_view name,
                       std::vector<std::unique_ptr<IItemReader>> sub_readers )
         : m_name( name ), m_sub_readers( std::move( sub_readers ) ) {}
@@ -681,7 +696,7 @@ class BaseObjectReader : public IItemReader {
     }
 
     /**
-     * @brief Returns the data of the TClass object.
+     * @brief Returns the data of the object
      *
      * @return A tuple with the data of sub-readers.
      */
@@ -696,6 +711,12 @@ class BaseObjectReader : public IItemReader {
     std::vector<std::unique_ptr<IItemReader>> m_sub_readers;
 };
 
+/**
+ * @brief Reader for an object.
+ *
+ * This class reads an object from a binary parser.
+ * An object start with an object header.
+ */
 class ObjectReader : public IItemReader {
   public:
     ObjectReader( std::string_view name,
