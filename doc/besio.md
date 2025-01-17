@@ -1,10 +1,12 @@
 # pybes3.besio
 
-`pybes3.besio` is an I/O module for BES3 data. It wraps `uproot` so that user can directly read BES3 `rtraw`, `dst` and  `rec` files, and transfer them to `awkward` array. By so far, it can only READ BES3 files. If you want to write data into ROOT file, you may need to use `uproot` directly.
+`pybes3.besio` is an I/O module for BES3 data. It wraps `uproot` so that user can directly read BES3 `rtraw`, `dst` and  `rec` files, and transfer them to `awkward` array. By so far, it can only read and cannot write BES3 files. If you want to write data into ROOT file, you may need to use `uproot` directly.
 
 ## Basic usage
 
-To make `uproot` know about BES3 files,  call `pybes3.wrap_uproot()` before opening any file:
+### Read ROOT file (rtraw, dst, rec)
+
+To make `uproot` know about BES3 ROOT files,  call `pybes3.wrap_uproot()` before opening any file:
 
 ```python
 >>> import uproot
@@ -89,6 +91,55 @@ or you can retrieve branches from `mc_evt`:
 >>> pdgid_arr = mc_evt["m_mcParticleCol/m_particleID"].array()
 >>> e_init_arr = mc_evt["m_mcParticleCol/m_eInitialMomentum"].array()
 ```
+
+### Read raw data file
+
+BES3 raw data files contain only digi information. To read a raw data file, use `pybes3.open_raw`:
+
+```python
+>>> import pybes3
+>>> reader = pybes3.open_raw("/bes3fs/offline/data/raw/round17/231117/run_0079017_All_file001_SFO-1.raw")
+>>> reader
+BesRawReader
+- File: /bes3fs/offline/data/raw/round17/231117/run_0079017_All_file001_SFO-1.raw
+- Run Number: 79017
+- Entries: 100112
+- File Size: 2010 MB
+```
+
+To read all data out:
+
+```python
+>>> all_digi = reader.arrays()
+>>> all_digi
+<Array [{evt_header: {...}, ...}, ..., {...}] type='100112 * {evt_header: {...'>
+>>> all_digi.fields
+['evt_header', 'mdc', 'tof', 'emc', 'muc']
+>>> all_digi.mdc.fields
+['id', 'adc', 'tdc', 'overflow']
+```
+
+To only read some sub-detectors:
+
+```python
+>>> mdc_tof_digi = reader.arrays(sub_detectors=['mdc', 'tof'])
+>>> mdc_tof_digi.fields
+['evt_header', 'mdc', 'tof']
+```
+
+To read part of file:
+
+```python
+>>> some_digi = reader.arrays(n_blocks=1000)
+>>> some_digi
+<Array [{evt_header: {...}, ...}, ..., {...}] type='1000 * {evt_header: {ev...'>
+```
+
+> `n_blocks` instread of `n_entries` is used here because only data blocks are continuous in memory. 
+>
+> Most of the time, there is one event in a data block.
+
+
 
 ## Further information
 

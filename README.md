@@ -49,6 +49,7 @@ pip install pybes3
 
 ## Usage
 
-See links below for usage information:
+See links below for usages:
 
-* [besio](./doc/besio.md)
+* [besio](./doc/besio.md): Read `.raw`, `.rtraw`, `.dst`, `.rec` files and transfer their data to `awkward` array.
+

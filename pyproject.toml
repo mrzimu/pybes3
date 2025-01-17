@@ -17,7 +17,7 @@ name = "pybes3"
 authors = [{ name = "Mingrun Li", email = "mrun_lee@foxmail.com" }]
 description = "Unofficial Python module for BES3"
 requires-python = ">=3.9"
-dependencies = ["pybind11", "uproot>=5.0", "awkward"]
+dependencies = ["pybind11", "uproot>=5.0", "awkward", "requests"]
 readme = "README.md"
 dynamic = ["version"]
 classifiers = [
