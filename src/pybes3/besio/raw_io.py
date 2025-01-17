@@ -1,3 +1,4 @@
+import glob
 import mmap
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass
@@ -61,15 +62,9 @@ class RawBinaryReader:
     def __init__(
         self,
         file: str,
-        use_mmap: bool = False,
     ):
         self.file = str(Path(file).resolve())
         self._file = open(file, "rb")
-        self._use_mmap = use_mmap
-        if use_mmap:
-            self._file = mmap.mmap(self._file.fileno(), 0, access=mmap.ACCESS_READ)
-            for i in range(0, len(self._file), 1024 * 1024):
-                self._file[i : i + 1024 * 1024]
 
         self.file_version: int = -1
         self.file_number: int = -1
@@ -107,6 +102,7 @@ class RawBinaryReader:
         n_block_per_batch: int = 1000,
         sub_detectors: Union[list[str], None] = None,
         max_workers: Union[int, None] = None,
+        use_mmap: bool = False,
     ) -> ak.Array:
         """
         Read and return arrays of data from the BES raw file.
@@ -120,6 +116,7 @@ class RawBinaryReader:
         Returns:
             ak.Array: An Awkward Array containing the read data.
         """
+
         self._reset_cursor()
 
         if sub_detectors is None:
@@ -267,3 +264,34 @@ def _is_raw(file):
         f.close()
         return True
     return False
+
+
+def concatenate(
+    files: Union[Union[str, Path], list[Union[str, Path]]],
+    n_block_per_batch: int = 10000,
+    sub_detectors: Union[list[str], None] = None,
+    max_workers: Union[int, None] = None,
+    verbose: bool = False,
+) -> ak.Array:
+
+    if not isinstance(files, list):
+        files = glob.glob(files)
+
+    files = [str(Path(file).resolve()) for file in files if _is_raw(file)]
+
+    if len(files) == 0:
+        raise ValueError("No valid raw files found")
+
+    res = []
+    for i, f in enumerate(files):
+        if verbose:
+            print(f"\rreading file {i+1}/{len(files)} ...", end="")
+
+        res.append(
+            RawBinaryReader(f).arrays(-1, n_block_per_batch, sub_detectors, max_workers)
+        )
+
+    if verbose:
+        print()
+
+    return ak.concatenate(res)

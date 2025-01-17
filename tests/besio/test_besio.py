@@ -157,7 +157,7 @@ def test_digi_expand_TRawData():
     reason="Test data is not available",
 )
 def test_raw():
-    f_raw: pybes3.besio.RawBinaryReader = pybes3.open(
+    f_raw: pybes3.besio.RawBinaryReader = pybes3.open_raw(
         "/bes3fs/offline/data/raw/round17/231117/run_0079017_All_file001_SFO-1.raw"
     )
 
@@ -174,3 +174,7 @@ def test_raw():
     arr_batch = f_raw.arrays(n_blocks=10, n_block_per_batch=5)
     assert set(arr_batch.fields) == {"evt_header", "mdc", "tof", "emc", "muc"}
     assert awkward.all(awkward.count(arr_batch.mdc.id, axis=1) == n_mdc_digis)
+
+    arr_mmap = f_raw.arrays(n_blocks=10, use_mmap=True)
+    assert set(arr_mmap.fields) == {"evt_header", "mdc", "tof", "emc", "muc"}
+    assert awkward.all(awkward.count(arr_mmap.mdc.id, axis=1) == n_mdc_digis)
