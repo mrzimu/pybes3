@@ -1,86 +1,164 @@
 import numba as nb
-import numpy as np
 
-from .constants import MdcDigiConst, EmcDigiConst
+from . import constants as det_consts
 
 
-# MDC digi
-@nb.njit
-def _parse_mdc_id(
-    mdc_id: np.ndarray, check_valid: bool = True
-) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
+@nb.vectorize([nb.boolean(nb.uint32)])
+def check_mdc_teid(mdc_id: int) -> bool:
     """
-    Parse the MDC ID into wire ID, layer ID, and wire type.
+    Check if the MDC TEID is valid.
 
     Parameters:
-        mdc_id (np.ndarray): The MDC ID array.
-        check_valid (bool, optional): Whether to check the validity of the MDC ID. Defaults to True.
+        mdc_id (int): The MDC TEID array.
 
     Returns:
-        tuple[np.ndarray, np.ndarray, np.ndarray]: A tuple containing the wire ID, layer ID, and wire type arrays.
+        bool: Whether the ID is valid.
     """
+    return (
+        mdc_id & det_consts.DIGI_FLAG_MASK
+    ) >> det_consts.DIGI_FLAG_OFFSET == det_consts.DIGI_MDC_FLAG
 
-    if check_valid:
-        assert np.all(
-            (mdc_id & MdcDigiConst.DIGI_MASK) >> MdcDigiConst.DIGI_OFFSET
-            == MdcDigiConst.DIGI_FLAG
+
+@nb.vectorize([nb.uint32(nb.uint32)])
+def mdc_teid_to_wire(mdc_id: int) -> int:
+    """
+    Convert the MDC TEID to the wire ID.
+
+    Parameters:
+        mdc_id (int): The MDC TEID array.
+
+    Returns:
+        int: The wire ID.
+    """
+    return (mdc_id & det_consts.DIGI_MDC_WIRE_MASK) >> det_consts.DIGI_MDC_WIRE_OFFSET
+
+
+@nb.vectorize([nb.uint32(nb.uint32)])
+def mdc_teid_to_layer(mdc_id: int) -> int:
+    """
+    Convert the MDC TEID to the layer ID.
+
+    Parameters:
+        mdc_id (int): The MDC TEID array.
+
+    Returns:
+        int: The layer ID.
+    """
+    return (mdc_id & det_consts.DIGI_MDC_LAYER_MASK) >> det_consts.DIGI_MDC_LAYER_OFFSET
+
+
+@nb.vectorize([nb.uint32(nb.uint32)])
+def mdc_teid_to_wire_type(mdc_id: int) -> int:
+    """
+    Convert the MDC TEID to the wire type.
+
+    Parameters:
+        mdc_id (int): The MDC TEID array.
+
+    Returns:
+        int: The wire type.
+    """
+    return (mdc_id & det_consts.DIGI_MDC_WIRETYPE_MASK) >> det_consts.DIGI_MDC_WIRETYPE_OFFSET
+
+
+@nb.vectorize([nb.uint32(nb.uint32, nb.uint32, nb.uint32)])
+def gen_mdc_teid(wire: int, layer: int, wire_type: int) -> int:
+    """
+    Generate the MDC TEID based on the wire ID, layer ID, and wire type.
+
+    Parameters:
+        wire (int): The wire ID.
+        layer (int): The layer ID.
+        wire_type (int): The wire type.
+
+    Returns:
+        int: The MDC TEID.
+    """
+    return (
+        ((wire << det_consts.DIGI_MDC_WIRE_OFFSET) & det_consts.DIGI_MDC_WIRE_MASK)
+        | ((layer << det_consts.DIGI_MDC_LAYER_OFFSET) & det_consts.DIGI_MDC_LAYER_MASK)
+        | (
+            (wire_type << det_consts.DIGI_MDC_WIRETYPE_OFFSET)
+            & det_consts.DIGI_MDC_WIRETYPE_MASK
         )
-
-    wire_id = (mdc_id & MdcDigiConst.WIRE_MASK) >> MdcDigiConst.WIRE_OFFSET
-    layer_id = (mdc_id & MdcDigiConst.LAYER_MASK) >> MdcDigiConst.LAYER_OFFSET
-    wire_type = (mdc_id & MdcDigiConst.WIRETYPE_MASK) >> MdcDigiConst.WIRETYPE_OFFSET
-
-    return wire_id, layer_id, wire_type
-
-
-@nb.njit
-def _gen_mdc_id(
-    wire_id: np.ndarray, layer_id: np.ndarray, wire_type: np.ndarray
-) -> np.ndarray:
-    """
-    Generate the MDC ID based on the wire ID, layer ID, and wire type.
-
-    Parameters:
-    wire_id (np.ndarray): Array of wire IDs.
-    layer_id (np.ndarray): Array of layer IDs.
-    wire_type (np.ndarray): Array of wire types.
-
-    Returns:
-    np.ndarray: Array of MDC IDs.
-
-    """
-
-    mdc_id = (
-        (wire_id << MdcDigiConst.WIRE_OFFSET)
-        | (layer_id << MdcDigiConst.LAYER_OFFSET)
-        | (wire_type << MdcDigiConst.WIRETYPE_OFFSET)
-        | MdcDigiConst.DIGI_FLAG
+        | (det_consts.DIGI_MDC_FLAG << det_consts.DIGI_FLAG_OFFSET)
     )
 
-    return mdc_id
 
-
-@nb.njit
-def _parse_emc_id(emc_id: np.ndarray, check_valid: bool = True) -> tuple[np.ndarray]:
+@nb.vectorize([nb.uint32(nb.uint32)])
+def check_emc_teid(emc_id: int) -> bool:
     """
-    Parse the EMC ID into module ID, theta ID, and phi ID.
+    Check if the EMC TEID is valid.
 
     Parameters:
-        emc_id (np.ndarray): The EMC ID array.
-        check_valid (bool, optional): Whether to check the validity of the EMC ID. Defaults to True.
+        emc_id (int): The EMC TEID array.
 
     Returns:
-        tuple[np.ndarray]: A tuple containing the module ID, theta ID, and phi ID arrays.
+        bool: Whether the ID is valid.
     """
+    return (
+        emc_id & det_consts.DIGI_FLAG_MASK
+    ) >> det_consts.DIGI_FLAG_OFFSET == det_consts.DIGI_EMC_FLAG
 
-    if check_valid:
-        assert np.all(
-            (emc_id & EmcDigiConst.DIGI_MASK) >> EmcDigiConst.DIGI_OFFSET
-            == EmcDigiConst.DIGI_FLAG
-        )
 
-    module_id = (emc_id & EmcDigiConst.MODULE_MASK) >> EmcDigiConst.MODULE_OFFSET
-    theta_id = (emc_id & EmcDigiConst.THETA_MASK) >> EmcDigiConst.THETA_OFFSET
-    phi_id = (emc_id & EmcDigiConst.PHI_MASK) >> EmcDigiConst.PHI_OFFSET
+@nb.vectorize([nb.uint32(nb.uint32)])
+def emc_teid_to_module(emc_id: int) -> int:
+    """
+    Convert the EMC TEID to the module ID.
 
-    return module_id, theta_id, phi_id
+    Parameters:
+        emc_id (int): The EMC TEID array.
+
+    Returns:
+        int: The module ID.
+    """
+    return (emc_id & det_consts.DIGI_EMC_MODULE_MASK) >> det_consts.DIGI_EMC_MODULE_OFFSET
+
+
+@nb.vectorize([nb.uint32(nb.uint32)])
+def emc_teid_to_theta(emc_id: int) -> int:
+    """
+    Convert the EMC TEID to the theta ID.
+
+    Parameters:
+        emc_id (int): The EMC TEID array.
+
+    Returns:
+        int: The theta ID.
+    """
+    return (emc_id & det_consts.DIGI_EMC_THETA_MASK) >> det_consts.DIGI_EMC_THETA_OFFSET
+
+
+@nb.vectorize([nb.uint32(nb.uint32)])
+def emc_teid_to_phi(emc_id: int) -> int:
+    """
+    Convert the EMC TEID to the phi ID.
+
+    Parameters:
+        emc_id (int): The EMC TEID array.
+
+    Returns:
+        int: The phi ID.
+    """
+    return (emc_id & det_consts.DIGI_EMC_PHI_MASK) >> det_consts.DIGI_EMC_PHI_OFFSET
+
+
+@nb.vectorize([nb.uint32(nb.uint32, nb.uint32, nb.uint32)])
+def gen_emc_teid(module_id: int, theta_id: int, phi_id: int) -> int:
+    """
+    Generate the EMC TEID based on the module ID, theta ID, and phi ID.
+
+    Parameters:
+        module_id (int): The module ID.
+        theta_id (int): The theta ID.
+        phi_id (int): The phi ID.
+
+    Returns:
+        int: The EMC TEID.
+    """
+    return (
+        ((module_id << det_consts.DIGI_EMC_MODULE_OFFSET) & det_consts.DIGI_EMC_MODULE_MASK)
+        | ((theta_id << det_consts.DIGI_EMC_THETA_OFFSET) & det_consts.DIGI_EMC_THETA_MASK)
+        | ((phi_id << det_consts.DIGI_EMC_PHI_OFFSET) & det_consts.DIGI_EMC_PHI_MASK)
+        | (det_consts.DIGI_EMC_FLAG << det_consts.DIGI_FLAG_OFFSET)
+    )

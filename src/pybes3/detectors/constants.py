@@ -1,61 +1,27 @@
-from dataclasses import dataclass
+import numpy as np
 
 
-@dataclass
-class MdcDigiConst:
-    DIGI_FLAG = 0x10
-    DIGI_OFFSET = 24
-    DIGI_MASK = 0xFF000000
+DIGI_MDC_FLAG = np.uint32(0x10)
+DIGI_TOF_FLAG = np.uint32(0x20)
+DIGI_EMC_FLAG = np.uint32(0x30)
+DIGI_MUC_FLAG = np.uint32(0x40)
+DIGI_HLT_FLAG = np.uint32(0x50)
+DIGI_MRPC_FLAG = np.uint32(0x70)
+DIGI_FLAG_OFFSET = np.uint32(24)
+DIGI_FLAG_MASK = np.uint32(0xFF000000)
 
-    WIRETYPE_OFFSET = 15
-    WIRETYPE_MASK = 0x00008000
+# MDC
+DIGI_MDC_WIRETYPE_OFFSET = np.uint32(15)
+DIGI_MDC_WIRETYPE_MASK = np.uint32(0x00008000)
+DIGI_MDC_LAYER_OFFSET = np.uint32(9)
+DIGI_MDC_LAYER_MASK = np.uint32(0x00007E00)
+DIGI_MDC_WIRE_OFFSET = np.uint32(0)
+DIGI_MDC_WIRE_MASK = np.uint32(0x000001FF)
 
-    LAYER_OFFSET = 9
-    LAYER_MASK = 0x00007E00
-
-    WIRE_OFFSET = 0
-    WIRE_MASK = 0x000001FF
-
-
-@dataclass
-class TofDigiConst:
-    DIGI_FLAG = 0x20
-    DIGI_OFFSET = 24
-    DIGI_MASK = 0xFF000000
-
-
-@dataclass
-class EmcDigiConst:
-    DIGI_FLAG = 0x30
-    DIGI_OFFSET = 24
-    DIGI_MASK = 0xFF000000
-
-    MODULE_OFFSET = 16
-    MODULE_MASK = 0x000F0000
-
-    THETA_OFFSET = 8
-    THETA_MASK = 0x00003F00
-
-    PHI_OFFSET = 0
-    PHI_MASK = 0x000000FF
-
-
-@dataclass
-class MucDigiConst:
-    DIGI_FLAG = 0x40
-    DIGI_OFFSET = 24
-    DIGI_MASK = 0xFF000000
-
-
-@dataclass
-class HltDigiConst:
-    DIGI_FLAG = 0x50
-    DIGI_OFFSET = 24
-    DIGI_MASK = 0xFF000000
-
-
-@dataclass
-class MrpcDigiConst:
-    DIGI_FLAG = 0x70
-    DIGI_OFFSET = 24
-    DIGI_MASK = 0xFF000000
+# EMC
+DIGI_EMC_MODULE_OFFSET = np.uint32(16)
+DIGI_EMC_MODULE_MASK = np.uint32(0x000F0000)
+DIGI_EMC_THETA_OFFSET = np.uint32(8)
+DIGI_EMC_THETA_MASK = np.uint32(0x00003F00)
+DIGI_EMC_PHI_OFFSET = np.uint32(0)
+DIGI_EMC_PHI_MASK = np.uint32(0x000000FF)
