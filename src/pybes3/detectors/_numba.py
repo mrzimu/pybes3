@@ -1,64 +1,7 @@
 import numba as nb
+import numpy as np
 
 from . import constants as det_consts
-
-
-@nb.vectorize([nb.boolean(nb.uint32)])
-def check_mdc_teid(mdc_id: int) -> bool:
-    """
-    Check if the MDC TEID is valid.
-
-    Parameters:
-        mdc_id (int): The MDC TEID array.
-
-    Returns:
-        bool: Whether the ID is valid.
-    """
-    return (
-        mdc_id & det_consts.DIGI_FLAG_MASK
-    ) >> det_consts.DIGI_FLAG_OFFSET == det_consts.DIGI_MDC_FLAG
-
-
-@nb.vectorize([nb.uint32(nb.uint32)])
-def mdc_teid_to_wire(mdc_id: int) -> int:
-    """
-    Convert the MDC TEID to the wire ID.
-
-    Parameters:
-        mdc_id (int): The MDC TEID array.
-
-    Returns:
-        int: The wire ID.
-    """
-    return (mdc_id & det_consts.DIGI_MDC_WIRE_MASK) >> det_consts.DIGI_MDC_WIRE_OFFSET
-
-
-@nb.vectorize([nb.uint32(nb.uint32)])
-def mdc_teid_to_layer(mdc_id: int) -> int:
-    """
-    Convert the MDC TEID to the layer ID.
-
-    Parameters:
-        mdc_id (int): The MDC TEID array.
-
-    Returns:
-        int: The layer ID.
-    """
-    return (mdc_id & det_consts.DIGI_MDC_LAYER_MASK) >> det_consts.DIGI_MDC_LAYER_OFFSET
-
-
-@nb.vectorize([nb.uint32(nb.uint32)])
-def mdc_teid_to_wire_type(mdc_id: int) -> int:
-    """
-    Convert the MDC TEID to the wire type.
-
-    Parameters:
-        mdc_id (int): The MDC TEID array.
-
-    Returns:
-        int: The wire type.
-    """
-    return (mdc_id & det_consts.DIGI_MDC_WIRETYPE_MASK) >> det_consts.DIGI_MDC_WIRETYPE_OFFSET
 
 
 @nb.vectorize([nb.uint32(nb.uint32, nb.uint32, nb.uint32)])
@@ -85,64 +28,6 @@ def gen_mdc_teid(wire: int, layer: int, wire_type: int) -> int:
     )
 
 
-@nb.vectorize([nb.uint32(nb.uint32)])
-def check_emc_teid(emc_id: int) -> bool:
-    """
-    Check if the EMC TEID is valid.
-
-    Parameters:
-        emc_id (int): The EMC TEID array.
-
-    Returns:
-        bool: Whether the ID is valid.
-    """
-    return (
-        emc_id & det_consts.DIGI_FLAG_MASK
-    ) >> det_consts.DIGI_FLAG_OFFSET == det_consts.DIGI_EMC_FLAG
-
-
-@nb.vectorize([nb.uint32(nb.uint32)])
-def emc_teid_to_module(emc_id: int) -> int:
-    """
-    Convert the EMC TEID to the module ID.
-
-    Parameters:
-        emc_id (int): The EMC TEID array.
-
-    Returns:
-        int: The module ID.
-    """
-    return (emc_id & det_consts.DIGI_EMC_MODULE_MASK) >> det_consts.DIGI_EMC_MODULE_OFFSET
-
-
-@nb.vectorize([nb.uint32(nb.uint32)])
-def emc_teid_to_theta(emc_id: int) -> int:
-    """
-    Convert the EMC TEID to the theta ID.
-
-    Parameters:
-        emc_id (int): The EMC TEID array.
-
-    Returns:
-        int: The theta ID.
-    """
-    return (emc_id & det_consts.DIGI_EMC_THETA_MASK) >> det_consts.DIGI_EMC_THETA_OFFSET
-
-
-@nb.vectorize([nb.uint32(nb.uint32)])
-def emc_teid_to_phi(emc_id: int) -> int:
-    """
-    Convert the EMC TEID to the phi ID.
-
-    Parameters:
-        emc_id (int): The EMC TEID array.
-
-    Returns:
-        int: The phi ID.
-    """
-    return (emc_id & det_consts.DIGI_EMC_PHI_MASK) >> det_consts.DIGI_EMC_PHI_OFFSET
-
-
 @nb.vectorize([nb.uint32(nb.uint32, nb.uint32, nb.uint32)])
 def gen_emc_teid(module_id: int, theta_id: int, phi_id: int) -> int:
     """
@@ -161,4 +46,40 @@ def gen_emc_teid(module_id: int, theta_id: int, phi_id: int) -> int:
         | ((theta_id << det_consts.DIGI_EMC_THETA_OFFSET) & det_consts.DIGI_EMC_THETA_MASK)
         | ((phi_id << det_consts.DIGI_EMC_PHI_OFFSET) & det_consts.DIGI_EMC_PHI_MASK)
         | (det_consts.DIGI_EMC_FLAG << det_consts.DIGI_FLAG_OFFSET)
+    )
+
+
+@nb.vectorize([nb.uint32(nb.uint32, nb.uint32, nb.uint32, nb.uint32)])
+def gen_tof_scint_teid(part: int, layer: int, phi: int, end: int):
+
+    return (
+        ((part << det_consts.DIGI_TOF_PART_OFFSET) & det_consts.DIGI_TOF_PART_MASK)
+        | (
+            (layer << det_consts.DIGI_TOF_SCINT_LAYER_OFFSET)
+            & det_consts.DIGI_TOF_SCINT_LAYER_MASK
+        )
+        | ((phi << det_consts.DIGI_TOF_SCINT_PHI_OFFSET) & det_consts.DIGI_TOF_SCINT_PHI_MASK)
+        | ((end << det_consts.DIGI_TOF_END_OFFSET) & det_consts.DIGI_TOF_END_MASK)
+        | (det_consts.DIGI_TOF_FLAG << det_consts.DIGI_FLAG_OFFSET)
+    )
+
+
+@nb.vectorize([nb.uint32(nb.uint32, nb.uint32, nb.uint32, nb.uint32)])
+def gen_tof_mrpc_teid(endcap: int, module: int, strip: int, end: int):
+    return (
+        ((np.uint32(3) << det_consts.DIGI_TOF_PART_OFFSET) & det_consts.DIGI_TOF_PART_MASK)
+        | (
+            (endcap << det_consts.DIGI_TOF_MRPC_ENDCAP_OFFSET)
+            & det_consts.DIGI_TOF_MRPC_ENDCAP_MASK
+        )
+        | (
+            (module << det_consts.DIGI_TOF_MRPC_MODULE_OFFSET)
+            & det_consts.DIGI_TOF_MRPC_MODULE_MASK
+        )
+        | (
+            (strip << det_consts.DIGI_TOF_MRPC_STRIP_OFFSET)
+            & det_consts.DIGI_TOF_MRPC_STRIP_MASK
+        )
+        | ((end << det_consts.DIGI_TOF_END_OFFSET) & det_consts.DIGI_TOF_END_MASK)
+        | (det_consts.DIGI_TOF_FLAG << det_consts.DIGI_FLAG_OFFSET)
     )
