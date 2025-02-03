@@ -1,10 +1,6 @@
-# pybes3.besio
+## BESIII data files reading
 
-`pybes3.besio` is an I/O module for BES3 data. It wraps `uproot` so that user can directly read BES3 `rtraw`, `dst` and  `rec` files, and transfer them to `awkward` array. By so far, it can only read and cannot write BES3 files. If you want to write data into ROOT file, you may need to use `uproot` directly.
-
-## Basic usage
-
-### Read ROOT file (rtraw, dst, rec)
+### read ROOT file (rtraw, dst, rec)
 
 To make `uproot` know about BES3 ROOT files,  call `pybes3.wrap_uproot()` before opening any file:
 
@@ -92,9 +88,9 @@ or you can retrieve branches from `mc_evt`:
 >>> e_init_arr = mc_evt["m_mcParticleCol/m_eInitialMomentum"].array()
 ```
 
-### Read raw data file
+### read raw data file
 
-BES3 raw data files contain only digi information. To read a raw data file, use `pybes3.open_raw`:
+BES3 raw data files contain only digits information. To read a raw data file, use `pybes3.open_raw`:
 
 ```python
 >>> import pybes3
@@ -122,7 +118,7 @@ To read all data out:
 To only read some sub-detectors:
 
 ```python
->>> mdc_tof_digi = reader.arrays(sub_detectors=['mdc', 'tof'])
+>>> mdc_tof_digi = reader.arrays(sub_detectors=['mdc', 'tof']) # 'emc', 'muc' are also available
 >>> mdc_tof_digi.fields
 ['evt_header', 'mdc', 'tof']
 ```
@@ -135,13 +131,4 @@ To read part of file:
 <Array [{evt_header: {...}, ...}, ..., {...}] type='1000 * {evt_header: {ev...'>
 ```
 
-> `n_blocks` instread of `n_entries` is used here because only data blocks are continuous in memory. 
->
-> Most of the time, there is one event in a data block.
-
-
-
-## Further information
-
-* `awkward` is a Python module that can handle ragged-like array. See [awkward-doc](https://awkward-array.org/doc/stable/index.html) to learn how to work with ragged-like array.
-* `uproot` is a ROOT I/O Python module. If you want to write something into ROOT file (not as BES3 format!), see [uproot-doc](https://uproot.readthedocs.io/en/stable/) for help.
+> `n_blocks` instead of `n_entries` is used here because only data blocks are continuous in memory. Most of the time, there is one event in a data block.
