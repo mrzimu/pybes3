@@ -1,0 +1,9 @@
+site_name: pybes3
+
+theme:
+  name: material
+
+nav:
+  - Home: index.md
+  - Installation: installation.md
+  - Get Started: get-started.md
