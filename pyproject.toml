@@ -3,14 +3,20 @@ requires = ["scikit-build-core", "pybind11>=2.10.0"]
 build-backend = "scikit_build_core.build"
 
 [project]
-optional-dependencies = { "ci" = [
-    "pybind11",
-    "uproot>=5.0",
-    "awkward",
+optional-dependencies = { "all" = [
     "pytest",
     "repairwheel",
     "build",
     "twine",
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings",
+    "mkdocstrings-python",
+], "doc" = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings",
+    "mkdocstrings-python",
 ] }
 
 name = "pybes3"

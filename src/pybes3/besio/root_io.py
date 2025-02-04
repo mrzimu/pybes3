@@ -821,5 +821,8 @@ def wrap_uproot_TBranchElement_branches():
 
 
 def wrap_uproot():
+    """
+    Wraps the uproot functions to use the BES interpretation.
+    """
     wrap_uproot_interpretation()
     wrap_uproot_TBranchElement_branches()

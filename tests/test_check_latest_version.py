@@ -1,4 +1,4 @@
-from pybes3._check_latest_version import check_latest_version, get_all_tags, get_latest_version
+from pybes3._check_latest_version import check_new_version, get_all_tags, get_latest_version
 
 
 def test_get_all_tags():
@@ -31,11 +31,11 @@ def test_get_latest_version():
 
 def test_check_latest_version(capsys):
     test_current_version1 = (99, 99, 99, 99)
-    check_latest_version(test_current_version1)
+    check_new_version(test_current_version1)
     captured = capsys.readouterr()
     assert captured.out == ""
 
     test_current_version2 = (0, 1, 0, 1)
-    check_latest_version(test_current_version2)
+    check_new_version(test_current_version2)
     captured = capsys.readouterr()
     assert len(captured.out) > 0
