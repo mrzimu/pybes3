@@ -7,16 +7,16 @@ from .raw_io import concatenate as concatenate_raw
 from .root_io import wrap_uproot
 
 
-def open(file, **kwargs):
+def open(file, **kwargs) -> Any:
     """
     A wrapper around `uproot.open` that automatically calls `wrap_uproot` before opening the file.
 
-    Args:
+    Parameters:
         file (str | Path | IO | dict[str | Path | IO, str]): The file to open.
         **kwargs: Additional arguments to pass to `uproot.open`.
 
     Returns:
-        (Any): The uproot file object.
+        The uproot file object.
     """
     wrap_uproot()
     return uproot.open(file, **kwargs)
@@ -26,7 +26,7 @@ def concatenate(files, branch: str, **kwargs) -> Any:
     """
     A wrapper around `uproot.concatenate` that automatically calls `wrap_uproot` before concatenating the files.
 
-    Args:
+    Parameters:
         files (dict[str | Path | IO, str]): The files to concatenate.
         branch (str): The branch to concatenate.
         **kwargs: Additional arguments to pass to `uproot.concatenate`.
@@ -42,7 +42,7 @@ def open_raw(file: str) -> RawBinaryReader:
     """
     Open a raw binary file.
 
-    Args:
+    Parameters:
         file (str): The file to open.
 
     Returns:

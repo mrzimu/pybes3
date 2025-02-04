@@ -366,13 +366,14 @@ def get_symetric_matrix_idx(
 ) -> int:
     r"""
     Returns the index of the similarity matrix given the row and column indices.
+
     The matrix is assumed to be symmetric-like. (i, j) -> index relationship is:
 
-     j\i | 0 1 2
-    ------------
-      0  | 0
-      1  | 1 2
-      2  | 3 4 5
+    |     | i=0 | i=1 | i=2 |
+    | :-: | :-: | :-: | :-: |
+    | j=0 |  0  |     |     |
+    | j=1 |  1  |  2  |     |
+    | j=2 |  3  |  4  |  5  |
 
     Parameters:
         i (Union[int, ak.Array, np.ndarray]): The row index or array of row indices.
@@ -380,7 +381,7 @@ def get_symetric_matrix_idx(
         ndim (int): The dimension of the similarity matrix.
 
     Returns:
-        int: The index or array of indices corresponding to the given row and column indices.
+        The index or array of indices corresponding to the given row and column indices.
 
     Raises:
         ValueError: If the row and column indices are not of the same type, or if one of them is not an integer.
@@ -440,16 +441,16 @@ def expand_zipped_symetric_matrix(
       [a12, a22, a23],
       [a13, a23, a33]],
 
-      [[b11, b12, b13],
+     [[b11, b12, b13],
       [b12, b22, b23],
       [b13, b23, b33]]]
     ```
 
-    Args:
+    Parameters:
         arr (Union[ak.Array, np.ndarray]): The input array representing the flattened simplified symmetric matrix.
 
     Returns:
-        Union[ak.Array, np.ndarray]: The reshaped symmetric matrix as a 2D array.
+        The reshaped symmetric matrix as a 2D array.
 
     Raises:
         ValueError: If the input array does not have a symmetric shape.
@@ -495,6 +496,16 @@ def expand_zipped_symetric_matrix(
 def expand_subbranch_symetric_matrix(
     sub_br_arr: ak.Array, matrix_fields: Union[str, list[str]]
 ) -> ak.Array:
+    """
+    Recover simplified symmetric matrix back to 2D matrix from specified fields of a branch array.
+
+    Parameters:
+        sub_br_arr: Subbranch array that need to be recovered.
+        matrix_fields: Name of list of names of fields to be recovered.
+
+    Returns:
+        An array with recovered fields.
+    """
     if isinstance(matrix_fields, str):
         matrix_fields = {matrix_fields}
     matrix_fields = set(matrix_fields)
@@ -513,17 +524,17 @@ def expand_subbranch_symetric_matrix(
 #############################################
 def process_digi_subbranch(org_arr: ak.Array) -> ak.Array:
     """
-    Processes the 'TRawData' subbranch of the input awkward array and returns a new array with the subbranch fields
+    Processes the `TRawData` subbranch of the input awkward array and returns a new array with the subbranch fields
     merged into the top level.
 
-    Args:
-        org_arr (ak.Array): The input awkward array containing the 'TRawData' subbranch.
+    Parameters:
+        org_arr (ak.Array): The input awkward array containing the `TRawData` subbranch.
 
     Returns:
-        ak.Array: A new awkward array with the fields of 'TRawData' merged into the top level.
+        A new awkward array with the fields of `TRawData` merged into the top level.
 
     Raises:
-        AssertionError: If 'TRawData' is not found in the input array fields.
+        AssertionError: If `TRawData` is not found in the input array fields.
     """
     assert "TRawData" in org_arr.fields, "TRawData not found in the input array"
 
@@ -694,7 +705,6 @@ class BesInterpretation(uproot.interpretation.Interpretation):
         library,
         options,
     ):
-
         # For BES TObject and TObjArray, element class streamers are needed
         # Check streamers and versions
         if self.parse_rule == kTObjArray or self.parse_rule == kTObject:
