@@ -11,10 +11,12 @@ optional-dependencies = { "all" = [
     "mkdocs",
     "mkdocs-material",
     "mkdocstrings",
+    "mkdocstrings-python",
 ], "doc" = [
     "mkdocs",
     "mkdocs-material",
     "mkdocstrings",
+    "mkdocstrings-python",
 ] }
 
 name = "pybes3"

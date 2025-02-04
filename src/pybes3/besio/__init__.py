@@ -1,5 +1,4 @@
-from pathlib import Path
-from typing import Union
+from typing import Any
 
 import uproot
 
@@ -9,16 +8,46 @@ from .root_io import wrap_uproot
 
 
 def open(file, **kwargs):
+    """
+    A wrapper around `uproot.open` that automatically calls `wrap_uproot` before opening the file.
+
+    Args:
+        file (str | Path | IO | dict[str | Path | IO, str]): The file to open.
+        **kwargs: Additional arguments to pass to `uproot.open`.
+
+    Returns:
+        (Any): The uproot file object.
+    """
     wrap_uproot()
     return uproot.open(file, **kwargs)
 
 
-def concatenate(files, branch: str, **kwargs):
+def concatenate(files, branch: str, **kwargs) -> Any:
+    """
+    A wrapper around `uproot.concatenate` that automatically calls `wrap_uproot` before concatenating the files.
+
+    Args:
+        files (dict[str | Path | IO, str]): The files to concatenate.
+        branch (str): The branch to concatenate.
+        **kwargs: Additional arguments to pass to `uproot.concatenate`.
+
+    Returns:
+        The concatenated array.
+    """
     wrap_uproot()
     return uproot.concatenate({str(f): branch for f in files}, **kwargs)
 
 
-def open_raw(file):
+def open_raw(file: str) -> RawBinaryReader:
+    """
+    Open a raw binary file.
+
+    Args:
+        file (str): The file to open.
+
+    Returns:
+        (RawBinaryReader): The raw binary reader.
+    """
     return RawBinaryReader(file)
 
 

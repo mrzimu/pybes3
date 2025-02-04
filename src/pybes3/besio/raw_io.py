@@ -102,7 +102,6 @@ class RawBinaryReader:
         n_block_per_batch: int = 1000,
         sub_detectors: Union[list[str], None] = None,
         max_workers: Union[int, None] = None,
-        use_mmap: bool = False,
     ) -> ak.Array:
         """
         Read and return arrays of data from the BES raw file.
@@ -110,11 +109,11 @@ class RawBinaryReader:
         Args:
             n_blocks (int, optional): The number of blocks to read. Defaults to -1, which means read all blocks.
             n_block_per_batch (int, optional): The number of blocks to read per batch. Defaults to 1000.
-            sub_detectors (Union[list[str], None], optional): List of sub-detectors to read. Defaults to None, which means read all sub-detectors.
-            max_workers (Union[int, None], optional): The maximum number of worker threads to use for reading the data. Defaults to None.
+            sub_detectors (Union[list[str], None], optional): List of sub-detectors to read. Defaults to `None`, which means read all sub-detectors.
+            max_workers (Union[int, None], optional): The maximum number of worker threads to use for reading the data. Defaults to `None`, which means use the default number of worker threads.
 
         Returns:
-            ak.Array: An Awkward Array containing the read data.
+            An Awkward Array containing the read data.
         """
 
         self._reset_cursor()
@@ -273,6 +272,19 @@ def concatenate(
     max_workers: Union[int, None] = None,
     verbose: bool = False,
 ) -> ak.Array:
+    """
+    Concatenate multiple raw binary files into `ak.Array`
+
+    Args:
+        n_blocks (int, optional): The number of blocks to read. Defaults to -1, which means read all blocks.
+        n_block_per_batch (int, optional): The number of blocks to read per batch. Defaults to 1000.
+        sub_detectors (Union[list[str], None], optional): List of sub-detectors to read. Defaults to `None`, which means read all sub-detectors.
+        max_workers (Union[int, None], optional): The maximum number of worker threads to use for reading the data. Defaults to `None`, which means use the default number of worker threads.
+        verbose (bool): Show reading process.
+
+    Returns:
+        Concatenated raw data array.
+    """
 
     if not isinstance(files, list):
         files = glob.glob(files)

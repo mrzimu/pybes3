@@ -3,7 +3,22 @@ site_name: pybes3
 theme:
   name: material
 
+plugins:
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          options:
+            docstring_style: google
+            inheritance_diagram: True
+            show_source: True
+            show_signature: True
+            show_root_heading: True
+
 nav:
   - Home: index.md
   - Installation: installation.md
   - Get Started: get-started.md
+  - API Reference:
+    - pybes3: api/pybes3.md
+    - pybes3.besio: api/pybes3.besio.md

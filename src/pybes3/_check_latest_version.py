@@ -10,6 +10,9 @@ TAGS_API_URL = f"{GITLAB_URL}/api/v4/projects/{PROJECT_ID}/repository/tags"
 
 
 def get_all_tags():
+    """
+    Get all tags from git repository
+    """
     tags = []
     page = 1
     while True:
@@ -29,6 +32,15 @@ def get_all_tags():
 
 
 def get_latest_version(tags: list[str]) -> Union[tuple[int, int, int, int], None]:
+    """
+    Get the latest version from given tags. Only parse tags "vx.x.x" or "vx.x.x.x"
+
+    Args:
+        tags (list[str]): Tags lists
+
+    Returns:
+        Tuple of version number, or None if tags are invalid to be parsed.
+    """
     latest_version = None
 
     for tag in tags:
@@ -47,10 +59,16 @@ def get_latest_version(tags: list[str]) -> Union[tuple[int, int, int, int], None
         except:
             continue
 
-    return tuple(latest_version)
+    return tuple(latest_version) if latest_version is not None else None
 
 
-def check_latest_version(test_version_tuple: Union[tuple[int, int, int, int], None] = None):
+def check_new_version(test_version_tuple: Union[tuple[int, int, int, int], None] = None):
+    """
+    Check whether a new version is released. Print a warning if a newer version exists.
+
+    Args:
+        test_version_tuple: Tuple of version number, or None if no valid version is found.
+    """
     tags = get_all_tags()
     latest_version = get_latest_version(tags)
 
