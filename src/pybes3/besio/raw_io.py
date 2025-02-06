@@ -276,7 +276,7 @@ def concatenate(
     Concatenate multiple raw binary files into `ak.Array`
 
     Parameters:
-        n_blocks (int, optional): The number of blocks to read. Defaults to -1, which means read all blocks.
+        files (Union[Union[str, Path], list[Union[str, Path]]]): files to be read.
         n_block_per_batch (int, optional): The number of blocks to read per batch. Defaults to 1000.
         sub_detectors (Union[list[str], None], optional): List of sub-detectors to read. Defaults to `None`, which means read all sub-detectors.
         max_workers (Union[int, None], optional): The maximum number of worker threads to use for reading the data. Defaults to `None`, which means use the default number of worker threads.

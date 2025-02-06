@@ -15,7 +15,7 @@ def gen_mdc_teid(wire: int, layer: int, wire_type: int) -> int:
         wire_type (int): The wire type.
 
     Returns:
-        int: The MDC TEID.
+        The MDC TEID.
     """
     return (
         ((wire << det_consts.DIGI_MDC_WIRE_OFFSET) & det_consts.DIGI_MDC_WIRE_MASK)
@@ -39,7 +39,7 @@ def gen_emc_teid(module_id: int, theta_id: int, phi_id: int) -> int:
         phi_id (int): The phi ID.
 
     Returns:
-        int: The EMC TEID.
+        The EMC TEID.
     """
     return (
         ((module_id << det_consts.DIGI_EMC_MODULE_OFFSET) & det_consts.DIGI_EMC_MODULE_MASK)

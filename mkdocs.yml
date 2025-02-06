@@ -20,5 +20,6 @@ nav:
   - Installation: installation.md
   - Get Started: get-started.md
   - API Reference:
-    - pybes3: api/pybes3.md
-    - pybes3.besio: api/pybes3.besio.md
+      - pybes3: api/pybes3.md
+      - pybes3.besio: api/pybes3.besio.md
+      - pybes3.detectors: api/pybes3.detectors.md
