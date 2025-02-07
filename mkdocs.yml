@@ -3,6 +3,9 @@ site_name: pybes3
 theme:
   name: material
 
+markdown_extensions: 
+  - admonition
+
 plugins:
   - mkdocstrings:
       default_handler: python
@@ -10,10 +13,11 @@ plugins:
         python:
           options:
             docstring_style: google
-            inheritance_diagram: True
             show_source: True
-            show_signature: True
+            # show_signature: True
             show_root_heading: True
+            members_order: source
+            heading_level: 3
 
 nav:
   - Home: index.md
@@ -22,4 +26,5 @@ nav:
   - API Reference:
       - pybes3: api/pybes3.md
       - pybes3.besio: api/pybes3.besio.md
-      - pybes3.detectors: api/pybes3.detectors.md
+      - pybes3.detectors:
+        - identify: api/pybes3.detectors.identify.md

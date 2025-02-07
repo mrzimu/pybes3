@@ -131,4 +131,5 @@ To read part of file:
 <Array [{evt_header: {...}, ...}, ..., {...}] type='1000 * {evt_header: {ev...'>
 ```
 
-> `n_blocks` instead of `n_entries` is used here because only data blocks are continuous in memory. Most of the time, there is one event in a data block.
+!!! note
+    `n_blocks` instead of `n_entries` is used here because only data blocks are continuous in memory. Most of the time, there is one event in a data block.

@@ -13,7 +13,7 @@ def open(file, **kwargs) -> Any:
 
     Parameters:
         file (str | Path | IO | dict[str | Path | IO, str]): The file to open.
-        **kwargs: Additional arguments to pass to `uproot.open`.
+        **kwargs (dict): Additional arguments to pass to `uproot.open`.
 
     Returns:
         The uproot file object.
@@ -29,7 +29,7 @@ def concatenate(files, branch: str, **kwargs) -> Any:
     Parameters:
         files (dict[str | Path | IO, str]): The files to concatenate.
         branch (str): The branch to concatenate.
-        **kwargs: Additional arguments to pass to `uproot.concatenate`.
+        **kwargs (dict): Additional arguments to pass to `uproot.concatenate`.
 
     Returns:
         The concatenated array.
