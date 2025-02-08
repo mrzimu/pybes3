@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Literal, Union
 
 import awkward as ak
 import numba as nb
@@ -21,14 +21,6 @@ DIGI_MDC_LAYER_MASK = np.uint32(0x00007E00)
 DIGI_MDC_WIRE_OFFSET = np.uint32(0)
 DIGI_MDC_WIRE_MASK = np.uint32(0x000001FF)
 
-# EMC
-DIGI_EMC_MODULE_OFFSET = np.uint32(16)
-DIGI_EMC_MODULE_MASK = np.uint32(0x000F0000)
-DIGI_EMC_THETA_OFFSET = np.uint32(8)
-DIGI_EMC_THETA_MASK = np.uint32(0x00003F00)
-DIGI_EMC_PHI_OFFSET = np.uint32(0)
-DIGI_EMC_PHI_MASK = np.uint32(0x000000FF)
-
 # TOF
 DIGI_TOF_PART_OFFSET = np.uint32(14)
 DIGI_TOF_PART_MASK = np.uint32(0x0000C000)
@@ -46,6 +38,24 @@ DIGI_TOF_MRPC_MODULE_OFFSET = np.uint32(5)
 DIGI_TOF_MRPC_MODULE_MASK = np.uint32(0x000007E0)
 DIGI_TOF_MRPC_STRIP_OFFSET = np.uint32(1)
 DIGI_TOF_MRPC_STRIP_MASK = np.uint32(0x0000001E)
+
+# EMC
+DIGI_EMC_MODULE_OFFSET = np.uint32(16)
+DIGI_EMC_MODULE_MASK = np.uint32(0x000F0000)
+DIGI_EMC_THETA_OFFSET = np.uint32(8)
+DIGI_EMC_THETA_MASK = np.uint32(0x00003F00)
+DIGI_EMC_PHI_OFFSET = np.uint32(0)
+DIGI_EMC_PHI_MASK = np.uint32(0x000000FF)
+
+# MUC
+DIGI_MUC_PART_OFFSET = np.uint32(16)
+DIGI_MUC_PART_MASK = np.uint32(0x000F0000)
+DIGI_MUC_SEGMENT_OFFSET = np.uint32(12)
+DIGI_MUC_SEGMENT_MASK = np.uint32(0x0000F000)
+DIGI_MUC_LAYER_OFFSET = np.uint32(8)
+DIGI_MUC_LAYER_MASK = np.uint32(0x00000F00)
+DIGI_MUC_CHANNEL_OFFSET = np.uint32(0)
+DIGI_MUC_CHANNEL_MASK = np.uint32(0x000000FF)
 
 
 def _regularize_uint32(
@@ -486,3 +496,334 @@ def get_emc_id(
         | ((phi << DIGI_EMC_PHI_OFFSET) & DIGI_EMC_PHI_MASK)
         | (DIGI_EMC_FLAG << DIGI_FLAG_OFFSET)
     )
+
+
+###############################################################################
+#                                     MUC                                     #
+###############################################################################
+@regularize_args_uint32
+@nb.vectorize([nb.boolean(nb.uint32)])
+def check_muc_id(
+    muc_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.bool_]:
+    """
+    Check if the MUC ID is valid.
+
+    Parameters:
+        muc_id: The MUC ID array or value.
+
+    Returns:
+        Whether the ID is valid.
+    """
+    return (muc_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_MUC_FLAG
+
+
+@regularize_args_uint32
+@nb.vectorize([nb.uint32(nb.uint32)])
+def muc_id_to_part(
+    muc_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.uint32]:
+    """
+    Convert MUC ID to part ID
+
+    Parameters:
+        muc_id: MUC ID array or value.
+
+    Returns:
+        The part ID.
+    """
+    return (muc_id & DIGI_MUC_PART_MASK) >> DIGI_MUC_PART_OFFSET
+
+
+@regularize_args_uint32
+@nb.vectorize([nb.uint32(nb.uint32)])
+def muc_id_to_segment(
+    muc_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.uint32]:
+    """
+    Convert the MUC ID to the segment ID.
+
+    Parameters:
+        muc_id: The MUC ID array or value.
+
+    Returns:
+        The segment ID.
+    """
+    return (muc_id & DIGI_MUC_SEGMENT_MASK) >> DIGI_MUC_SEGMENT_OFFSET
+
+
+@regularize_args_uint32
+@nb.vectorize([nb.uint32(nb.uint32)])
+def muc_id_to_layer(
+    muc_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.uint32]:
+    """
+    Convert the MUC ID to the layer ID.
+
+    Parameters:
+        muc_id: The MUC ID array or value.
+
+    Returns:
+        The layer ID.
+    """
+    return (muc_id & DIGI_MUC_LAYER_MASK) >> DIGI_MUC_LAYER_OFFSET
+
+
+@regularize_args_uint32
+@nb.vectorize([nb.uint32(nb.uint32)])
+def muc_id_to_channel(
+    muc_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.uint32]:
+    """
+    Convert the MUC ID to the channel ID.
+
+    Parameters:
+        muc_id: The MUC ID array or value.
+
+    Returns:
+        The channel ID.
+    """
+    return (muc_id & DIGI_MUC_CHANNEL_MASK) >> DIGI_MUC_CHANNEL_OFFSET
+
+
+@regularize_args_uint32
+@nb.vectorize([nb.uint32(nb.uint32, nb.uint32, nb.uint32, nb.uint32)])
+def get_muc_id(
+    part: Union[ak.Array, np.ndarray, int],
+    segment: Union[ak.Array, np.ndarray, int],
+    layer: Union[ak.Array, np.ndarray, int],
+    channel: Union[ak.Array, np.ndarray, int],
+) -> Union[ak.Array, np.ndarray, np.uint32]:
+    """
+    Generate MUC ID based on the part ID, segment ID, layer ID, and channel ID.
+
+    Parameters:
+        part: The part ID.
+        segment: The segment ID.
+        layer: The layer ID.
+        channel: The channel ID.
+
+    Returns:
+        The MUC ID.
+    """
+    return (
+        ((part << DIGI_MUC_PART_OFFSET) & DIGI_MUC_PART_MASK)
+        | ((segment << DIGI_MUC_SEGMENT_OFFSET) & DIGI_MUC_SEGMENT_MASK)
+        | ((layer << DIGI_MUC_LAYER_OFFSET) & DIGI_MUC_LAYER_MASK)
+        | ((channel << DIGI_MUC_CHANNEL_OFFSET) & DIGI_MUC_CHANNEL_MASK)
+        | (DIGI_MUC_FLAG << DIGI_FLAG_OFFSET)
+    )
+
+
+def muc_id_to_gap(
+    muc_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.uint32]:
+    """
+    Convert the MUC ID to the gap ID, which is equivalent to layer ID.
+
+    Parameters:
+        muc_id: The MUC ID array or value.
+
+    Returns:
+        The gap ID.
+    """
+    return muc_id_to_layer(muc_id)
+
+
+def muc_id_to_strip(
+    muc_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.uint32]:
+    """
+    Convert the MUC ID to the strip ID, which is equivalent to channel ID.
+
+    Parameters:
+        muc_id: The MUC ID array or value.
+
+    Returns:
+        The strip ID.
+    """
+    return muc_id_to_channel(muc_id)
+
+
+###############################################################################
+#                                Make awkwards                                #
+###############################################################################
+def parse_mdc_id(
+    mdc_id: Union[ak.Array, np.ndarray, int],
+    flat: bool = False,
+    library: Literal["ak", "np"] = "ak",
+) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.uint32]]:
+    """
+    Parse MDC ID.
+
+    Parameters:
+        mdc_id: The MDC ID.
+        flat: Whether to flatten the output.
+        library: The library to use as output.
+
+    Returns:
+        The parsed MDC ID. If `library` is `ak`, return `ak.Record`.
+        If `library` is `np`, return `dict[str, np.ndarray]`.
+
+        Available keys of the output are:
+            - wire: The wire ID.
+            - layer: The layer ID.
+            - wire_type: The wire type
+    """
+    if library not in ["ak", "np"]:
+        raise ValueError(f"Unsupported library: {library}")
+
+    if flat and isinstance(mdc_id, ak.Array):
+        mdc_id = ak.flatten(mdc_id)
+
+    res = {
+        "wire": mdc_id_to_wire(mdc_id),
+        "layer": mdc_id_to_layer(mdc_id),
+        "wire_type": mdc_id_to_wire_type(mdc_id),
+    }
+
+    if library == "ak":
+        return ak.zip(res)
+    else:
+        return res
+
+
+def parse_tof_id(
+    tof_id: Union[ak.Array, np.ndarray, int],
+    flat: bool = False,
+    library: Literal["ak", "np"] = "ak",
+) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.uint32]]:
+    """
+    Parse TOF ID.
+
+    Parameters:
+        tof_id: The TOF ID.
+        flat: Whether to flatten the output.
+        library: The library to use as output.
+
+    Returns:
+        The parsed TOF ID.
+        If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
+        Available keys of the output are:
+            - part: The part ID.
+            - end: The readout end ID.
+            - scint_layer: The scintillator layer ID.
+            - scint_phi: The scintillator phi ID.
+            - mrpc_endcap: The MRPC endcap ID.
+            - mrpc_module: The MRPC module ID.
+            - mrpc_strip: The MRPC strip ID.
+            - is_mrpc: Whether the TOF ID is MRPC ID.
+
+        Note that no matter an ID is MRPC or not, it will always have both scintillator and MRPC keys.
+    """
+    if library not in ["ak", "np"]:
+        raise ValueError(f"Unsupported library: {library}")
+
+    if flat and isinstance(tof_id, ak.Array):
+        tof_id = ak.flatten(tof_id)
+
+    res = {
+        "part": tof_id_to_part(tof_id),
+        "end": tof_id_to_end(tof_id),
+        "scint_layer": tof_id_to_scint_layer(tof_id),
+        "scint_phi": tof_id_to_scint_phi(tof_id),
+        "mrpc_endcap": tof_id_to_mrpc_endcap(tof_id),
+        "mrpc_module": tof_id_to_mrpc_module(tof_id),
+        "mrpc_strip": tof_id_to_mrpc_strip(tof_id),
+    }
+
+    res["is_mrpc"] = res["part"] == 3
+
+    if library == "ak":
+        return ak.zip(res)
+    else:
+        return res
+
+
+def parse_emc_id(
+    emc_id: Union[ak.Array, np.ndarray, int],
+    flat: bool = False,
+    library: Literal["ak", "np"] = "ak",
+) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.uint32]]:
+    """
+    Parse EMC ID.
+
+    Parameters:
+        emc_id: The EMC ID.
+        flat: Whether to flatten the output.
+        library: The library to use as output.
+
+    Returns:
+        The parsed EMC ID.
+        If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
+        Available keys of the output are:
+            - module: The module ID.
+            - theta: The theta ID.
+            - phi: The phi ID.
+    """
+    if library not in ["ak", "np"]:
+        raise ValueError(f"Unsupported library: {library}")
+
+    if flat and isinstance(emc_id, ak.Array):
+        emc_id = ak.flatten(emc_id)
+
+    res = {
+        "module": emc_id_to_module(emc_id),
+        "theta": emc_id_to_theta(emc_id),
+        "phi": emc_id_to_phi(emc_id),
+    }
+
+    if library == "ak":
+        return ak.zip(res)
+    else:
+        return res
+
+
+def parse_muc_id(
+    muc_id: Union[ak.Array, np.ndarray, int],
+    flat: bool = False,
+    library: Literal["ak", "np"] = "ak",
+) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.uint32]]:
+    """
+    Parse MUC ID.
+
+    Parameters:
+        muc_id: The MUC ID.
+        flat: Whether to flatten the output.
+        library: The library to use as output.
+
+    Returns:
+        The parsed MUC ID.
+        If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
+        Available keys of the output are:
+            - part: The part ID.
+            - segment: The segment ID.
+            - layer: The layer ID.
+            - channel: The channel ID.
+            - gap: The gap ID, which is equivalent to layer ID.
+            - strip: The strip ID, which is equivalent to channel ID.
+    """
+    if library not in ["ak", "np"]:
+        raise ValueError(f"Unsupported library: {library}")
+
+    if flat and isinstance(muc_id, ak.Array):
+        muc_id = ak.flatten(muc_id)
+
+    part = muc_id_to_part(muc_id)
+    segment = muc_id_to_segment(muc_id)
+    layer = muc_id_to_layer(muc_id)
+    channel = muc_id_to_channel(muc_id)
+
+    res = {
+        "part": part,
+        "segment": segment,
+        "layer": layer,
+        "channel": channel,
+        "gap": layer,
+        "strip": channel,
+    }
+
+    if library == "ak":
+        return ak.zip(res)
+    else:
+        return res
