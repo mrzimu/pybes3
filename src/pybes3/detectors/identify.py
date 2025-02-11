@@ -9,6 +9,7 @@ DIGI_TOF_FLAG = np.uint32(0x20)
 DIGI_EMC_FLAG = np.uint32(0x30)
 DIGI_MUC_FLAG = np.uint32(0x40)
 DIGI_HLT_FLAG = np.uint32(0x50)
+DIGI_CGEM_FLAG = np.uint32(0x60)
 DIGI_MRPC_FLAG = np.uint32(0x70)
 DIGI_FLAG_OFFSET = np.uint32(24)
 DIGI_FLAG_MASK = np.uint32(0xFF000000)
@@ -56,6 +57,17 @@ DIGI_MUC_LAYER_OFFSET = np.uint32(8)
 DIGI_MUC_LAYER_MASK = np.uint32(0x00000F00)
 DIGI_MUC_CHANNEL_OFFSET = np.uint32(0)
 DIGI_MUC_CHANNEL_MASK = np.uint32(0x000000FF)
+
+# CGEM
+DIGI_CGEM_STRIP_OFFSET = np.uint32(7)
+DIGI_CGEM_STRIP_MASK = np.uint32(0x0007FF80)
+DIGI_CGEM_STRIPTYPE_OFFSET = np.uint32(6)
+DIGI_CGEM_STRIPTYPE_MASK = np.uint32(0x00000040)
+DIGI_CGEM_SHEET_OFFSET = np.uint32(3)
+DIGI_CGEM_SHEET_MASK = np.uint32(0x00000038)
+DIGI_CGEM_LAYER_OFFSET = np.uint32(0)
+DIGI_CGEM_LAYER_MASK = np.uint32(0x00000007)
+DIGI_CGEM_XSTRIP = np.uint32(0)
 
 
 def _regularize_uint32(
@@ -646,6 +658,142 @@ def muc_id_to_strip(
 
 
 ###############################################################################
+#                                    CGEM                                     #
+###############################################################################
+@regularize_args_uint32
+@nb.vectorize([nb.boolean(nb.uint32)])
+def check_cgem_id(
+    cgem_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.bool_]:
+    """
+    Check if the CGEM ID is valid.
+
+    Parameters:
+        cgem_id: The CGEM ID array or value.
+
+    Returns:
+        Whether the ID is valid.
+    """
+    return (cgem_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_CGEM_FLAG
+
+
+@regularize_args_uint32
+@nb.vectorize([nb.uint32(nb.uint32)])
+def cgem_id_to_strip(
+    cgem_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.uint32]:
+    """
+    Convert CGEM ID to strip ID
+
+    Parameters:
+        cgem_id: CGEM ID array or value.
+
+    Returns:
+        The strip ID.
+    """
+    return (cgem_id & DIGI_CGEM_STRIP_MASK) >> DIGI_CGEM_STRIP_OFFSET
+
+
+@regularize_args_uint32
+@nb.vectorize([nb.uint32(nb.uint32)])
+def cgem_id_to_strip_type(
+    cgem_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.uint32]:
+    """
+    Convert the CGEM ID to the strip type.
+
+    Parameters:
+        cgem_id: The CGEM ID array or value.
+
+    Returns:
+        The strip type.
+    """
+    return (cgem_id & DIGI_CGEM_STRIPTYPE_MASK) >> DIGI_CGEM_STRIPTYPE_OFFSET
+
+
+@regularize_args_uint32
+@nb.vectorize([nb.uint32(nb.uint32)])
+def cgem_id_to_sheet(
+    cgem_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.uint32]:
+    """
+    Convert the CGEM ID to the sheet ID.
+
+    Parameters:
+        cgem_id: The CGEM ID array or value.
+
+    Returns:
+        The sheet ID.
+    """
+    return (cgem_id & DIGI_CGEM_SHEET_MASK) >> DIGI_CGEM_SHEET_OFFSET
+
+
+@regularize_args_uint32
+@nb.vectorize([nb.uint32(nb.uint32)])
+def cgem_id_to_layer(
+    cgem_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.uint32]:
+    """
+    Convert the CGEM ID to the layer ID.
+
+    Parameters:
+        cgem_id: The CGEM ID array or value.
+
+    Returns:
+        The layer ID.
+    """
+    return (cgem_id & DIGI_CGEM_LAYER_MASK) >> DIGI_CGEM_LAYER_OFFSET
+
+
+@regularize_args_uint32
+@nb.vectorize([nb.bool(nb.uint32)])
+def cgem_id_to_isxstrip(
+    cgem_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.bool_]:
+    """
+    Convert the CGEM ID to whether it is an X-strip.
+
+    Parameters:
+        cgem_id: The CGEM ID array or value.
+
+    Returns:
+        Whether the strip is an X-strip.
+    """
+    return (
+        (cgem_id & DIGI_CGEM_STRIPTYPE_MASK) >> DIGI_CGEM_STRIPTYPE_OFFSET
+    ) == DIGI_CGEM_XSTRIP
+
+
+@regularize_args_uint32
+@nb.vectorize([nb.uint32(nb.uint32, nb.uint32, nb.uint32, nb.uint32)])
+def get_cgem_id(
+    strip: Union[ak.Array, np.ndarray, int],
+    striptype: Union[ak.Array, np.ndarray, int],
+    sheet: Union[ak.Array, np.ndarray, int],
+    layer: Union[ak.Array, np.ndarray, int],
+) -> Union[ak.Array, np.ndarray, np.uint32]:
+    """
+    Generate CGEM ID based on the strip ID, strip type, sheet ID, and layer ID.
+
+    Parameters:
+        strip: The strip ID.
+        striptype: The strip type. 0 for X-strip, 1 for V-strip.
+        sheet: The sheet ID.
+        layer: The layer ID.
+
+    Returns:
+        The CGEM ID.
+    """
+    return (
+        ((strip << DIGI_CGEM_STRIP_OFFSET) & DIGI_CGEM_STRIP_MASK)
+        | ((striptype << DIGI_CGEM_STRIPTYPE_OFFSET) & DIGI_CGEM_STRIPTYPE_MASK)
+        | ((sheet << DIGI_CGEM_SHEET_OFFSET) & DIGI_CGEM_SHEET_MASK)
+        | ((layer << DIGI_CGEM_LAYER_OFFSET) & DIGI_CGEM_LAYER_MASK)
+        | (DIGI_CGEM_FLAG << DIGI_FLAG_OFFSET)
+    )
+
+
+###############################################################################
 #                                Make awkwards                                #
 ###############################################################################
 def parse_mdc_id(
@@ -821,6 +969,49 @@ def parse_muc_id(
         "channel": channel,
         "gap": layer,
         "strip": channel,
+    }
+
+    if library == "ak":
+        return ak.zip(res)
+    else:
+        return res
+
+
+def parse_cgem_id(
+    cgem_id: Union[ak.Array, np.ndarray, int],
+    flat: bool = False,
+    library: Literal["ak", "np"] = "ak",
+) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.uint32]]:
+    """
+    Parse CGEM ID.
+
+    Parameters:
+        cgem_id: The CGEM ID.
+        flat: Whether to flatten the output.
+        library: The library to use as output.
+
+    Returns:
+        The parsed CGEM ID.
+        If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
+        Available keys of the output are:
+            - strip: The strip ID.
+            - strip_type: The strip type.
+            - sheet: The sheet ID.
+            - layer: The layer ID.
+            - is_xstrip: Whether the strip is an X-strip.
+    """
+    if library not in ["ak", "np"]:
+        raise ValueError(f"Unsupported library: {library}")
+
+    if flat and isinstance(cgem_id, ak.Array):
+        cgem_id = ak.flatten(cgem_id)
+
+    res = {
+        "strip": cgem_id_to_strip(cgem_id),
+        "strip_type": cgem_id_to_strip_type(cgem_id),
+        "sheet": cgem_id_to_sheet(cgem_id),
+        "layer": cgem_id_to_layer(cgem_id),
+        "is_xstrip": cgem_id_to_isxstrip(cgem_id),
     }
 
     if library == "ak":
