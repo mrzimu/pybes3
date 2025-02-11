@@ -135,7 +135,9 @@ def mdc_id_to_is_stereo(
     Returns:
         Whether the wire is a stereo wire.
     """
-    return (mdc_id & DIGI_MDC_WIRETYPE_MASK) >> DIGI_MDC_WIRETYPE_OFFSET == DIGI_MDC_STEREO_WIRE
+    return (
+        mdc_id & DIGI_MDC_WIRETYPE_MASK
+    ) >> DIGI_MDC_WIRETYPE_OFFSET == DIGI_MDC_STEREO_WIRE
 
 
 @nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_), nb.uint32(nb.int_, nb.int_, nb.bool)])
@@ -708,6 +710,13 @@ def parse_mdc_id(
     """
     Parse MDC ID.
 
+    If `library` is `np`, return `dict[str, np.ndarray]`.
+
+    Available keys of the output:
+        - wire: The wire ID.
+        - layer: The layer ID.
+        - is_stereo: Whether the wire is a stereo wire.
+
     Parameters:
         mdc_id: The MDC ID.
         flat: Whether to flatten the output.
@@ -715,12 +724,6 @@ def parse_mdc_id(
 
     Returns:
         The parsed MDC ID. If `library` is `ak`, return `ak.Record`.
-        If `library` is `np`, return `dict[str, np.ndarray]`.
-
-        Available keys of the output are:
-            - wire: The wire ID.
-            - layer: The layer ID.
-            - is_stereo: Whether the wire is a stereo wire.
     """
     if library not in ["ak", "np"]:
         raise ValueError(f"Unsupported library: {library}")
@@ -748,6 +751,20 @@ def parse_tof_id(
     """
     Parse TOF ID.
 
+    If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
+
+    Available keys of the output:
+        - part: The part ID.
+        - end: The readout end ID.
+        - scint_layer: The scintillator layer ID.
+        - scint_phi: The scintillator phi ID.
+        - mrpc_endcap: The MRPC endcap ID.
+        - mrpc_module: The MRPC module ID.
+        - mrpc_strip: The MRPC strip ID.
+        - is_mrpc: Whether the TOF ID is MRPC ID.
+
+    Note that no matter an ID is MRPC or not, it will always have both scintillator and MRPC keys.
+
     Parameters:
         tof_id: The TOF ID.
         flat: Whether to flatten the output.
@@ -755,18 +772,7 @@ def parse_tof_id(
 
     Returns:
         The parsed TOF ID.
-        If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
-        Available keys of the output are:
-            - part: The part ID.
-            - end: The readout end ID.
-            - scint_layer: The scintillator layer ID.
-            - scint_phi: The scintillator phi ID.
-            - mrpc_endcap: The MRPC endcap ID.
-            - mrpc_module: The MRPC module ID.
-            - mrpc_strip: The MRPC strip ID.
-            - is_mrpc: Whether the TOF ID is MRPC ID.
 
-        Note that no matter an ID is MRPC or not, it will always have both scintillator and MRPC keys.
     """
     if library not in ["ak", "np"]:
         raise ValueError(f"Unsupported library: {library}")
@@ -800,6 +806,13 @@ def parse_emc_id(
     """
     Parse EMC ID.
 
+    If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
+
+    Available keys of the output:
+        - module: The module ID.
+        - theta: The theta ID.
+        - phi: The phi ID.
+
     Parameters:
         emc_id: The EMC ID.
         flat: Whether to flatten the output.
@@ -807,11 +820,7 @@ def parse_emc_id(
 
     Returns:
         The parsed EMC ID.
-        If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
-        Available keys of the output are:
-            - module: The module ID.
-            - theta: The theta ID.
-            - phi: The phi ID.
+
     """
     if library not in ["ak", "np"]:
         raise ValueError(f"Unsupported library: {library}")
@@ -839,6 +848,16 @@ def parse_muc_id(
     """
     Parse MUC ID.
 
+    If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
+
+    Available keys of the output:
+        - part: The part ID.
+        - segment: The segment ID.
+        - layer: The layer ID.
+        - channel: The channel ID.
+        - gap: The gap ID, which is equivalent to layer ID.
+        - strip: The strip ID, which is equivalent to channel ID.
+
     Parameters:
         muc_id: The MUC ID.
         flat: Whether to flatten the output.
@@ -846,14 +865,6 @@ def parse_muc_id(
 
     Returns:
         The parsed MUC ID.
-        If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
-        Available keys of the output are:
-            - part: The part ID.
-            - segment: The segment ID.
-            - layer: The layer ID.
-            - channel: The channel ID.
-            - gap: The gap ID, which is equivalent to layer ID.
-            - strip: The strip ID, which is equivalent to channel ID.
     """
     if library not in ["ak", "np"]:
         raise ValueError(f"Unsupported library: {library}")
@@ -889,6 +900,14 @@ def parse_cgem_id(
     """
     Parse CGEM ID.
 
+    If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
+
+    Available keys of the output:
+        - layer: The layer ID.
+        - sheet: The sheet ID.
+        - strip: The strip ID.
+        - is_x_strip: Whether the strip is an X-strip.
+
     Parameters:
         cgem_id: The CGEM ID.
         flat: Whether to flatten the output.
@@ -896,13 +915,6 @@ def parse_cgem_id(
 
     Returns:
         The parsed CGEM ID.
-        If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
-        Available keys of the output are:
-            - strip: The strip ID.
-            - strip_type: The strip type.
-            - sheet: The sheet ID.
-            - layer: The layer ID.
-            - is_xstrip: Whether the strip is an X-strip.
     """
     if library not in ["ak", "np"]:
         raise ValueError(f"Unsupported library: {library}")
