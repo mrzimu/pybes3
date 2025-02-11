@@ -15,54 +15,49 @@ def test_mdc_id():
     ].array()["m_intId"]
 
     # Test awkward
-    ak_wire, ak_layer, ak_wire_type = (
+    ak_wire, ak_layer, ak_is_stereo = (
         det_id.mdc_id_to_wire(mdc_id_ak),
         det_id.mdc_id_to_layer(mdc_id_ak),
-        det_id.mdc_id_to_wire_type(mdc_id_ak),
+        det_id.mdc_id_to_is_stereo(mdc_id_ak),
     )
-    assert ak.all(det_id.get_mdc_id(ak_wire, ak_layer, ak_wire_type) == mdc_id_ak)
+    assert ak.all(det_id.get_mdc_id(ak_wire, ak_layer, ak_is_stereo) == mdc_id_ak)
     assert ak.all(det_id.check_mdc_id(mdc_id_ak))
 
     # Test numpy
     mdc_id_np = ak.flatten(mdc_id_ak).to_numpy()
-    np_wire, np_layer, np_wire_type = (
+    np_wire, np_layer, np_is_stereo = (
         det_id.mdc_id_to_wire(mdc_id_np),
         det_id.mdc_id_to_layer(mdc_id_np),
-        det_id.mdc_id_to_wire_type(mdc_id_np),
+        det_id.mdc_id_to_is_stereo(mdc_id_np),
     )
-    assert np.all(det_id.get_mdc_id(np_wire, np_layer, np_wire_type) == mdc_id_np)
+    assert np.all(det_id.get_mdc_id(np_wire, np_layer, np_is_stereo) == mdc_id_np)
     assert np.all(det_id.check_mdc_id(mdc_id_np))
 
     # Test uint32
     tmp_id = mdc_id_np[0]
-    tmp_wire, tmp_layer, tmp_wire_type = (
+    tmp_wire, tmp_layer, tmp_is_stereo = (
         det_id.mdc_id_to_wire(tmp_id),
         det_id.mdc_id_to_layer(tmp_id),
-        det_id.mdc_id_to_wire_type(tmp_id),
+        det_id.mdc_id_to_is_stereo(tmp_id),
     )
     assert tmp_wire == np_wire[0]
     assert tmp_layer == np_layer[0]
-    assert tmp_wire_type == np_wire_type[0]
-    assert det_id.get_mdc_id(tmp_wire, tmp_layer, tmp_wire_type) == tmp_id
+    assert tmp_is_stereo == np_is_stereo[0]
+    assert det_id.get_mdc_id(tmp_wire, tmp_layer, tmp_is_stereo) == tmp_id
     assert det_id.check_mdc_id(tmp_id)
 
     # Test python int
     tmp_id = int(mdc_id_np[0])
-    tmp_wire, tmp_layer, tmp_wire_type = (
+    tmp_wire, tmp_layer, tmp_is_stereo = (
         det_id.mdc_id_to_wire(tmp_id),
         det_id.mdc_id_to_layer(tmp_id),
-        det_id.mdc_id_to_wire_type(tmp_id),
+        det_id.mdc_id_to_is_stereo(tmp_id),
     )
     assert tmp_wire == np_wire[0]
     assert tmp_layer == np_layer[0]
-    assert tmp_wire_type == np_wire_type[0]
-    assert det_id.get_mdc_id(tmp_wire, tmp_layer, tmp_wire_type) == tmp_id
+    assert tmp_is_stereo == np_is_stereo[0]
+    assert det_id.get_mdc_id(tmp_wire, tmp_layer, tmp_is_stereo) == tmp_id
     assert det_id.check_mdc_id(tmp_id)
-    assert (
-        isinstance(tmp_wire, np.uint32)
-        and isinstance(tmp_layer, np.uint32)
-        and isinstance(tmp_wire_type, np.uint32)
-    )
 
 
 def test_emc_id():
@@ -114,11 +109,6 @@ def test_emc_id():
     assert tmp_phi == np_phi[0]
     assert det_id.get_emc_id(tmp_module, tmp_theta, tmp_phi) == tmp_id
     assert det_id.check_emc_id(tmp_id)
-    assert (
-        isinstance(tmp_module, np.uint32)
-        and isinstance(tmp_theta, np.uint32)
-        and isinstance(tmp_phi, np.uint32)
-    )
 
 
 def test_tof_scint_id():
@@ -180,12 +170,6 @@ def test_tof_scint_id():
     assert tmp_end == np_end[0]
     assert det_id.get_tof_scint_id(tmp_part, tmp_layer, tmp_phi, tmp_end) == tmp_id
     assert det_id.check_tof_id(tmp_id)
-    assert (
-        isinstance(tmp_part, np.uint32)
-        and isinstance(tmp_layer, np.uint32)
-        and isinstance(tmp_phi, np.uint32)
-        and isinstance(tmp_end, np.uint32)
-    )
 
 
 def test_tof_mrpc_id():
@@ -254,12 +238,6 @@ def test_tof_mrpc_id():
     assert tmp_end == np_end[is_mrpc][0]
     assert det_id.get_tof_mrpc_id(tmp_endcap, tmp_module, tmp_strip, tmp_end) == tmp_id
     assert det_id.check_tof_id(tmp_id)
-    assert (
-        isinstance(tmp_endcap, np.uint32)
-        and isinstance(tmp_module, np.uint32)
-        and isinstance(tmp_strip, np.uint32)
-        and isinstance(tmp_end, np.uint32)
-    )
 
 
 def test_muc_id():
@@ -333,14 +311,6 @@ def test_muc_id():
     assert tmp_strip == np_strip[0]
     assert det_id.get_muc_id(tmp_part, tmp_segment, tmp_layer, tmp_channel) == tmp_id
     assert det_id.check_muc_id(tmp_id)
-    assert (
-        isinstance(tmp_part, np.uint32)
-        and isinstance(tmp_segment, np.uint32)
-        and isinstance(tmp_layer, np.uint32)
-        and isinstance(tmp_channel, np.uint32)
-        and isinstance(tmp_gap, np.uint32)
-        and isinstance(tmp_strip, np.uint32)
-    )
 
 
 def test_cgem_id():
@@ -349,74 +319,59 @@ def test_cgem_id():
     ].array()["m_intId"]
 
     # Test awkward
-    ak_layer, ak_strip, ak_sheet, ak_strip_type, ak_isxstrip = (
+    ak_layer, ak_sheet, ak_strip, ak_is_x_strip = (
         det_id.cgem_id_to_layer(cgem_id_ak),
-        det_id.cgem_id_to_strip(cgem_id_ak),
         det_id.cgem_id_to_sheet(cgem_id_ak),
-        det_id.cgem_id_to_strip_type(cgem_id_ak),
-        det_id.cgem_id_to_isxstrip(cgem_id_ak),
+        det_id.cgem_id_to_strip(cgem_id_ak),
+        det_id.cgem_id_to_is_x_strip(cgem_id_ak),
     )
     assert ak.all(
-        det_id.get_cgem_id(ak_layer, ak_strip, ak_sheet, ak_strip_type) == cgem_id_ak
+        det_id.get_cgem_id(ak_layer, ak_sheet, ak_strip, ak_is_x_strip) == cgem_id_ak
     )
     assert ak.all(det_id.check_cgem_id(cgem_id_ak))
-    assert ak.all(ak_isxstrip == (ak_strip_type == 0))
 
     # Test numpy
     cgem_id_np = ak.flatten(cgem_id_ak).to_numpy()
-    np_layer, np_strip, np_sheet, np_strip_type, np_isxstrip = (
+    np_layer, np_sheet, np_strip, np_is_x_strip = (
         det_id.cgem_id_to_layer(cgem_id_np),
-        det_id.cgem_id_to_strip(cgem_id_np),
         det_id.cgem_id_to_sheet(cgem_id_np),
-        det_id.cgem_id_to_strip_type(cgem_id_np),
-        det_id.cgem_id_to_isxstrip(cgem_id_np),
+        det_id.cgem_id_to_strip(cgem_id_np),
+        det_id.cgem_id_to_is_x_strip(cgem_id_np),
     )
     assert np.all(
-        det_id.get_cgem_id(np_layer, np_strip, np_sheet, np_strip_type) == cgem_id_np
+        det_id.get_cgem_id(np_layer, np_sheet, np_strip, np_is_x_strip) == cgem_id_np
     )
     assert np.all(det_id.check_cgem_id(cgem_id_np))
-    assert np.all(np_isxstrip == (np_strip_type == 0))
 
     # Test uint32
     tmp_id = cgem_id_np[0]
-    tmp_layer, tmp_strip, tmp_sheet, tmp_strip_type, tmp_isxstrip = (
+    tmp_layer, tmp_sheet, tmp_strip, tmp_is_x_strip = (
         det_id.cgem_id_to_layer(tmp_id),
-        det_id.cgem_id_to_strip(tmp_id),
         det_id.cgem_id_to_sheet(tmp_id),
-        det_id.cgem_id_to_strip_type(tmp_id),
-        det_id.cgem_id_to_isxstrip(tmp_id),
+        det_id.cgem_id_to_strip(tmp_id),
+        det_id.cgem_id_to_is_x_strip(tmp_id),
     )
     assert tmp_layer == np_layer[0]
-    assert tmp_strip == np_strip[0]
     assert tmp_sheet == np_sheet[0]
-    assert tmp_strip_type == np_strip_type[0]
-    assert tmp_isxstrip == np_isxstrip[0]
-    assert det_id.get_cgem_id(tmp_layer, tmp_strip, tmp_sheet, tmp_strip_type) == tmp_id
+    assert tmp_strip == np_strip[0]
+    assert tmp_is_x_strip == np_is_x_strip[0]
+    assert det_id.get_cgem_id(tmp_layer, tmp_sheet, tmp_strip, tmp_is_x_strip) == tmp_id
     assert det_id.check_cgem_id(tmp_id)
 
     # Test python int
     tmp_id = int(cgem_id_np[0])
-    tmp_layer, tmp_strip, tmp_sheet, tmp_strip_type, tmp_isxstrip = (
+    tmp_layer, tmp_sheet, tmp_strip, tmp_is_x_strip = (
         det_id.cgem_id_to_layer(tmp_id),
-        det_id.cgem_id_to_strip(tmp_id),
         det_id.cgem_id_to_sheet(tmp_id),
-        det_id.cgem_id_to_strip_type(tmp_id),
-        det_id.cgem_id_to_isxstrip(tmp_id),
+        det_id.cgem_id_to_strip(tmp_id),
+        det_id.cgem_id_to_is_x_strip(tmp_id),
     )
     assert tmp_layer == np_layer[0]
-    assert tmp_strip == np_strip[0]
     assert tmp_sheet == np_sheet[0]
-    assert tmp_strip_type == np_strip_type[0]
-    assert tmp_isxstrip == np_isxstrip[0]
-    assert det_id.get_cgem_id(tmp_layer, tmp_strip, tmp_sheet, tmp_strip_type) == tmp_id
+    assert tmp_strip == np_strip[0]
+    assert tmp_is_x_strip == np_is_x_strip[0]
+    assert det_id.get_cgem_id(tmp_layer, tmp_sheet, tmp_strip, tmp_is_x_strip) == tmp_id
     assert det_id.check_cgem_id(tmp_id)
-    assert (
-        isinstance(tmp_layer, np.uint32)
-        and isinstance(tmp_strip, np.uint32)
-        and isinstance(tmp_sheet, np.uint32)
-        and isinstance(tmp_strip_type, np.uint32)
-        and isinstance(tmp_isxstrip, np.bool_)
-    )
 
 
 def test_parse_mdc_id():
@@ -426,50 +381,50 @@ def test_parse_mdc_id():
 
     wire_ak = det_id.mdc_id_to_wire(mdc_id_ak)
     layer_ak = det_id.mdc_id_to_layer(mdc_id_ak)
-    wire_type_ak = det_id.mdc_id_to_wire_type(mdc_id_ak)
+    is_stereo_ak = det_id.mdc_id_to_is_stereo(mdc_id_ak)
 
     # Test awkward, flat=False, library='ak'
     ak_res1 = det_id.parse_mdc_id(mdc_id_ak, flat=False, library="ak")
-    assert ak_res1.fields == ["wire", "layer", "wire_type"]
+    assert ak_res1.fields == ["wire", "layer", "is_stereo"]
     assert len(ak_res1.positional_axis) == 2
     assert ak.all(ak_res1["wire"] == wire_ak)
     assert ak.all(ak_res1["layer"] == layer_ak)
-    assert ak.all(ak_res1["wire_type"] == wire_type_ak)
+    assert ak.all(ak_res1["is_stereo"] == is_stereo_ak)
 
     # Test awkward, flat=True, library='ak'
     ak_res2 = det_id.parse_mdc_id(mdc_id_ak, flat=True, library="ak")
-    assert ak_res2.fields == ["wire", "layer", "wire_type"]
+    assert ak_res2.fields == ["wire", "layer", "is_stereo"]
     assert len(ak_res2.positional_axis) == 1
     assert ak.all(ak_res2["wire"] == ak.flatten(wire_ak))
     assert ak.all(ak_res2["layer"] == ak.flatten(layer_ak))
-    assert ak.all(ak_res2["wire_type"] == ak.flatten(wire_type_ak))
+    assert ak.all(ak_res2["is_stereo"] == ak.flatten(is_stereo_ak))
 
     mdc_id_np = ak.flatten(mdc_id_ak).to_numpy()
     wire_np = ak.flatten(wire_ak).to_numpy()
     layer_np = ak.flatten(layer_ak).to_numpy()
-    wire_type_np = ak.flatten(wire_type_ak).to_numpy()
+    is_stereo_np = ak.flatten(is_stereo_ak).to_numpy()
 
     # Test numpy, library='np'
     np_res1 = det_id.parse_mdc_id(mdc_id_np, flat=False, library="np")
-    assert list(np_res1.keys()) == ["wire", "layer", "wire_type"]
+    assert list(np_res1.keys()) == ["wire", "layer", "is_stereo"]
     assert np.all(np_res1["wire"] == wire_np)
     assert np.all(np_res1["layer"] == layer_np)
-    assert np.all(np_res1["wire_type"] == wire_type_np)
+    assert np.all(np_res1["is_stereo"] == is_stereo_np)
 
     # Test int, library='ak'
     mdc_id_int = int(mdc_id_np[0])
     int_res1 = det_id.parse_mdc_id(mdc_id_int, flat=False, library="ak")
-    assert int_res1.fields == ["wire", "layer", "wire_type"]
+    assert int_res1.fields == ["wire", "layer", "is_stereo"]
     assert int_res1["wire"] == wire_np[0]
     assert int_res1["layer"] == layer_np[0]
-    assert int_res1["wire_type"] == wire_type_np[0]
+    assert int_res1["is_stereo"] == is_stereo_np[0]
 
     # Test int, library='np'
     int_res2 = det_id.parse_mdc_id(mdc_id_int, flat=False, library="np")
-    assert list(int_res2.keys()) == ["wire", "layer", "wire_type"]
+    assert list(int_res2.keys()) == ["wire", "layer", "is_stereo"]
     assert int_res2["wire"] == wire_np[0]
     assert int_res2["layer"] == layer_np[0]
-    assert int_res2["wire_type"] == wire_type_np[0]
+    assert int_res2["is_stereo"] == is_stereo_np[0]
 
 
 def test_parse_emc_id():
@@ -731,62 +686,55 @@ def test_parse_cgem_id():
     ].array()["m_intId"]
 
     layer_ak = det_id.cgem_id_to_layer(cgem_id_ak)
-    strip_ak = det_id.cgem_id_to_strip(cgem_id_ak)
     sheet_ak = det_id.cgem_id_to_sheet(cgem_id_ak)
-    strip_type_ak = det_id.cgem_id_to_strip_type(cgem_id_ak)
-    isxstrip_ak = det_id.cgem_id_to_isxstrip(cgem_id_ak)
+    strip_ak = det_id.cgem_id_to_strip(cgem_id_ak)
+    is_x_strip_ak = det_id.cgem_id_to_is_x_strip(cgem_id_ak)
 
     # Test awkward, flat=False, library='ak'
     ak_res1 = det_id.parse_cgem_id(cgem_id_ak, flat=False, library="ak")
-    assert ak_res1.fields == ["layer", "strip", "sheet", "strip_type", "is_xstrip"]
+    assert ak_res1.fields == ["layer", "sheet", "strip", "is_x_strip"]
     assert len(ak_res1.positional_axis) == 2
     assert ak.all(ak_res1["layer"] == layer_ak)
-    assert ak.all(ak_res1["strip"] == strip_ak)
     assert ak.all(ak_res1["sheet"] == sheet_ak)
-    assert ak.all(ak_res1["strip_type"] == strip_type_ak)
-    assert ak.all(ak_res1["is_xstrip"] == isxstrip_ak)
+    assert ak.all(ak_res1["strip"] == strip_ak)
+    assert ak.all(ak_res1["is_x_strip"] == is_x_strip_ak)
 
     # Test awkward, flat=True, library='ak'
     ak_res2 = det_id.parse_cgem_id(cgem_id_ak, flat=True, library="ak")
-    assert ak_res2.fields == ["layer", "strip", "sheet", "strip_type", "is_xstrip"]
+    assert ak_res2.fields == ["layer", "sheet", "strip", "is_x_strip"]
     assert len(ak_res2.positional_axis) == 1
     assert ak.all(ak_res2["layer"] == ak.flatten(layer_ak))
-    assert ak.all(ak_res2["strip"] == ak.flatten(strip_ak))
     assert ak.all(ak_res2["sheet"] == ak.flatten(sheet_ak))
-    assert ak.all(ak_res2["strip_type"] == ak.flatten(strip_type_ak))
-    assert ak.all(ak_res2["is_xstrip"] == ak.flatten(isxstrip_ak))
+    assert ak.all(ak_res2["strip"] == ak.flatten(strip_ak))
+    assert ak.all(ak_res2["is_x_strip"] == ak.flatten(is_x_strip_ak))
 
     cgem_id_np = ak.flatten(cgem_id_ak).to_numpy()
     layer_np = ak.flatten(layer_ak).to_numpy()
     strip_np = ak.flatten(strip_ak).to_numpy()
     sheet_np = ak.flatten(sheet_ak).to_numpy()
-    strip_type_np = ak.flatten(strip_type_ak).to_numpy()
-    isxstrip_np = ak.flatten(isxstrip_ak).to_numpy()
+    is_x_strip_np = ak.flatten(is_x_strip_ak).to_numpy()
 
     # Test numpy, library='np'
     np_res1 = det_id.parse_cgem_id(cgem_id_np, flat=False, library="np")
-    assert list(np_res1.keys()) == ["layer", "strip", "sheet", "strip_type", "is_xstrip"]
+    assert list(np_res1.keys()) == ["layer", "sheet", "strip", "is_x_strip"]
     assert np.all(np_res1["layer"] == layer_np)
-    assert np.all(np_res1["strip"] == strip_np)
     assert np.all(np_res1["sheet"] == sheet_np)
-    assert np.all(np_res1["strip_type"] == strip_type_np)
-    assert np.all(np_res1["is_xstrip"] == isxstrip_np)
+    assert np.all(np_res1["strip"] == strip_np)
+    assert np.all(np_res1["is_x_strip"] == is_x_strip_np)
 
     # Test int, library='ak'
     cgem_id_int = int(cgem_id_np[0])
     int_res1 = det_id.parse_cgem_id(cgem_id_int, flat=False, library="ak")
-    assert int_res1.fields == ["layer", "strip", "sheet", "strip_type", "isxstrip"]
+    assert int_res1.fields == ["layer", "sheet", "strip", "is_x_strip"]
     assert int_res1["layer"] == layer_np[0]
-    assert int_res1["strip"] == strip_np[0]
     assert int_res1["sheet"] == sheet_np[0]
-    assert int_res1["strip_type"] == strip_type_np[0]
-    assert int_res1["is_xstrip"] == isxstrip_np[0]
+    assert int_res1["strip"] == strip_np[0]
+    assert int_res1["is_x_strip"] == is_x_strip_np[0]
 
     # Test int, library='np'
     int_res2 = det_id.parse_cgem_id(cgem_id_int, flat=False, library="np")
-    assert list(int_res2.keys()) == ["layer", "strip", "sheet", "strip_type", "isxstrip"]
+    assert list(int_res2.keys()) == ["layer", "sheet", "strip", "is_x_strip"]
     assert int_res2["layer"] == layer_np[0]
-    assert int_res2["strip"] == strip_np[0]
     assert int_res2["sheet"] == sheet_np[0]
-    assert int_res2["strip_type"] == strip_type_np[0]
-    assert int_res2["is_xstrip"] == isxstrip_np[0]
+    assert int_res2["strip"] == strip_np[0]
+    assert int_res2["is_x_strip"] == is_x_strip_np[0]

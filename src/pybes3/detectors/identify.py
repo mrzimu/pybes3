@@ -21,6 +21,7 @@ DIGI_MDC_LAYER_OFFSET = np.uint32(9)
 DIGI_MDC_LAYER_MASK = np.uint32(0x00007E00)
 DIGI_MDC_WIRE_OFFSET = np.uint32(0)
 DIGI_MDC_WIRE_MASK = np.uint32(0x000001FF)
+DIGI_MDC_STEREO_WIRE = np.uint32(1)
 
 # TOF
 DIGI_TOF_PART_OFFSET = np.uint32(14)
@@ -70,62 +71,13 @@ DIGI_CGEM_LAYER_MASK = np.uint32(0x00000007)
 DIGI_CGEM_XSTRIP = np.uint32(0)
 
 
-def _regularize_uint32(
-    val: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
-    """
-    Make sure the value type is compatible to uint32.
-
-    If `val` is `ak.Array` or `np.ndarray`, check whether its type is uint32.
-    If `val` is an integer, transform it to np.uint32.
-
-    Parameters:
-        val: The value to be checked.
-
-    Returns:
-        The regularized value. If `val` is array, return itself. If `val` is integer, return itself as np.uint32.
-
-    Raises:
-        TypeError: If `val` is not an instance of `ak.Array`, `np.ndarray`, `int`, `np.signedinteger` and `np.unsignedinteger`.
-    """
-    if isinstance(val, ak.Array):
-        type_str = val.typestr
-        assert type_str.endswith("uint32"), "Array must be uint32 type."
-        return val
-    elif isinstance(val, np.ndarray):
-        assert val.dtype == np.uint32, "Array must be uint32 type."
-        return val
-    else:
-        if not isinstance(val, (int, np.signedinteger, np.unsignedinteger)):
-            raise TypeError(f"Unsupport type: {type(val)}")
-
-        assert (
-            0 <= val <= 2**32 - 1
-        ), f"uint32 value requires 0 <= value <= 2^32-1, but value = {val}"
-        return np.uint32(val)
-
-
-def regularize_args_uint32(func):
-    """
-    Decorator that applies `_regularize_uint32` on all arguments of a function.
-    """
-
-    def wrapper(*args, **kwargs):
-        new_args = (_regularize_uint32(i) for i in args)
-        new_kwargs = {k: _regularize_uint32(v) for k, v in kwargs.items()}
-        return func(*new_args, **new_kwargs)
-
-    return wrapper
-
-
 ###############################################################################
 #                                     MDC                                     #
 ###############################################################################
-@regularize_args_uint32
-@nb.vectorize([nb.boolean(nb.uint32)])
+@nb.vectorize([nb.bool(nb.int_)])
 def check_mdc_id(
     mdc_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.bool_]:
+) -> Union[ak.Array, np.ndarray, np.bool]:
     """
     Check if the MDC ID is valid.
 
@@ -138,11 +90,10 @@ def check_mdc_id(
     return (mdc_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_MDC_FLAG
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint16(nb.int_)])
 def mdc_id_to_wire(
     mdc_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint16]:
     """
     Convert MDC ID to wire ID
 
@@ -155,8 +106,7 @@ def mdc_id_to_wire(
     return (mdc_id & DIGI_MDC_WIRE_MASK) >> DIGI_MDC_WIRE_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def mdc_id_to_layer(
     mdc_id: Union[ak.Array, np.ndarray, int]
 ) -> Union[ak.Array, np.ndarray, np.uint32]:
@@ -172,25 +122,23 @@ def mdc_id_to_layer(
     return (mdc_id & DIGI_MDC_LAYER_MASK) >> DIGI_MDC_LAYER_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
-def mdc_id_to_wire_type(
+@nb.vectorize([nb.bool(nb.int_)])
+def mdc_id_to_is_stereo(
     mdc_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.bool]:
     """
-    Convert the MDC ID to the wire type.
+    Convert the MDC ID to whether it is a stereo wire.
 
     Parameters:
-        mdc_id: The MDC ID array.
+        mdc_id: The MDC ID array or value.
 
     Returns:
-       The wire type.
+        Whether the wire is a stereo wire.
     """
-    return (mdc_id & DIGI_MDC_WIRETYPE_MASK) >> DIGI_MDC_WIRETYPE_OFFSET
+    return (mdc_id & DIGI_MDC_WIRETYPE_MASK) >> DIGI_MDC_WIRETYPE_OFFSET == DIGI_MDC_STEREO_WIRE
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32, nb.uint32, nb.uint32)])
+@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_), nb.uint32(nb.int_, nb.int_, nb.bool)])
 def get_mdc_id(
     wire: Union[ak.Array, np.ndarray, int],
     layer: Union[ak.Array, np.ndarray, int],
@@ -218,11 +166,10 @@ def get_mdc_id(
 ###############################################################################
 #                                     TOF                                     #
 ###############################################################################
-@regularize_args_uint32
-@nb.vectorize([nb.boolean(nb.uint32)])
+@nb.vectorize([nb.bool(nb.int_)])
 def check_tof_id(
     tof_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.bool_]:
+) -> Union[ak.Array, np.ndarray, np.bool]:
     """
     Check if the TOF ID is valid.
 
@@ -235,11 +182,10 @@ def check_tof_id(
     return (tof_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_TOF_FLAG
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def tof_id_to_part(
     tof_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert TOF ID to part ID
 
@@ -252,11 +198,10 @@ def tof_id_to_part(
     return (tof_id & DIGI_TOF_PART_MASK) >> DIGI_TOF_PART_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def tof_id_to_end(
     tof_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert the TOF ID to the readout end ID.
 
@@ -269,11 +214,10 @@ def tof_id_to_end(
     return (tof_id & DIGI_TOF_END_MASK) >> DIGI_TOF_END_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def tof_id_to_scint_layer(
     tof_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert the TOF ID to the scintillator layer ID.
 
@@ -286,11 +230,10 @@ def tof_id_to_scint_layer(
     return (tof_id & DIGI_TOF_SCINT_LAYER_MASK) >> DIGI_TOF_SCINT_LAYER_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def tof_id_to_scint_phi(
     tof_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert the TOF ID to the scintillator phi ID.
 
@@ -303,11 +246,10 @@ def tof_id_to_scint_phi(
     return (tof_id & DIGI_TOF_SCINT_PHI_MASK) >> DIGI_TOF_SCINT_PHI_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def tof_id_to_mrpc_endcap(
     tof_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert the TOF ID to the MRPC endcap ID.
 
@@ -320,11 +262,10 @@ def tof_id_to_mrpc_endcap(
     return (tof_id & DIGI_TOF_MRPC_ENDCAP_MASK) >> DIGI_TOF_MRPC_ENDCAP_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def tof_id_to_mrpc_module(
     tof_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert the TOF ID to the MRPC module ID.
 
@@ -337,11 +278,10 @@ def tof_id_to_mrpc_module(
     return (tof_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def tof_id_to_mrpc_strip(
     tof_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert the TOF ID to the MRPC strip ID.
 
@@ -354,8 +294,7 @@ def tof_id_to_mrpc_strip(
     return (tof_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32, nb.uint32, nb.uint32, nb.uint32)])
+@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_, nb.int_)])
 def get_tof_scint_id(
     part: Union[ak.Array, np.ndarray, int],
     layer: Union[ak.Array, np.ndarray, int],
@@ -383,8 +322,7 @@ def get_tof_scint_id(
     )
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32, nb.uint32, nb.uint32, nb.uint32)])
+@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_, nb.int_)])
 def get_tof_mrpc_id(
     endcap: Union[ak.Array, np.ndarray, int],
     module: Union[ak.Array, np.ndarray, int],
@@ -416,11 +354,10 @@ def get_tof_mrpc_id(
 ###############################################################################
 #                                     EMC                                     #
 ###############################################################################
-@regularize_args_uint32
-@nb.vectorize([nb.boolean(nb.uint32)])
+@nb.vectorize([nb.bool(nb.int_)])
 def check_emc_id(
     emc_id: Union[ak.Array, np.ndarray, np.uint32]
-) -> Union[ak.Array, np.ndarray, np.bool_]:
+) -> Union[ak.Array, np.ndarray, np.bool]:
     """
     Check if the EMC ID is valid.
 
@@ -433,11 +370,10 @@ def check_emc_id(
     return (emc_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_EMC_FLAG
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def emc_id_to_module(
     emc_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert EMC ID to module ID
 
@@ -450,11 +386,10 @@ def emc_id_to_module(
     return (emc_id & DIGI_EMC_MODULE_MASK) >> DIGI_EMC_MODULE_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def emc_id_to_theta(
     emc_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert the EMC ID to the theta ID.
 
@@ -467,11 +402,10 @@ def emc_id_to_theta(
     return (emc_id & DIGI_EMC_THETA_MASK) >> DIGI_EMC_THETA_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def emc_id_to_phi(
     emc_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert the EMC ID to the phi ID.
 
@@ -484,8 +418,7 @@ def emc_id_to_phi(
     return (emc_id & DIGI_EMC_PHI_MASK) >> DIGI_EMC_PHI_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32, nb.uint32, nb.uint32)])
+@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_)])
 def get_emc_id(
     module: Union[ak.Array, np.ndarray, int],
     theta: Union[ak.Array, np.ndarray, int],
@@ -513,11 +446,10 @@ def get_emc_id(
 ###############################################################################
 #                                     MUC                                     #
 ###############################################################################
-@regularize_args_uint32
-@nb.vectorize([nb.boolean(nb.uint32)])
+@nb.vectorize([nb.bool(nb.int_)])
 def check_muc_id(
     muc_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.bool_]:
+) -> Union[ak.Array, np.ndarray, np.bool]:
     """
     Check if the MUC ID is valid.
 
@@ -530,11 +462,10 @@ def check_muc_id(
     return (muc_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_MUC_FLAG
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def muc_id_to_part(
     muc_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert MUC ID to part ID
 
@@ -547,11 +478,10 @@ def muc_id_to_part(
     return (muc_id & DIGI_MUC_PART_MASK) >> DIGI_MUC_PART_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def muc_id_to_segment(
     muc_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert the MUC ID to the segment ID.
 
@@ -564,11 +494,10 @@ def muc_id_to_segment(
     return (muc_id & DIGI_MUC_SEGMENT_MASK) >> DIGI_MUC_SEGMENT_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def muc_id_to_layer(
     muc_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert the MUC ID to the layer ID.
 
@@ -581,11 +510,10 @@ def muc_id_to_layer(
     return (muc_id & DIGI_MUC_LAYER_MASK) >> DIGI_MUC_LAYER_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
 def muc_id_to_channel(
     muc_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert the MUC ID to the channel ID.
 
@@ -598,8 +526,7 @@ def muc_id_to_channel(
     return (muc_id & DIGI_MUC_CHANNEL_MASK) >> DIGI_MUC_CHANNEL_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32, nb.uint32, nb.uint32, nb.uint32)])
+@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_, nb.int_)])
 def get_muc_id(
     part: Union[ak.Array, np.ndarray, int],
     segment: Union[ak.Array, np.ndarray, int],
@@ -629,7 +556,7 @@ def get_muc_id(
 
 def muc_id_to_gap(
     muc_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert the MUC ID to the gap ID, which is equivalent to layer ID.
 
@@ -644,7 +571,7 @@ def muc_id_to_gap(
 
 def muc_id_to_strip(
     muc_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
+) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
     Convert the MUC ID to the strip ID, which is equivalent to channel ID.
 
@@ -660,11 +587,10 @@ def muc_id_to_strip(
 ###############################################################################
 #                                    CGEM                                     #
 ###############################################################################
-@regularize_args_uint32
-@nb.vectorize([nb.boolean(nb.uint32)])
+@nb.vectorize([nb.bool(nb.int_)])
 def check_cgem_id(
     cgem_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.bool_]:
+) -> Union[ak.Array, np.ndarray, np.bool]:
     """
     Check if the CGEM ID is valid.
 
@@ -677,8 +603,39 @@ def check_cgem_id(
     return (cgem_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_CGEM_FLAG
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
+@nb.vectorize([nb.uint8(nb.int_)])
+def cgem_id_to_layer(
+    cgem_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.uint8]:
+    """
+    Convert the CGEM ID to the layer ID.
+
+    Parameters:
+        cgem_id: The CGEM ID array or value.
+
+    Returns:
+        The layer ID.
+    """
+    return (cgem_id & DIGI_CGEM_LAYER_MASK) >> DIGI_CGEM_LAYER_OFFSET
+
+
+@nb.vectorize([nb.uint8(nb.int_)])
+def cgem_id_to_sheet(
+    cgem_id: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.uint8]:
+    """
+    Convert the CGEM ID to the sheet ID.
+
+    Parameters:
+        cgem_id: The CGEM ID array or value.
+
+    Returns:
+        The sheet ID.
+    """
+    return (cgem_id & DIGI_CGEM_SHEET_MASK) >> DIGI_CGEM_SHEET_OFFSET
+
+
+@nb.vectorize([nb.uint16(nb.int_)])
 def cgem_id_to_strip(
     cgem_id: Union[ak.Array, np.ndarray, int]
 ) -> Union[ak.Array, np.ndarray, np.uint32]:
@@ -694,62 +651,10 @@ def cgem_id_to_strip(
     return (cgem_id & DIGI_CGEM_STRIP_MASK) >> DIGI_CGEM_STRIP_OFFSET
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
-def cgem_id_to_strip_type(
+@nb.vectorize([nb.bool(nb.int_)])
+def cgem_id_to_is_x_strip(
     cgem_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
-    """
-    Convert the CGEM ID to the strip type.
-
-    Parameters:
-        cgem_id: The CGEM ID array or value.
-
-    Returns:
-        The strip type.
-    """
-    return (cgem_id & DIGI_CGEM_STRIPTYPE_MASK) >> DIGI_CGEM_STRIPTYPE_OFFSET
-
-
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
-def cgem_id_to_sheet(
-    cgem_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
-    """
-    Convert the CGEM ID to the sheet ID.
-
-    Parameters:
-        cgem_id: The CGEM ID array or value.
-
-    Returns:
-        The sheet ID.
-    """
-    return (cgem_id & DIGI_CGEM_SHEET_MASK) >> DIGI_CGEM_SHEET_OFFSET
-
-
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32)])
-def cgem_id_to_layer(
-    cgem_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint32]:
-    """
-    Convert the CGEM ID to the layer ID.
-
-    Parameters:
-        cgem_id: The CGEM ID array or value.
-
-    Returns:
-        The layer ID.
-    """
-    return (cgem_id & DIGI_CGEM_LAYER_MASK) >> DIGI_CGEM_LAYER_OFFSET
-
-
-@regularize_args_uint32
-@nb.vectorize([nb.bool(nb.uint32)])
-def cgem_id_to_isxstrip(
-    cgem_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.bool_]:
+) -> Union[ak.Array, np.ndarray, np.bool]:
     """
     Convert the CGEM ID to whether it is an X-strip.
 
@@ -757,36 +662,35 @@ def cgem_id_to_isxstrip(
         cgem_id: The CGEM ID array or value.
 
     Returns:
-        Whether the strip is an X-strip.
+        Whether the strip is an X-strip
     """
     return (
         (cgem_id & DIGI_CGEM_STRIPTYPE_MASK) >> DIGI_CGEM_STRIPTYPE_OFFSET
     ) == DIGI_CGEM_XSTRIP
 
 
-@regularize_args_uint32
-@nb.vectorize([nb.uint32(nb.uint32, nb.uint32, nb.uint32, nb.uint32)])
+@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_, nb.bool)])
 def get_cgem_id(
-    strip: Union[ak.Array, np.ndarray, int],
-    striptype: Union[ak.Array, np.ndarray, int],
-    sheet: Union[ak.Array, np.ndarray, int],
     layer: Union[ak.Array, np.ndarray, int],
+    sheet: Union[ak.Array, np.ndarray, int],
+    strip: Union[ak.Array, np.ndarray, int],
+    is_x_strip: Union[ak.Array, np.ndarray, bool],
 ) -> Union[ak.Array, np.ndarray, np.uint32]:
     """
     Generate CGEM ID based on the strip ID, strip type, sheet ID, and layer ID.
 
     Parameters:
-        strip: The strip ID.
-        striptype: The strip type. 0 for X-strip, 1 for V-strip.
-        sheet: The sheet ID.
         layer: The layer ID.
+        sheet: The sheet ID.
+        strip: The strip ID.
+        is_x_strip: Whether the strip is an X-strip.
 
     Returns:
         The CGEM ID.
     """
     return (
         ((strip << DIGI_CGEM_STRIP_OFFSET) & DIGI_CGEM_STRIP_MASK)
-        | ((striptype << DIGI_CGEM_STRIPTYPE_OFFSET) & DIGI_CGEM_STRIPTYPE_MASK)
+        | ((~is_x_strip << DIGI_CGEM_STRIPTYPE_OFFSET) & DIGI_CGEM_STRIPTYPE_MASK)
         | ((sheet << DIGI_CGEM_SHEET_OFFSET) & DIGI_CGEM_SHEET_MASK)
         | ((layer << DIGI_CGEM_LAYER_OFFSET) & DIGI_CGEM_LAYER_MASK)
         | (DIGI_CGEM_FLAG << DIGI_FLAG_OFFSET)
@@ -800,7 +704,7 @@ def parse_mdc_id(
     mdc_id: Union[ak.Array, np.ndarray, int],
     flat: bool = False,
     library: Literal["ak", "np"] = "ak",
-) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.uint32]]:
+) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.int_]]:
     """
     Parse MDC ID.
 
@@ -816,7 +720,7 @@ def parse_mdc_id(
         Available keys of the output are:
             - wire: The wire ID.
             - layer: The layer ID.
-            - wire_type: The wire type
+            - is_stereo: Whether the wire is a stereo wire.
     """
     if library not in ["ak", "np"]:
         raise ValueError(f"Unsupported library: {library}")
@@ -827,7 +731,7 @@ def parse_mdc_id(
     res = {
         "wire": mdc_id_to_wire(mdc_id),
         "layer": mdc_id_to_layer(mdc_id),
-        "wire_type": mdc_id_to_wire_type(mdc_id),
+        "is_stereo": mdc_id_to_is_stereo(mdc_id),
     }
 
     if library == "ak":
@@ -840,7 +744,7 @@ def parse_tof_id(
     tof_id: Union[ak.Array, np.ndarray, int],
     flat: bool = False,
     library: Literal["ak", "np"] = "ak",
-) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.uint32]]:
+) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.int_]]:
     """
     Parse TOF ID.
 
@@ -892,7 +796,7 @@ def parse_emc_id(
     emc_id: Union[ak.Array, np.ndarray, int],
     flat: bool = False,
     library: Literal["ak", "np"] = "ak",
-) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.uint32]]:
+) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.int_]]:
     """
     Parse EMC ID.
 
@@ -931,7 +835,7 @@ def parse_muc_id(
     muc_id: Union[ak.Array, np.ndarray, int],
     flat: bool = False,
     library: Literal["ak", "np"] = "ak",
-) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.uint32]]:
+) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.int_]]:
     """
     Parse MUC ID.
 
@@ -981,7 +885,7 @@ def parse_cgem_id(
     cgem_id: Union[ak.Array, np.ndarray, int],
     flat: bool = False,
     library: Literal["ak", "np"] = "ak",
-) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.uint32]]:
+) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.int_]]:
     """
     Parse CGEM ID.
 
@@ -1007,11 +911,10 @@ def parse_cgem_id(
         cgem_id = ak.flatten(cgem_id)
 
     res = {
-        "strip": cgem_id_to_strip(cgem_id),
-        "strip_type": cgem_id_to_strip_type(cgem_id),
-        "sheet": cgem_id_to_sheet(cgem_id),
         "layer": cgem_id_to_layer(cgem_id),
-        "is_xstrip": cgem_id_to_isxstrip(cgem_id),
+        "sheet": cgem_id_to_sheet(cgem_id),
+        "strip": cgem_id_to_strip(cgem_id),
+        "is_x_strip": cgem_id_to_is_x_strip(cgem_id),
     }
 
     if library == "ak":
