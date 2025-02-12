@@ -6,8 +6,8 @@ To make `uproot` know about BES3 ROOT files,  call `pybes3.wrap_uproot()` before
 
 ```python
 >>> import uproot
->>> import pybes3
->>> pybes3.wrap_uproot()
+>>> import pybes3 as p3
+>>> p3.wrap_uproot()
 ```
 
 Then, open file as using `uproot`:
@@ -20,8 +20,8 @@ Then, open file as using `uproot`:
 There is a shorthand:
 
 ```python
->>> import pybes3
->>> f = pybes3.open("test.rtraw") # will automatically call `pybes3.wrap_uproot()`
+>>> import pybes3 as p3
+>>> f = p3.open("test.rtraw") # will automatically call `pybes3.wrap_uproot()`
 >>> evt = f["Event"]
 ```
 
@@ -93,8 +93,8 @@ or you can retrieve branches from `mc_evt`:
 BES3 raw data files contain only digits information. To read a raw data file, use `pybes3.open_raw`:
 
 ```python
->>> import pybes3
->>> reader = pybes3.open_raw("/bes3fs/offline/data/raw/round17/231117/run_0079017_All_file001_SFO-1.raw")
+>>> import pybes3 as p3
+>>> reader = p3.open_raw("/bes3fs/offline/data/raw/round17/231117/run_0079017_All_file001_SFO-1.raw")
 >>> reader
 BesRawReader
 - File: /bes3fs/offline/data/raw/round17/231117/run_0079017_All_file001_SFO-1.raw
@@ -133,3 +133,46 @@ To read part of file:
 
 !!! note
     `n_blocks` instead of `n_entries` is used here because only data blocks are continuous in memory. Most of the time, there is one event in a data block.
+
+!!! warning
+    By so far, `besio` can only read original raw data without any decoding. Read raw data with decoding is under development.
+
+
+
+## Detectors ID
+
+When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, `muc` branches are the electronics readout id (TEID):
+
+```python
+>>> import pybes3 as p3
+>>> digi_evt = p3.open("test.rtraw")["Event/TDigiEvent"].arrays()
+>>> mdc_id = digi_evt.m_mdcDigiCol.m_intId
+>>> mdc_id
+<Array [[], [...], ..., [268439568, ..., 268457030]] type='200 * var * uint32'>
+```
+
+The `m_intId` stores the physical information along bits. To decode the information, use `parse_xxx_id` methods:
+
+```python
+>>> parsed_mdc_id = p3.parse_mdc_id(mdc_id)
+>>> parsed_mdc_id.fields
+['wire', 'layer', 'is_stereo']
+>>> parsed_mdc_id.typestr
+'200 * var * {wire: uint16, layer: uint8, is_stereo: bool}'
+```
+
+`m_intId` can be calculated with `get_xxx_id` methods:
+
+```python
+>>> import awkward as ak
+>>> wire = parsed_mdc_id["wire"]
+>>> layer = parsed_mdc_id["layer"]
+>>> is_stereo = parsed_mdc_id["is_stereo"]
+>>> p3.get_mdc_id(wire, layer, is_stereo)
+<Array [[], [...], ..., [268439568, ..., 268457030]] type='200 * var * uint32'>
+>>> ak.all(mdc_id == p3.get_mdc_id(wire, layer, is_stereo))
+np.True_
+```
+
+!!! note
+    For TOF, `parse_tof_id` will return both scintillator and MRPC information, but user can only get one of their ID at a time, with `get_tof_scint_id` or `get_tof_mrpc_id`. See corresponding [API](api/pybes3.detectors.identify.md#pybes3.detectors.identify.get_tof_scint_id) for more information.
