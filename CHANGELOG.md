@@ -1,3 +1,7 @@
+## v0.1.2
+* Add: `pybes3.detectors.identify` module to parse detector ids read from `TDigiEvent`.
+* Add: Use `MkDocs` to generate documentation.
+
 ## v0.1.1
 * Add: Check version of `pybes3` and warn if it is not the latest version
 * Add: Automatically recover zipped symetric error matrix to full matrix

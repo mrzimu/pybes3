@@ -175,6 +175,6 @@ def test_raw():
     assert set(arr_batch.fields) == {"evt_header", "mdc", "tof", "emc", "muc"}
     assert awkward.all(awkward.count(arr_batch.mdc.id, axis=1) == n_mdc_digis)
 
-    arr_mmap = f_raw.arrays(n_blocks=10, use_mmap=True)
-    assert set(arr_mmap.fields) == {"evt_header", "mdc", "tof", "emc", "muc"}
-    assert awkward.all(awkward.count(arr_mmap.mdc.id, axis=1) == n_mdc_digis)
+    arr_workers = f_raw.arrays(n_blocks=10, max_workers=4)
+    assert set(arr_workers.fields) == {"evt_header", "mdc", "tof", "emc", "muc"}
+    assert awkward.all(awkward.count(arr_workers.mdc.id, axis=1) == n_mdc_digis)

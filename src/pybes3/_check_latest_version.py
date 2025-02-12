@@ -35,7 +35,7 @@ def get_latest_version(tags: list[str]) -> Union[tuple[int, int, int, int], None
     """
     Get the latest version from given tags. Only parse tags "vx.x.x" or "vx.x.x.x"
 
-    Args:
+    Parameters:
         tags (list[str]): Tags lists
 
     Returns:
@@ -66,7 +66,7 @@ def check_new_version(test_version_tuple: Union[tuple[int, int, int, int], None]
     """
     Check whether a new version is released. Print a warning if a newer version exists.
 
-    Args:
+    Parameters:
         test_version_tuple: Tuple of version number, or None if no valid version is found.
     """
     tags = get_all_tags()

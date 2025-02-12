@@ -1,13 +1,12 @@
-#include <array>
-#include <cstddef>
 #include <pybind11/cast.h>
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/pytypes.h>
 #include <pyerrors.h>
 
+#include <array>
+#include <cstddef>
 #include <cstdint>
-#include <iostream>
 #include <string>
 #include <vector>
 
