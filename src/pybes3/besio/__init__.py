@@ -27,7 +27,7 @@ def concatenate(files, branch: str, **kwargs) -> Any:
     A wrapper around `uproot.concatenate` that automatically calls `wrap_uproot` before concatenating the files.
 
     Parameters:
-        files (dict[str | Path | IO, str]): The files to concatenate.
+        files (list[str | Path | IO, str]): The files to concatenate.
         branch (str): The branch to concatenate.
         **kwargs (dict): Additional arguments to pass to `uproot.concatenate`.
 

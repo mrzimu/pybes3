@@ -175,4 +175,4 @@ np.True_
 ```
 
 !!! note
-    For TOF, `parse_tof_id` will return both scintillator and MRPC information, but user can only get one of their ID at a time, with `get_tof_scint_id` or `get_tof_mrpc_id`. See corresponding [API](api/pybes3.detectors.identify.md#pybes3.detectors.identify.get_tof_scint_id) for more information.
+    `pybes3` uses different convention for TOF `part` ID: `0~2` for scintillator endcap0/barrel/endcap1, `3~4` for MRPC endcap0/endcap1. In this case, TOF ID information can be decoded to 4 fields: `part`, `layerOrModule`, `phiOrStrip`, `end`.

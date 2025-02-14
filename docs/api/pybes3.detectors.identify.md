@@ -8,14 +8,10 @@
 ## TOF
 ::: pybes3.detectors.identify.check_tof_id
 ::: pybes3.detectors.identify.tof_id_to_part
+::: pybes3.detectors.identify.tof_id_to_layerOrModule
+::: pybes3.detectors.identify.tof_id_to_phiOrStrip
 ::: pybes3.detectors.identify.tof_id_to_end
-::: pybes3.detectors.identify.tof_id_to_scint_layer
-::: pybes3.detectors.identify.tof_id_to_scint_phi
-::: pybes3.detectors.identify.tof_id_to_mrpc_endcap
-::: pybes3.detectors.identify.tof_id_to_mrpc_module
-::: pybes3.detectors.identify.tof_id_to_mrpc_strip
-::: pybes3.detectors.identify.get_tof_scint_id
-::: pybes3.detectors.identify.get_tof_mrpc_id
+::: pybes3.detectors.identify.get_tof_id
 
 ## EMC
 ::: pybes3.detectors.identify.check_emc_id

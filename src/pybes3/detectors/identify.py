@@ -189,7 +189,8 @@ def tof_id_to_part(
     tof_id: Union[ak.Array, np.ndarray, int]
 ) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
-    Convert TOF ID to part ID
+    Convert TOF ID to part ID. 0, 1, 2 for scintillator endcap0/barrel/endcap1,
+    3, 4 for MRPC endcap0/endcap1.
 
     Parameters:
         tof_id: TOF ID array or value.
@@ -197,7 +198,10 @@ def tof_id_to_part(
     Returns:
         The part ID.
     """
-    return (tof_id & DIGI_TOF_PART_MASK) >> DIGI_TOF_PART_OFFSET
+    part = (tof_id & DIGI_TOF_PART_MASK) >> DIGI_TOF_PART_OFFSET
+    if part == 3:  # += MRPC endcap number
+        part += (tof_id & DIGI_TOF_MRPC_ENDCAP_MASK) >> DIGI_TOF_MRPC_ENDCAP_OFFSET
+    return part
 
 
 @nb.vectorize([nb.uint8(nb.int_)])
@@ -213,94 +217,148 @@ def tof_id_to_end(
     Returns:
         The readout end ID.
     """
-    return (tof_id & DIGI_TOF_END_MASK) >> DIGI_TOF_END_OFFSET
+    return tof_id % 2
 
 
 @nb.vectorize([nb.uint8(nb.int_)])
-def tof_id_to_scint_layer(
+def _tof_id_to_layerOrModule1(
     tof_id: Union[ak.Array, np.ndarray, int]
 ) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
-    Convert the TOF ID to the scintillator layer ID.
+    Convert the TOF ID to the scintillator layer or MRPC module ID.
+
+    This function is used by `tof_id_to_layerOrModule` when part ID is not provided.
 
     Parameters:
         tof_id: The TOF ID array or value.
 
     Returns:
-        The scintillator layer ID.
+        The scintillator layer or MRPC module ID.
     """
-    return (tof_id & DIGI_TOF_SCINT_LAYER_MASK) >> DIGI_TOF_SCINT_LAYER_OFFSET
+    part = tof_id_to_part(tof_id)
+    if part < 3:
+        return (tof_id & DIGI_TOF_SCINT_LAYER_MASK) >> DIGI_TOF_SCINT_LAYER_OFFSET
+    else:
+        return (tof_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
+
+
+@nb.vectorize([nb.uint8(nb.int_, nb.int_)])
+def _tof_id_to_layerOrModule2(
+    tof_id: Union[ak.Array, np.ndarray, int], part: Union[ak.Array, np.ndarray, int]
+) -> Union[ak.Array, np.ndarray, np.uint8]:
+    """
+    Convert the TOF ID to the scintillator layer or MRPC module ID.
+    No part ID is provided, so it will be calculated based on the TOF ID.
+
+    This function is used by `tof_id_to_layerOrModule` when part ID is provided.
+
+    Parameters:
+        tof_id: The TOF ID array or value.
+        part: The part ID.
+
+    Returns:
+        The scintillator layer or MRPC module ID based on the part ID.
+    """
+    if part < 3:
+        return (tof_id & DIGI_TOF_SCINT_LAYER_MASK) >> DIGI_TOF_SCINT_LAYER_OFFSET
+    else:
+        return (tof_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
+
+
+def tof_id_to_layerOrModule(
+    tof_id: Union[ak.Array, np.ndarray, int],
+    part: Union[ak.Array, np.ndarray, int, None] = None,
+) -> Union[ak.Array, np.ndarray, np.uint8]:
+    """
+    Convert the TOF ID to the scintillator layer or MRPC module ID.
+    If `part < 3`, it is scintillator and the return value is layer ID. Otherwise, it is
+    MRPC and the return value is module ID.
+
+    Parameters:
+        tof_id: The TOF ID array or value.
+        part: The part ID. If not provided, it will be calculated based on the TOF ID.
+
+    Returns:
+        The scintillator layer or MRPC module ID.
+    """
+    if part is None:
+        return _tof_id_to_layerOrModule1(tof_id)
+    else:
+        return _tof_id_to_layerOrModule2(tof_id, part)
 
 
 @nb.vectorize([nb.uint8(nb.int_)])
-def tof_id_to_scint_phi(
+def _tof_id_to_phiOrStrip1(
     tof_id: Union[ak.Array, np.ndarray, int]
 ) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
-    Convert the TOF ID to the scintillator phi ID.
+    Convert the TOF ID to the scintillator phi or MRPC strip ID.
+    No part ID is provided, so it will be calculated based on the TOF ID.
+
+    This function is used by `tof_id_to_phiOrStrip` when part ID is not provided.
 
     Parameters:
         tof_id: The TOF ID array or value.
 
     Returns:
-        The scintillator phi ID.
+        The scintillator phi or MRPC strip ID.
     """
-    return (tof_id & DIGI_TOF_SCINT_PHI_MASK) >> DIGI_TOF_SCINT_PHI_OFFSET
+    part = tof_id_to_part(tof_id)
+    if part < 3:
+        return (tof_id & DIGI_TOF_SCINT_PHI_MASK) >> DIGI_TOF_SCINT_PHI_OFFSET
+    else:
+        return (tof_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
 
 
-@nb.vectorize([nb.uint8(nb.int_)])
-def tof_id_to_mrpc_endcap(
-    tof_id: Union[ak.Array, np.ndarray, int]
+@nb.vectorize([nb.uint8(nb.int_, nb.int_)])
+def _tof_id_to_phiOrStrip2(
+    tof_id: Union[ak.Array, np.ndarray, int], part: Union[ak.Array, np.ndarray, int]
 ) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
-    Convert the TOF ID to the MRPC endcap ID.
+    Convert the TOF ID to the scintillator phi or MRPC strip ID.
+
+    This function is used by `tof_id_to_phiOrStrip` when part ID is provided.
 
     Parameters:
         tof_id: The TOF ID array or value.
+        part: The part ID.
 
     Returns:
-        The MRPC endcap ID.
+        The scintillator phi or MRPC strip ID based on the part ID.
     """
-    return (tof_id & DIGI_TOF_MRPC_ENDCAP_MASK) >> DIGI_TOF_MRPC_ENDCAP_OFFSET
+    if part < 3:
+        return (tof_id & DIGI_TOF_SCINT_PHI_MASK) >> DIGI_TOF_SCINT_PHI_OFFSET
+    else:
+        return (tof_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
 
 
-@nb.vectorize([nb.uint8(nb.int_)])
-def tof_id_to_mrpc_module(
-    tof_id: Union[ak.Array, np.ndarray, int]
+def tof_id_to_phiOrStrip(
+    tof_id: Union[ak.Array, np.ndarray, int],
+    part: Union[ak.Array, np.ndarray, int, None] = None,
 ) -> Union[ak.Array, np.ndarray, np.uint8]:
     """
-    Convert the TOF ID to the MRPC module ID.
+    Convert the TOF ID to the scintillator phi or MRPC strip ID, based on the part ID.
+    If `part < 3`, it is scintillator and the return value is phi ID. Otherwise, it is
+    MRPC and the return value is strip ID.
 
     Parameters:
         tof_id: The TOF ID array or value.
+        part: The part ID. If not provided, it will be calculated based on the TOF ID.
 
     Returns:
-        The MRPC module ID.
+        The scintillator phi or MRPC strip ID.
     """
-    return (tof_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
-
-
-@nb.vectorize([nb.uint8(nb.int_)])
-def tof_id_to_mrpc_strip(
-    tof_id: Union[ak.Array, np.ndarray, int]
-) -> Union[ak.Array, np.ndarray, np.uint8]:
-    """
-    Convert the TOF ID to the MRPC strip ID.
-
-    Parameters:
-        tof_id: The TOF ID array or value.
-
-    Returns:
-        The MRPC strip ID.
-    """
-    return (tof_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
+    if part is None:
+        return _tof_id_to_phiOrStrip1(tof_id)
+    else:
+        return _tof_id_to_phiOrStrip2(tof_id, part)
 
 
 @nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_, nb.int_)])
-def get_tof_scint_id(
+def get_tof_id(
     part: Union[ak.Array, np.ndarray, int],
-    layer: Union[ak.Array, np.ndarray, int],
-    phi: Union[ak.Array, np.ndarray, int],
+    layer_or_module: Union[ak.Array, np.ndarray, int],
+    phi_or_strip: Union[ak.Array, np.ndarray, int],
     end: Union[ak.Array, np.ndarray, int],
 ) -> Union[ak.Array, np.ndarray, np.uint32]:
     """
@@ -308,49 +366,30 @@ def get_tof_scint_id(
 
     Parameters:
         part: The part ID.
-        layer: The layer ID.
-        phi: The phi ID.
+        layer_or_module: The scintillator layer or MRPC module ID.
+        phi_or_strip: The scintillator phi or MRPC strip ID.
         end: The readout end ID.
 
     Returns:
-        The TOF scintillator ID.
+        The TOF ID.
     """
-    return (
-        ((part << DIGI_TOF_PART_OFFSET) & DIGI_TOF_PART_MASK)
-        | ((layer << DIGI_TOF_SCINT_LAYER_OFFSET) & DIGI_TOF_SCINT_LAYER_MASK)
-        | ((phi << DIGI_TOF_SCINT_PHI_OFFSET) & DIGI_TOF_SCINT_PHI_MASK)
-        | ((end << DIGI_TOF_END_OFFSET) & DIGI_TOF_END_MASK)
-        | (DIGI_TOF_FLAG << DIGI_FLAG_OFFSET)
-    )
-
-
-@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_, nb.int_)])
-def get_tof_mrpc_id(
-    endcap: Union[ak.Array, np.ndarray, int],
-    module: Union[ak.Array, np.ndarray, int],
-    strip: Union[ak.Array, np.ndarray, int],
-    end: Union[ak.Array, np.ndarray, int],
-) -> Union[ak.Array, np.ndarray, np.uint32]:
-    """
-    Generate TOF MRPC ID based on the endcap ID, module ID, strip ID, and readout end ID.
-
-    Parameters:
-        endcap: The endcap ID.
-        module: The module ID.
-        strip: The strip ID.
-        end: The readout end ID.
-
-    Returns:
-        The TOF MRPC ID.
-    """
-    return (
-        ((np.uint32(3) << DIGI_TOF_PART_OFFSET) & DIGI_TOF_PART_MASK)
-        | ((endcap << DIGI_TOF_MRPC_ENDCAP_OFFSET) & DIGI_TOF_MRPC_ENDCAP_MASK)
-        | ((module << DIGI_TOF_MRPC_MODULE_OFFSET) & DIGI_TOF_MRPC_MODULE_MASK)
-        | ((strip << DIGI_TOF_MRPC_STRIP_OFFSET) & DIGI_TOF_MRPC_STRIP_MASK)
-        | ((end << DIGI_TOF_END_OFFSET) & DIGI_TOF_END_MASK)
-        | (DIGI_TOF_FLAG << DIGI_FLAG_OFFSET)
-    )
+    if part < 3:
+        return (
+            ((part << DIGI_TOF_PART_OFFSET) & DIGI_TOF_PART_MASK)
+            | ((layer_or_module << DIGI_TOF_SCINT_LAYER_OFFSET) & DIGI_TOF_SCINT_LAYER_MASK)
+            | ((phi_or_strip << DIGI_TOF_SCINT_PHI_OFFSET) & DIGI_TOF_SCINT_PHI_MASK)
+            | ((end << DIGI_TOF_END_OFFSET) & DIGI_TOF_END_MASK)
+            | (DIGI_TOF_FLAG << DIGI_FLAG_OFFSET)
+        )
+    else:
+        return (
+            ((3 << DIGI_TOF_PART_OFFSET) & DIGI_TOF_PART_MASK)
+            | (((part - 3) << DIGI_TOF_MRPC_ENDCAP_OFFSET) & DIGI_TOF_MRPC_ENDCAP_MASK)
+            | ((layer_or_module << DIGI_TOF_MRPC_MODULE_OFFSET) & DIGI_TOF_MRPC_MODULE_MASK)
+            | ((phi_or_strip << DIGI_TOF_MRPC_STRIP_OFFSET) & DIGI_TOF_MRPC_STRIP_MASK)
+            | ((end << DIGI_TOF_END_OFFSET) & DIGI_TOF_END_MASK)
+            | (DIGI_TOF_FLAG << DIGI_FLAG_OFFSET)
+        )
 
 
 ###############################################################################
@@ -754,16 +793,14 @@ def parse_tof_id(
     If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
-        - part: The part ID.
+        - part: The part ID. 0 for scintillator endcap0, 1 for scintillator barrel, 2 for scintillator endcap1, 3 for MRPC endcap0, 4 for MRPC endcap1.
+        - layer_or_module: The scintillator layer or MRPC module ID, based on the part ID.
+        - phi_or_strip: The scintillator phi or MRPC strip ID, based on the part ID.
         - end: The readout end ID.
-        - scint_layer: The scintillator layer ID.
-        - scint_phi: The scintillator phi ID.
-        - mrpc_endcap: The MRPC endcap ID.
-        - mrpc_module: The MRPC module ID.
-        - mrpc_strip: The MRPC strip ID.
-        - is_mrpc: Whether the TOF ID is MRPC ID.
 
-    Note that no matter an ID is MRPC or not, it will always have both scintillator and MRPC keys.
+    The return value is based on the part ID.
+    Rows where `part < 3` are scintillator and `layer_or_module` represents layer ID, `phi_or_strip` represents phi ID.
+    Rows where `part >= 3` are MRPC and `layer_or_module` represents module ID, `phi_or_strip` represents strip ID.
 
     Parameters:
         tof_id: The TOF ID.
@@ -780,17 +817,13 @@ def parse_tof_id(
     if flat and isinstance(tof_id, ak.Array):
         tof_id = ak.flatten(tof_id)
 
+    part = tof_id_to_part(tof_id)
     res = {
-        "part": tof_id_to_part(tof_id),
+        "part": part,
+        "layer_or_module": tof_id_to_layerOrModule(tof_id, part),
+        "phi_or_strip": tof_id_to_phiOrStrip(tof_id, part),
         "end": tof_id_to_end(tof_id),
-        "scint_layer": tof_id_to_scint_layer(tof_id),
-        "scint_phi": tof_id_to_scint_phi(tof_id),
-        "mrpc_endcap": tof_id_to_mrpc_endcap(tof_id),
-        "mrpc_module": tof_id_to_mrpc_module(tof_id),
-        "mrpc_strip": tof_id_to_mrpc_strip(tof_id),
     }
-
-    res["is_mrpc"] = res["part"] == 3
 
     if library == "ak":
         return ak.zip(res)

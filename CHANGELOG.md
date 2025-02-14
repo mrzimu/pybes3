@@ -1,3 +1,6 @@
+## v0.1.2.1
+* Modify: `pybes3.detectors.identify` merge scintillator and MRPC information into same fields: `part`, `layerOrModule`, `phiOrStrip`, `end`.
+
 ## v0.1.2
 * Add: `pybes3.detectors.identify` module to parse detector ids read from `TDigiEvent`.
 * Add: Use `MkDocs` to generate documentation.

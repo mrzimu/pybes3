@@ -111,128 +111,65 @@ def test_emc_id():
     assert det_id.check_emc_id(tmp_id)
 
 
-def test_tof_scint_id():
-    tof_scint_id_ak: ak.Array = p3.open(data_dir / "test_full_mc_evt_1.rtraw")[
-        "Event/TDigiEvent/m_tofDigiCol"
-    ].array()["m_intId"]
+def test_tof_id():
+    tof_id_ak: ak.Array = p3.concatenate(
+        [data_dir / "test_full_mc_evt_1.rtraw", data_dir / "test_mrpc.rtraw"],
+        "Event/TDigiEvent/m_tofDigiCol",
+    )["m_tofDigiCol"]["m_intId"]
 
     # Test awkward
-    ak_part, ak_layer, ak_phi, ak_end = (
-        det_id.tof_id_to_part(tof_scint_id_ak),
-        det_id.tof_id_to_scint_layer(tof_scint_id_ak),
-        det_id.tof_id_to_scint_phi(tof_scint_id_ak),
-        det_id.tof_id_to_end(tof_scint_id_ak),
+    ak_part, ak_layer_or_module, ak_phi_or_strip, ak_end = (
+        det_id.tof_id_to_part(tof_id_ak),
+        det_id.tof_id_to_layerOrModule(tof_id_ak),
+        det_id.tof_id_to_phiOrStrip(tof_id_ak),
+        det_id.tof_id_to_end(tof_id_ak),
     )
-    assert ak.all(p3.get_tof_scint_id(ak_part, ak_layer, ak_phi, ak_end) == tof_scint_id_ak)
-    assert ak.all(det_id.check_tof_id(tof_scint_id_ak))
-
-    # Test numpy
-    tof_scint_id_np = ak.flatten(tof_scint_id_ak).to_numpy()
-    np_part, np_layer, np_phi, np_end = (
-        det_id.tof_id_to_part(tof_scint_id_np),
-        det_id.tof_id_to_scint_layer(tof_scint_id_np),
-        det_id.tof_id_to_scint_phi(tof_scint_id_np),
-        det_id.tof_id_to_end(tof_scint_id_np),
-    )
-    assert np.all(p3.get_tof_scint_id(np_part, np_layer, np_phi, np_end) == tof_scint_id_np)
-    assert np.all(det_id.check_tof_id(tof_scint_id_np))
-
-    # Test uint32
-    tmp_id = tof_scint_id_np[0]
-    tmp_part, tmp_layer, tmp_phi, tmp_end = (
-        det_id.tof_id_to_part(tmp_id),
-        det_id.tof_id_to_scint_layer(tmp_id),
-        det_id.tof_id_to_scint_phi(tmp_id),
-        det_id.tof_id_to_end(tmp_id),
-    )
-    assert tmp_part == np_part[0]
-    assert tmp_layer == np_layer[0]
-    assert tmp_phi == np_phi[0]
-    assert tmp_end == np_end[0]
-    assert p3.get_tof_scint_id(tmp_part, tmp_layer, tmp_phi, tmp_end) == tmp_id
-    assert det_id.check_tof_id(tmp_id)
-
-    # Test python int
-    tmp_id = int(tof_scint_id_np[0])
-    tmp_part, tmp_layer, tmp_phi, tmp_end = (
-        det_id.tof_id_to_part(tmp_id),
-        det_id.tof_id_to_scint_layer(tmp_id),
-        det_id.tof_id_to_scint_phi(tmp_id),
-        det_id.tof_id_to_end(tmp_id),
-    )
-    assert tmp_part == np_part[0]
-    assert tmp_layer == np_layer[0]
-    assert tmp_phi == np_phi[0]
-    assert tmp_end == np_end[0]
-    assert p3.get_tof_scint_id(tmp_part, tmp_layer, tmp_phi, tmp_end) == tmp_id
-    assert det_id.check_tof_id(tmp_id)
-
-
-def test_tof_mrpc_id():
-    tof_mrpc_id_ak: ak.Array = p3.open(data_dir / "test_mrpc.rtraw")[
-        "Event/TDigiEvent/m_tofDigiCol"
-    ].array()["m_intId"]
-
-    # Test awkward
-    ak_endcap, ak_module, ak_strip, ak_end = (
-        det_id.tof_id_to_mrpc_endcap(tof_mrpc_id_ak),
-        det_id.tof_id_to_mrpc_module(tof_mrpc_id_ak),
-        det_id.tof_id_to_mrpc_strip(tof_mrpc_id_ak),
-        det_id.tof_id_to_end(tof_mrpc_id_ak),
-    )
-
-    is_mrpc = det_id.tof_id_to_part(tof_mrpc_id_ak) == 3
     assert ak.all(
-        p3.get_tof_mrpc_id(ak_endcap, ak_module, ak_strip, ak_end)[is_mrpc]
-        == tof_mrpc_id_ak[is_mrpc]
+        p3.get_tof_id(ak_part, ak_layer_or_module, ak_phi_or_strip, ak_end) == tof_id_ak
     )
-    assert ak.all(det_id.check_tof_id(tof_mrpc_id_ak))
+    assert ak.all(det_id.check_tof_id(tof_id_ak))
 
     # Test numpy
-    tof_mrpc_id_np = ak.flatten(tof_mrpc_id_ak).to_numpy()
-    np_endcap, np_module, np_strip, np_end = (
-        det_id.tof_id_to_mrpc_endcap(tof_mrpc_id_np),
-        det_id.tof_id_to_mrpc_module(tof_mrpc_id_np),
-        det_id.tof_id_to_mrpc_strip(tof_mrpc_id_np),
-        det_id.tof_id_to_end(tof_mrpc_id_np),
+    tof_id_np = ak.flatten(tof_id_ak).to_numpy()
+    np_part, np_layer_or_module, np_phi_or_strip, np_end = (
+        det_id.tof_id_to_part(tof_id_np),
+        det_id.tof_id_to_layerOrModule(tof_id_np),
+        det_id.tof_id_to_phiOrStrip(tof_id_np),
+        det_id.tof_id_to_end(tof_id_np),
     )
-
-    is_mrpc = det_id.tof_id_to_part(tof_mrpc_id_np) == 3
     assert np.all(
-        p3.get_tof_mrpc_id(np_endcap, np_module, np_strip, np_end)[is_mrpc]
-        == tof_mrpc_id_np[is_mrpc]
+        p3.get_tof_id(np_part, np_layer_or_module, np_phi_or_strip, np_end) == tof_id_np
     )
-    assert np.all(det_id.check_tof_id(tof_mrpc_id_np))
+    assert np.all(det_id.check_tof_id(tof_id_np))
 
     # Test uint32
-    is_mrpc = det_id.tof_id_to_part(tof_mrpc_id_np) == 3
-    tmp_id = tof_mrpc_id_np[is_mrpc][0]
-    tmp_endcap, tmp_module, tmp_strip, tmp_end = (
-        det_id.tof_id_to_mrpc_endcap(tmp_id),
-        det_id.tof_id_to_mrpc_module(tmp_id),
-        det_id.tof_id_to_mrpc_strip(tmp_id),
+    tmp_id = tof_id_np[0]
+    tmp_part, tmp_layer_or_module, tmp_phi_or_strip, tmp_end = (
+        det_id.tof_id_to_part(tmp_id),
+        det_id.tof_id_to_layerOrModule(tmp_id),
+        det_id.tof_id_to_phiOrStrip(tmp_id),
         det_id.tof_id_to_end(tmp_id),
     )
-    assert tmp_endcap == np_endcap[is_mrpc][0]
-    assert tmp_module == np_module[is_mrpc][0]
-    assert tmp_strip == np_strip[is_mrpc][0]
-    assert tmp_end == np_end[is_mrpc][0]
-    assert p3.get_tof_mrpc_id(tmp_endcap, tmp_module, tmp_strip, tmp_end) == tmp_id
+    assert tmp_part == np_part[0]
+    assert tmp_layer_or_module == np_layer_or_module[0]
+    assert tmp_phi_or_strip == np_phi_or_strip[0]
+    assert tmp_end == np_end[0]
+    assert p3.get_tof_id(tmp_part, tmp_layer_or_module, tmp_phi_or_strip, tmp_end) == tmp_id
     assert det_id.check_tof_id(tmp_id)
 
     # Test python int
-    tmp_id = int(tof_mrpc_id_np[is_mrpc][0])
-    tmp_endcap, tmp_module, tmp_strip, tmp_end = (
-        det_id.tof_id_to_mrpc_endcap(tmp_id),
-        det_id.tof_id_to_mrpc_module(tmp_id),
-        det_id.tof_id_to_mrpc_strip(tmp_id),
+    tmp_id = int(tof_id_np[0])
+    tmp_part, tmp_layer_or_module, tmp_phi_or_strip, tmp_end = (
+        det_id.tof_id_to_part(tmp_id),
+        det_id.tof_id_to_layerOrModule(tmp_id),
+        det_id.tof_id_to_phiOrStrip(tmp_id),
         det_id.tof_id_to_end(tmp_id),
     )
-    assert tmp_endcap == np_endcap[is_mrpc][0]
-    assert tmp_module == np_module[is_mrpc][0]
-    assert tmp_strip == np_strip[is_mrpc][0]
-    assert tmp_end == np_end[is_mrpc][0]
-    assert p3.get_tof_mrpc_id(tmp_endcap, tmp_module, tmp_strip, tmp_end) == tmp_id
+    assert tmp_part == np_part[0]
+    assert tmp_layer_or_module == np_layer_or_module[0]
+    assert tmp_phi_or_strip == np_phi_or_strip[0]
+    assert tmp_end == np_end[0]
+    assert p3.get_tof_id(tmp_part, tmp_layer_or_module, tmp_phi_or_strip, tmp_end) == tmp_id
     assert det_id.check_tof_id(tmp_id)
 
 
@@ -478,124 +415,58 @@ def test_parse_tof_id():
     ].array()["m_intId"]
 
     part_ak = det_id.tof_id_to_part(tof_id_ak)
+    layer_or_module_ak = det_id.tof_id_to_layerOrModule(tof_id_ak)
+    phi_or_strip_ak = det_id.tof_id_to_phiOrStrip(tof_id_ak)
     end_ak = det_id.tof_id_to_end(tof_id_ak)
-    scint_layer_ak = det_id.tof_id_to_scint_layer(tof_id_ak)
-    scint_phi_ak = det_id.tof_id_to_scint_phi(tof_id_ak)
-    mrpc_endcap_ak = det_id.tof_id_to_mrpc_endcap(tof_id_ak)
-    mrpc_module_ak = det_id.tof_id_to_mrpc_module(tof_id_ak)
-    mrpc_strip_ak = det_id.tof_id_to_mrpc_strip(tof_id_ak)
 
     # Test awkward, flat=False, library='ak'
     ak_res1 = p3.parse_tof_id(tof_id_ak, flat=False, library="ak")
-    assert ak_res1.fields == [
-        "part",
-        "end",
-        "scint_layer",
-        "scint_phi",
-        "mrpc_endcap",
-        "mrpc_module",
-        "mrpc_strip",
-        "is_mrpc",
-    ]
+    assert ak_res1.fields == ["part", "layer_or_module", "phi_or_strip", "end"]
     assert len(ak_res1.positional_axis) == 2
     assert ak.all(ak_res1["part"] == part_ak)
+    assert ak.all(ak_res1["layer_or_module"] == layer_or_module_ak)
+    assert ak.all(ak_res1["phi_or_strip"] == phi_or_strip_ak)
     assert ak.all(ak_res1["end"] == end_ak)
-    assert ak.all(ak_res1["scint_layer"] == scint_layer_ak)
-    assert ak.all(ak_res1["scint_phi"] == scint_phi_ak)
-    assert ak.all(ak_res1["mrpc_endcap"] == mrpc_endcap_ak)
-    assert ak.all(ak_res1["mrpc_module"] == mrpc_module_ak)
-    assert ak.all(ak_res1["mrpc_strip"] == mrpc_strip_ak)
 
     # Test awkward, flat=True, library='ak'
     ak_res2 = p3.parse_tof_id(tof_id_ak, flat=True, library="ak")
-    assert ak_res2.fields == [
-        "part",
-        "end",
-        "scint_layer",
-        "scint_phi",
-        "mrpc_endcap",
-        "mrpc_module",
-        "mrpc_strip",
-        "is_mrpc",
-    ]
+    assert ak_res2.fields == ["part", "layer_or_module", "phi_or_strip", "end"]
     assert len(ak_res2.positional_axis) == 1
     assert ak.all(ak_res2["part"] == ak.flatten(part_ak))
+    assert ak.all(ak_res2["layer_or_module"] == ak.flatten(layer_or_module_ak))
+    assert ak.all(ak_res2["phi_or_strip"] == ak.flatten(phi_or_strip_ak))
     assert ak.all(ak_res2["end"] == ak.flatten(end_ak))
-    assert ak.all(ak_res2["scint_layer"] == ak.flatten(scint_layer_ak))
-    assert ak.all(ak_res2["scint_phi"] == ak.flatten(scint_phi_ak))
-    assert ak.all(ak_res2["mrpc_endcap"] == ak.flatten(mrpc_endcap_ak))
-    assert ak.all(ak_res2["mrpc_module"] == ak.flatten(mrpc_module_ak))
-    assert ak.all(ak_res2["mrpc_strip"] == ak.flatten(mrpc_strip_ak))
 
     tof_id_np = ak.flatten(tof_id_ak).to_numpy()
     part_np = ak.flatten(part_ak).to_numpy()
+    layer_or_module_np = ak.flatten(layer_or_module_ak).to_numpy()
+    phi_or_strip_np = ak.flatten(phi_or_strip_ak).to_numpy()
     end_np = ak.flatten(end_ak).to_numpy()
-    scint_layer_np = ak.flatten(scint_layer_ak).to_numpy()
-    scint_phi_np = ak.flatten(scint_phi_ak).to_numpy()
-    mrpc_endcap_np = ak.flatten(mrpc_endcap_ak).to_numpy()
-    mrpc_module_np = ak.flatten(mrpc_module_ak).to_numpy()
-    mrpc_strip_np = ak.flatten(mrpc_strip_ak).to_numpy()
 
     # Test numpy, library='np'
     np_res1 = p3.parse_tof_id(tof_id_np, flat=False, library="np")
-    assert list(np_res1.keys()) == [
-        "part",
-        "end",
-        "scint_layer",
-        "scint_phi",
-        "mrpc_endcap",
-        "mrpc_module",
-        "mrpc_strip",
-        "is_mrpc",
-    ]
+    assert list(np_res1.keys()) == ["part", "layer_or_module", "phi_or_strip", "end"]
     assert np.all(np_res1["part"] == part_np)
+    assert np.all(np_res1["layer_or_module"] == layer_or_module_np)
+    assert np.all(np_res1["phi_or_strip"] == phi_or_strip_np)
     assert np.all(np_res1["end"] == end_np)
-    assert np.all(np_res1["scint_layer"] == scint_layer_np)
-    assert np.all(np_res1["scint_phi"] == scint_phi_np)
-    assert np.all(np_res1["mrpc_endcap"] == mrpc_endcap_np)
-    assert np.all(np_res1["mrpc_module"] == mrpc_module_np)
-    assert np.all(np_res1["mrpc_strip"] == mrpc_strip_np)
 
     # Test int, library='ak'
     tof_id_int = int(tof_id_np[0])
     int_res1 = p3.parse_tof_id(tof_id_int, flat=False, library="ak")
-    assert int_res1.fields == [
-        "part",
-        "end",
-        "scint_layer",
-        "scint_phi",
-        "mrpc_endcap",
-        "mrpc_module",
-        "mrpc_strip",
-        "is_mrpc",
-    ]
+    assert int_res1.fields == ["part", "layer_or_module", "phi_or_strip", "end"]
     assert int_res1["part"] == part_np[0]
+    assert int_res1["layer_or_module"] == layer_or_module_np[0]
+    assert int_res1["phi_or_strip"] == phi_or_strip_np[0]
     assert int_res1["end"] == end_np[0]
-    assert int_res1["scint_layer"] == scint_layer_np[0]
-    assert int_res1["scint_phi"] == scint_phi_np[0]
-    assert int_res1["mrpc_endcap"] == mrpc_endcap_np[0]
-    assert int_res1["mrpc_module"] == mrpc_module_np[0]
-    assert int_res1["mrpc_strip"] == mrpc_strip_np[0]
 
     # Test int, library='np'
     int_res2 = p3.parse_tof_id(tof_id_int, flat=False, library="np")
-    assert list(int_res2.keys()) == [
-        "part",
-        "end",
-        "scint_layer",
-        "scint_phi",
-        "mrpc_endcap",
-        "mrpc_module",
-        "mrpc_strip",
-        "is_mrpc",
-    ]
+    assert list(int_res2.keys()) == ["part", "layer_or_module", "phi_or_strip", "end"]
     assert int_res2["part"] == part_np[0]
+    assert int_res2["layer_or_module"] == layer_or_module_np[0]
+    assert int_res2["phi_or_strip"] == phi_or_strip_np[0]
     assert int_res2["end"] == end_np[0]
-    assert int_res2["scint_layer"] == scint_layer_np[0]
-    assert int_res2["scint_phi"] == scint_phi_np[0]
-    assert int_res2["mrpc_endcap"] == mrpc_endcap_np[0]
-    assert int_res2["mrpc_module"] == mrpc_module_np[0]
-    assert int_res2["mrpc_strip"] == mrpc_strip_np[0]
 
 
 def test_parse_muc_id():
