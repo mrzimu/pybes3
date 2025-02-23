@@ -17,18 +17,21 @@ permissions:
 
 jobs:
   release-build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10", "3.11", "3.12"]
 
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-python@v5
         with:
-          python-version: "3.9"
+          python-version: ${{ matrix.python-version }}
 
-      - name: Build release distributions
+      - name: Build release distributions for ${{ matrix.python-version }}
         run: |
-          # NOTE: put your own distribution build steps here.
+          python3 -m pip install --upgrade pip
           python3 -m pip install .[all]
           python3 -m build -w -o .cache/dist
           python3 -m build -s -o dist
@@ -37,11 +40,11 @@ jobs:
       - name: Upload distributions
         uses: actions/upload-artifact@v4
         with:
-          name: release-dists
-          path: dist/
+          name: release-dists-${{ matrix.python-version }}
+          path: dist/*.whl
 
   pypi-publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     needs:
       - release-build
     permissions:
