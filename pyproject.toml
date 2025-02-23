@@ -58,7 +58,7 @@ line-length = 95
 target-version = ['py39']
 
 [project.urls]
-Homepage = "https://code.ihep.ac.cn/mrli/pybes3"
+Homepage = "https://github.com/mrzimu/pybes3"
 
 [tool.cibuildwheel]
 before-all = "uname -a"
