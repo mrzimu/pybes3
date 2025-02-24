@@ -7,7 +7,7 @@ import pytest
 import pybes3 as p3
 import pybes3.analysis.numba as p3nb
 
-data_dir = Path(__file__).parent.parent / "test_data"
+data_dir = Path(__file__).parent.parent / "data"
 
 dst_data = p3.open(data_dir / "test_full_mc_evt_1.dst")["Event/TDstEvent"].arrays()
 mdc_trks = dst_data.m_mdcTrackCol

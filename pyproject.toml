@@ -12,6 +12,8 @@ optional-dependencies = { "all" = [
     "mkdocs-material",
     "mkdocstrings",
     "mkdocstrings-python",
+    "pymysql",
+    "vector",
 ], "doc" = [
     "mkdocs",
     "mkdocs-material",
