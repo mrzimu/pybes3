@@ -1,0 +1,18 @@
+#!/usr/bin/python3
+
+import shutil
+from pathlib import Path
+
+hooks = ["pre-commit"]
+
+git_hooks_dir = Path(__file__).parent.parent / ".git/hooks"
+
+for hook in hooks:
+    # check if the hook exists
+    if (git_hooks_dir / hook).exists():
+        print(f"Hook {hook} already exists, skipping.")
+        continue
+
+    # copy the hook to the git hooks directory
+    shutil.copy(Path(__file__).parent / f"{hook}", git_hooks_dir / hook)
+    print(f"Hook {hook} installed.")
