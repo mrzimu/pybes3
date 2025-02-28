@@ -74,7 +74,7 @@ DIGI_CGEM_XSTRIP = np.uint32(0)
 ###############################################################################
 #                                     MDC                                     #
 ###############################################################################
-@nb.vectorize([nb.bool(nb.int_)])
+@nb.vectorize([nb.boolean(nb.int_)])
 def check_mdc_id(
     mdc_id: Union[ak.Array, np.ndarray, int],
 ) -> Union[ak.Array, np.ndarray, np.bool]:
@@ -122,7 +122,7 @@ def mdc_id_to_layer(
     return (mdc_id & DIGI_MDC_LAYER_MASK) >> DIGI_MDC_LAYER_OFFSET
 
 
-@nb.vectorize([nb.bool(nb.int_)])
+@nb.vectorize([nb.boolean(nb.int_)])
 def mdc_id_to_is_stereo(
     mdc_id: Union[ak.Array, np.ndarray, int],
 ) -> Union[ak.Array, np.ndarray, np.bool]:
@@ -140,7 +140,7 @@ def mdc_id_to_is_stereo(
     ) >> DIGI_MDC_WIRETYPE_OFFSET == DIGI_MDC_STEREO_WIRE
 
 
-@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_), nb.uint32(nb.int_, nb.int_, nb.bool)])
+@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_), nb.uint32(nb.int_, nb.int_, nb.boolean)])
 def get_mdc_id(
     wire: Union[ak.Array, np.ndarray, int],
     layer: Union[ak.Array, np.ndarray, int],
@@ -168,7 +168,7 @@ def get_mdc_id(
 ###############################################################################
 #                                     TOF                                     #
 ###############################################################################
-@nb.vectorize([nb.bool(nb.int_)])
+@nb.vectorize([nb.boolean(nb.int_)])
 def check_tof_id(
     tof_id: Union[ak.Array, np.ndarray, int],
 ) -> Union[ak.Array, np.ndarray, np.bool]:
@@ -395,7 +395,7 @@ def get_tof_id(
 ###############################################################################
 #                                     EMC                                     #
 ###############################################################################
-@nb.vectorize([nb.bool(nb.int_)])
+@nb.vectorize([nb.boolean(nb.int_)])
 def check_emc_id(
     emc_id: Union[ak.Array, np.ndarray, np.uint32],
 ) -> Union[ak.Array, np.ndarray, np.bool]:
@@ -487,7 +487,7 @@ def get_emc_id(
 ###############################################################################
 #                                     MUC                                     #
 ###############################################################################
-@nb.vectorize([nb.bool(nb.int_)])
+@nb.vectorize([nb.boolean(nb.int_)])
 def check_muc_id(
     muc_id: Union[ak.Array, np.ndarray, int],
 ) -> Union[ak.Array, np.ndarray, np.bool]:
@@ -628,7 +628,7 @@ def muc_id_to_strip(
 ###############################################################################
 #                                    CGEM                                     #
 ###############################################################################
-@nb.vectorize([nb.bool(nb.int_)])
+@nb.vectorize([nb.boolean(nb.int_)])
 def check_cgem_id(
     cgem_id: Union[ak.Array, np.ndarray, int],
 ) -> Union[ak.Array, np.ndarray, np.bool]:
@@ -692,7 +692,7 @@ def cgem_id_to_strip(
     return (cgem_id & DIGI_CGEM_STRIP_MASK) >> DIGI_CGEM_STRIP_OFFSET
 
 
-@nb.vectorize([nb.bool(nb.int_)])
+@nb.vectorize([nb.boolean(nb.int_)])
 def cgem_id_to_is_x_strip(
     cgem_id: Union[ak.Array, np.ndarray, int],
 ) -> Union[ak.Array, np.ndarray, np.bool]:
@@ -710,7 +710,7 @@ def cgem_id_to_is_x_strip(
     ) == DIGI_CGEM_XSTRIP
 
 
-@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_, nb.bool)])
+@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_, nb.boolean)])
 def get_cgem_id(
     layer: Union[ak.Array, np.ndarray, int],
     sheet: Union[ak.Array, np.ndarray, int],
