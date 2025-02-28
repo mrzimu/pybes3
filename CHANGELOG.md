@@ -1,3 +1,9 @@
+## v0.1.2.2-v0.1.2.3
+* Add github workflows `python-publish`
+* Remove version checking in `__init__.py`
+* Improve `pyproject.toml`
+* Improve `README.md`
+
 ## v0.1.2.1
 * Modify: `pybes3.detectors.identify` merge scintillator and MRPC information into same fields: `part`, `layerOrModule`, `phiOrStrip`, `end`.
 
