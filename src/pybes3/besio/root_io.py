@@ -422,7 +422,7 @@ def get_symetric_matrix_idx(
 
 
 def expand_zipped_symetric_matrix(
-    arr: Union[ak.Array, np.ndarray]
+    arr: Union[ak.Array, np.ndarray],
 ) -> Union[ak.Array, np.ndarray]:
     """
     Recover a flattened simplified symmetric matrix represented as a 1D array back to a 2D matrix.

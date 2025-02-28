@@ -1,0 +1,21 @@
+#!/usr/bin/sh
+
+# Check if black is installed
+if ! command -v black &> /dev/null
+then
+	echo "black could not be found, please install it."
+	exit 1
+fi
+
+# locate the root directory of the repository
+src_dir=$(git rev-parse --show-toplevel)
+
+# Run black on all Python files
+black --check .
+
+# Check the exit status of black
+if [ $? -ne 0 ]; then
+	echo ""
+	echo "Code formatting issues found. Please run 'black $src_dir' to format your code."
+	exit 1
+fi
