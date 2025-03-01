@@ -69,5 +69,5 @@ test-command = ["pytest {package}/tests", "mkdocs build"]
 
 # Build options
 linux.archs = ["x86_64"]
-windows.archs = ["amd64"]
+windows.archs = ["AMD64"]
 macos.archs = ["arm64"]
