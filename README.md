@@ -1,6 +1,6 @@
 # pybes3
 
-`pybes3` is an **unofficial** python module that aims to make BES3 user easier to work with Python.
+`pybes3` is an **unofficial** python module that aims to make BES3 users easier to work with Python.
 
 
 It is highly recommended to take a look at [awkward](https://awkward-array.org/doc/stable/index.html) and [uproot](https://uproot.readthedocs.io/en/stable/) documentations before using `pybes3`.
