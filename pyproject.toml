@@ -68,6 +68,7 @@ before-test = "pip install ."
 test-command = ["pytest {package}/tests"]
 
 # Build options
+build = ["cp39-*", "cp310-*", "cp311-*", "cp312-*", "cp313-*"]
 linux.archs = ["x86_64"]
 windows.archs = ["AMD64"]
 macos.archs = ["arm64"]
