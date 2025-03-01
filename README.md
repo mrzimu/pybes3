@@ -1,13 +1,13 @@
 # pybes3
 
-## Overview
-
 `pybes3` is an **unofficial** python module that aims to make BES3 user easier to work with Python.
 
 
-It is recommended to take a look at [awkward](https://awkward-array.org/doc/stable/index.html) and [uproot](https://uproot.readthedocs.io/en/stable/) documentations before using `pybes3`. See [Further information](#further-information) for more details.
+It is highly recommended to take a look at [awkward](https://awkward-array.org/doc/stable/index.html) and [uproot](https://uproot.readthedocs.io/en/stable/) documentations before using `pybes3`.
 
----
+## Documentation
+
+Visit the [documentation](https://pybes3.readthedocs.io/en/stable/) for more information about installation, usage, and examples.
 
 ## Installation
 
@@ -46,8 +46,3 @@ For PC users, it is sufficient to directly execute:
 ```bash
 pip install pybes3
 ```
-
-
-## Documentation
-
-Visit the [documentation](https://pybes3.readthedocs.io/en/stable/) for more information about installation, usage, and examples.
