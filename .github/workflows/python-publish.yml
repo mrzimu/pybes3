@@ -16,6 +16,18 @@ permissions:
   contents: read
 
 jobs:
+  test-docs:
+    runs-on: ubuntu-latest
+    name: Test documentation
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: pip install .[docs]
+
+      - name: Build documentation
+        run: mkdocs build
+
   build-wheels:
     runs-on: ${{ matrix.os }}
     name: Build wheels on ${{ matrix.os }}

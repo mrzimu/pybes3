@@ -64,8 +64,8 @@ before-all = "uname -a"
 
 # Test
 test-requires = "pytest"
-before-test = "pip install .[all]"
-test-command = ["pytest {package}/tests", "mkdocs build"]
+before-test = "pip install ."
+test-command = ["pytest {package}/tests"]
 
 # Build options
 linux.archs = ["x86_64"]
