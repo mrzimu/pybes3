@@ -15,5 +15,11 @@ jobs:
             - name: Install dependencies
               run: pip install .[docs]
 
+            - name: Checkout gh-pages branch
+              run: |
+                git fetch origin gh-pages:gh-pages
+                git checkout gh-pages
+                git pull origin gh-pages
+
             - name: Build documentation
-              run: mkdocs gh-deploy
+              run: mkdocs gh-deploy --force
