@@ -1,16 +1,11 @@
 name: Tests package
 
-on: 
-  pull_request:
-    branches:
-      - main
-  
-  workflow_dispatch: {}
+on: [workflow_dispatch]
 
 jobs:
   test-package:
-    name: Test package on Python ${{ matrix.python-version }}
-    runs-on: ubuntu-latest
+    name: Test package for Python ${{ matrix.python-version }} on ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
     strategy:
         matrix:
             python-version: ["3.9", "3.12"]
