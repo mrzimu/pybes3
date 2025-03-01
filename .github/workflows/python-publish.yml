@@ -105,4 +105,4 @@ jobs:
         run: pip install .[docs]
 
       - name: Build documentation for github pages
-        run: mkdocs gh-deploy
+        run: mkdocs gh-deploy --force
