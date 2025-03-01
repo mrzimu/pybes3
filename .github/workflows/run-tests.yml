@@ -1,0 +1,33 @@
+name: Tests package
+
+on: 
+  pull_request:
+    branches:
+      - main
+  
+  workflow_dispatch: {}
+
+jobs:
+  test-package:
+    name: Test package on Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    strategy:
+        matrix:
+            python-version: ["3.9", "3.12"]
+            os: [ubuntu-22.04, windows-latest, macos-latest]
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: pip install .[all]
+
+      - name: Run tests
+        run: python3 -m pytest tests/
+          
+      - name: Build documentation
+        run: python3 -m mkdocs build

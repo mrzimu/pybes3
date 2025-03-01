@@ -6,14 +6,13 @@ build-backend = "scikit_build_core.build"
 optional-dependencies = { "all" = [
     "black",
     "pytest",
-    "repairwheel",
     "build",
     "twine",
     "mkdocs",
     "mkdocs-material",
     "mkdocstrings",
     "mkdocstrings-python",
-], "doc" = [
+], "docs" = [
     "mkdocs",
     "mkdocs-material",
     "mkdocstrings",
@@ -27,6 +26,7 @@ requires-python = ">=3.9"
 dependencies = ["pybind11", "uproot>=5.0", "awkward", "requests", "numba"]
 readme = "README.md"
 dynamic = ["version"]
+urls = { "Homepage" = "https://github.com/mrzimu/pybes3", "Documentation" = "https://pybes3.readthedocs.io/en/stable/" }
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
@@ -39,6 +39,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Operating System :: OS Independent",
 ]
 
@@ -56,10 +57,17 @@ write_to = "src/pybes3/_version.py"
 [tool.black]
 exclude = "/(build|dist|env|.git|.tox|.eggs|.venv)/"
 line-length = 95
-target-version = ['py39', 'py310', 'py311', 'py312']
-
-[project.urls]
-Homepage = "https://github.com/mrzimu/pybes3"
+target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
 
 [tool.cibuildwheel]
 before-all = "uname -a"
+
+# Test
+test-requires = "pytest"
+before-test = "pip install .[all]"
+test-command = ["pytest {package}/tests", "mkdocs build"]
+
+# Build options
+linux.archs = ["x86_64"]
+windows.archs = ["amd64"]
+macos.archs = ["arm64"]
