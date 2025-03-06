@@ -44,7 +44,6 @@ TMcEvent/m_mcParticleCol                 | BES::TObjArray<TMcPar... | BES::As(BE
 TDigiEvent                               | TDigiEvent               | AsGroup(<TBranchElement 'TD...
 TDigiEvent/m_fromMc                      | bool                     | AsDtype('bool')
 ...
->>> 
 ```
 
 ---
@@ -151,7 +150,7 @@ When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, `muc` bra
 <Array [[], [...], ..., [268439568, ..., 268457030]] type='200 * var * uint32'>
 ```
 
-The `m_intId` stores the physical information along bits. To decode the information, use `parse_xxx_id` methods:
+The `m_intId` stores the physical information along bits. To decode the information, use `parse_xxx_id` methods where `xxx` is the detector name (`cgem`, `mdc`, `tof`, `emc`, `muc`):
 
 ```python
 >>> parsed_mdc_id = p3.parse_mdc_id(mdc_id)
@@ -176,3 +175,26 @@ np.True_
 
 !!! note
     `pybes3` uses different convention for TOF `part` ID: `0~2` for scintillator endcap0/barrel/endcap1, `3~4` for MRPC endcap0/endcap1. In this case, TOF ID information can be decoded to 4 fields: `part`, `layerOrModule`, `phiOrStrip`, `end`.
+
+
+
+## Tracks parsing
+
+### Helix
+
+In BESIII, Helix is represented by 5 parameters: `dr`, `phi0`, `kappa`, `dz`, `tanl`. To transform these parameters to `x`, `y`, `z`, `px`, `py`, `pz`, etc., use `parse_helix`:
+
+```python
+>>> import pybes3 as p3
+>>> mdc_trk = p3.open("test.dst")["Event/TDstEvent/m_mdcTrackCol"].array()
+>>> helix = mdc_trk["m_helix"]
+>>> helix
+<Array [[[0.0342, 0.736, ..., 0.676], ...], ...] type='10 * var * 5 * float64'>
+
+>>> phy_helix = p3.parse_helix(helix)
+>>> phy_helix.fields
+['x', 'y', 'z', 'r', 'px', 'py', 'pz', 'pt', 'p', 'theta', 'phi', 'charge']
+```
+
+!!! note
+    You can use `parse_helix` to decode any helix array with 5 elements in the last dimension.
