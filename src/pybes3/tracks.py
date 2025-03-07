@@ -152,7 +152,7 @@ def parse_helix(
             return an ak.Array when input is ak.Array. If "ak", return an ak.Array.
 
     Returns:
-        parsed physical parameters. "x", "y", "z", "r" for location, \
+        parsed physical parameters. "x", "y", "z", "r" for position, \
             "pt", "px", "py", "pz", "p", "theta", "phi" for momentum.
     """
     helix0 = helix[..., 0]

@@ -28,5 +28,4 @@ nav:
       - pybes3.besio: api/pybes3.besio.md
       - pybes3.detectors:
           - identify: api/pybes3.detectors.identify.md
-      - pybes3.tracks:
-          - helix: api/pybes3.tracks.helix.md
+      - pybes3.tracks: api/pybes3.tracks.md

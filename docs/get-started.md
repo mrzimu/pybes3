@@ -138,9 +138,9 @@ To read part of file:
 
 
 
-## Detectors ID
+## Digi Identifier
 
-When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, `muc` branches are the electronics readout id (TEID):
+When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, `muc` branches are the electronics readout id (TEID), also known as `IntValue` of `Identifier` in `BOSS`. To decode the `m_intId`, use `parse_xxx_id` methods where `xxx` is the detector name (`cgem`, `mdc`, `tof`, `emc`, `muc`):
 
 ```python
 >>> import pybes3 as p3
@@ -148,11 +148,7 @@ When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, `muc` bra
 >>> mdc_id = digi_evt.m_mdcDigiCol.m_intId
 >>> mdc_id
 <Array [[], [...], ..., [268439568, ..., 268457030]] type='200 * var * uint32'>
-```
 
-The `m_intId` stores the physical information along bits. To decode the information, use `parse_xxx_id` methods where `xxx` is the detector name (`cgem`, `mdc`, `tof`, `emc`, `muc`):
-
-```python
 >>> parsed_mdc_id = p3.parse_mdc_id(mdc_id)
 >>> parsed_mdc_id.fields
 ['wire', 'layer', 'is_stereo']
@@ -182,7 +178,7 @@ np.True_
 
 ### Helix
 
-In BESIII, Helix is represented by 5 parameters: `dr`, `phi0`, `kappa`, `dz`, `tanl`. To transform these parameters to `x`, `y`, `z`, `px`, `py`, `pz`, etc., use `parse_helix`:
+In BESIII, helix is represented by 5 parameters: `dr`, `phi0`, `kappa`, `dz`, `tanl`. To transform these parameters to `x`, `y`, `z`, `px`, `py`, `pz`, etc., use `pybes3.parse_helix`:
 
 ```python
 >>> import pybes3 as p3
@@ -197,4 +193,5 @@ In BESIII, Helix is represented by 5 parameters: `dr`, `phi0`, `kappa`, `dz`, `t
 ```
 
 !!! note
-    You can use `parse_helix` to decode any helix array with 5 elements in the last dimension.
+    You can use `parse_helix` to decode any helix array with 5 elements in the last dimension, such as
+    `m_mdcKalTrackCol["m_zhelix"]`, `m_mdcKalTrackCol["m_zhelix_e"]`, etc.
