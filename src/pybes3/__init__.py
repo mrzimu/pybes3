@@ -13,3 +13,4 @@ from .detectors import (
     parse_muc_id,
     parse_tof_id,
 )
+from .tracks import parse_helix

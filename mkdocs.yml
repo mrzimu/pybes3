@@ -3,7 +3,7 @@ site_name: pybes3
 theme:
   name: material
 
-markdown_extensions: 
+markdown_extensions:
   - admonition
 
 plugins:
@@ -27,4 +27,5 @@ nav:
       - pybes3: api/pybes3.md
       - pybes3.besio: api/pybes3.besio.md
       - pybes3.detectors:
-        - identify: api/pybes3.detectors.identify.md
+          - identify: api/pybes3.detectors.identify.md
+      - pybes3.tracks: api/pybes3.tracks.md
