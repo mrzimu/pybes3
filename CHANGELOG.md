@@ -1,3 +1,6 @@
+## v0.1.3
+* Add `pybes3.tracks` with function `parse_helix` to transform 5 helix parameters to physical variables
+
 ## v0.1.2.4
 * Modify `pybes3.detectors.identify`: Replace `nb.bool` with `nb.boolean` to improve compatibility with `numba`
 
