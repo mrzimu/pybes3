@@ -16,7 +16,7 @@
       
       
       <link rel="icon" href="../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.6">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.4">
     
     
       
@@ -275,11 +275,35 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detectors-id" class="md-nav__link">
+  <a href="#digi-identifier" class="md-nav__link">
     <span class="md-ellipsis">
-      Detectors ID
+      Digi Identifier
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tracks-parsing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tracks parsing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tracks parsing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#helix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Helix
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -437,6 +461,28 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/pybes3.tracks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    pybes3.tracks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -502,11 +548,35 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#detectors-id" class="md-nav__link">
+  <a href="#digi-identifier" class="md-nav__link">
     <span class="md-ellipsis">
-      Detectors ID
+      Digi Identifier
     </span>
   </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#tracks-parsing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Tracks parsing
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Tracks parsing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#helix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Helix
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -561,7 +631,6 @@ TMcEvent/m_mcParticleCol                 | BES::TObjArray&lt;TMcPar... | BES::As
 TDigiEvent                               | TDigiEvent               | AsGroup(&lt;TBranchElement 'TD...
 TDigiEvent/m_fromMc                      | bool                     | AsDtype('bool')
 ...
-&gt;&gt;&gt; 
 </code></pre>
 <hr />
 <p>To read <code>TMcEvent</code> (Note: use <code>arrays()</code> instead of <code>array()</code> here):</p>
@@ -626,16 +695,15 @@ BesRawReader
 <p class="admonition-title">Warning</p>
 <p>By so far, <code>besio</code> can only read original raw data without any decoding. Read raw data with decoding is under development.</p>
 </div>
-<h2 id="detectors-id">Detectors ID</h2>
-<p>When reading <code>TDigiEvent</code>, the <code>m_intId</code> field in <code>mdc</code>, <code>tof</code>, <code>emc</code>, <code>muc</code> branches are the electronics readout id (TEID):</p>
+<h2 id="digi-identifier">Digi Identifier</h2>
+<p>When reading <code>TDigiEvent</code>, the <code>m_intId</code> field in <code>mdc</code>, <code>tof</code>, <code>emc</code>, <code>muc</code> branches are the electronics readout id (TEID), also known as <code>IntValue</code> of <code>Identifier</code> in <code>BOSS</code>. To decode the <code>m_intId</code>, use <code>parse_xxx_id</code> methods where <code>xxx</code> is the detector name (<code>cgem</code>, <code>mdc</code>, <code>tof</code>, <code>emc</code>, <code>muc</code>):</p>
 <pre><code class="language-python">&gt;&gt;&gt; import pybes3 as p3
 &gt;&gt;&gt; digi_evt = p3.open(&quot;test.rtraw&quot;)[&quot;Event/TDigiEvent&quot;].arrays()
 &gt;&gt;&gt; mdc_id = digi_evt.m_mdcDigiCol.m_intId
 &gt;&gt;&gt; mdc_id
 &lt;Array [[], [...], ..., [268439568, ..., 268457030]] type='200 * var * uint32'&gt;
-</code></pre>
-<p>The <code>m_intId</code> stores the physical information along bits. To decode the information, use <code>parse_xxx_id</code> methods:</p>
-<pre><code class="language-python">&gt;&gt;&gt; parsed_mdc_id = p3.parse_mdc_id(mdc_id)
+
+&gt;&gt;&gt; parsed_mdc_id = p3.parse_mdc_id(mdc_id)
 &gt;&gt;&gt; parsed_mdc_id.fields
 ['wire', 'layer', 'is_stereo']
 &gt;&gt;&gt; parsed_mdc_id.typestr
@@ -654,6 +722,24 @@ np.True_
 <div class="admonition note">
 <p class="admonition-title">Note</p>
 <p><code>pybes3</code> uses different convention for TOF <code>part</code> ID: <code>0~2</code> for scintillator endcap0/barrel/endcap1, <code>3~4</code> for MRPC endcap0/endcap1. In this case, TOF ID information can be decoded to 4 fields: <code>part</code>, <code>layerOrModule</code>, <code>phiOrStrip</code>, <code>end</code>.</p>
+</div>
+<h2 id="tracks-parsing">Tracks parsing</h2>
+<h3 id="helix">Helix</h3>
+<p>In BESIII, helix is represented by 5 parameters: <code>dr</code>, <code>phi0</code>, <code>kappa</code>, <code>dz</code>, <code>tanl</code>. To transform these parameters to <code>x</code>, <code>y</code>, <code>z</code>, <code>px</code>, <code>py</code>, <code>pz</code>, etc., use <code>pybes3.parse_helix</code>:</p>
+<pre><code class="language-python">&gt;&gt;&gt; import pybes3 as p3
+&gt;&gt;&gt; mdc_trk = p3.open(&quot;test.dst&quot;)[&quot;Event/TDstEvent/m_mdcTrackCol&quot;].array()
+&gt;&gt;&gt; helix = mdc_trk[&quot;m_helix&quot;]
+&gt;&gt;&gt; helix
+&lt;Array [[[0.0342, 0.736, ..., 0.676], ...], ...] type='10 * var * 5 * float64'&gt;
+
+&gt;&gt;&gt; phy_helix = p3.parse_helix(helix)
+&gt;&gt;&gt; phy_helix.fields
+['x', 'y', 'z', 'r', 'px', 'py', 'pz', 'pt', 'p', 'theta', 'phi', 'charge']
+</code></pre>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You can use <code>parse_helix</code> to decode any helix array with 5 elements in the last dimension, such as
+<code>m_mdcKalTrackCol["m_zhelix"]</code>, <code>m_mdcKalTrackCol["m_zhelix_e"]</code>, etc.</p>
 </div>
 
 
@@ -704,7 +790,7 @@ np.True_
     <script id="__config" type="application/json">{"base": "..", "features": [], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      <script src="../assets/javascripts/bundle.f1b6f286.min.js"></script>
       
     
   </body>
