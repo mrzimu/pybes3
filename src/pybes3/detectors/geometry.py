@@ -1,51 +1,79 @@
 from pathlib import Path
-from typing import TypeVar, Union
+from typing import Literal
 
 import awkward as ak
 import numba as nb
 import numpy as np
 
-TINT = TypeVar("ak.Array | np.ndarray | int")
-TFLOAT = TypeVar("ak.Array | np.ndarray | float")
-TBOOL = TypeVar("ak.Array | np.ndarray | bool")
+from .typing import BoolLike, FloatLike, IntLike
 
-cur_dir = Path(__file__).resolve().parent
+_cur_dir = Path(__file__).resolve().parent
 
 ###############################################################################
 #                                     MDC                                     #
 ###############################################################################
-mdc_wire_position: dict[str, np.ndarray] = dict(np.load(cur_dir / "MdcWirePosition.npz"))
-layer: np.ndarray = mdc_wire_position["layer"]
-wire: np.ndarray = mdc_wire_position["wire"]
-east_x: np.ndarray = mdc_wire_position["east_x"]
-east_y: np.ndarray = mdc_wire_position["east_y"]
-east_z: np.ndarray = mdc_wire_position["east_z"]
-west_x: np.ndarray = mdc_wire_position["west_x"]
-west_y: np.ndarray = mdc_wire_position["west_y"]
-west_z: np.ndarray = mdc_wire_position["west_z"]
-is_stereo: np.ndarray = mdc_wire_position["is_stereo"]
+_mdc_wire_position: dict[str, np.ndarray] = dict(np.load(_cur_dir / "mdc_wire_position.npz"))
+_layer: np.ndarray = _mdc_wire_position["layer"]
+_wire: np.ndarray = _mdc_wire_position["wire"]
+_east_x: np.ndarray = _mdc_wire_position["east_x"]
+_east_y: np.ndarray = _mdc_wire_position["east_y"]
+_east_z: np.ndarray = _mdc_wire_position["east_z"]
+_west_x: np.ndarray = _mdc_wire_position["west_x"]
+_west_y: np.ndarray = _mdc_wire_position["west_y"]
+_west_z: np.ndarray = _mdc_wire_position["west_z"]
+_is_stereo: np.ndarray = _mdc_wire_position["is_stereo"]
 
 # Generate the wire start index of each layer
 layer_start_gid = np.zeros(44, dtype=np.uint16)
 for l in range(43):
-    layer_start_gid[l + 1] = np.sum(layer == l)
+    layer_start_gid[l + 1] = np.sum(_layer == l)
 layer_start_gid = np.cumsum(layer_start_gid)
 
 # Generate the x position along z of each wire
-dx_dz = (east_x - west_x) / (east_z - west_z)
-dy_dz = (east_y - west_y) / (east_z - west_z)
+dx_dz = (_east_x - _west_x) / (_east_z - _west_z)
+dy_dz = (_east_y - _west_y) / (_east_z - _west_z)
 
 # Generate layer -> is_stereo array
 is_layer_stereo = np.zeros(43, dtype=bool)
 for l in range(43):
-    assert np.unique(is_stereo[layer == l]).size == 1
-    is_layer_stereo[l] = is_stereo[layer == l][0]
+    assert np.unique(_is_stereo[_layer == l]).size == 1
+    is_layer_stereo[l] = _is_stereo[_layer == l][0]
 
 
-@nb.vectorize([nb.int_(nb.int_, nb.int_)])
-def mdc_layer_wire_to_gid(layer: TINT, wire: TINT) -> TINT:
+def get_mdc_wire_position(library: Literal["ak", "np", "pd"] = "np"):
     """
-    Convert layer and wire to gid (global index, ranges from 0 to 6795) of the wire.
+    Get the MDC wire position table.
+
+    Parameters:
+        library: The library to return the data in. Choose from 'ak', 'np', 'pd'.
+
+    Returns:
+        (ak.Array | dict[str, np.ndarray] | pd.DataFrame): The MDC wire position table.
+
+    Raises:
+        ValueError: If the library is not 'ak', 'np', or 'pd'.
+        ImportError: If the library is 'pd' but pandas is not installed.
+    """
+    cp: dict[str, np.ndarray] = {k: v.copy() for k, v in _mdc_wire_position.items()}
+
+    if library == "ak":
+        return ak.Array(cp)
+    elif library == "np":
+        return cp
+    elif library == "pd":
+        try:
+            import pandas as pd  # type: ignore
+        except ImportError:
+            raise ImportError("Pandas is not installed. Run `pip install pandas`.")
+        return pd.DataFrame(cp)
+    else:
+        raise ValueError("Invalid library. Choose from 'ak', 'np', 'pd'.")
+
+
+@nb.vectorize([nb.uint16(nb.int_, nb.int_)])
+def get_mdc_gid(layer: IntLike, wire: IntLike) -> IntLike:
+    """
+    Get MDC gid of given layer and wire.
 
     Parameters:
         layer: The layer number.
@@ -57,8 +85,8 @@ def mdc_layer_wire_to_gid(layer: TINT, wire: TINT) -> TINT:
     return layer_start_gid[layer] + wire
 
 
-@nb.vectorize([nb.int_(nb.int_)])
-def mdc_gid_to_layer(gid: TINT) -> TINT:
+@nb.vectorize([nb.uint8(nb.int_)])
+def mdc_gid_to_layer(gid: IntLike) -> IntLike:
     """
     Convert gid to layer.
 
@@ -68,11 +96,11 @@ def mdc_gid_to_layer(gid: TINT) -> TINT:
     Returns:
         The layer number of the wire.
     """
-    return layer[gid]
+    return _layer[gid]
 
 
-@nb.vectorize([nb.int_(nb.int_)])
-def mdc_gid_to_wire(gid: TINT) -> TINT:
+@nb.vectorize([nb.uint16(nb.int_)])
+def mdc_gid_to_wire(gid: IntLike) -> IntLike:
     """
     Convert gid to wire.
 
@@ -82,11 +110,11 @@ def mdc_gid_to_wire(gid: TINT) -> TINT:
     Returns:
         The wire number of the wire.
     """
-    return wire[gid]
+    return _wire[gid]
 
 
 @nb.vectorize([nb.boolean(nb.int_)])
-def mdc_layer_to_is_stereo(layer: TINT) -> TBOOL:
+def mdc_layer_to_is_stereo(layer: IntLike) -> BoolLike:
     """
     Convert layer to is_stereo.
 
@@ -100,7 +128,7 @@ def mdc_layer_to_is_stereo(layer: TINT) -> TBOOL:
 
 
 @nb.vectorize([nb.boolean(nb.int_)])
-def mdc_gid_to_is_stereo(gid: TINT) -> TBOOL:
+def mdc_gid_to_is_stereo(gid: IntLike) -> BoolLike:
     """
     Convert gid to is_stereo.
 
@@ -110,11 +138,11 @@ def mdc_gid_to_is_stereo(gid: TINT) -> TBOOL:
     Returns:
         The is_stereo of the wire.
     """
-    return is_stereo[gid]
+    return _is_stereo[gid]
 
 
 @nb.vectorize([nb.float32(nb.int_)])
-def mdc_gid_to_west_x(gid: TINT) -> TFLOAT:
+def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_x (cm).
 
@@ -124,11 +152,11 @@ def mdc_gid_to_west_x(gid: TINT) -> TFLOAT:
     Returns:
         The west_x (cm) of the wire.
     """
-    return west_x[gid]
+    return _west_x[gid]
 
 
 @nb.vectorize([nb.float32(nb.int_)])
-def mdc_gid_to_west_y(gid: TINT) -> TFLOAT:
+def mdc_gid_to_west_y(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_y (cm).
 
@@ -138,11 +166,11 @@ def mdc_gid_to_west_y(gid: TINT) -> TFLOAT:
     Returns:
         The west_y (cm) of the wire.
     """
-    return west_y[gid]
+    return _west_y[gid]
 
 
 @nb.vectorize([nb.float32(nb.int_)])
-def mdc_gid_to_west_z(gid: TINT) -> TFLOAT:
+def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_z (cm).
 
@@ -152,11 +180,11 @@ def mdc_gid_to_west_z(gid: TINT) -> TFLOAT:
     Returns:
         The west_z (cm) of the wire.
     """
-    return west_z[gid]
+    return _west_z[gid]
 
 
 @nb.vectorize([nb.float32(nb.int_)])
-def mdc_gid_to_east_x(gid: TINT) -> TFLOAT:
+def mdc_gid_to_east_x(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_x (cm).
 
@@ -166,11 +194,11 @@ def mdc_gid_to_east_x(gid: TINT) -> TFLOAT:
     Returns:
         The east_x (cm) of the wire.
     """
-    return east_x[gid]
+    return _east_x[gid]
 
 
 @nb.vectorize([nb.float32(nb.int_)])
-def mdc_gid_to_east_y(gid: TINT) -> TFLOAT:
+def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_y (cm).
 
@@ -180,11 +208,11 @@ def mdc_gid_to_east_y(gid: TINT) -> TFLOAT:
     Returns:
         The east_y (cm) of the wire.
     """
-    return east_y[gid]
+    return _east_y[gid]
 
 
 @nb.vectorize([nb.float32(nb.int_)])
-def mdc_gid_to_east_z(gid: TINT) -> TFLOAT:
+def mdc_gid_to_east_z(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_z (cm).
 
@@ -194,11 +222,11 @@ def mdc_gid_to_east_z(gid: TINT) -> TFLOAT:
     Returns:
         The east_z (cm) of the wire.
     """
-    return east_z[gid]
+    return _east_z[gid]
 
 
 @nb.vectorize([nb.float32(nb.int_, nb.float32)])
-def mdc_gid_z_to_x(gid: TINT, z: TFLOAT) -> TFLOAT:
+def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
     """
     Get the x (cm) position of the wire at z (cm).
 
@@ -209,11 +237,11 @@ def mdc_gid_z_to_x(gid: TINT, z: TFLOAT) -> TFLOAT:
     Returns:
         The x (cm) position of the wire at z (cm).
     """
-    return west_x[gid] + dx_dz[gid] * (z - west_z[gid])
+    return _west_x[gid] + dx_dz[gid] * (z - _west_z[gid])
 
 
 @nb.vectorize([nb.float32(nb.int_, nb.float32)])
-def mdc_gid_z_to_y(gid: TINT, z: TFLOAT) -> TFLOAT:
+def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
     """
     Get the y (cm) position of the wire at z (cm).
 
@@ -224,37 +252,21 @@ def mdc_gid_z_to_y(gid: TINT, z: TFLOAT) -> TFLOAT:
     Returns:
         The y (cm) position of the wire at z (cm).
     """
-    return west_y[gid] + dy_dz[gid] * (z - west_z[gid])
+    return _west_y[gid] + dy_dz[gid] * (z - _west_z[gid])
 
 
-def parse_mdc_gid(gid: TINT, with_pos: bool = True) -> Union[TINT, dict[str, TINT]]:
-    """
-    Parse the gid of the wire. The gid is the global index of the wire, ranges from 0 to 6795.
+###############################################################################
+#                                     TOF                                     #
+###############################################################################
 
-    When gid is an ak.Array, the result is an ak.Array, otherwise it is a dict.
+###############################################################################
+#                                     EMC                                     #
+###############################################################################
 
-    Parameters:
-        gid: The gid of the wire.
-        with_pos: Whether to include the position information.
+###############################################################################
+#                                     MUC                                     #
+###############################################################################
 
-    Returns:
-        The parsed result, including `gid`, `layer`, `wire`, `is_stereo`, and optionally \
-            `west_x`, `west_y`, `west_z`, `east_x`, `east_y`, `east_z` if `with_pos` is True. \
-    """
-    layer = mdc_gid_to_layer(gid)
-    wire = mdc_gid_to_wire(gid)
-
-    res = {"gid": gid, "layer": layer, "wire": wire, "is_stereo": mdc_gid_to_is_stereo(gid)}
-
-    if with_pos:
-        res["west_x"] = mdc_gid_to_west_x(gid)
-        res["west_y"] = mdc_gid_to_west_y(gid)
-        res["west_z"] = mdc_gid_to_west_z(gid)
-        res["east_x"] = mdc_gid_to_east_x(gid)
-        res["east_y"] = mdc_gid_to_east_y(gid)
-        res["east_z"] = mdc_gid_to_east_z(gid)
-
-    if isinstance(gid, ak.Array):
-        return ak.zip(res)
-    else:
-        return res
+###############################################################################
+#                                    CGEM                                     #
+###############################################################################
