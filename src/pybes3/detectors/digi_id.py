@@ -492,7 +492,7 @@ def check_muc_id(
     Check if the MUC digi ID is valid.
 
     Parameters:
-        muc_id: The MUC digi ID array or value.
+        muc_digi_id: The MUC digi ID array or value.
 
     Returns:
         Whether the digi ID is valid.
@@ -508,7 +508,7 @@ def muc_id_to_part(
     Convert MUC digi ID to part number
 
     Parameters:
-        muc_id: MUC digi ID array or value.
+        muc_digi_id: MUC digi ID array or value.
 
     Returns:
         The part number.
@@ -524,7 +524,7 @@ def muc_id_to_segment(
     Convert the MUC digi ID to the segment number.
 
     Parameters:
-        muc_id: The MUC digi ID array or value.
+        muc_digi_id: The MUC digi ID array or value.
 
     Returns:
         The segment number.
@@ -540,7 +540,7 @@ def muc_id_to_layer(
     Convert the MUC digi ID to the layer number.
 
     Parameters:
-        muc_id: The MUC digi ID array or value.
+        muc_digi_id: The MUC digi ID array or value.
 
     Returns:
         The layer number.
@@ -556,7 +556,7 @@ def muc_id_to_channel(
     Convert the MUC digi ID to the channel number.
 
     Parameters:
-        muc_id: The MUC digi ID array or value.
+        muc_digi_id: The MUC digi ID array or value.
 
     Returns:
         The channel number.
@@ -599,7 +599,7 @@ def muc_id_to_gap(
     Convert the MUC digi ID to the gap ID, which is equivalent to layer number.
 
     Parameters:
-        muc_id: The MUC digi ID array or value.
+        muc_digi_id: The MUC digi ID array or value.
 
     Returns:
         The gap ID.
@@ -614,7 +614,7 @@ def muc_id_to_strip(
     Convert the MUC digi ID to the strip number, which is equivalent to channel number.
 
     Parameters:
-        muc_id: The MUC digi ID array or value.
+        muc_digi_id: The MUC digi ID array or value.
 
     Returns:
         The strip number.
@@ -633,7 +633,7 @@ def check_cgem_id(
     Check if the CGEM digi ID is valid.
 
     Parameters:
-        cgem_id: The CGEM digi ID array or value.
+        cgem_digi_id: The CGEM digi ID array or value.
 
     Returns:
         Whether the digi ID is valid.
@@ -649,7 +649,7 @@ def cgem_id_to_layer(
     Convert the CGEM digi ID to the layer number.
 
     Parameters:
-        cgem_id: The CGEM digi ID array or value.
+        cgem_digi_id: The CGEM digi ID array or value.
 
     Returns:
         The layer number.
@@ -665,7 +665,7 @@ def cgem_id_to_sheet(
     Convert the CGEM digi ID to the sheet number.
 
     Parameters:
-        cgem_id: The CGEM digi ID array or value.
+        cgem_digi_id: The CGEM digi ID array or value.
 
     Returns:
         The sheet number.
@@ -681,7 +681,7 @@ def cgem_id_to_strip(
     Convert CGEM digi ID to strip number
 
     Parameters:
-        cgem_id: CGEM digi ID array or value.
+        cgem_digi_id: CGEM digi ID array or value.
 
     Returns:
         The strip number.
@@ -697,7 +697,7 @@ def cgem_id_to_is_x_strip(
     Convert the CGEM digi ID to whether it is an X-strip.
 
     Parameters:
-        cgem_id: The CGEM digi ID array or value.
+        cgem_digi_id: The CGEM digi ID array or value.
 
     Returns:
         Whether the strip is an X-strip

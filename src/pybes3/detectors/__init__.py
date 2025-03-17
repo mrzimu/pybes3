@@ -3,7 +3,7 @@ from typing import Literal, Union
 import awkward as ak
 import numpy as np
 
-from . import digit_id
+from . import digi_id
 from .geometry import (
     mdc_gid_to_east_x,
     mdc_gid_to_east_y,
@@ -19,7 +19,7 @@ from .geometry import (
     get_mdc_gid,
     get_mdc_wire_position,
 )
-from .digit_id import (
+from .digi_id import (
     get_cgem_digi_id,
     get_emc_digi_id,
     get_mdc_digi_id,
@@ -34,17 +34,16 @@ from .typing import IntLike
 ###############################################################################
 def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> Union[IntLike, dict[str, IntLike]]:
     """
-    Parse the gid of the wire. The gid is the global index of the wire, ranges from 0 to 6795.
-
-    When gid is an ak.Array, the result is an ak.Array, otherwise it is a dict.
+    Parse the gid of wires. "gid" is the global ID of the wire, ranges from 0 to 6795.
+    When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
 
     Keys of the output:
-        - `gid`: Global index of the wire.
+        - `gid`: Global ID of the wire.
         - `wire`: Local wire number.
         - `layer`: Layer number.
         - `is_stereo`: Whether the wire is a stereo wire.
 
-    Optional keys of the output when `with_pos` is `True`:
+    Optional keys of the output when with_pos is True:
         - `mid_x`: x position of the wire at `z=0`.
         - `mid_y`: y position of the wire at `z=0`.
         - `west_x`: x position of the west end of the wire.
@@ -92,16 +91,15 @@ def parse_mdc_digi_id(
 ) -> Union[IntLike, dict[str, IntLike]]:
     """
     Parse MDC digi ID.
-
-    When mdc_digi_id is an ak.Array, the result is an ak.Array, otherwise it is a dict.
+    When `mdc_digi_id` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
 
     Keys of the output:
-        - `gid`: Global index of the wire.
+        - `gid`: Global ID of the wire.
         - `wire`: Local wire number.
         - `layer`: Layer number.
         - `is_stereo`: Whether the wire is a stereo wire.
 
-    Optional keys of the output when `with_pos` is `True`:
+    Optional keys of the output when with_pos is True:
         - `mid_x`: x position of the wire at `z=0`.
         - `mid_y`: y position of the wire at `z=0`.
         - `west_x`: x position of the west end of the wire.
@@ -118,8 +116,8 @@ def parse_mdc_digi_id(
     Returns:
         The parsed result.
     """
-    wire = digit_id.mdc_id_to_wire(mdc_digi_id)
-    layer = digit_id.mdc_id_to_layer(mdc_digi_id)
+    wire = digi_id.mdc_id_to_wire(mdc_digi_id)
+    layer = digi_id.mdc_id_to_layer(mdc_digi_id)
     gid = get_mdc_gid(layer, wire)
     return parse_mdc_gid(gid, with_pos)
 
@@ -130,7 +128,7 @@ def parse_mdc_digi(mdc_digi: ak.Record, with_pos: bool = False) -> ak.Record:
     `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_overflow`] fields.
 
     Fields of the output:
-        - `gid`: Global index of the wire.
+        - `gid`: Global ID of the wire.
         - `wire`: Local wire number.
         - `layer`: Layer number.
         - `is_stereo`: Whether the wire is a stereo wire.
@@ -140,7 +138,7 @@ def parse_mdc_digi(mdc_digi: ak.Record, with_pos: bool = False) -> ak.Record:
         - `overflow`: Overflow flag.
         - `digi_id`: Raw digi ID.
 
-    Optional fields of the output when `with_pos` is `True`:
+    Optional fields of the output when with_pos is True:
         - `mid_x`: x position of the wire at `z=0`.
         - `mid_y`: y position of the wire at `z=0`.
         - `west_x`: x position of the west end of the wire.
@@ -194,14 +192,13 @@ def parse_tof_digi_id(
 ) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.int_]]:
     """
     Parse TOF digi ID.
-
     If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
-        - part: The part number. `0,1,2` for scintillator endcap0, barrel, endcap1; `3,4` for MRPC endcap0, endcap1.
-        - layer_or_module: The scintillator layer or MRPC module number, based on the part number.
-        - phi_or_strip: The scintillator phi or MRPC strip ID, based on the part number.
-        - end: The readout end ID.
+        - `part`: The part number. `0,1,2` for scintillator endcap0, barrel, endcap1; `3,4` for MRPC endcap0, endcap1.
+        - `layer_or_module`: The scintillator layer or MRPC module number, based on the part number.
+        - `phi_or_strip`: The scintillator phi or MRPC strip ID, based on the part number.
+        - `end`: The readout end ID.
 
     The return value is based on the part number.
 
@@ -224,12 +221,12 @@ def parse_tof_digi_id(
     if flat and isinstance(tof_digi_id, ak.Array):
         tof_digi_id = ak.flatten(tof_digi_id)
 
-    part = digit_id.tof_id_to_part(tof_digi_id)
+    part = digi_id.tof_id_to_part(tof_digi_id)
     res = {
         "part": part,
-        "layer_or_module": digit_id.tof_id_to_layer_or_module(tof_digi_id, part),
-        "phi_or_strip": digit_id.tof_id_to_phi_or_strip(tof_digi_id, part),
-        "end": digit_id.tof_id_to_end(tof_digi_id),
+        "layer_or_module": digi_id.tof_id_to_layer_or_module(tof_digi_id, part),
+        "phi_or_strip": digi_id.tof_id_to_phi_or_strip(tof_digi_id, part),
+        "end": digi_id.tof_id_to_end(tof_digi_id),
     }
 
     if library == "ak":
@@ -252,9 +249,9 @@ def parse_emc_digi_id(
     If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
-        - module: The module number.
-        - theta: The theta number.
-        - phi: The phi number.
+        - `module`: The module number.
+        - `theta`: The theta number.
+        - `phi`: The phi number.
 
     Parameters:
         emc_digi_id: The EMC digi ID.
@@ -272,9 +269,9 @@ def parse_emc_digi_id(
         emc_digi_id = ak.flatten(emc_digi_id)
 
     res = {
-        "module": digit_id.emc_id_to_module(emc_digi_id),
-        "theta": digit_id.emc_id_to_theta(emc_digi_id),
-        "phi": digit_id.emc_id_to_phi(emc_digi_id),
+        "module": digi_id.emc_id_to_module(emc_digi_id),
+        "theta": digi_id.emc_id_to_theta(emc_digi_id),
+        "phi": digi_id.emc_id_to_phi(emc_digi_id),
     }
 
     if library == "ak":
@@ -287,7 +284,7 @@ def parse_emc_digi_id(
 #                                     MUC                                     #
 ###############################################################################
 def parse_muc_digi_id(
-    muc_id: IntLike,
+    muc_digi_id: IntLike,
     flat: bool = False,
     library: Literal["ak", "np"] = "ak",
 ) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.int_]]:
@@ -297,12 +294,12 @@ def parse_muc_digi_id(
     If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
-        - part: The part number.
-        - segment: The segment number.
-        - layer: The layer number.
-        - channel: The channel number.
-        - gap: The gap number, which is equivalent to layer number.
-        - strip: The strip number, which is equivalent to channel number.
+        - `part`: The part number.
+        - `segment`: The segment number.
+        - `layer`: The layer number.
+        - `channel`: The channel number.
+        - `gap`: The gap number, which is equivalent to layer number.
+        - `strip`: The strip number, which is equivalent to channel number.
 
     Parameters:
         muc_digi_id: The MUC digi ID.
@@ -315,13 +312,13 @@ def parse_muc_digi_id(
     if library not in ["ak", "np"]:
         raise ValueError(f"Unsupported library: {library}")
 
-    if flat and isinstance(muc_id, ak.Array):
-        muc_id = ak.flatten(muc_id)
+    if flat and isinstance(muc_digi_id, ak.Array):
+        muc_digi_id = ak.flatten(muc_digi_id)
 
-    part = digit_id.muc_id_to_part(muc_id)
-    segment = digit_id.muc_id_to_segment(muc_id)
-    layer = digit_id.muc_id_to_layer(muc_id)
-    channel = digit_id.muc_id_to_channel(muc_id)
+    part = digi_id.muc_id_to_part(muc_digi_id)
+    segment = digi_id.muc_id_to_segment(muc_digi_id)
+    layer = digi_id.muc_id_to_layer(muc_digi_id)
+    channel = digi_id.muc_id_to_channel(muc_digi_id)
 
     res = {
         "part": part,
@@ -352,10 +349,10 @@ def parse_cgem_digi_id(
     If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
-        - layer: The layer number.
-        - sheet: The sheet ID.
-        - strip: The strip ID.
-        - is_x_strip: Whether the strip is an X-strip.
+        - `layer`: The layer number.
+        - `sheet`: The sheet ID.
+        - `strip`: The strip ID.
+        - `is_x_strip`: Whether the strip is an X-strip.
 
     Parameters:
         cgem_digi_id: The CGEM digi ID.
@@ -372,10 +369,10 @@ def parse_cgem_digi_id(
         cgem_digi_id = ak.flatten(cgem_digi_id)
 
     res = {
-        "layer": digit_id.cgem_id_to_layer(cgem_digi_id),
-        "sheet": digit_id.cgem_id_to_sheet(cgem_digi_id),
-        "strip": digit_id.cgem_id_to_strip(cgem_digi_id),
-        "is_x_strip": digit_id.cgem_id_to_is_x_strip(cgem_digi_id),
+        "layer": digi_id.cgem_id_to_layer(cgem_digi_id),
+        "sheet": digi_id.cgem_id_to_sheet(cgem_digi_id),
+        "strip": digi_id.cgem_id_to_strip(cgem_digi_id),
+        "is_x_strip": digi_id.cgem_id_to_is_x_strip(cgem_digi_id),
     }
 
     if library == "ak":
