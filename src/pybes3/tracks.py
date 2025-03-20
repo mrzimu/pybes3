@@ -4,11 +4,11 @@ import awkward as ak
 import numba as nb
 import numpy as np
 
+from .typing import FloatLike
+
 
 @nb.vectorize([nb.float64(nb.float64, nb.float64)])
-def _helix01_to_x(
-    helix0: Union[ak.Array, np.ndarray, float], helix1: Union[ak.Array, np.ndarray, float]
-) -> Union[ak.Array, np.ndarray, float]:
+def _helix01_to_x(helix0: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert helix parameters to x location.
 
@@ -23,9 +23,7 @@ def _helix01_to_x(
 
 
 @nb.vectorize([nb.float64(nb.float64, nb.float64)])
-def _helix01_to_y(
-    helix0: Union[ak.Array, np.ndarray, float], helix1: Union[ak.Array, np.ndarray, float]
-) -> Union[ak.Array, np.ndarray, float]:
+def _helix01_to_y(helix0: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert helix parameters to y location.
 
@@ -41,8 +39,8 @@ def _helix01_to_y(
 
 @nb.vectorize([nb.float64(nb.float64)])
 def _helix2_to_pt(
-    helix2: Union[ak.Array, np.ndarray, float],
-) -> Union[ak.Array, np.ndarray, float]:
+    helix2: FloatLike,
+) -> FloatLike:
     """
     Convert helix parameter to pt.
 
@@ -57,8 +55,8 @@ def _helix2_to_pt(
 
 @nb.vectorize([nb.int8(nb.float64)])
 def _helix2_to_charge(
-    helix2: Union[ak.Array, np.ndarray, float],
-) -> Union[ak.Array, np.ndarray, float]:
+    helix2: FloatLike,
+) -> FloatLike:
     """
     Convert helix parameter to charge.
 
@@ -73,26 +71,8 @@ def _helix2_to_charge(
     return 1 if helix2 > 0 else -1
 
 
-@nb.vectorize([nb.float64(nb.float64)])
-def _helix4_to_theta(
-    helix4: Union[ak.Array, np.ndarray, float],
-) -> Union[ak.Array, np.ndarray, float]:
-    """
-    Convert helix parameter to theta.
-
-    Parameters:
-        helix4: helix[4] parameter, tanl.
-
-    Returns:
-        theta of the helix.
-    """
-    return np.arctan(1 / helix4)
-
-
 @nb.vectorize([nb.float64(nb.float64, nb.float64)])
-def _pt_helix1_to_px(
-    pt: Union[ak.Array, np.ndarray, float], helix1: Union[ak.Array, np.ndarray, float]
-) -> Union[ak.Array, np.ndarray, float]:
+def _pt_helix1_to_px(pt: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert pt and helix1 to px.
 
@@ -107,9 +87,7 @@ def _pt_helix1_to_px(
 
 
 @nb.vectorize([nb.float64(nb.float64, nb.float64)])
-def _pt_helix1_to_py(
-    pt: Union[ak.Array, np.ndarray, float], helix1: Union[ak.Array, np.ndarray, float]
-) -> Union[ak.Array, np.ndarray, float]:
+def _pt_helix1_to_py(pt: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert pt and helix1 to py.
 
@@ -124,9 +102,7 @@ def _pt_helix1_to_py(
 
 
 @nb.vectorize([nb.float64(nb.float64, nb.float64)])
-def _pt_helix4_to_p(
-    pt: Union[ak.Array, np.ndarray, float], helix4: Union[ak.Array, np.ndarray, float]
-) -> Union[ak.Array, np.ndarray, float]:
+def _pt_helix4_to_p(pt: FloatLike, helix4: FloatLike) -> FloatLike:
     """
     Convert pt and helix4 to p.
 
@@ -153,7 +129,8 @@ def parse_helix(
 
     Returns:
         parsed physical parameters. "x", "y", "z", "r" for position, \
-            "pt", "px", "py", "pz", "p", "theta", "phi" for momentum.
+            "pt", "px", "py", "pz", "p", "theta", "phi" for momentum, \
+            "charge" for charge, "r_trk" for track radius.
     """
     helix0 = helix[..., 0]
     helix1 = helix[..., 1]
@@ -171,10 +148,13 @@ def parse_helix(
     py = _pt_helix1_to_py(pt, helix1)
     pz = pt * helix4
     p = _pt_helix4_to_p(pt, helix4)
-    theta = _helix4_to_theta(helix4)
+    theta = np.acos(pz / p)
     phi = -helix1
 
     charge = _helix2_to_charge(helix2)
+
+    r_trk = pt * (10 / 2.99792458)  # |pt| * [GeV/c] / 1[e] / 1[T] = |pt| * 10/3 [m]
+    r_trk = r_trk * 100  # to [cm]
 
     res_dict = {
         "x": x,
@@ -189,6 +169,7 @@ def parse_helix(
         "theta": theta,
         "phi": phi,
         "charge": charge,
+        "r_trk": r_trk,
     }
 
     if isinstance(helix, ak.Array) or library == "ak":
