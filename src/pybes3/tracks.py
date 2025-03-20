@@ -129,7 +129,8 @@ def parse_helix(
 
     Returns:
         parsed physical parameters. "x", "y", "z", "r" for position, \
-            "pt", "px", "py", "pz", "p", "theta", "phi" for momentum.
+            "pt", "px", "py", "pz", "p", "theta", "phi" for momentum, \
+            "charge" for charge, "r_trk" for track radius.
     """
     helix0 = helix[..., 0]
     helix1 = helix[..., 1]
@@ -152,6 +153,9 @@ def parse_helix(
 
     charge = _helix2_to_charge(helix2)
 
+    r_trk = pt * (10 / 2.99792458)  # |pt| * [GeV/c] / 1[e] / 1[T] = |pt| * 10/3 [m]
+    r_trk *= 100  # to [cm]
+
     res_dict = {
         "x": x,
         "y": y,
@@ -165,6 +169,7 @@ def parse_helix(
         "theta": theta,
         "phi": phi,
         "charge": charge,
+        "r_trk": r_trk,
     }
 
     if isinstance(helix, ak.Array) or library == "ak":

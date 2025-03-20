@@ -27,6 +27,7 @@ def test_parse_helix():
         "theta",
         "phi",
         "charge",
+        "r_trk",
     ]
 
     p_helix_ak1 = p3.parse_helix(helix_ak)
