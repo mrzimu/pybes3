@@ -4,11 +4,11 @@ import awkward as ak
 import numba as nb
 import numpy as np
 
+from .typing import FloatLike
+
 
 @nb.vectorize([nb.float64(nb.float64, nb.float64)])
-def _helix01_to_x(
-    helix0: Union[ak.Array, np.ndarray, float], helix1: Union[ak.Array, np.ndarray, float]
-) -> Union[ak.Array, np.ndarray, float]:
+def _helix01_to_x(helix0: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert helix parameters to x location.
 
@@ -23,9 +23,7 @@ def _helix01_to_x(
 
 
 @nb.vectorize([nb.float64(nb.float64, nb.float64)])
-def _helix01_to_y(
-    helix0: Union[ak.Array, np.ndarray, float], helix1: Union[ak.Array, np.ndarray, float]
-) -> Union[ak.Array, np.ndarray, float]:
+def _helix01_to_y(helix0: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert helix parameters to y location.
 
@@ -41,8 +39,8 @@ def _helix01_to_y(
 
 @nb.vectorize([nb.float64(nb.float64)])
 def _helix2_to_pt(
-    helix2: Union[ak.Array, np.ndarray, float],
-) -> Union[ak.Array, np.ndarray, float]:
+    helix2: FloatLike,
+) -> FloatLike:
     """
     Convert helix parameter to pt.
 
@@ -57,8 +55,8 @@ def _helix2_to_pt(
 
 @nb.vectorize([nb.int8(nb.float64)])
 def _helix2_to_charge(
-    helix2: Union[ak.Array, np.ndarray, float],
-) -> Union[ak.Array, np.ndarray, float]:
+    helix2: FloatLike,
+) -> FloatLike:
     """
     Convert helix parameter to charge.
 
@@ -74,9 +72,7 @@ def _helix2_to_charge(
 
 
 @nb.vectorize([nb.float64(nb.float64, nb.float64)])
-def _pt_helix1_to_px(
-    pt: Union[ak.Array, np.ndarray, float], helix1: Union[ak.Array, np.ndarray, float]
-) -> Union[ak.Array, np.ndarray, float]:
+def _pt_helix1_to_px(pt: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert pt and helix1 to px.
 
@@ -91,9 +87,7 @@ def _pt_helix1_to_px(
 
 
 @nb.vectorize([nb.float64(nb.float64, nb.float64)])
-def _pt_helix1_to_py(
-    pt: Union[ak.Array, np.ndarray, float], helix1: Union[ak.Array, np.ndarray, float]
-) -> Union[ak.Array, np.ndarray, float]:
+def _pt_helix1_to_py(pt: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert pt and helix1 to py.
 
@@ -108,9 +102,7 @@ def _pt_helix1_to_py(
 
 
 @nb.vectorize([nb.float64(nb.float64, nb.float64)])
-def _pt_helix4_to_p(
-    pt: Union[ak.Array, np.ndarray, float], helix4: Union[ak.Array, np.ndarray, float]
-) -> Union[ak.Array, np.ndarray, float]:
+def _pt_helix4_to_p(pt: FloatLike, helix4: FloatLike) -> FloatLike:
     """
     Convert pt and helix4 to p.
 

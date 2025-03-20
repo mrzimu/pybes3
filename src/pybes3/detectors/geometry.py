@@ -5,7 +5,7 @@ import awkward as ak
 import numba as nb
 import numpy as np
 
-from .typing import BoolLike, FloatLike, IntLike
+from ..typing import BoolLike, FloatLike, IntLike
 
 _cur_dir = Path(__file__).resolve().parent
 

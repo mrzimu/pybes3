@@ -26,7 +26,7 @@ from .digi_id import (
     get_muc_digi_id,
     get_tof_digi_id,
 )
-from .typing import IntLike
+from ..typing import IntLike
 
 
 ###############################################################################

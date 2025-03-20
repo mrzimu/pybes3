@@ -3,7 +3,7 @@ from typing import Union
 import numba as nb
 import numpy as np
 
-from .typing import BoolLike, IntLike
+from ..typing import BoolLike, IntLike
 
 DIGI_MDC_FLAG = np.uint32(0x10)
 DIGI_TOF_FLAG = np.uint32(0x20)
