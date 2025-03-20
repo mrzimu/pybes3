@@ -7,9 +7,11 @@
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
       
+        <meta name="author" content="Mingrun Li">
       
       
-        <link rel="prev" href="../pybes3.detectors.identify/">
+      
+        <link rel="prev" href="../pybes3.detectors/">
       
       
       
@@ -23,6 +25,9 @@
     
     
       <link rel="stylesheet" href="../../assets/stylesheets/main.8608ea7d.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
       
       
 
@@ -53,7 +58,14 @@
   </head>
   
   
-    <body dir="ltr">
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -105,11 +117,98 @@
       </div>
     </div>
     
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
     
       <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
     
     
     
+      <label class="md-header__button md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+      </label>
+      <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mrzimu/pybes3" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
     
   </nav>
   
@@ -144,6 +243,18 @@
     </a>
     pybes3
   </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mrzimu/pybes3" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
     
@@ -195,17 +306,193 @@
   
   
   
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    User Manual
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            User Manual
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
     <li class="md-nav__item">
-      <a href="../../get-started/" class="md-nav__link">
+      <a href="../../user-manual/bes3-data-reading/" class="md-nav__link">
         
   
   <span class="md-ellipsis">
-    Get Started
+    BES3 Data Reading
     
   </span>
   
 
       </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-manual/digi-identifier/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Digi Identifier
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  <span class="md-ellipsis">
+    Detector
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Detector
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-manual/detector/global-id/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Global ID (gid)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-manual/detector/geometry/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Geometry
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-manual/tracks/" class="md-nav__link">
+        
+  
+  <span class="md-ellipsis">
+    Tracks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
     </li>
   
 
@@ -298,19 +585,9 @@
   
   
   
-    
-    
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
+    <li class="md-nav__item">
+      <a href="../pybes3.detectors/" class="md-nav__link">
         
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
   
   <span class="md-ellipsis">
     pybes3.detectors
@@ -318,41 +595,7 @@
   </span>
   
 
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            pybes3.detectors
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../pybes3.detectors.identify/" class="md-nav__link">
-        
-  
-  <span class="md-ellipsis">
-    identify
-    
-  </span>
-  
-
       </a>
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
     </li>
   
 
@@ -458,15 +701,6 @@
   <a href="#pybes3.tracks._helix2_to_charge" class="md-nav__link">
     <span class="md-ellipsis">
       _helix2_to_charge
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pybes3.tracks._helix4_to_theta" class="md-nav__link">
-    <span class="md-ellipsis">
-      _helix4_to_theta
     </span>
   </a>
   
@@ -600,15 +834,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#pybes3.tracks._helix4_to_theta" class="md-nav__link">
-    <span class="md-ellipsis">
-      _helix4_to_theta
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#pybes3.tracks._pt_helix1_to_px" class="md-nav__link">
     <span class="md-ellipsis">
       _pt_helix1_to_px
@@ -655,6 +880,9 @@
                   
 
 
+  
+  
+
 
   <h1>pybes3.tracks</h1>
 
@@ -665,7 +893,7 @@
 
 
 <h3 id="pybes3.tracks.parse_helix" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">pybes3</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">parse_helix</span><span class="p">(</span><span class="n">helix</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">parse_helix</span><span class="p">(</span><span class="n">helix</span><span class="p">,</span> <span class="n">library</span><span class="o">=</span><span class="s1">&#39;auto&#39;</span><span class="p">)</span></code>
 
 </h3>
 
@@ -737,7 +965,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>parsed physical parameters. "x", "y", "z", "r" for position,             "pt", "px", "py", "pz", "p", "theta", "phi" for momentum.</p>
+                <p>parsed physical parameters. "x", "y", "z", "r" for position,             "pt", "px", "py", "pz", "p", "theta", "phi" for momentum,             "charge" for charge, "r_trk" for track radius.</p>
               </div>
             </td>
           </tr>
@@ -746,7 +974,31 @@
 
             <details class="quote">
               <summary>Source code in <code>src/pybes3/tracks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">143</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
+<span class="normal">131</span>
+<span class="normal">132</span>
+<span class="normal">133</span>
+<span class="normal">134</span>
+<span class="normal">135</span>
+<span class="normal">136</span>
+<span class="normal">137</span>
+<span class="normal">138</span>
+<span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
+<span class="normal">142</span>
+<span class="normal">143</span>
 <span class="normal">144</span>
 <span class="normal">145</span>
 <span class="normal">146</span>
@@ -781,26 +1033,7 @@
 <span class="normal">175</span>
 <span class="normal">176</span>
 <span class="normal">177</span>
-<span class="normal">178</span>
-<span class="normal">179</span>
-<span class="normal">180</span>
-<span class="normal">181</span>
-<span class="normal">182</span>
-<span class="normal">183</span>
-<span class="normal">184</span>
-<span class="normal">185</span>
-<span class="normal">186</span>
-<span class="normal">187</span>
-<span class="normal">188</span>
-<span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span>
-<span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span>
-<span class="normal">196</span>
-<span class="normal">197</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_helix</span><span class="p">(</span>
+<span class="normal">178</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_helix</span><span class="p">(</span>
     <span class="n">helix</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="n">library</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ak&quot;</span><span class="p">,</span> <span class="s2">&quot;auto&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;auto&quot;</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -813,7 +1046,8 @@
 
 <span class="sd">    Returns:</span>
 <span class="sd">        parsed physical parameters. &quot;x&quot;, &quot;y&quot;, &quot;z&quot;, &quot;r&quot; for position, \</span>
-<span class="sd">            &quot;pt&quot;, &quot;px&quot;, &quot;py&quot;, &quot;pz&quot;, &quot;p&quot;, &quot;theta&quot;, &quot;phi&quot; for momentum.</span>
+<span class="sd">            &quot;pt&quot;, &quot;px&quot;, &quot;py&quot;, &quot;pz&quot;, &quot;p&quot;, &quot;theta&quot;, &quot;phi&quot; for momentum, \</span>
+<span class="sd">            &quot;charge&quot; for charge, &quot;r_trk&quot; for track radius.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">helix0</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
     <span class="n">helix1</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
@@ -831,10 +1065,13 @@
     <span class="n">py</span> <span class="o">=</span> <span class="n">_pt_helix1_to_py</span><span class="p">(</span><span class="n">pt</span><span class="p">,</span> <span class="n">helix1</span><span class="p">)</span>
     <span class="n">pz</span> <span class="o">=</span> <span class="n">pt</span> <span class="o">*</span> <span class="n">helix4</span>
     <span class="n">p</span> <span class="o">=</span> <span class="n">_pt_helix4_to_p</span><span class="p">(</span><span class="n">pt</span><span class="p">,</span> <span class="n">helix4</span><span class="p">)</span>
-    <span class="n">theta</span> <span class="o">=</span> <span class="n">_helix4_to_theta</span><span class="p">(</span><span class="n">helix4</span><span class="p">)</span>
+    <span class="n">theta</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">pz</span> <span class="o">/</span> <span class="n">p</span><span class="p">)</span>
     <span class="n">phi</span> <span class="o">=</span> <span class="o">-</span><span class="n">helix1</span>
 
     <span class="n">charge</span> <span class="o">=</span> <span class="n">_helix2_to_charge</span><span class="p">(</span><span class="n">helix2</span><span class="p">)</span>
+
+    <span class="n">r_trk</span> <span class="o">=</span> <span class="n">pt</span> <span class="o">*</span> <span class="p">(</span><span class="mi">10</span> <span class="o">/</span> <span class="mf">2.99792458</span><span class="p">)</span>  <span class="c1"># |pt| * [GeV/c] / 1[e] / 1[T] = |pt| * 10/3 [m]</span>
+    <span class="n">r_trk</span> <span class="o">=</span> <span class="n">r_trk</span> <span class="o">*</span> <span class="mi">100</span>  <span class="c1"># to [cm]</span>
 
     <span class="n">res_dict</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x</span><span class="p">,</span>
@@ -849,6 +1086,7 @@
         <span class="s2">&quot;theta&quot;</span><span class="p">:</span> <span class="n">theta</span><span class="p">,</span>
         <span class="s2">&quot;phi&quot;</span><span class="p">:</span> <span class="n">phi</span><span class="p">,</span>
         <span class="s2">&quot;charge&quot;</span><span class="p">:</span> <span class="n">charge</span><span class="p">,</span>
+        <span class="s2">&quot;r_trk&quot;</span><span class="p">:</span> <span class="n">r_trk</span><span class="p">,</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">helix</span><span class="p">,</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="ow">or</span> <span class="n">library</span> <span class="o">==</span> <span class="s2">&quot;ak&quot;</span><span class="p">:</span>
@@ -859,13 +1097,14 @@
             </details>
     </div>
 
-</div>
+</div><hr />
+
 
 <div class="doc doc-object doc-function">
 
 
 <h3 id="pybes3.tracks._helix01_to_x" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">pybes3</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">_helix01_to_x</span><span class="p">(</span><span class="n">helix0</span><span class="p">,</span> <span class="n">helix1</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">_helix01_to_x</span><span class="p">(</span><span class="n">helix0</span><span class="p">,</span> <span class="n">helix1</span><span class="p">)</span></code>
 
 </h3>
 
@@ -891,7 +1130,7 @@
                 <code>helix0</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -907,7 +1146,7 @@
                 <code>helix1</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -933,7 +1172,7 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -946,9 +1185,7 @@
 
             <details class="quote">
               <summary>Source code in <code>src/pybes3/tracks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 8</span>
-<span class="normal"> 9</span>
-<span class="normal">10</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">10</span>
 <span class="normal">11</span>
 <span class="normal">12</span>
 <span class="normal">13</span>
@@ -961,9 +1198,7 @@
 <span class="normal">20</span>
 <span class="normal">21</span>
 <span class="normal">22</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">([</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">_helix01_to_x</span><span class="p">(</span>
-    <span class="n">helix0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">helix1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_helix01_to_x</span><span class="p">(</span><span class="n">helix0</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">,</span> <span class="n">helix1</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert helix parameters to x location.</span>
 
@@ -979,13 +1214,14 @@
             </details>
     </div>
 
-</div>
+</div><hr />
+
 
 <div class="doc doc-object doc-function">
 
 
 <h3 id="pybes3.tracks._helix01_to_y" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">pybes3</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">_helix01_to_y</span><span class="p">(</span><span class="n">helix0</span><span class="p">,</span> <span class="n">helix1</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">_helix01_to_y</span><span class="p">(</span><span class="n">helix0</span><span class="p">,</span> <span class="n">helix1</span><span class="p">)</span></code>
 
 </h3>
 
@@ -1011,7 +1247,7 @@
                 <code>helix0</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1027,7 +1263,7 @@
                 <code>helix1</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1053,7 +1289,7 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1078,12 +1314,8 @@
 <span class="normal">34</span>
 <span class="normal">35</span>
 <span class="normal">36</span>
-<span class="normal">37</span>
-<span class="normal">38</span>
-<span class="normal">39</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">([</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">_helix01_to_y</span><span class="p">(</span>
-    <span class="n">helix0</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">helix1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="normal">37</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">([</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_helix01_to_y</span><span class="p">(</span><span class="n">helix0</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">,</span> <span class="n">helix1</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert helix parameters to y location.</span>
 
@@ -1099,13 +1331,14 @@
             </details>
     </div>
 
-</div>
+</div><hr />
+
 
 <div class="doc doc-object doc-function">
 
 
 <h3 id="pybes3.tracks._helix2_to_pt" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">pybes3</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">_helix2_to_pt</span><span class="p">(</span><span class="n">helix2</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">_helix2_to_pt</span><span class="p">(</span><span class="n">helix2</span><span class="p">)</span></code>
 
 </h3>
 
@@ -1131,7 +1364,7 @@
                 <code>helix2</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1157,7 +1390,7 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1170,7 +1403,9 @@
 
             <details class="quote">
               <summary>Source code in <code>src/pybes3/tracks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">42</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">40</span>
+<span class="normal">41</span>
+<span class="normal">42</span>
 <span class="normal">43</span>
 <span class="normal">44</span>
 <span class="normal">45</span>
@@ -1181,12 +1416,10 @@
 <span class="normal">50</span>
 <span class="normal">51</span>
 <span class="normal">52</span>
-<span class="normal">53</span>
-<span class="normal">54</span>
-<span class="normal">55</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">([</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
+<span class="normal">53</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">([</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_helix2_to_pt</span><span class="p">(</span>
-    <span class="n">helix2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="n">helix2</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert helix parameter to pt.</span>
 
@@ -1201,13 +1434,14 @@
             </details>
     </div>
 
-</div>
+</div><hr />
+
 
 <div class="doc doc-object doc-function">
 
 
 <h3 id="pybes3.tracks._helix2_to_charge" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">pybes3</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">_helix2_to_charge</span><span class="p">(</span><span class="n">helix2</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">_helix2_to_charge</span><span class="p">(</span><span class="n">helix2</span><span class="p">)</span></code>
 
 </h3>
 
@@ -1233,7 +1467,7 @@
                 <code>helix2</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1259,7 +1493,7 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1272,7 +1506,9 @@
 
             <details class="quote">
               <summary>Source code in <code>src/pybes3/tracks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">58</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
 <span class="normal">59</span>
 <span class="normal">60</span>
 <span class="normal">61</span>
@@ -1285,12 +1521,10 @@
 <span class="normal">68</span>
 <span class="normal">69</span>
 <span class="normal">70</span>
-<span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">([</span><span class="n">nb</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
+<span class="normal">71</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">([</span><span class="n">nb</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">_helix2_to_charge</span><span class="p">(</span>
-    <span class="n">helix2</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="n">helix2</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert helix parameter to charge.</span>
 
@@ -1307,115 +1541,14 @@
             </details>
     </div>
 
-</div>
+</div><hr />
 
-<div class="doc doc-object doc-function">
-
-
-<h3 id="pybes3.tracks._helix4_to_theta" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">pybes3</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">_helix4_to_theta</span><span class="p">(</span><span class="n">helix4</span><span class="p">)</span></code>
-
-</h3>
-
-
-    <div class="doc doc-contents first">
-
-        <p>Convert helix parameter to theta.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>helix4</code>
-            </td>
-            <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>helix[4] parameter, tanl.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>theta of the helix.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-            <details class="quote">
-              <summary>Source code in <code>src/pybes3/tracks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">76</span>
-<span class="normal">77</span>
-<span class="normal">78</span>
-<span class="normal">79</span>
-<span class="normal">80</span>
-<span class="normal">81</span>
-<span class="normal">82</span>
-<span class="normal">83</span>
-<span class="normal">84</span>
-<span class="normal">85</span>
-<span class="normal">86</span>
-<span class="normal">87</span>
-<span class="normal">88</span>
-<span class="normal">89</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">([</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">_helix4_to_theta</span><span class="p">(</span>
-    <span class="n">helix4</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert helix parameter to theta.</span>
-
-<span class="sd">    Parameters:</span>
-<span class="sd">        helix4: helix[4] parameter, tanl.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        theta of the helix.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="mi">1</span> <span class="o">/</span> <span class="n">helix4</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div>
 
 <div class="doc doc-object doc-function">
 
 
 <h3 id="pybes3.tracks._pt_helix1_to_px" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">pybes3</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">_pt_helix1_to_px</span><span class="p">(</span><span class="n">pt</span><span class="p">,</span> <span class="n">helix1</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">_pt_helix1_to_px</span><span class="p">(</span><span class="n">pt</span><span class="p">,</span> <span class="n">helix1</span><span class="p">)</span></code>
 
 </h3>
 
@@ -1441,7 +1574,7 @@
                 <code>pt</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1457,7 +1590,7 @@
                 <code>helix1</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1483,7 +1616,7 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1496,24 +1629,20 @@
 
             <details class="quote">
               <summary>Source code in <code>src/pybes3/tracks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">([</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">_pt_helix1_to_px</span><span class="p">(</span>
-    <span class="n">pt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">helix1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">([</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pt_helix1_to_px</span><span class="p">(</span><span class="n">pt</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">,</span> <span class="n">helix1</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert pt and helix1 to px.</span>
 
@@ -1529,13 +1658,14 @@
             </details>
     </div>
 
-</div>
+</div><hr />
+
 
 <div class="doc doc-object doc-function">
 
 
 <h3 id="pybes3.tracks._pt_helix1_to_py" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">pybes3</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">_pt_helix1_to_py</span><span class="p">(</span><span class="n">pt</span><span class="p">,</span> <span class="n">helix1</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">_pt_helix1_to_py</span><span class="p">(</span><span class="n">pt</span><span class="p">,</span> <span class="n">helix1</span><span class="p">)</span></code>
 
 </h3>
 
@@ -1561,7 +1691,7 @@
                 <code>pt</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1577,7 +1707,7 @@
                 <code>helix1</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1603,7 +1733,7 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1616,24 +1746,20 @@
 
             <details class="quote">
               <summary>Source code in <code>src/pybes3/tracks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span>
-<span class="normal">113</span>
-<span class="normal">114</span>
-<span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span>
-<span class="normal">118</span>
-<span class="normal">119</span>
-<span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span>
-<span class="normal">123</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">([</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">_pt_helix1_to_py</span><span class="p">(</span>
-    <span class="n">pt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">helix1</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 89</span>
+<span class="normal"> 90</span>
+<span class="normal"> 91</span>
+<span class="normal"> 92</span>
+<span class="normal"> 93</span>
+<span class="normal"> 94</span>
+<span class="normal"> 95</span>
+<span class="normal"> 96</span>
+<span class="normal"> 97</span>
+<span class="normal"> 98</span>
+<span class="normal"> 99</span>
+<span class="normal">100</span>
+<span class="normal">101</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">([</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pt_helix1_to_py</span><span class="p">(</span><span class="n">pt</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">,</span> <span class="n">helix1</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert pt and helix1 to py.</span>
 
@@ -1649,13 +1775,14 @@
             </details>
     </div>
 
-</div>
+</div><hr />
+
 
 <div class="doc doc-object doc-function">
 
 
 <h3 id="pybes3.tracks._pt_helix4_to_p" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">pybes3</span><span class="o">.</span><span class="n">tracks</span><span class="o">.</span><span class="n">_pt_helix4_to_p</span><span class="p">(</span><span class="n">pt</span><span class="p">,</span> <span class="n">helix4</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">_pt_helix4_to_p</span><span class="p">(</span><span class="n">pt</span><span class="p">,</span> <span class="n">helix4</span><span class="p">)</span></code>
 
 </h3>
 
@@ -1681,7 +1808,7 @@
                 <code>pt</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1697,7 +1824,7 @@
                 <code>helix4</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1723,7 +1850,7 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="awkward.Array">Array</span>, <span title="numpy.ndarray">ndarray</span>, float]</code>
+                  <code><span title="pybes3.typing.FloatLike">FloatLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -1736,24 +1863,20 @@
 
             <details class="quote">
               <summary>Source code in <code>src/pybes3/tracks.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">126</span>
-<span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
-<span class="normal">130</span>
-<span class="normal">131</span>
-<span class="normal">132</span>
-<span class="normal">133</span>
-<span class="normal">134</span>
-<span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span>
-<span class="normal">139</span>
-<span class="normal">140</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">([</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">_pt_helix4_to_p</span><span class="p">(</span>
-    <span class="n">pt</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span> <span class="n">helix4</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">([</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">(</span><span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">nb</span><span class="o">.</span><span class="n">float64</span><span class="p">)])</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">_pt_helix4_to_p</span><span class="p">(</span><span class="n">pt</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">,</span> <span class="n">helix4</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert pt and helix4 to p.</span>
 
@@ -1769,7 +1892,7 @@
             </details>
     </div>
 
-</div>
+</div><hr />
 
 
 
@@ -1816,10 +1939,14 @@
     </div>
     
     
-    <script id="__config" type="application/json">{"base": "../..", "features": [], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
+    <script id="__config" type="application/json">{"base": "../..", "features": ["toc", "search", "search.suggest", "footer"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
       <script src="../../assets/javascripts/bundle.f1b6f286.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
       
     
   </body>
