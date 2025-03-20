@@ -73,22 +73,6 @@ def _helix2_to_charge(
     return 1 if helix2 > 0 else -1
 
 
-@nb.vectorize([nb.float64(nb.float64)])
-def _helix4_to_theta(
-    helix4: Union[ak.Array, np.ndarray, float],
-) -> Union[ak.Array, np.ndarray, float]:
-    """
-    Convert helix parameter to theta.
-
-    Parameters:
-        helix4: helix[4] parameter, tanl.
-
-    Returns:
-        theta of the helix.
-    """
-    return np.arctan(1 / helix4)
-
-
 @nb.vectorize([nb.float64(nb.float64, nb.float64)])
 def _pt_helix1_to_px(
     pt: Union[ak.Array, np.ndarray, float], helix1: Union[ak.Array, np.ndarray, float]
@@ -171,7 +155,7 @@ def parse_helix(
     py = _pt_helix1_to_py(pt, helix1)
     pz = pt * helix4
     p = _pt_helix4_to_p(pt, helix4)
-    theta = _helix4_to_theta(helix4)
+    theta = np.acos(pz / p)
     phi = -helix1
 
     charge = _helix2_to_charge(helix2)
