@@ -1,12 +1,57 @@
 site_name: pybes3
+repo_url: https://github.com/mrzimu/pybes3
+site_author: Mingrun Li
 
 theme:
   name: material
+  features:
+    - toc
+    - search
+    - search.suggest
+    - footer
+
+  palette:
+    # Palette toggle for automatic mode
+    - media: "(prefers-color-scheme)"
+      toggle:
+        icon: material/brightness-auto
+        name: Switch to light mode
+
+    # Palette toggle for light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      toggle:
+        icon: material/brightness-4
+        name: Switch to system preference
 
 markdown_extensions:
   - admonition
+  - attr_list
+  - md_in_html
+  - pymdownx.highlight:
+      use_pygments: true
+  - pymdownx.superfences
+  - pymdownx.betterem
+  - pymdownx.details
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+
+extra_javascript:
+  - javascripts/mathjax.js
+  - https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js
 
 plugins:
+  - search
   - mkdocstrings:
       default_handler: python
       handlers:
@@ -14,18 +59,25 @@ plugins:
           options:
             docstring_style: google
             show_source: True
-            # show_signature: True
+            show_signature: True
             show_root_heading: True
+            show_root_full_path: False
             members_order: source
             heading_level: 3
+            separate_signature: False
 
 nav:
   - Home: index.md
   - Installation: installation.md
-  - Get Started: get-started.md
+  - User Manual:
+      - BES3 Data Reading: user-manual/bes3-data-reading.md
+      - Digi Identifier: user-manual/digi-identifier.md
+      - Detector:
+          - Global ID (gid): user-manual/detector/global-id.md
+          - Geometry: user-manual/detector/geometry.md
+      - Tracks: user-manual/tracks.md
   - API Reference:
       - pybes3: api/pybes3.md
       - pybes3.besio: api/pybes3.besio.md
-      - pybes3.detectors:
-          - identify: api/pybes3.detectors.identify.md
+      - pybes3.detectors: api/pybes3.detectors.md
       - pybes3.tracks: api/pybes3.tracks.md

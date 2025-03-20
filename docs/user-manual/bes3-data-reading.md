@@ -1,6 +1,6 @@
-## BESIII data files reading
+# BES3 Data Reading
 
-### read ROOT file (rtraw, dst, rec)
+## Read ROOT file (rtraw, dst, rec)
 
 To make `uproot` know about BES3 ROOT files,  call `pybes3.wrap_uproot()` before opening any file:
 
@@ -87,7 +87,7 @@ or you can retrieve branches from `mc_evt`:
 >>> e_init_arr = mc_evt["m_mcParticleCol/m_eInitialMomentum"].array()
 ```
 
-### read raw data file
+## Read raw data file
 
 BES3 raw data files contain only digits information. To read a raw data file, use `pybes3.open_raw`:
 
@@ -130,68 +130,8 @@ To read part of file:
 <Array [{evt_header: {...}, ...}, ..., {...}] type='1000 * {evt_header: {ev...'>
 ```
 
-!!! note
+!!! info
     `n_blocks` instead of `n_entries` is used here because only data blocks are continuous in memory. Most of the time, there is one event in a data block.
 
 !!! warning
     By so far, `besio` can only read original raw data without any decoding. Read raw data with decoding is under development.
-
-
-
-## Digi Identifier
-
-When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, `muc` branches are the electronics readout id (TEID), also known as `IntValue` of `Identifier` in `BOSS`. To decode the `m_intId`, use `parse_xxx_id` methods where `xxx` is the detector name (`cgem`, `mdc`, `tof`, `emc`, `muc`):
-
-```python
->>> import pybes3 as p3
->>> digi_evt = p3.open("test.rtraw")["Event/TDigiEvent"].arrays()
->>> mdc_id = digi_evt.m_mdcDigiCol.m_intId
->>> mdc_id
-<Array [[], [...], ..., [268439568, ..., 268457030]] type='200 * var * uint32'>
-
->>> parsed_mdc_id = p3.parse_mdc_id(mdc_id)
->>> parsed_mdc_id.fields
-['wire', 'layer', 'is_stereo']
->>> parsed_mdc_id.typestr
-'200 * var * {wire: uint16, layer: uint8, is_stereo: bool}'
-```
-
-`m_intId` can be calculated with `get_xxx_id` methods:
-
-```python
->>> import awkward as ak
->>> wire = parsed_mdc_id["wire"]
->>> layer = parsed_mdc_id["layer"]
->>> is_stereo = parsed_mdc_id["is_stereo"]
->>> p3.get_mdc_id(wire, layer, is_stereo)
-<Array [[], [...], ..., [268439568, ..., 268457030]] type='200 * var * uint32'>
->>> ak.all(mdc_id == p3.get_mdc_id(wire, layer, is_stereo))
-np.True_
-```
-
-!!! note
-    `pybes3` uses different convention for TOF `part` ID: `0~2` for scintillator endcap0/barrel/endcap1, `3~4` for MRPC endcap0/endcap1. In this case, TOF ID information can be decoded to 4 fields: `part`, `layerOrModule`, `phiOrStrip`, `end`.
-
-
-
-## Tracks parsing
-
-### Helix
-
-In BESIII, helix is represented by 5 parameters: `dr`, `phi0`, `kappa`, `dz`, `tanl`. To transform these parameters to `x`, `y`, `z`, `px`, `py`, `pz`, etc., use `pybes3.parse_helix`:
-
-```python
->>> import pybes3 as p3
->>> mdc_trk = p3.open("test.dst")["Event/TDstEvent/m_mdcTrackCol"].array()
->>> helix = mdc_trk["m_helix"]
->>> helix
-<Array [[[0.0342, 0.736, ..., 0.676], ...], ...] type='10 * var * 5 * float64'>
-
->>> phy_helix = p3.parse_helix(helix)
->>> phy_helix.fields
-['x', 'y', 'z', 'r', 'px', 'py', 'pz', 'pt', 'p', 'theta', 'phi', 'charge']
-```
-
-!!! note
-    You can use `parse_helix` to decode any helix array with 5 elements in the last dimension, such as
-    `m_mdcKalTrackCol["m_zhelix"]`, `m_mdcKalTrackCol["m_zhelix_e"]`, etc.

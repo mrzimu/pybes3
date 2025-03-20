@@ -38,20 +38,22 @@ def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> Union[IntLike, dict[st
     When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
 
     Keys of the output:
-        - `gid`: Global ID of the wire.
-        - `wire`: Local wire number.
-        - `layer`: Layer number.
-        - `is_stereo`: Whether the wire is a stereo wire.
 
-    Optional keys of the output when with_pos is True:
-        - `mid_x`: x position of the wire at `z=0`.
-        - `mid_y`: y position of the wire at `z=0`.
-        - `west_x`: x position of the west end of the wire.
-        - `west_y`: y position of the west end of the wire.
-        - `west_z`: z position of the west end of the wire.
-        - `east_x`: x position of the east end of the wire.
-        - `east_y`: y position of the east end of the wire.
-        - `east_z`: z position of the east end of the wire.
+    - `gid`: Global ID of the wire.
+    - `wire`: Local wire number.
+    - `layer`: Layer number.
+    - `is_stereo`: Whether the wire is a stereo wire.
+
+    Optional keys of the output when `with_pos` is `True`:
+
+    - `mid_x`: x position of the wire at `z=0`.
+    - `mid_y`: y position of the wire at `z=0`.
+    - `west_x`: x position of the west end of the wire.
+    - `west_y`: y position of the west end of the wire.
+    - `west_z`: z position of the west end of the wire.
+    - `east_x`: x position of the east end of the wire.
+    - `east_y`: y position of the east end of the wire.
+    - `east_z`: z position of the east end of the wire.
 
     Parameters:
         gid: The gid of the wire.
@@ -91,23 +93,26 @@ def parse_mdc_digi_id(
 ) -> Union[IntLike, dict[str, IntLike]]:
     """
     Parse MDC digi ID.
+
     When `mdc_digi_id` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
 
     Keys of the output:
-        - `gid`: Global ID of the wire.
-        - `wire`: Local wire number.
-        - `layer`: Layer number.
-        - `is_stereo`: Whether the wire is a stereo wire.
 
-    Optional keys of the output when with_pos is True:
-        - `mid_x`: x position of the wire at `z=0`.
-        - `mid_y`: y position of the wire at `z=0`.
-        - `west_x`: x position of the west end of the wire.
-        - `west_y`: y position of the west end of the wire.
-        - `west_z`: z position of the west end of the wire.
-        - `east_x`: x position of the east end of the wire.
-        - `east_y`: y position of the east end of the wire.
-        - `east_z`: z position of the east end of the wire.
+    - `gid`: Global ID of the wire.
+    - `wire`: Local wire number.
+    - `layer`: Layer number.
+    - `is_stereo`: Whether the wire is a stereo wire.
+
+    Optional keys of the output when `with_pos` is `True`:
+
+    - `mid_x`: x position of the wire at `z=0`.
+    - `mid_y`: y position of the wire at `z=0`.
+    - `west_x`: x position of the west end of the wire.
+    - `west_y`: y position of the west end of the wire.
+    - `west_z`: z position of the west end of the wire.
+    - `east_x`: x position of the east end of the wire.
+    - `east_y`: y position of the east end of the wire.
+    - `east_z`: z position of the east end of the wire.
 
     Parameters:
         mdc_digi_id: The MDC digi ID.
@@ -128,25 +133,27 @@ def parse_mdc_digi(mdc_digi: ak.Record, with_pos: bool = False) -> ak.Record:
     `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_overflow`] fields.
 
     Fields of the output:
-        - `gid`: Global ID of the wire.
-        - `wire`: Local wire number.
-        - `layer`: Layer number.
-        - `is_stereo`: Whether the wire is a stereo wire.
-        - `charge_channel`: Charge channel.
-        - `time_channel`: Time channel.
-        - `track_index`: Track index.
-        - `overflow`: Overflow flag.
-        - `digi_id`: Raw digi ID.
 
-    Optional fields of the output when with_pos is True:
-        - `mid_x`: x position of the wire at `z=0`.
-        - `mid_y`: y position of the wire at `z=0`.
-        - `west_x`: x position of the west end of the wire.
-        - `west_y`: y position of the west end of the wire.
-        - `west_z`: z position of the west end of the wire.
-        - `east_x`: x position of the east end of the wire.
-        - `east_y`: y position of the east end of the wire.
-        - `east_z`: z position of the east end of the wire.
+    - `gid`: Global ID of the wire.
+    - `wire`: Local wire number.
+    - `layer`: Layer number.
+    - `is_stereo`: Whether the wire is a stereo wire.
+    - `charge_channel`: Charge channel.
+    - `time_channel`: Time channel.
+    - `track_index`: Track index.
+    - `overflow`: Overflow flag.
+    - `digi_id`: Raw digi ID.
+
+    Optional fields of the output when `with_pos` is `True`:
+
+    - `mid_x`: x position of the wire at `z=0`.
+    - `mid_y`: y position of the wire at `z=0`.
+    - `west_x`: x position of the west end of the wire.
+    - `west_y`: y position of the west end of the wire.
+    - `west_z`: z position of the west end of the wire.
+    - `east_x`: x position of the east end of the wire.
+    - `east_y`: y position of the east end of the wire.
+    - `east_z`: z position of the east end of the wire.
 
     Parameters:
         mdc_digi: The MDC raw digi array.
@@ -195,10 +202,11 @@ def parse_tof_digi_id(
     If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
-        - `part`: The part number. `0,1,2` for scintillator endcap0, barrel, endcap1; `3,4` for MRPC endcap0, endcap1.
-        - `layer_or_module`: The scintillator layer or MRPC module number, based on the part number.
-        - `phi_or_strip`: The scintillator phi or MRPC strip ID, based on the part number.
-        - `end`: The readout end ID.
+
+    - `part`: The part number. `0,1,2` for scintillator endcap0, barrel, endcap1; `3,4` for MRPC endcap0, endcap1.
+    - `layer_or_module`: The scintillator layer or MRPC module number, based on the part number.
+    - `phi_or_strip`: The scintillator phi or MRPC strip ID, based on the part number.
+    - `end`: The readout end ID.
 
     The return value is based on the part number.
 
@@ -249,9 +257,10 @@ def parse_emc_digi_id(
     If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
-        - `module`: The module number.
-        - `theta`: The theta number.
-        - `phi`: The phi number.
+
+    - `module`: The module number.
+    - `theta`: The theta number.
+    - `phi`: The phi number.
 
     Parameters:
         emc_digi_id: The EMC digi ID.
@@ -294,12 +303,13 @@ def parse_muc_digi_id(
     If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
-        - `part`: The part number.
-        - `segment`: The segment number.
-        - `layer`: The layer number.
-        - `channel`: The channel number.
-        - `gap`: The gap number, which is equivalent to layer number.
-        - `strip`: The strip number, which is equivalent to channel number.
+
+    - `part`: The part number.
+    - `segment`: The segment number.
+    - `layer`: The layer number.
+    - `channel`: The channel number.
+    - `gap`: The gap number, which is equivalent to layer number.
+    - `strip`: The strip number, which is equivalent to channel number.
 
     Parameters:
         muc_digi_id: The MUC digi ID.
@@ -349,10 +359,11 @@ def parse_cgem_digi_id(
     If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
-        - `layer`: The layer number.
-        - `sheet`: The sheet ID.
-        - `strip`: The strip ID.
-        - `is_x_strip`: Whether the strip is an X-strip.
+
+    - `layer`: The layer number.
+    - `sheet`: The sheet ID.
+    - `strip`: The strip ID.
+    - `is_x_strip`: Whether the strip is an X-strip.
 
     Parameters:
         cgem_digi_id: The CGEM digi ID.
