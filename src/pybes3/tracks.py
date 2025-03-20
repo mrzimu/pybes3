@@ -154,7 +154,7 @@ def parse_helix(
     charge = _helix2_to_charge(helix2)
 
     r_trk = pt * (10 / 2.99792458)  # |pt| * [GeV/c] / 1[e] / 1[T] = |pt| * 10/3 [m]
-    r_trk *= 100  # to [cm]
+    r_trk = r_trk * 100  # to [cm]
 
     res_dict = {
         "x": x,
