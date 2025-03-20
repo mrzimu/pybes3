@@ -1,3 +1,10 @@
+## v0.2.0
+* Add `pybes3.detectors.global_id` with MDC global index methods
+* Add `pybes3.detectors.geometry` with MDC wire position methods
+* Add `r_trk` field in `pybes3.tracks.parse_helix`
+* Move `pybes3.detectors.identify` to `pybes3.detectors.digi_id`, rename `parse_xxx_id` to `parse_xxx_digi_id`
+* Fix `theta` calculation in `pybes3.tracks.parse_helix`
+
 ## v0.1.3
 * Add `pybes3.tracks` with function `parse_helix` to transform 5 helix parameters to physical variables
 
