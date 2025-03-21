@@ -1,3 +1,7 @@
+## v0.2.0.1
+* Fix `phi` calculation in `pybes3.tracks.parse_helix`
+* Improve `theta` calculation in `pybes3.tracks.parse_helix`
+
 ## v0.2.0
 * Add `pybes3.detectors.global_id` with MDC global index methods
 * Add `pybes3.detectors.geometry` with MDC wire position methods

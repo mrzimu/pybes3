@@ -116,6 +116,21 @@ def _pt_helix4_to_p(pt: FloatLike, helix4: FloatLike) -> FloatLike:
     return pt * np.sqrt(1 + helix4**2)
 
 
+@nb.vectorize([nb.float64(nb.float64, nb.float64)])
+def _pz_p_to_theta(pz: FloatLike, p: FloatLike) -> FloatLike:
+    """
+    Convert pz and p to theta.
+
+    Parameters:
+        pz: pz of the helix.
+        p: p of the helix.
+
+    Returns:
+        theta of the helix.
+    """
+    return np.acos(pz / p)
+
+
 def parse_helix(
     helix: Union[ak.Array, np.ndarray], library: Literal["ak", "auto"] = "auto"
 ) -> Union[ak.Array, dict[str, np.ndarray]]:
@@ -148,7 +163,7 @@ def parse_helix(
     py = _pt_helix1_to_py(pt, helix1)
     pz = pt * helix4
     p = _pt_helix4_to_p(pt, helix4)
-    theta = np.acos(pz / p)
+    theta = _pz_p_to_theta(pz, p)
     phi = np.atan2(py, px)
 
     charge = _helix2_to_charge(helix2)

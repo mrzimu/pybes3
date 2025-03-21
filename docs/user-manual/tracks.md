@@ -36,7 +36,7 @@ The formulas to transform helix parameters to physical parameters are:
     - $p_z = p_t \times \tan\lambda$
     - $p = p_t \times \sqrt{1 + \tan^2\lambda}$
     - $\theta = \arccos\left(\frac{p_z}{p}\right)$
-    - $\varphi = -\varphi_0$
+    - $\varphi = \arctan2(p_y, p_x)$
 
 - others:
     - $\mathrm{charge} = \mathrm{sign}(\kappa)$
