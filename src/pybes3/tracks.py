@@ -149,7 +149,7 @@ def parse_helix(
     pz = pt * helix4
     p = _pt_helix4_to_p(pt, helix4)
     theta = np.acos(pz / p)
-    phi = -helix1
+    phi = np.atan2(py, px)
 
     charge = _helix2_to_charge(helix2)
 
