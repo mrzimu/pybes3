@@ -28,8 +28,8 @@ tof_digi = p3.open("test.rtraw")["Event/TDigiEvent/m_tofDigiCol"].array()
 emc_digi = p3.open("test.rtraw")["Event/TDigiEvent/m_emcDigiCol"].array()
 
 # parse digi ID
-tof_digi_id = p3.parse_tof_digi(tof_digi)
-emc_digi_id = p3.parse_emc_digi(emc_digi)
+tof_digi_id = p3.parse_tof_digi_id(tof_digi["m_intId"])
+emc_digi_id = p3.parse_emc_digi_id(emc_digi["m_intId"])
 ```
 
 !!! note
