@@ -5,14 +5,11 @@ import awkward as ak
 import numba as nb
 import numpy as np
 
-from ..typing import BoolLike, FloatLike, IntLike
+from ...typing import BoolLike, FloatLike, IntLike
 
 _cur_dir = Path(__file__).resolve().parent
 
-###############################################################################
-#                                     MDC                                     #
-###############################################################################
-_mdc_wire_position: dict[str, np.ndarray] = dict(np.load(_cur_dir / "mdc_wire_position.npz"))
+_mdc_wire_position: dict[str, np.ndarray] = dict(np.load(_cur_dir / "mdc_geom.npz"))
 _layer: np.ndarray = _mdc_wire_position["layer"]
 _wire: np.ndarray = _mdc_wire_position["wire"]
 _east_x: np.ndarray = _mdc_wire_position["east_x"]
@@ -40,7 +37,7 @@ for l in range(43):
     is_layer_stereo[l] = _is_stereo[_layer == l][0]
 
 
-def get_mdc_wire_position(library: Literal["ak", "np", "pd"] = "np"):
+def get_mdc_wire_position(library: Literal["np", "ak", "pd"] = "np"):
     """
     Get the MDC wire position table.
 
@@ -67,7 +64,7 @@ def get_mdc_wire_position(library: Literal["ak", "np", "pd"] = "np"):
             raise ImportError("Pandas is not installed. Run `pip install pandas`.")
         return pd.DataFrame(cp)
     else:
-        raise ValueError("Invalid library. Choose from 'ak', 'np', 'pd'.")
+        raise ValueError(f"Invalid library {library}. Choose from 'ak', 'np', 'pd'.")
 
 
 @nb.vectorize([nb.uint16(nb.int_, nb.int_)])
@@ -141,7 +138,7 @@ def mdc_gid_to_is_stereo(gid: IntLike) -> BoolLike:
     return _is_stereo[gid]
 
 
-@nb.vectorize([nb.float32(nb.int_)])
+@nb.vectorize([nb.float64(nb.int_)])
 def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_x (cm).
@@ -155,7 +152,7 @@ def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
     return _west_x[gid]
 
 
-@nb.vectorize([nb.float32(nb.int_)])
+@nb.vectorize([nb.float64(nb.int_)])
 def mdc_gid_to_west_y(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_y (cm).
@@ -169,7 +166,7 @@ def mdc_gid_to_west_y(gid: IntLike) -> FloatLike:
     return _west_y[gid]
 
 
-@nb.vectorize([nb.float32(nb.int_)])
+@nb.vectorize([nb.float64(nb.int_)])
 def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_z (cm).
@@ -183,7 +180,7 @@ def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
     return _west_z[gid]
 
 
-@nb.vectorize([nb.float32(nb.int_)])
+@nb.vectorize([nb.float64(nb.int_)])
 def mdc_gid_to_east_x(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_x (cm).
@@ -197,7 +194,7 @@ def mdc_gid_to_east_x(gid: IntLike) -> FloatLike:
     return _east_x[gid]
 
 
-@nb.vectorize([nb.float32(nb.int_)])
+@nb.vectorize([nb.float64(nb.int_)])
 def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_y (cm).
@@ -211,7 +208,7 @@ def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
     return _east_y[gid]
 
 
-@nb.vectorize([nb.float32(nb.int_)])
+@nb.vectorize([nb.float64(nb.int_)])
 def mdc_gid_to_east_z(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_z (cm).
@@ -225,7 +222,7 @@ def mdc_gid_to_east_z(gid: IntLike) -> FloatLike:
     return _east_z[gid]
 
 
-@nb.vectorize([nb.float32(nb.int_, nb.float32)])
+@nb.vectorize([nb.float64(nb.int_, nb.float64)])
 def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
     """
     Get the x (cm) position of the wire at z (cm).
@@ -240,7 +237,7 @@ def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
     return _west_x[gid] + dx_dz[gid] * (z - _west_z[gid])
 
 
-@nb.vectorize([nb.float32(nb.int_, nb.float32)])
+@nb.vectorize([nb.float64(nb.int_, nb.float64)])
 def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
     """
     Get the y (cm) position of the wire at z (cm).
@@ -253,20 +250,3 @@ def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
         The y (cm) position of the wire at z (cm).
     """
     return _west_y[gid] + dy_dz[gid] * (z - _west_z[gid])
-
-
-###############################################################################
-#                                     TOF                                     #
-###############################################################################
-
-###############################################################################
-#                                     EMC                                     #
-###############################################################################
-
-###############################################################################
-#                                     MUC                                     #
-###############################################################################
-
-###############################################################################
-#                                    CGEM                                     #
-###############################################################################
