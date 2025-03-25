@@ -6,7 +6,7 @@
 
 ## MDC
 
-### Gid conversion
+### GID conversion
 
 ```python
 import numpy as np
@@ -70,4 +70,77 @@ wire_position_ak = geom.get_mdc_wire_position(library="ak")
 
 # get table in `pd.DataFrame`
 wire_position_pd = geom.get_mdc_wire_position(library="pd")
+```
+
+## EMC
+
+### GID conversion
+
+```python
+import numpy as np
+from pybes3.detectors import geometry as geom
+
+# generate random crystal gid
+gid = np.random.randint(0, 6240, 100)
+
+# get part, theta, phi
+part = geom.emc_gid_to_part(gid)
+theta = geom.emc_gid_to_theta(gid)
+phi = geom.emc_gid_to_phi(gid)
+
+# get gid
+gid = geom.get_emc_gid(part, theta, phi)
+```
+
+### Crystals position
+
+To get front center, center x, y, z of crystals:
+
+```python
+# get front center x, y, z
+front_center_x = geom.emc_gid_to_front_center_x(gid)
+front_center_y = geom.emc_gid_to_front_center_y(gid)
+front_center_z = geom.emc_gid_to_front_center_z(gid)
+
+# get center x, y, z
+center_x = geom.emc_gid_to_center_x(gid)
+center_y = geom.emc_gid_to_center_y(gid)
+center_z = geom.emc_gid_to_center_z(gid)
+```
+
+---
+
+There are total 8 points on a crystal, you can get x, y, z of these points:
+
+```python
+# get x, y, z of point-0 of crystals
+x0 = geom.emc_gid_to_point_x(gid, 0)
+y0 = geom.emc_gid_to_point_y(gid, 0)
+z0 = geom.emc_gid_to_point_z(gid, 0)
+
+# get x, y, z of point-7 of crystals
+x7 = geom.emc_gid_to_point_x(gid, 7)
+y7 = geom.emc_gid_to_point_y(gid, 7)
+z7 = geom.emc_gid_to_point_z(gid, 7)
+
+# get x, y, z of all 8 points of crystal 0
+point_id = np.arange(8)
+x = geom.emc_gid_to_point_x(0, point_id)
+y = geom.emc_gid_to_point_y(0, point_id)
+z = geom.emc_gid_to_point_z(0, point_id)
+```
+
+---
+
+You can get the whole crystals position table of EMC:
+
+```python
+# get table in `dict[str, np.ndarray]`
+crystal_position_np = geom.get_emc_crystal_position()
+
+# get table in `ak.Array`
+crystal_position_ak = geom.get_emc_crystal_position(library="ak")
+
+# get table in `pd.DataFrame`
+crystal_position_pd = geom.get_emc_crystal_position(library="pd")
 ```

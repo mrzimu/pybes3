@@ -345,8 +345,7 @@ def parse_emc_digi_id(
 
     Parameters:
         emc_digi_id: The EMC digi ID.
-        flat: Whether to flatten the output.
-        library: The library to use as output.
+        with_pos: Whether to include the position information.
 
     Returns:
         The parsed EMC digi ID.

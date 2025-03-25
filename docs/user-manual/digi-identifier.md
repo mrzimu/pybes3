@@ -5,7 +5,7 @@ When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, `muc`, `c
 ## Digi array parsing
 
 !!! info
-    By so far, only MDC digi parsing is supported. Whole digi parsing for other detectors is still under development. If you need to parse digi ID for other detectors, use the [standalone digi ID parsing methods](#standalone-digi-id-parsing).
+    By so far, only MDC and EMC digi parsing is supported. Whole digi parsing for other detectors is still under development. If you need to parse digi ID for other detectors, use the [standalone digi ID parsing methods](#standalone-digi-id-parsing).
 
 
 ```python
