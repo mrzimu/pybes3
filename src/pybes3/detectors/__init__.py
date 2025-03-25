@@ -3,8 +3,32 @@ from typing import Literal, Union
 import awkward as ak
 import numpy as np
 
+from ..typing import IntLike
 from . import digi_id
+from .digi_id import (
+    get_cgem_digi_id,
+    get_emc_digi_id,
+    get_mdc_digi_id,
+    get_muc_digi_id,
+    get_tof_digi_id,
+)
 from .geometry import (
+    emc_gid_to_center_x,
+    emc_gid_to_center_y,
+    emc_gid_to_center_z,
+    emc_gid_to_front_center_x,
+    emc_gid_to_front_center_y,
+    emc_gid_to_front_center_z,
+    emc_gid_to_part,
+    emc_gid_to_phi,
+    emc_gid_to_point_x,
+    emc_gid_to_point_y,
+    emc_gid_to_point_z,
+    emc_gid_to_theta,
+    get_emc_crystal_position,
+    get_emc_gid,
+    get_mdc_gid,
+    get_mdc_wire_position,
     mdc_gid_to_east_x,
     mdc_gid_to_east_y,
     mdc_gid_to_east_z,
@@ -16,17 +40,7 @@ from .geometry import (
     mdc_gid_to_wire,
     mdc_gid_z_to_x,
     mdc_gid_z_to_y,
-    get_mdc_gid,
-    get_mdc_wire_position,
 )
-from .digi_id import (
-    get_cgem_digi_id,
-    get_emc_digi_id,
-    get_mdc_digi_id,
-    get_muc_digi_id,
-    get_tof_digi_id,
-)
-from ..typing import IntLike
 
 
 ###############################################################################
@@ -34,7 +48,7 @@ from ..typing import IntLike
 ###############################################################################
 def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> Union[IntLike, dict[str, IntLike]]:
     """
-    Parse the gid of wires. "gid" is the global ID of the wire, ranges from 0 to 6795.
+    Parse the gid of MDC wires. "gid" is the global ID of the wire, ranges from 0 to 6795.
     When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
 
     Keys of the output:
@@ -246,21 +260,88 @@ def parse_tof_digi_id(
 ###############################################################################
 #                                     EMC                                     #
 ###############################################################################
+def parse_emc_gid(gid: IntLike, with_pos: bool = True) -> Union[IntLike, dict[str, IntLike]]:
+    """
+    Parse the gid of EMC crystals. "gid" is the global ID of the crystal, ranges from 0 to 6239.
+    When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
+
+    Keys of the output:
+
+    - `gid`: Global ID of the crystal.
+    - `part`: Part number, 0 for endcap0, 1 for barrel, 2 for endcap1.
+    - `theta`: Theta number.
+    - `phi`: Phi number.
+
+    Optional keys of the output when `with_pos` is `True`:
+
+    - `front_center_x`: x position of the front center of the crystal.
+    - `front_center_y`: y position of the front center of the crystal.
+    - `front_center_z`: z position of the front center of the crystal.
+    - `center_x`: x position of the center of the crystal.
+    - `center_y`: y position of the center of the crystal.
+    - `center_z`: z position of the center of the crystal.
+
+    !!! info
+        The 8 points of the crystal will not be returned here.
+        If you need the 8 points of the crystal, use `emc_gid_to_point_x`, `emc_gid_to_point_y`
+        and `emc_gid_to_point_z`.
+
+    Parameters:
+        gid: The gid of the crystal.
+        with_pos: Whether to include the position information.
+
+    Returns:
+        The parsed result.
+    """
+    part = emc_gid_to_part(gid)
+    theta = emc_gid_to_theta(gid)
+    phi = emc_gid_to_phi(gid)
+
+    res = {"gid": gid, "part": part, "theta": theta, "phi": phi}
+
+    if with_pos:
+        res["front_center_x"] = emc_gid_to_front_center_x(gid)
+        res["front_center_y"] = emc_gid_to_front_center_y(gid)
+        res["front_center_z"] = emc_gid_to_front_center_z(gid)
+        res["center_x"] = emc_gid_to_center_x(gid)
+        res["center_y"] = emc_gid_to_center_y(gid)
+        res["center_z"] = emc_gid_to_center_z(gid)
+
+    if isinstance(gid, ak.Array):
+        return ak.zip(res)
+    else:
+        return res
+
+
 def parse_emc_digi_id(
     emc_digi_id: IntLike,
-    flat: bool = False,
-    library: Literal["ak", "np"] = "ak",
-) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.int_]]:
+    with_pos: bool = False,
+) -> Union[IntLike, dict[str, IntLike]]:
     """
     Parse EMC digi ID.
 
-    If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
+    When `emc_digi_id` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
 
-    Available keys of the output:
+    Keys of the output:
 
-    - `module`: The module number.
-    - `theta`: The theta number.
-    - `phi`: The phi number.
+    - `gid`: Global ID of the crystal.
+    - `part`: Part number, 0 for endcap0, 1 for barrel, 2 for endcap1.
+    - `theta`: Theta number.
+    - `phi`: Phi number.
+
+    Optional keys of the output when `with_pos` is `True`:
+
+    - `front_center_x`: x position of the front center of the crystal.
+    - `front_center_y`: y position of the front center of the crystal.
+    - `front_center_z`: z position of the front center of the crystal.
+    - `center_x`: x position of the center of the crystal.
+    - `center_y`: y position of the center of the crystal.
+    - `center_z`: z position of the center of the crystal.
+
+    !!! info
+        The 8 points of the crystal will not be returned here.
+        If you need the 8 points of the crystal, use `emc_gid_to_point_x`, `emc_gid_to_point_y`
+        and `emc_gid_to_point_z`.
 
     Parameters:
         emc_digi_id: The EMC digi ID.
@@ -271,22 +352,69 @@ def parse_emc_digi_id(
         The parsed EMC digi ID.
 
     """
-    if library not in ["ak", "np"]:
-        raise ValueError(f"Unsupported library: {library}")
+    part = digi_id.emc_id_to_module(emc_digi_id)
+    theta = digi_id.emc_id_to_theta(emc_digi_id)
+    phi = digi_id.emc_id_to_phi(emc_digi_id)
+    gid = get_emc_gid(part, theta, phi)
+    return parse_emc_gid(gid, with_pos)
 
-    if flat and isinstance(emc_digi_id, ak.Array):
-        emc_digi_id = ak.flatten(emc_digi_id)
+
+def parse_emc_digi(emc_digi: ak.Record, with_pos: bool = False) -> ak.Record:
+    """
+    Parse EMC raw digi array. The raw digi array should contain [`m_intId`,
+    `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_measure`] fields.
+
+    Fields of the output:
+
+    - `gid`: Global ID of the crystal.
+    - `part`: Part number, 0 for endcap0, 1 for barrel, 2 for endcap1.
+    - `theta`: Theta number.
+    - `phi`: Phi number.
+    - `charge_channel`: Charge channel.
+    - `time_channel`: Time channel.
+    - `track_index`: Track index.
+    - `measure`: Measure value.
+    - `digi_id`: Raw digi ID.
+
+    Optional fields of the output when `with_pos` is `True`:
+
+    - `front_center_x`: x position of the front center of the crystal.
+    - `front_center_y`: y position of the front center of the crystal.
+    - `front_center_z`: z position of the front center of the crystal.
+    - `center_x`: x position of the center of the crystal.
+    - `center_y`: y position of the center of the crystal.
+    - `center_z`: z position of the center of the crystal.
+
+    Parameters:
+        emc_digi: The EMC raw digi array.
+        with_pos: Whether to include the position information.
+
+    Returns:
+        The parsed EMC digi array.
+    """
+    gid = parse_emc_digi_id(emc_digi["m_intId"], with_pos=with_pos)
 
     res = {
-        "module": digi_id.emc_id_to_module(emc_digi_id),
-        "theta": digi_id.emc_id_to_theta(emc_digi_id),
-        "phi": digi_id.emc_id_to_phi(emc_digi_id),
+        "gid": gid["gid"],
+        "part": gid["part"],
+        "theta": gid["theta"],
+        "phi": gid["phi"],
+        "charge_channel": emc_digi["m_chargeChannel"],
+        "time_channel": emc_digi["m_timeChannel"],
+        "track_index": emc_digi["m_trackIndex"],
+        "measure": emc_digi["m_measure"],
+        "digi_id": emc_digi["m_intId"],
     }
 
-    if library == "ak":
-        return ak.zip(res)
-    else:
-        return res
+    if with_pos:
+        res["front_center_x"] = gid["front_center_x"]
+        res["front_center_y"] = gid["front_center_y"]
+        res["front_center_z"] = gid["front_center_z"]
+        res["center_x"] = gid["center_x"]
+        res["center_y"] = gid["center_y"]
+        res["center_z"] = gid["center_z"]
+
+    return ak.zip(res)
 
 
 ###############################################################################

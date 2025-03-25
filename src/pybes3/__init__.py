@@ -5,9 +5,11 @@ from .detectors import (
     # parse methods
     parse_mdc_gid,
     parse_mdc_digi,
+    parse_emc_gid,
+    parse_emc_digi,
     parse_cgem_digi_id,
-    parse_emc_digi_id,
     parse_mdc_digi_id,
+    parse_emc_digi_id,
     parse_muc_digi_id,
     parse_tof_digi_id,
     # geometry
