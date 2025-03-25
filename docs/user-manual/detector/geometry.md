@@ -15,17 +15,25 @@ from pybes3.detectors import geometry as geom
 # generate random wire gid
 gid = np.random.randint(0, 6796, 100)
 
-# get layer, wire, is_stereo
+# get layer, wire, stereo, is_stereo
 layer = geom.mdc_gid_to_layer(gid)
 wire = geom.mdc_gid_to_wire(gid)
+stereo = geom.mdc_gid_to_stereo(gid)
 is_stereo = geom.mdc_gid_to_is_stereo(gid)
+superlayer = geom.mdc_gid_to_superlayer(gid)
 
 # is_stereo can also be obtained by layer
 is_stereo = geom.mdc_layer_to_is_stereo(layer)
 
+# superlayer can also be obtained by layer
+superlayer = geom.mdc_layer_to_superlayer(layer)
+
 # get gid
 gid = geom.get_mdc_gid(layer, wire)
 ```
+
+!!! note
+    `mdc_gid_to_stereo` returns the stereo type of the wire, which can be `0` (axial), `-1` for `west_phi < east_phi` and `1` for `west_phi > east_phi`.
 
 ### Wires position
 

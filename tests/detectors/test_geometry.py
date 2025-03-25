@@ -6,8 +6,11 @@ import pybes3.detectors.geometry as geom
 def test_mdc_geom():
     gid: np.ndarray = geom.get_mdc_wire_position()["gid"]
     assert np.all(geom.get_mdc_gid(geom.mdc._layer, geom.mdc._wire) == gid)
+    assert np.all(geom.mdc_gid_to_superlayer(gid) == geom.mdc._superlayer)
+    assert np.all(geom.mdc_layer_to_superlayer(geom.mdc._layer) == geom.mdc._superlayer)
     assert np.all(geom.mdc_gid_to_layer(gid) == geom.mdc._layer)
     assert np.all(geom.mdc_gid_to_wire(gid) == geom.mdc._wire)
+    assert np.all(geom.mdc_gid_to_stereo(gid) == geom.mdc._stereo)
     assert np.all(geom.mdc_layer_to_is_stereo(geom.mdc._layer) == geom.mdc._is_stereo)
     assert np.all(geom.mdc_gid_to_is_stereo(gid) == geom.mdc._is_stereo)
     assert np.all(geom.mdc_gid_to_east_x(gid) == geom.mdc._east_x)

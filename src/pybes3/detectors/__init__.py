@@ -34,12 +34,16 @@ from .geometry import (
     mdc_gid_to_east_z,
     mdc_gid_to_is_stereo,
     mdc_gid_to_layer,
+    mdc_gid_to_stereo,
+    mdc_gid_to_superlayer,
     mdc_gid_to_west_x,
     mdc_gid_to_west_y,
     mdc_gid_to_west_z,
     mdc_gid_to_wire,
     mdc_gid_z_to_x,
     mdc_gid_z_to_y,
+    mdc_layer_to_is_stereo,
+    mdc_layer_to_superlayer,
 )
 
 
@@ -54,9 +58,11 @@ def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> Union[IntLike, dict[st
     Keys of the output:
 
     - `gid`: Global ID of the wire.
-    - `wire`: Local wire number.
     - `layer`: Layer number.
+    - `wire`: Local wire number.
+    - `stereo`: Stereo type. 0 for axial, -1 for `phi_west < phi_east`, 1 for `phi_west > phi_east`.
     - `is_stereo`: Whether the wire is a stereo wire.
+    - `superlayer`: Superlayer number.
 
     Optional keys of the output when `with_pos` is `True`:
 
@@ -79,7 +85,14 @@ def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> Union[IntLike, dict[st
     layer = mdc_gid_to_layer(gid)
     wire = mdc_gid_to_wire(gid)
 
-    res = {"gid": gid, "layer": layer, "wire": wire, "is_stereo": mdc_gid_to_is_stereo(gid)}
+    res = {
+        "gid": gid,
+        "layer": layer,
+        "wire": wire,
+        "stereo": mdc_gid_to_stereo(gid),
+        "is_stereo": mdc_gid_to_is_stereo(gid),
+        "superlayer": mdc_gid_to_superlayer(gid),
+    }
 
     if with_pos:
         west_x = mdc_gid_to_west_x(gid)
@@ -115,7 +128,9 @@ def parse_mdc_digi_id(
     - `gid`: Global ID of the wire.
     - `wire`: Local wire number.
     - `layer`: Layer number.
+    - `stereo`: Stereo type. 0 for axial, -1 for `phi_west < phi_east`, 1 for `phi_west > phi_east`.
     - `is_stereo`: Whether the wire is a stereo wire.
+    - `superlayer`: Superlayer number.
 
     Optional keys of the output when `with_pos` is `True`:
 
@@ -151,7 +166,9 @@ def parse_mdc_digi(mdc_digi: ak.Record, with_pos: bool = False) -> ak.Record:
     - `gid`: Global ID of the wire.
     - `wire`: Local wire number.
     - `layer`: Layer number.
+    - `stereo`: Stereo type. 0 for axial, -1 for `phi_west < phi_east`, 1 for `phi_west > phi_east`.
     - `is_stereo`: Whether the wire is a stereo wire.
+    - `superlayer`: Superlayer number.
     - `charge_channel`: Charge channel.
     - `time_channel`: Time channel.
     - `track_index`: Track index.
@@ -182,7 +199,9 @@ def parse_mdc_digi(mdc_digi: ak.Record, with_pos: bool = False) -> ak.Record:
         "gid": gid["gid"],
         "wire": gid["wire"],
         "layer": gid["layer"],
+        "stereo": gid["stereo"],
         "is_stereo": gid["is_stereo"],
+        "superlayer": gid["superlayer"],
         "charge_channel": mdc_digi["m_chargeChannel"],
         "time_channel": mdc_digi["m_timeChannel"],
         "track_index": mdc_digi["m_trackIndex"],

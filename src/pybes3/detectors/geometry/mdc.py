@@ -10,6 +10,7 @@ from ...typing import BoolLike, FloatLike, IntLike
 _cur_dir = Path(__file__).resolve().parent
 
 _mdc_wire_position: dict[str, np.ndarray] = dict(np.load(_cur_dir / "mdc_geom.npz"))
+_superlayer: np.ndarray = _mdc_wire_position["superlayer"]
 _layer: np.ndarray = _mdc_wire_position["layer"]
 _wire: np.ndarray = _mdc_wire_position["wire"]
 _east_x: np.ndarray = _mdc_wire_position["east_x"]
@@ -18,6 +19,7 @@ _east_z: np.ndarray = _mdc_wire_position["east_z"]
 _west_x: np.ndarray = _mdc_wire_position["west_x"]
 _west_y: np.ndarray = _mdc_wire_position["west_y"]
 _west_z: np.ndarray = _mdc_wire_position["west_z"]
+_stereo: np.ndarray = _mdc_wire_position["stereo"]
 _is_stereo: np.ndarray = _mdc_wire_position["is_stereo"]
 
 # Generate the wire start index of each layer
@@ -35,6 +37,9 @@ is_layer_stereo = np.zeros(43, dtype=bool)
 for l in range(43):
     assert np.unique(_is_stereo[_layer == l]).size == 1
     is_layer_stereo[l] = _is_stereo[_layer == l][0]
+
+# Generate layer -> superlayer array
+superlayer_splits = np.array([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 43])
 
 
 def get_mdc_wire_position(library: Literal["np", "ak", "pd"] = "np"):
@@ -83,6 +88,34 @@ def get_mdc_gid(layer: IntLike, wire: IntLike) -> IntLike:
 
 
 @nb.vectorize([nb.uint8(nb.int_)])
+def mdc_gid_to_superlayer(gid: IntLike) -> IntLike:
+    """
+    Convert gid to superlayer.
+
+    Parameters:
+        gid: The gid of the wire.
+
+    Returns:
+        The superlayer number of the wire.
+    """
+    return _superlayer[gid]
+
+
+@nb.vectorize([nb.uint8(nb.int_)])
+def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
+    """
+    Convert layer to superlayer.
+
+    Parameters:
+        layer: The layer number.
+
+    Returns:
+        The superlayer number of the layer.
+    """
+    return np.digitize(layer, superlayer_splits, right=True)
+
+
+@nb.vectorize([nb.uint8(nb.int_)])
 def mdc_gid_to_layer(gid: IntLike) -> IntLike:
     """
     Convert gid to layer.
@@ -108,6 +141,23 @@ def mdc_gid_to_wire(gid: IntLike) -> IntLike:
         The wire number of the wire.
     """
     return _wire[gid]
+
+
+@nb.vectorize([nb.int8(nb.int_)])
+def mdc_gid_to_stereo(gid: IntLike) -> IntLike:
+    """
+    Convert gid to stereo.
+    `0` for `axial`,
+    `-1` for stereo that `phi_west < phi_east`,
+    `1` for stereo that `phi_west > phi_east`.
+
+    Parameters:
+        gid: The gid of the wire.
+
+    Returns:
+        The stereo of the wire.
+    """
+    return _stereo[gid]
 
 
 @nb.vectorize([nb.boolean(nb.int_)])

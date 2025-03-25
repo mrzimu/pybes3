@@ -17,7 +17,9 @@ def test_mdc_parse_gid():
         "gid",
         "layer",
         "wire",
+        "stereo",
         "is_stereo",
+        "superlayer",
         "mid_x",
         "mid_y",
         "west_x",
@@ -32,13 +34,20 @@ def test_mdc_parse_gid():
     assert ak_res1.fields == mdc_fields
 
     ak_res2 = det.parse_mdc_gid(ak_gid, with_pos=False)
-    assert ak_res2.fields == ["gid", "layer", "wire", "is_stereo"]
+    assert ak_res2.fields == ["gid", "layer", "wire", "stereo", "is_stereo", "superlayer"]
 
     np_res1 = det.parse_mdc_gid(np_gid, with_pos=True)
     assert list(np_res1.keys()) == mdc_fields
 
     np_res2 = det.parse_mdc_gid(np_gid, with_pos=False)
-    assert list(np_res2.keys()) == ["gid", "layer", "wire", "is_stereo"]
+    assert list(np_res2.keys()) == [
+        "gid",
+        "layer",
+        "wire",
+        "stereo",
+        "is_stereo",
+        "superlayer",
+    ]
 
 
 def test_parse_mdc_digi_id():
@@ -47,7 +56,9 @@ def test_parse_mdc_digi_id():
         "gid",
         "layer",
         "wire",
+        "stereo",
         "is_stereo",
+        "superlayer",
         "mid_x",
         "mid_y",
         "west_x",
@@ -91,7 +102,7 @@ def test_parse_mdc_digi_id():
 
     # Test awkward, with_pos=False
     ak_res2 = p3.parse_mdc_digi_id(mdc_id_ak, with_pos=False)
-    assert ak_res2.fields == ["gid", "layer", "wire", "is_stereo"]
+    assert ak_res2.fields == ["gid", "layer", "wire", "stereo", "is_stereo", "superlayer"]
     assert len(ak_res2.positional_axis) == 2
     assert ak.all(ak_res2["wire"] == wire_ak)
     assert ak.all(ak_res2["layer"] == layer_ak)
@@ -104,7 +115,9 @@ def test_parse_mdc_digi():
         "gid",
         "wire",
         "layer",
+        "stereo",
         "is_stereo",
+        "superlayer",
         "charge_channel",
         "time_channel",
         "track_index",

@@ -29,6 +29,8 @@ from .mdc import (
     mdc_gid_to_east_z,
     mdc_gid_to_is_stereo,
     mdc_gid_to_layer,
+    mdc_gid_to_stereo,
+    mdc_gid_to_superlayer,
     mdc_gid_to_west_x,
     mdc_gid_to_west_y,
     mdc_gid_to_west_z,
@@ -36,4 +38,5 @@ from .mdc import (
     mdc_gid_z_to_x,
     mdc_gid_z_to_y,
     mdc_layer_to_is_stereo,
+    mdc_layer_to_superlayer,
 )
