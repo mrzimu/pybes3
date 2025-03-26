@@ -1,3 +1,8 @@
+## v0.2.1
+* Add EMC geometry methods to `pybes3.detectors.geometry`
+* Add MDC `superlayer` and `stereo` fields to `pybes3.detectors.geometry`
+* Modify: Expose `pybes3.detectors` methods to `pybes3` namespace
+
 ## v0.2.0.1
 * Fix `phi` calculation in `pybes3.tracks.parse_helix`
 * Improve `theta` calculation in `pybes3.tracks.parse_helix`
