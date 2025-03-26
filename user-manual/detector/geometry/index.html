@@ -18,7 +18,7 @@
       
       
       <link rel="icon" href="../../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.1">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.4">
     
     
       
@@ -26,7 +26,7 @@
       
     
     
-      <link rel="stylesheet" href="../../../assets/stylesheets/main.a40c8224.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.8608ea7d.min.css">
       
         
         <link rel="stylesheet" href="../../../assets/stylesheets/palette.06af60db.min.css">
@@ -511,7 +511,7 @@
           <li class="md-nav__item">
   <a href="#gid-conversion" class="md-nav__link">
     <span class="md-ellipsis">
-      Gid conversion
+      GID conversion
     </span>
   </a>
   
@@ -521,6 +521,48 @@
   <a href="#wires-position" class="md-nav__link">
     <span class="md-ellipsis">
       Wires position
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#emc" class="md-nav__link">
+    <span class="md-ellipsis">
+      EMC
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EMC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gid-conversion_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      GID conversion
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crystals-position" class="md-nav__link">
+    <span class="md-ellipsis">
+      Crystals position
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#barrel-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      Barrel geometry
     </span>
   </a>
   
@@ -747,7 +789,7 @@
           <li class="md-nav__item">
   <a href="#gid-conversion" class="md-nav__link">
     <span class="md-ellipsis">
-      Gid conversion
+      GID conversion
     </span>
   </a>
   
@@ -757,6 +799,48 @@
   <a href="#wires-position" class="md-nav__link">
     <span class="md-ellipsis">
       Wires position
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#emc" class="md-nav__link">
+    <span class="md-ellipsis">
+      EMC
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="EMC">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#gid-conversion_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      GID conversion
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#crystals-position" class="md-nav__link">
+    <span class="md-ellipsis">
+      Crystals position
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#barrel-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      Barrel geometry
     </span>
   </a>
   
@@ -790,57 +874,135 @@
 <p><code>pybes3</code> provides a set of methods to retrieve theoretical geometry information of detectors.</p>
 <p><strong>The unit of length is <code>cm</code>.</strong></p>
 <h2 id="mdc">MDC</h2>
-<h3 id="gid-conversion">Gid conversion</h3>
+<h3 id="gid-conversion">GID conversion</h3>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="kn">from</span><span class="w"> </span><span class="nn">pybes3.detectors</span><span class="w"> </span><span class="kn">import</span> <span class="n">geometry</span> <span class="k">as</span> <span class="n">geom</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
 
 <span class="c1"># generate random wire gid</span>
 <span class="n">gid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6796</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
 
-<span class="c1"># get layer, wire, is_stereo</span>
-<span class="n">layer</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">mdc_gid_to_layer</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">wire</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">mdc_gid_to_wire</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">is_stereo</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">mdc_gid_to_is_stereo</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="c1"># get layer, wire, stereo, is_stereo</span>
+<span class="n">layer</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_to_layer</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">wire</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_to_wire</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">stereo</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_to_stereo</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">is_stereo</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_to_is_stereo</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">superlayer</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_to_superlayer</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
 
 <span class="c1"># is_stereo can also be obtained by layer</span>
-<span class="n">is_stereo</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">mdc_layer_to_is_stereo</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+<span class="n">is_stereo</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_layer_to_is_stereo</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
+
+<span class="c1"># superlayer can also be obtained by layer</span>
+<span class="n">superlayer</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_layer_to_superlayer</span><span class="p">(</span><span class="n">layer</span><span class="p">)</span>
 
 <span class="c1"># get gid</span>
-<span class="n">gid</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">get_mdc_gid</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">wire</span><span class="p">)</span>
+<span class="n">gid</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_mdc_gid</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">wire</span><span class="p">)</span>
 </code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><code>mdc_gid_to_stereo</code> returns the stereo type of the wire, which can be <code>0</code> (axial), <code>-1</code> for <code>west_phi &lt; east_phi</code> and <code>1</code> for <code>west_phi &gt; east_phi</code>.</p>
+</div>
 <h3 id="wires-position">Wires position</h3>
 <p>To get west/east x, y, z of wires:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># get west x, y, z</span>
-<span class="n">west_x</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">mdc_gid_to_west_x</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">west_y</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">mdc_gid_to_west_y</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">west_z</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">mdc_gid_to_west_z</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">west_x</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_to_west_x</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">west_y</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_to_west_y</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">west_z</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_to_west_z</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
 
 <span class="c1"># get east x, y, z</span>
-<span class="n">east_x</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">mdc_gid_to_east_x</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">east_y</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">mdc_gid_to_east_y</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">east_z</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">mdc_gid_to_east_z</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">east_x</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_to_east_x</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">east_y</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_to_east_y</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">east_z</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_to_east_z</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
 </code></pre></div>
 <hr />
 <p>To get x, y of wires at a specific z:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># get x, y of wire 0 at z = -1, 0, 1 cm</span>
 <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
-<span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">mdc_gid_z_to_x_y</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_z_to_x</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_z_to_y</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
 
 <span class="c1"># get x, y of wires at z = 10 cm</span>
-<span class="n">x_z10</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">mdc_gid_z_to_x</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
-<span class="n">y_z10</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">mdc_gid_z_to_y</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">x_z10</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_z_to_x</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">y_z10</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_z_to_y</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 </code></pre></div>
 <hr />
 <p>You can get the whole wires position table of MDC:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># get table in `dict[str, np.ndarray]`</span>
-<span class="n">wire_position_np</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">get_mdc_wire_position</span><span class="p">()</span> 
+<span class="n">wire_position_np</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_mdc_wire_position</span><span class="p">()</span> 
 
 <span class="c1"># get table in `ak.Array`</span>
-<span class="n">wire_position_ak</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">get_mdc_wire_position</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="s2">&quot;ak&quot;</span><span class="p">)</span>
+<span class="n">wire_position_ak</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_mdc_wire_position</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="s2">&quot;ak&quot;</span><span class="p">)</span>
 
 <span class="c1"># get table in `pd.DataFrame`</span>
-<span class="n">wire_position_pd</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">get_mdc_wire_position</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="s2">&quot;pd&quot;</span><span class="p">)</span>
+<span class="n">wire_position_pd</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_mdc_wire_position</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="s2">&quot;pd&quot;</span><span class="p">)</span>
 </code></pre></div>
+<h2 id="emc">EMC</h2>
+<h3 id="gid-conversion_1">GID conversion</h3>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
+
+<span class="c1"># generate random crystal gid</span>
+<span class="n">gid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6240</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+
+<span class="c1"># get part, theta, phi</span>
+<span class="n">part</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_part</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_theta</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">phi</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_phi</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+
+<span class="c1"># get gid</span>
+<span class="n">gid</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_emc_gid</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="crystals-position">Crystals position</h3>
+<p>To get front center, center x, y, z of crystals:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># get front center x, y, z</span>
+<span class="n">front_center_x</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_front_center_x</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">front_center_y</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_front_center_y</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">front_center_z</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_front_center_z</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+
+<span class="c1"># get center x, y, z</span>
+<span class="n">center_x</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_center_x</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">center_y</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_center_y</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">center_z</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_center_z</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<p>There are total 8 points on a crystal, you can get x, y, z of these points:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># get x, y, z of point-0 of crystals</span>
+<span class="n">x0</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_point_x</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">y0</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_point_y</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">z0</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_point_z</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># get x, y, z of point-7 of crystals</span>
+<span class="n">x7</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_point_x</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">y7</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_point_y</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="n">z7</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_point_z</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+
+<span class="c1"># get x, y, z of all 8 points of crystal 0</span>
+<span class="n">point_id</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">8</span><span class="p">)</span>
+<span class="n">x</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_point_x</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">point_id</span><span class="p">)</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_point_y</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">point_id</span><span class="p">)</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_point_z</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">point_id</span><span class="p">)</span>
+</code></pre></div>
+<hr />
+<p>You can get the whole crystals position table of EMC:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># get table in `dict[str, np.ndarray]`</span>
+<span class="n">crystal_position_np</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_emc_crystal_position</span><span class="p">()</span>
+
+<span class="c1"># get table in `ak.Array`</span>
+<span class="n">crystal_position_ak</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_emc_crystal_position</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="s2">&quot;ak&quot;</span><span class="p">)</span>
+
+<span class="c1"># get table in `pd.DataFrame`</span>
+<span class="n">crystal_position_pd</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_emc_crystal_position</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="s2">&quot;pd&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="barrel-geometry">Barrel geometry</h3>
+<p>Some geometry constants of EMC barrel can be obtained:</p>
+<div class="highlight"><pre><span></span><code><span class="n">p3</span><span class="o">.</span><span class="n">emc_barrel_h1</span>
+<span class="n">p3</span><span class="o">.</span><span class="n">emc_barrel_h2</span>
+<span class="n">p3</span><span class="o">.</span><span class="n">emc_barrel_h3</span>
+<span class="n">p3</span><span class="o">.</span><span class="n">emc_barrel_l</span>
+<span class="n">p3</span><span class="o">.</span><span class="n">emc_barrel_r</span>
+<span class="n">p3</span><span class="o">.</span><span class="n">emc_barrel_offset_1</span>
+<span class="n">p3</span><span class="o">.</span><span class="n">emc_barrel_offset_2</span>
+</code></pre></div>
+<p>These constants are exported from <code>EmcRecGeoSvc</code> in <code>BOSS</code>.</p>
 
 
 
@@ -890,7 +1052,7 @@
     <script id="__config" type="application/json">{"base": "../../..", "features": ["toc", "search", "search.suggest", "footer"], "search": "../../../assets/javascripts/workers/search.f8cc74c7.min.js", "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}}</script>
     
     
-      <script src="../../../assets/javascripts/bundle.5090c770.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.f1b6f286.min.js"></script>
       
         <script src="../../../javascripts/mathjax.js"></script>
       
