@@ -13,6 +13,13 @@ from .digi_id import (
     get_tof_digi_id,
 )
 from .geometry import (
+    emc_barrel_h1,
+    emc_barrel_h2,
+    emc_barrel_h3,
+    emc_barrel_l,
+    emc_barrel_offset_1,
+    emc_barrel_offset_2,
+    emc_barrel_r,
     emc_gid_to_center_x,
     emc_gid_to_center_y,
     emc_gid_to_center_z,
