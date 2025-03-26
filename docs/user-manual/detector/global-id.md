@@ -1,6 +1,9 @@
 # Global ID (gid)
 
-To better locate each detector element, a global ID (gid) is defined. Gid always starts from 0 and increases along the detector elements. The increasing order is described by a tuple-like structure.
+!!! info
+    This page only illustrates the gid of each detector element. To convert gid to other information, please refer to [Geometry](geometry.md).
+
+To better locate each detector element, a global ID (gid) is defined. GID always starts from 0 and increases along the detector elements. The increasing order is described by a tuple-like structure.
 
 For example, MDC gid can be described as `(layer, wire)`, which means it increases first along the `wire` and then along the `layer`, as shown below:
 
@@ -10,6 +13,8 @@ For example, MDC gid can be described as `(layer, wire)`, which means it increas
 | 0     | 1    | 1   |
 | 0     | ...  | ... |
 | 1     | 0    | 40  |
+| 1     | 1    | 41  |
+| ...   | ...  | ... |
 
 > There are 40 wires on layer-0 in MDC.
 

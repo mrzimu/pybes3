@@ -1,7 +1,4 @@
-from . import besio, detectors
-from ._version import __version__, version
-from .besio import concatenate, concatenate_raw, open, open_raw, wrap_uproot
-from .detectors import (
+from .emc import (
     emc_barrel_h1,
     emc_barrel_h2,
     emc_barrel_h3,
@@ -23,6 +20,8 @@ from .detectors import (
     emc_gid_to_theta,
     get_emc_crystal_position,
     get_emc_gid,
+)
+from .mdc import (
     get_mdc_gid,
     get_mdc_wire_position,
     mdc_gid_to_east_x,
@@ -40,14 +39,4 @@ from .detectors import (
     mdc_gid_z_to_y,
     mdc_layer_to_is_stereo,
     mdc_layer_to_superlayer,
-    parse_cgem_digi_id,
-    parse_emc_digi,
-    parse_emc_digi_id,
-    parse_emc_gid,
-    parse_mdc_digi,
-    parse_mdc_digi_id,
-    parse_mdc_gid,
-    parse_muc_digi_id,
-    parse_tof_digi_id,
 )
-from .tracks import parse_helix

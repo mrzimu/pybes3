@@ -41,8 +41,37 @@
 ---
 ::: pybes3.detectors.geometry.mdc_gid_z_to_y
 ---
+::: pybes3.detectors.geometry.get_emc_crystal_position
+---
+::: pybes3.detectors.geometry.get_emc_gid
+---
+::: pybes3.detectors.geometry.emc_gid_to_center_x
+---
+::: pybes3.detectors.geometry.emc_gid_to_center_y
+---
+::: pybes3.detectors.geometry.emc_gid_to_center_z
+---
+::: pybes3.detectors.geometry.emc_gid_to_front_center_x
+---
+::: pybes3.detectors.geometry.emc_gid_to_front_center_y
+---
+::: pybes3.detectors.geometry.emc_gid_to_front_center_z
+---
+::: pybes3.detectors.geometry.emc_gid_to_part
+---
+::: pybes3.detectors.geometry.emc_gid_to_phi
+---
+::: pybes3.detectors.geometry.emc_gid_to_point_x
+---
+::: pybes3.detectors.geometry.emc_gid_to_point_y
+---
+::: pybes3.detectors.geometry.emc_gid_to_point_z
+---
+::: pybes3.detectors.geometry.emc_gid_to_theta
+---
 
-## Digi Identify
+
+## Digi Identifier
 ::: pybes3.detectors.digi_id.check_mdc_id
 ---
 ::: pybes3.detectors.digi_id.mdc_id_to_wire

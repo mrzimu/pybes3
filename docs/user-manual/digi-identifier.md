@@ -5,7 +5,7 @@ When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, `muc`, `c
 ## Digi array parsing
 
 !!! info
-    By so far, only MDC digi parsing is supported. Whole digi parsing for other detectors is still under development. If you need to parse digi ID for other detectors, use the [standalone digi ID parsing methods](#standalone-digi-id-parsing).
+    By so far, only MDC and EMC digi parsing is supported. Whole digi parsing for other detectors is still under development. If you need to parse digi ID for other detectors, use the [standalone digi ID parsing methods](#standalone-digi-id-parsing).
 
 
 ```python
@@ -32,9 +32,22 @@ tof_digi_id = p3.parse_tof_digi_id(tof_digi["m_intId"])
 emc_digi_id = p3.parse_emc_digi_id(emc_digi["m_intId"])
 ```
 
-!!! note
+!!! info
     As the development of `pybes3.detectors.geometry`, the `parse_xxx_digi_id` methods will be updated to return more fields.
 
+## Convert digi ID to specific field
+
+```python
+import pybes3.detectors.digi_id as digi_id
+
+# get TOF part number
+tof_part = digi_id.tof_id_to_part(tof_digi["m_intId"])
+
+# get EMC theta number
+emc_theta = digi_id.emc_id_to_theta(emc_digi["m_intId"])
+```
+
+See [Digi Identify API](../../api/pybes3.detectors/#digi-identify) for all available methods.
 
 ## Digi-ID calculation
 

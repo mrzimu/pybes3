@@ -17,7 +17,9 @@ def test_mdc_parse_gid():
         "gid",
         "layer",
         "wire",
+        "stereo",
         "is_stereo",
+        "superlayer",
         "mid_x",
         "mid_y",
         "west_x",
@@ -28,17 +30,24 @@ def test_mdc_parse_gid():
         "east_z",
     ]
 
-    ak_res1 = det.parse_mdc_gid(ak_gid, with_pos=True)
+    ak_res1 = p3.parse_mdc_gid(ak_gid, with_pos=True)
     assert ak_res1.fields == mdc_fields
 
-    ak_res2 = det.parse_mdc_gid(ak_gid, with_pos=False)
-    assert ak_res2.fields == ["gid", "layer", "wire", "is_stereo"]
+    ak_res2 = p3.parse_mdc_gid(ak_gid, with_pos=False)
+    assert ak_res2.fields == ["gid", "layer", "wire", "stereo", "is_stereo", "superlayer"]
 
-    np_res1 = det.parse_mdc_gid(np_gid, with_pos=True)
+    np_res1 = p3.parse_mdc_gid(np_gid, with_pos=True)
     assert list(np_res1.keys()) == mdc_fields
 
-    np_res2 = det.parse_mdc_gid(np_gid, with_pos=False)
-    assert list(np_res2.keys()) == ["gid", "layer", "wire", "is_stereo"]
+    np_res2 = p3.parse_mdc_gid(np_gid, with_pos=False)
+    assert list(np_res2.keys()) == [
+        "gid",
+        "layer",
+        "wire",
+        "stereo",
+        "is_stereo",
+        "superlayer",
+    ]
 
 
 def test_parse_mdc_digi_id():
@@ -47,7 +56,9 @@ def test_parse_mdc_digi_id():
         "gid",
         "layer",
         "wire",
+        "stereo",
         "is_stereo",
+        "superlayer",
         "mid_x",
         "mid_y",
         "west_x",
@@ -91,7 +102,7 @@ def test_parse_mdc_digi_id():
 
     # Test awkward, with_pos=False
     ak_res2 = p3.parse_mdc_digi_id(mdc_id_ak, with_pos=False)
-    assert ak_res2.fields == ["gid", "layer", "wire", "is_stereo"]
+    assert ak_res2.fields == ["gid", "layer", "wire", "stereo", "is_stereo", "superlayer"]
     assert len(ak_res2.positional_axis) == 2
     assert ak.all(ak_res2["wire"] == wire_ak)
     assert ak.all(ak_res2["layer"] == layer_ak)
@@ -104,7 +115,9 @@ def test_parse_mdc_digi():
         "gid",
         "wire",
         "layer",
+        "stereo",
         "is_stereo",
+        "superlayer",
         "charge_channel",
         "time_channel",
         "track_index",
@@ -132,57 +145,120 @@ def test_parse_mdc_digi():
     assert len(ak_res2.positional_axis) == 2
 
 
+def test_parse_emc_gid():
+    np_gid = det.get_emc_crystal_position()["gid"]
+    ak_gid = ak.Array(np_gid)
+    emc_fields = [
+        "gid",
+        "part",
+        "theta",
+        "phi",
+        "front_center_x",
+        "front_center_y",
+        "front_center_z",
+        "center_x",
+        "center_y",
+        "center_z",
+    ]
+
+    ak_res1 = p3.parse_emc_gid(ak_gid, with_pos=True)
+    assert ak_res1.fields == emc_fields
+
+    ak_res2 = p3.parse_emc_gid(ak_gid, with_pos=False)
+    assert ak_res2.fields == ["gid", "part", "theta", "phi"]
+
+    np_res1 = p3.parse_emc_gid(np_gid, with_pos=True)
+    assert list(np_res1.keys()) == emc_fields
+
+    np_res2 = p3.parse_emc_gid(np_gid, with_pos=False)
+    assert list(np_res2.keys()) == ["gid", "part", "theta", "phi"]
+
+
 def test_parse_emc_digi_id():
-    emc_id_ak: ak.Array = p3.open(data_dir / "test_full_mc_evt_1.rtraw")[
-        "Event/TDigiEvent/m_emcDigiCol"
-    ].array()["m_intId"]
+    emc_id_ak: ak.Array = rtraw_event["m_emcDigiCol"]["m_intId"]
+    emc_fields = [
+        "gid",
+        "part",
+        "theta",
+        "phi",
+        "front_center_x",
+        "front_center_y",
+        "front_center_z",
+        "center_x",
+        "center_y",
+        "center_z",
+    ]
 
     module_ak = det.digi_id.emc_id_to_module(emc_id_ak)
     theta_ak = det.digi_id.emc_id_to_theta(emc_id_ak)
     phi_ak = det.digi_id.emc_id_to_phi(emc_id_ak)
 
-    # Test awkward, flat=False, library='ak'
-    ak_res1 = p3.parse_emc_digi_id(emc_id_ak, flat=False, library="ak")
-    assert ak_res1.fields == ["module", "theta", "phi"]
+    # Test awkward, with_pos=True
+    ak_res1 = p3.parse_emc_digi_id(emc_id_ak, with_pos=True)
+    assert ak_res1.fields == emc_fields
     assert len(ak_res1.positional_axis) == 2
-    assert ak.all(ak_res1["module"] == module_ak)
+    assert ak.all(ak_res1["part"] == module_ak)
     assert ak.all(ak_res1["theta"] == theta_ak)
     assert ak.all(ak_res1["phi"] == phi_ak)
-
-    # Test awkward, flat=True, library='ak'
-    ak_res2 = p3.parse_emc_digi_id(emc_id_ak, flat=True, library="ak")
-    assert ak_res2.fields == ["module", "theta", "phi"]
-    assert len(ak_res2.positional_axis) == 1
-    assert ak.all(ak_res2["module"] == ak.flatten(module_ak))
-    assert ak.all(ak_res2["theta"] == ak.flatten(theta_ak))
-    assert ak.all(ak_res2["phi"] == ak.flatten(phi_ak))
 
     emc_id_np = ak.flatten(emc_id_ak).to_numpy()
     module_np = ak.flatten(module_ak).to_numpy()
     theta_np = ak.flatten(theta_ak).to_numpy()
     phi_np = ak.flatten(phi_ak).to_numpy()
 
-    # Test numpy, library='np'
-    np_res1 = p3.parse_emc_digi_id(emc_id_np, flat=False, library="np")
-    assert list(np_res1.keys()) == ["module", "theta", "phi"]
-    assert np.all(np_res1["module"] == module_np)
+    # Test numpy, with_pos=True
+    np_res1 = p3.parse_emc_digi_id(emc_id_np, with_pos=True)
+    assert list(np_res1.keys()) == emc_fields
+    assert np.all(np_res1["part"] == module_np)
     assert np.all(np_res1["theta"] == theta_np)
     assert np.all(np_res1["phi"] == phi_np)
 
-    # Test int, library='ak'
+    # Test int, with_pos=True
     emc_id_int = int(emc_id_np[0])
-    int_res1 = p3.parse_emc_digi_id(emc_id_int, flat=False, library="ak")
-    assert int_res1.fields == ["module", "theta", "phi"]
-    assert int_res1["module"] == module_np[0]
+    int_res1 = p3.parse_emc_digi_id(emc_id_int, with_pos=True)
+    assert int_res1["part"] == module_np[0]
     assert int_res1["theta"] == theta_np[0]
     assert int_res1["phi"] == phi_np[0]
 
-    # Test int, library='np'
-    int_res2 = p3.parse_emc_digi_id(emc_id_int, flat=False, library="np")
-    assert list(int_res2.keys()) == ["module", "theta", "phi"]
-    assert int_res2["module"] == module_np[0]
-    assert int_res2["theta"] == theta_np[0]
-    assert int_res2["phi"] == phi_np[0]
+    # Test awkward, with_pos=False
+    ak_res2 = p3.parse_emc_digi_id(emc_id_ak, with_pos=False)
+    assert ak_res2.fields == ["gid", "part", "theta", "phi"]
+    assert len(ak_res2.positional_axis) == 2
+    assert ak.all(ak_res2["part"] == module_ak)
+    assert ak.all(ak_res2["theta"] == theta_ak)
+    assert ak.all(ak_res2["phi"] == phi_ak)
+
+
+def test_parse_emc_digi():
+    emc_digi_ak: ak.Record = rtraw_event["m_emcDigiCol"]
+    base_fields = [
+        "gid",
+        "part",
+        "theta",
+        "phi",
+        "charge_channel",
+        "time_channel",
+        "track_index",
+        "measure",
+        "digi_id",
+    ]
+
+    opt_fields = [
+        "front_center_x",
+        "front_center_y",
+        "front_center_z",
+        "center_x",
+        "center_y",
+        "center_z",
+    ]
+
+    ak_res1 = p3.parse_emc_digi(emc_digi_ak, with_pos=True)
+    assert ak_res1.fields == base_fields + opt_fields
+    assert len(ak_res1.positional_axis) == 2
+
+    ak_res2 = p3.parse_emc_digi(emc_digi_ak, with_pos=False)
+    assert ak_res2.fields == base_fields
+    assert len(ak_res2.positional_axis) == 2
 
 
 def test_parse_tof_digi_id():

@@ -5,14 +5,12 @@ import awkward as ak
 import numba as nb
 import numpy as np
 
-from ..typing import BoolLike, FloatLike, IntLike
+from ...typing import BoolLike, FloatLike, IntLike
 
 _cur_dir = Path(__file__).resolve().parent
 
-###############################################################################
-#                                     MDC                                     #
-###############################################################################
-_mdc_wire_position: dict[str, np.ndarray] = dict(np.load(_cur_dir / "mdc_wire_position.npz"))
+_mdc_wire_position: dict[str, np.ndarray] = dict(np.load(_cur_dir / "mdc_geom.npz"))
+_superlayer: np.ndarray = _mdc_wire_position["superlayer"]
 _layer: np.ndarray = _mdc_wire_position["layer"]
 _wire: np.ndarray = _mdc_wire_position["wire"]
 _east_x: np.ndarray = _mdc_wire_position["east_x"]
@@ -21,6 +19,7 @@ _east_z: np.ndarray = _mdc_wire_position["east_z"]
 _west_x: np.ndarray = _mdc_wire_position["west_x"]
 _west_y: np.ndarray = _mdc_wire_position["west_y"]
 _west_z: np.ndarray = _mdc_wire_position["west_z"]
+_stereo: np.ndarray = _mdc_wire_position["stereo"]
 _is_stereo: np.ndarray = _mdc_wire_position["is_stereo"]
 
 # Generate the wire start index of each layer
@@ -39,8 +38,11 @@ for l in range(43):
     assert np.unique(_is_stereo[_layer == l]).size == 1
     is_layer_stereo[l] = _is_stereo[_layer == l][0]
 
+# Generate layer -> superlayer array
+superlayer_splits = np.array([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 43])
 
-def get_mdc_wire_position(library: Literal["ak", "np", "pd"] = "np"):
+
+def get_mdc_wire_position(library: Literal["np", "ak", "pd"] = "np"):
     """
     Get the MDC wire position table.
 
@@ -67,7 +69,7 @@ def get_mdc_wire_position(library: Literal["ak", "np", "pd"] = "np"):
             raise ImportError("Pandas is not installed. Run `pip install pandas`.")
         return pd.DataFrame(cp)
     else:
-        raise ValueError("Invalid library. Choose from 'ak', 'np', 'pd'.")
+        raise ValueError(f"Invalid library {library}. Choose from 'ak', 'np', 'pd'.")
 
 
 @nb.vectorize([nb.uint16(nb.int_, nb.int_)])
@@ -83,6 +85,34 @@ def get_mdc_gid(layer: IntLike, wire: IntLike) -> IntLike:
         The gid of the wire.
     """
     return layer_start_gid[layer] + wire
+
+
+@nb.vectorize([nb.uint8(nb.int_)])
+def mdc_gid_to_superlayer(gid: IntLike) -> IntLike:
+    """
+    Convert gid to superlayer.
+
+    Parameters:
+        gid: The gid of the wire.
+
+    Returns:
+        The superlayer number of the wire.
+    """
+    return _superlayer[gid]
+
+
+@nb.vectorize([nb.uint8(nb.int_)])
+def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
+    """
+    Convert layer to superlayer.
+
+    Parameters:
+        layer: The layer number.
+
+    Returns:
+        The superlayer number of the layer.
+    """
+    return np.digitize(layer, superlayer_splits, right=True)
 
 
 @nb.vectorize([nb.uint8(nb.int_)])
@@ -113,6 +143,23 @@ def mdc_gid_to_wire(gid: IntLike) -> IntLike:
     return _wire[gid]
 
 
+@nb.vectorize([nb.int8(nb.int_)])
+def mdc_gid_to_stereo(gid: IntLike) -> IntLike:
+    """
+    Convert gid to stereo.
+    `0` for `axial`,
+    `-1` for stereo that `phi_west < phi_east`,
+    `1` for stereo that `phi_west > phi_east`.
+
+    Parameters:
+        gid: The gid of the wire.
+
+    Returns:
+        The stereo of the wire.
+    """
+    return _stereo[gid]
+
+
 @nb.vectorize([nb.boolean(nb.int_)])
 def mdc_layer_to_is_stereo(layer: IntLike) -> BoolLike:
     """
@@ -141,7 +188,7 @@ def mdc_gid_to_is_stereo(gid: IntLike) -> BoolLike:
     return _is_stereo[gid]
 
 
-@nb.vectorize([nb.float32(nb.int_)])
+@nb.vectorize([nb.float64(nb.int_)])
 def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_x (cm).
@@ -155,7 +202,7 @@ def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
     return _west_x[gid]
 
 
-@nb.vectorize([nb.float32(nb.int_)])
+@nb.vectorize([nb.float64(nb.int_)])
 def mdc_gid_to_west_y(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_y (cm).
@@ -169,7 +216,7 @@ def mdc_gid_to_west_y(gid: IntLike) -> FloatLike:
     return _west_y[gid]
 
 
-@nb.vectorize([nb.float32(nb.int_)])
+@nb.vectorize([nb.float64(nb.int_)])
 def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_z (cm).
@@ -183,7 +230,7 @@ def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
     return _west_z[gid]
 
 
-@nb.vectorize([nb.float32(nb.int_)])
+@nb.vectorize([nb.float64(nb.int_)])
 def mdc_gid_to_east_x(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_x (cm).
@@ -197,7 +244,7 @@ def mdc_gid_to_east_x(gid: IntLike) -> FloatLike:
     return _east_x[gid]
 
 
-@nb.vectorize([nb.float32(nb.int_)])
+@nb.vectorize([nb.float64(nb.int_)])
 def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_y (cm).
@@ -211,7 +258,7 @@ def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
     return _east_y[gid]
 
 
-@nb.vectorize([nb.float32(nb.int_)])
+@nb.vectorize([nb.float64(nb.int_)])
 def mdc_gid_to_east_z(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_z (cm).
@@ -225,7 +272,7 @@ def mdc_gid_to_east_z(gid: IntLike) -> FloatLike:
     return _east_z[gid]
 
 
-@nb.vectorize([nb.float32(nb.int_, nb.float32)])
+@nb.vectorize([nb.float64(nb.int_, nb.float64)])
 def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
     """
     Get the x (cm) position of the wire at z (cm).
@@ -240,7 +287,7 @@ def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
     return _west_x[gid] + dx_dz[gid] * (z - _west_z[gid])
 
 
-@nb.vectorize([nb.float32(nb.int_, nb.float32)])
+@nb.vectorize([nb.float64(nb.int_, nb.float64)])
 def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
     """
     Get the y (cm) position of the wire at z (cm).
@@ -253,20 +300,3 @@ def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
         The y (cm) position of the wire at z (cm).
     """
     return _west_y[gid] + dy_dz[gid] * (z - _west_z[gid])
-
-
-###############################################################################
-#                                     TOF                                     #
-###############################################################################
-
-###############################################################################
-#                                     EMC                                     #
-###############################################################################
-
-###############################################################################
-#                                     MUC                                     #
-###############################################################################
-
-###############################################################################
-#                                    CGEM                                     #
-###############################################################################
