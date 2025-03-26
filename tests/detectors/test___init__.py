@@ -30,16 +30,16 @@ def test_mdc_parse_gid():
         "east_z",
     ]
 
-    ak_res1 = det.parse_mdc_gid(ak_gid, with_pos=True)
+    ak_res1 = p3.parse_mdc_gid(ak_gid, with_pos=True)
     assert ak_res1.fields == mdc_fields
 
-    ak_res2 = det.parse_mdc_gid(ak_gid, with_pos=False)
+    ak_res2 = p3.parse_mdc_gid(ak_gid, with_pos=False)
     assert ak_res2.fields == ["gid", "layer", "wire", "stereo", "is_stereo", "superlayer"]
 
-    np_res1 = det.parse_mdc_gid(np_gid, with_pos=True)
+    np_res1 = p3.parse_mdc_gid(np_gid, with_pos=True)
     assert list(np_res1.keys()) == mdc_fields
 
-    np_res2 = det.parse_mdc_gid(np_gid, with_pos=False)
+    np_res2 = p3.parse_mdc_gid(np_gid, with_pos=False)
     assert list(np_res2.keys()) == [
         "gid",
         "layer",
@@ -161,16 +161,16 @@ def test_parse_emc_gid():
         "center_z",
     ]
 
-    ak_res1 = det.parse_emc_gid(ak_gid, with_pos=True)
+    ak_res1 = p3.parse_emc_gid(ak_gid, with_pos=True)
     assert ak_res1.fields == emc_fields
 
-    ak_res2 = det.parse_emc_gid(ak_gid, with_pos=False)
+    ak_res2 = p3.parse_emc_gid(ak_gid, with_pos=False)
     assert ak_res2.fields == ["gid", "part", "theta", "phi"]
 
-    np_res1 = det.parse_emc_gid(np_gid, with_pos=True)
+    np_res1 = p3.parse_emc_gid(np_gid, with_pos=True)
     assert list(np_res1.keys()) == emc_fields
 
-    np_res2 = det.parse_emc_gid(np_gid, with_pos=False)
+    np_res2 = p3.parse_emc_gid(np_gid, with_pos=False)
     assert list(np_res2.keys()) == ["gid", "part", "theta", "phi"]
 
 

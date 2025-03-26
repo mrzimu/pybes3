@@ -71,7 +71,7 @@
 ---
 
 
-## Digi Identify
+## Digi Identifier
 ::: pybes3.detectors.digi_id.check_mdc_id
 ---
 ::: pybes3.detectors.digi_id.mdc_id_to_wire
