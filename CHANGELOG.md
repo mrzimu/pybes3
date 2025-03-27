@@ -1,5 +1,6 @@
 ## v0.2.1.1
 * Fix mistake in `superlayer` field of `mdc_geom.npz` in `pybes3.detectors.geometry`
+* Extend position filed of `mdc_geom.npz` from `np.float32` to `np.float64`
 
 ## v0.2.1
 * Add EMC geometry methods to `pybes3.detectors.geometry`
