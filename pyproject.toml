@@ -68,4 +68,5 @@ before-test = "pip install ."
 test-command = ["pytest {package}/tests"]
 
 # Build options
-build = ["cp*-manylinux_x86_64", "cp*-macosx_arm64", "cp*-win_amd64"]
+# build = ["cp*-manylinux_x86_64", "cp*-macosx_arm64", "cp*-win_amd64"]
+build = ["cp*-manylinux_x86_64"]
