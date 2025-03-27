@@ -1,3 +1,6 @@
+## v0.2.1.1
+* Fix mistake in `superlayer` field of `mdc_geom.npz` in `pybes3.detectors.geometry`
+
 ## v0.2.1
 * Add EMC geometry methods to `pybes3.detectors.geometry`
 * Add MDC `superlayer` and `stereo` fields to `pybes3.detectors.geometry`
@@ -20,7 +23,7 @@
 ## v0.1.2.4
 * Modify `pybes3.detectors.identify`: Replace `nb.bool` with `nb.boolean` to improve compatibility with `numba`
 
-## v0.1.2.2-v0.1.2.3
+## v0.1.2.2 - v0.1.2.3
 * Add github workflows `python-publish`
 * Remove version checking in `__init__.py`
 * Improve `pyproject.toml`
