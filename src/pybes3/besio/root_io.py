@@ -494,7 +494,7 @@ def expand_zipped_symetric_matrix(
 
 
 def expand_subbranch_symetric_matrix(
-    sub_br_arr: ak.Array, matrix_fields: Union[str, list[str]]
+    sub_br_arr: ak.Array, matrix_fields: Union[str, set[str]]
 ) -> ak.Array:
     """
     Recover simplified symmetric matrix back to 2D matrix from specified fields of a branch array.
@@ -583,6 +583,24 @@ def process_dst_m_extTrackCol(org_arr: ak.Array) -> ak.Array:
     )
 
 
+def process_dst_m_mdcKalTrackCol(org_arr: ak.Array) -> ak.Array:
+    return expand_subbranch_symetric_matrix(
+        org_arr,
+        {
+            "m_zerror",
+            "m_zerror_e",
+            "m_zerror_mu",
+            "m_zerror_k",
+            "m_zerror_p",
+            "m_ferror",
+            "m_ferror_e",
+            "m_ferror_mu",
+            "m_ferror_k",
+            "m_ferror_p",
+        },
+    )
+
+
 #############################################
 # TRecEvent
 #############################################
@@ -620,6 +638,8 @@ def preprocess_subbranch(full_branch_path: str, org_arr: ak.Array) -> ak.Array:
             return process_dst_m_emcTrackCol(org_arr)
         if subbranch_name == "m_extTrackCol":
             return process_dst_m_extTrackCol(org_arr)
+        if subbranch_name == "m_mdcKalTrackCol":
+            return process_dst_m_mdcKalTrackCol(org_arr)
 
     if evt_name == "TRecEvent":
         if subbranch_name == "m_recMdcTrackCol":
