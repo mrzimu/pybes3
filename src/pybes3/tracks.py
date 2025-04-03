@@ -128,7 +128,7 @@ def _pz_p_to_theta(pz: FloatLike, p: FloatLike) -> FloatLike:
     Returns:
         theta of the helix.
     """
-    return np.acos(pz / p)
+    return np.arccos(pz / p)
 
 
 def parse_helix(
@@ -164,7 +164,7 @@ def parse_helix(
     pz = pt * helix4
     p = _pt_helix4_to_p(pt, helix4)
     theta = _pz_p_to_theta(pz, p)
-    phi = np.atan2(py, px)
+    phi = np.arctan2(py, px)
 
     charge = _helix2_to_charge(helix2)
 
