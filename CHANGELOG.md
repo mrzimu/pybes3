@@ -1,8 +1,6 @@
-## v0.2.1.3
-* Fix mistake in `superlayer` field of `mdc_geom.npz` in `pybes3.detectors.geometry` again
-
 ## v0.2.1.2
 * Modify `pybes3.tracks`: Replace `np.acos` with `np.arccos`, `np.atan2` with `np.arctan2` to improve compatibility with `numpy`
+* Fix mistake in `superlayer` field of `mdc_geom.npz` in `pybes3.detectors.geometry` again
 
 ## v0.2.1.1
 * Fix mistake in `superlayer` field of `mdc_geom.npz` in `pybes3.detectors.geometry`
