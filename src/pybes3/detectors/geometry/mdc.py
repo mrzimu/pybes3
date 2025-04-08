@@ -112,7 +112,7 @@ def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
     Returns:
         The superlayer number of the layer.
     """
-    return np.digitize(layer, superlayer_splits, right=True)
+    return np.digitize(layer, superlayer_splits, right=False) - 1
 
 
 @nb.vectorize([nb.uint8(nb.int_)])
