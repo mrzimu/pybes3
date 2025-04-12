@@ -1,3 +1,8 @@
+# fmt: off
+from ._cache_numba import check_numba_cache
+check_numba_cache()
+# fmt: on
+
 from . import besio, detectors
 from ._version import __version__, version
 from .besio import concatenate, concatenate_raw, open, open_raw, wrap_uproot

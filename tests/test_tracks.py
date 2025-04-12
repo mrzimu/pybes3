@@ -4,7 +4,7 @@ import awkward as ak
 
 import pybes3 as p3
 
-data_dir = Path(__file__).parent.parent / "data"
+data_dir = Path(__file__).parent / "data"
 
 helix_ak = p3.open(data_dir / "test_full_mc_evt_1.dst")[
     "Event/TDstEvent/m_mdcTrackCol"
