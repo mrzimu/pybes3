@@ -1,7 +1,7 @@
 !!! info
     `pybes3` requires Python 3.9 or higher.
 
-## Users on lxlogin Server
+## Users on lxlogin server
 
 "lxlogin server" means the login server of computation clusters of IHEP. Since there is a quota limitation on user's home path (`~/`), you may also need to create symbolinks for `~/.local` and `~/.cache`, which contains pip caches and packages that installed in "user mode":
 

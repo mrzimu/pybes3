@@ -7,7 +7,7 @@ import numpy as np
 from .typing import FloatLike
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)])
+@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
 def _helix01_to_x(helix0: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert helix parameters to x location.
@@ -22,7 +22,7 @@ def _helix01_to_x(helix0: FloatLike, helix1: FloatLike) -> FloatLike:
     return helix0 * np.cos(helix1)
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)])
+@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
 def _helix01_to_y(helix0: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert helix parameters to y location.
@@ -37,7 +37,7 @@ def _helix01_to_y(helix0: FloatLike, helix1: FloatLike) -> FloatLike:
     return helix0 * np.sin(helix1)
 
 
-@nb.vectorize([nb.float64(nb.float64)])
+@nb.vectorize([nb.float64(nb.float64)], cache=True)
 def _helix2_to_pt(
     helix2: FloatLike,
 ) -> FloatLike:
@@ -53,7 +53,7 @@ def _helix2_to_pt(
     return 1 / np.abs(helix2)
 
 
-@nb.vectorize([nb.int8(nb.float64)])
+@nb.vectorize([nb.int8(nb.float64)], cache=True)
 def _helix2_to_charge(
     helix2: FloatLike,
 ) -> FloatLike:
@@ -71,7 +71,7 @@ def _helix2_to_charge(
     return 1 if helix2 > 0 else -1
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)])
+@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
 def _pt_helix1_to_px(pt: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert pt and helix1 to px.
@@ -86,7 +86,7 @@ def _pt_helix1_to_px(pt: FloatLike, helix1: FloatLike) -> FloatLike:
     return -pt * np.sin(helix1)
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)])
+@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
 def _pt_helix1_to_py(pt: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert pt and helix1 to py.
@@ -101,7 +101,7 @@ def _pt_helix1_to_py(pt: FloatLike, helix1: FloatLike) -> FloatLike:
     return pt * np.cos(helix1)
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)])
+@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
 def _pt_helix4_to_p(pt: FloatLike, helix4: FloatLike) -> FloatLike:
     """
     Convert pt and helix4 to p.
@@ -116,7 +116,7 @@ def _pt_helix4_to_p(pt: FloatLike, helix4: FloatLike) -> FloatLike:
     return pt * np.sqrt(1 + helix4**2)
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)])
+@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
 def _pz_p_to_theta(pz: FloatLike, p: FloatLike) -> FloatLike:
     """
     Convert pz and p to theta.

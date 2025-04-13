@@ -134,4 +134,4 @@ To read part of file:
     `n_blocks` instead of `n_entries` is used here because only data blocks are continuous in memory. Most of the time, there is one event in a data block.
 
 !!! warning
-    By so far, `besio` can only read original raw data without any decoding. Read raw data with decoding is under development.
+    By so far, `besio` can only read original raw data without any decoding. Reading raw data with decoding is under development.

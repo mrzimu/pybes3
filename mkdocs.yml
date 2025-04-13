@@ -31,6 +31,9 @@ theme:
         icon: material/brightness-4
         name: Switch to system preference
 
+extra_css:
+  - stylesheets/extra.css
+
 markdown_extensions:
   - admonition
   - attr_list
@@ -81,3 +84,4 @@ nav:
       - pybes3.besio: api/pybes3.besio.md
       - pybes3.detectors: api/pybes3.detectors.md
       - pybes3.tracks: api/pybes3.tracks.md
+      - pybes3._cache_numba: api/pybes3._cache_numba.md
