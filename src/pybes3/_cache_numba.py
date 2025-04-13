@@ -45,13 +45,13 @@ def cache_auto_clear(
     """
     # Transform sources and caches to lists of strings
     sources: list[str] = (
-        glob(str(sources), include_hidden=True)
+        glob(str(sources))
         if isinstance(sources, (Path, str))
         else sum([glob(str(s)) for s in sources], [])
     )
 
     caches: list[str] = (
-        glob(str(caches), include_hidden=True)
+        glob(str(caches))
         if isinstance(caches, (Path, str))
         else sum([glob(str(c)) for c in caches], [])
     )
