@@ -126,12 +126,12 @@ branchname_to_element_type = {
     "TRecEvent/m_recZddChannelCol": (kTObjArray, "TRecZddChannel"),
     # This is an TObject, not a TObjArray
     "TEvtRecObject/m_evtRecEvent": (kTObject, "TEvtRecEvent"),
-    "TEvtRecObject/m_evtRecTrackCol": (kTObjArray, "TEvtRecDTag"),
+    "TEvtRecObject/m_evtRecTrackCol": (kTObjArray, "TEvtRecTrack"),
     # This is an TObject, not a TObjArray
     "TEvtRecObject/m_evtRecPrimaryVertex": (kTObject, "TEvtRecPrimaryVertex"),
-    "TEvtRecObject/m_evtRecVeeVertexCol": (kTObjArray, "TEvtRecDTag"),
-    "TEvtRecObject/m_evtRecPi0Col": (kTObjArray, "TEvtRecDTag"),
-    "TEvtRecObject/m_evtRecEtaToGGCol": (kTObjArray, "TEvtRecDTag"),
+    "TEvtRecObject/m_evtRecVeeVertexCol": (kTObjArray, "TEvtRecVeeVertex"),
+    "TEvtRecObject/m_evtRecPi0Col": (kTObjArray, "TEvtRecPi0"),
+    "TEvtRecObject/m_evtRecEtaToGGCol": (kTObjArray, "TEvtRecEtaToGG"),
     "TEvtRecObject/m_evtRecDTagCol": (kTObjArray, "TEvtRecDTag"),
     "THltEvent/m_hltRawCol": (kTObjArray, "THltRaw"),
     # This is an TObject, not a TObjArray

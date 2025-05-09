@@ -22,57 +22,39 @@ def test_uproot_branches():
 
 def test_mc_full():
     f_rtraw = uproot.open(data_dir / "test_full_mc_evt_1.rtraw")
-    arr = f_rtraw["Event/TMcEvent"].arrays()
+    arr = f_rtraw["Event"].arrays()
     assert len(arr) == 10
 
 
 def test_mc_only_particles():
     f_rtraw = uproot.open(data_dir / "test_only_mc_particles.rtraw")
-    arr = f_rtraw["Event/TMcEvent"].arrays()
+    arr = f_rtraw["Event"].arrays()
     assert len(arr) == 10
-
-
-def test_nav():
-    f_rtraw = uproot.open(data_dir / "test_only_mc_particles.rtraw")
-    arr = f_rtraw["Event/EventNavigator"].arrays()
-    assert len(arr) == 10
-
-
-def test_evtrec():
-    f_dst = uproot.open(data_dir / "test_full_mc_evt_1.dst")
-    arr_evtrec = f_dst["Event/TEvtRecObject"].arrays()
-    assert len(arr_evtrec) == 10
 
 
 def test_dst():
     f_dst = uproot.open(data_dir / "test_full_mc_evt_1.dst")
-    arr_dst = f_dst["Event/TDstEvent"].arrays()
+    arr_dst = f_dst["Event"].arrays()
     assert len(arr_dst) == 10
-
-
-def test_digi():
-    f_dst = uproot.open(data_dir / "test_full_mc_evt_1.rec")
-    arr_digi = f_dst["Event/TDigiEvent"].arrays()
-    assert len(arr_digi) == 10
 
 
 def test_rec():
     f_rec = uproot.open(data_dir / "test_full_mc_evt_1.rec")
-    arr_rec = f_rec["Event/TRecEvent"].arrays()
+    arr_rec = f_rec["Event"].arrays()
     assert len(arr_rec) == 10
 
 
 def test_cgem_rtraw():
     f_rtraw = uproot.open(data_dir / "test_cgem.rtraw")
-    arr = f_rtraw["Event/TMcEvent"].arrays()
+    arr = f_rtraw["Event"].arrays()
     assert len(arr) == 200
 
 
 def test_uproot_concatenate():
     arr_concat1 = uproot.concatenate(
         {
-            data_dir / "test_full_mc_evt_1.rtraw": "Event/TMcEvent",
-            data_dir / "test_full_mc_evt_2.rtraw": "Event/TMcEvent",
+            data_dir / "test_full_mc_evt_1.rtraw": "Event",
+            data_dir / "test_full_mc_evt_2.rtraw": "Event",
         }
     )
     assert len(arr_concat1) == 20
