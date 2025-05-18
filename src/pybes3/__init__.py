@@ -55,4 +55,4 @@ from .detectors import (
     parse_muc_digi_id,
     parse_tof_digi_id,
 )
-from .tracks import parse_helix
+from .tracks import compute_helix, parse_helix, regularize_helix
