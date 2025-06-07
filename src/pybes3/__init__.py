@@ -3,7 +3,7 @@ from ._cache_numba import check_numba_cache
 check_numba_cache()
 # fmt: on
 
-from . import besio, detectors
+from . import besio, detectors, tracks
 from ._version import __version__, version
 from .besio import concatenate, concatenate_raw, open, open_raw, wrap_uproot
 from .detectors import (
@@ -55,4 +55,4 @@ from .detectors import (
     parse_muc_digi_id,
     parse_tof_digi_id,
 )
-from .tracks import compute_helix, parse_helix, regularize_helix
+from .tracks import compute_helix, helix_awk, helix_obj, parse_helix, regularize_helix

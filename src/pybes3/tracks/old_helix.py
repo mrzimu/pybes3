@@ -1,10 +1,11 @@
+import warnings
 from typing import Literal, Union
 
 import awkward as ak
 import numba as nb
 import numpy as np
 
-from .typing import FloatLike, IntLike
+from ..typing import FloatLike, IntLike
 
 
 @nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
@@ -148,6 +149,13 @@ def parse_helix(
             "pt", "px", "py", "pz", "p", "theta", "phi" for momentum, \
             "charge" for charge, "r_trk" for track radius.
     """
+
+    warnings.warn(
+        "'parse_helix' is deprecated and will be removed in the future, "
+        "use 'helix_obj' and 'helix_awk' instead.",
+        DeprecationWarning,
+    )
+
     helix0 = helix[..., 0]
     helix1 = helix[..., 1]
     helix2 = helix[..., 2]
@@ -270,6 +278,12 @@ def compute_helix(
     Returns:
         helix parameters, the shape is (..., 5), where the last dimension is (dr, phi0, kappa, z, tanl).
     """
+    warnings.warn(
+        "'compute_helix' is deprecated and will be removed in the future, "
+        "use 'helix_obj' and 'helix_awk' instead.",
+        DeprecationWarning,
+    )
+
     x = data["x"]
     y = data["y"]
     z = data["z"]
@@ -330,6 +344,13 @@ def regularize_helix(helix: Union[ak.Array, np.ndarray]) -> Union[ak.Array, np.n
         helix: helix parameters, the last dimension should be 5, and the `dr` is positive.
         The `phi0` is rotated to make sure that the `dr` is positive.
     """
+
+    warnings.warn(
+        "'regularize_helix' is deprecated and will be removed in the future, "
+        "use 'helix_obj' and 'helix_awk' instead.",
+        DeprecationWarning,
+    )
+
     helix0 = helix[..., 0]
     helix1 = helix[..., 1]
     helix2 = helix[..., 2]
