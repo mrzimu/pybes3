@@ -2,7 +2,66 @@
 
 ## Helix
 
-In BESIII, helix is represented by 5 parameters: `dr`, `phi0`, `kappa`, `dz`, `tanl`. To transform these parameters to `x`, `y`, `z`, `px`, `py`, `pz`, etc., use `pybes3.parse_helix`:
+In BESIII, helix is represented by 5 parameters: `dr`, `phi0`, `kappa`, `dz`, `tanl`. `pybes3` provides a convenient way to parse these parameters, and do pivot transformation.
+
+### Python object
+
+If you are working with a single track, you can use `pybes3.helix_obj` to create a helix object:
+
+```python
+import pybes3 as p3
+
+helix = p3.helix_obj(params=(dr, phi0, kappa, dz, tanl))
+```
+
+you can parse a  a `numpy` array of shape `(5, 5)` as error matrix of the helix:
+
+```python
+helix = p3.helix_obj(params=(dr, phi0, kappa, dz, tanl), err_matrix=err_matrix)
+```
+
+you can specify the initial pivot point of the helix by passing `pivot` argument:
+
+```python
+helix = p3.helix_obj(params=(dr, phi0, kappa, dz, tanl), pivot=(x0, y0, z0))
+```
+
+A full list of parameter types is listed below:
+
+??? note
+
+    * Helix parameters:
+
+        ```python
+        # specify parameters as a tuple
+        p3.helix_obj(params=(dr, phi0, kappa, dz, tanl), ...)
+        ```
+
+        ```python
+        # directly specify each parameter
+        p3.helix_obj(dr=dr, phi0=phi0, kappa=kappa, dz=dz, tanl=tanl, ...)
+        ```
+
+    * Error matrix: Can only be a `numpy` array of shape `(5, 5)`.
+
+        ```python
+        # error is a numpy array of shape (5, 5)
+        p3.helix_obj(..., error=error)
+        ```
+
+    * Pivot point:
+        
+        ```python
+        # pivot is a tuple of (x0, y0, z0)
+        p3.helix_obj(..., pivot=(x0, y0, z0))
+        ```
+
+        ```python
+        # pivot is a Vector3D object
+        p3.helix_obj(..., pivot=vector.obj(x=x0, y=y0, z=z0))
+        ```
+
+### Awkward array
 
 ```python
 >>> import pybes3 as p3
@@ -24,19 +83,19 @@ In BESIII, helix is represented by 5 parameters: `dr`, `phi0`, `kappa`, `dz`, `t
 The formulas to transform helix parameters to physical parameters are:
 
 - position:
-    - $x = dr \times \cos \varphi_0$
-    - $y = dr \times \sin \varphi_0$
-    - $z = dz$
+    - $x = x_0 + dr \times \cos \varphi_0$
+    - $y = y_0 + dr \times \sin \varphi_0$
+    - $z = z_0 + dz$
     - $r = \left| dr \right|$
 
 - momentum:
     - $p_t = \frac{1}{\left| \kappa \right|}$
-    - $p_x = p_t \times \sin(- \varphi_0)$
-    - $p_y = p_t \times \cos(- \varphi_0)$
+    - $\varphi = \varphi_0 + \frac{\pi}{2}$
+    - $p_x = p_t \times \cos(\varphi)$
+    - $p_y = p_t \times \sin(\varphi)$
     - $p_z = p_t \times \tan\lambda$
     - $p = p_t \times \sqrt{1 + \tan^2\lambda}$
     - $\theta = \arccos\left(\frac{p_z}{p}\right)$
-    - $\varphi = \arctan2(p_y, p_x)$
 
 - others:
     - $\mathrm{charge} = \mathrm{sign}(\kappa)$
