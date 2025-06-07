@@ -13,6 +13,7 @@ import vector.backends.awkward as vec_ak
 vector.register_awkward()
 
 TypeObjPivot = Union[vector.VectorObject3D, tuple[float, float, float]]
+from ..typing import FloatLike, IntLike
 
 
 def _regularize_pivot(args: Union[tuple, vector.VectorObject3D]) -> vector.VectorObject3D:
@@ -225,9 +226,6 @@ class HelixObject:
         """
         Change the pivot point of the helix.
         The transformation refers to `Helix` class in `BOSS`.
-
-        Args:
-            pivot (TypePivot): The new pivot point, either as a VectorObject3D or a tuple of (x, y, z).
         """
         # transform helix parameters
         r = self.radius
@@ -589,13 +587,13 @@ def helix_obj(**kwargs) -> HelixObject:
 
 
 @nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
-def dr_phi0_to_x(dr, phi0):
+def dr_phi0_to_x(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     """
     Convert helix parameters to x location.
 
     Parameters:
-        dr: helix[0] parameter, dr.
-        phi0: helix[1] parameter, phi0.
+        dr (float): helix[0] parameter, dr.
+        phi0 (float): helix[1] parameter, phi0.
 
     Returns:
         x location of the helix.
@@ -604,7 +602,7 @@ def dr_phi0_to_x(dr, phi0):
 
 
 @nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
-def dr_phi0_to_y(dr, phi0):
+def dr_phi0_to_y(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     """
     Convert helix parameters to y location.
 
@@ -619,7 +617,7 @@ def dr_phi0_to_y(dr, phi0):
 
 
 @nb.vectorize([nb.float64(nb.float64)], cache=True)
-def phi0_to_phi(phi0):
+def phi0_to_phi(phi0: FloatLike) -> FloatLike:
     """
     Convert helix parameter phi0 to momentum phi.
 
@@ -633,7 +631,7 @@ def phi0_to_phi(phi0):
 
 
 @nb.vectorize([nb.float64(nb.float64)], cache=True)
-def kappa_to_pt(kappa):
+def kappa_to_pt(kappa: FloatLike) -> FloatLike:
     """
     Convert helix parameter to pt.
 
@@ -647,7 +645,7 @@ def kappa_to_pt(kappa):
 
 
 @nb.vectorize([nb.int8(nb.float64)], cache=True)
-def kappa_to_charge(kappa):
+def kappa_to_charge(kappa: IntLike) -> FloatLike:
     """
     Convert helix parameter to charge.
 
@@ -661,7 +659,7 @@ def kappa_to_charge(kappa):
 
 
 @nb.vectorize([nb.float64(nb.float64)], cache=True)
-def kappa_to_radius(kappa):
+def kappa_to_radius(kappa: FloatLike) -> FloatLike:
     """
     Convert helix parameter kappa to circular radius.
 
@@ -899,9 +897,6 @@ class HelixAwkwardArray(ak.Array):
     def change_pivot(self, *args) -> "HelixAwkwardArray":
         """
         Changes the pivot point of the helix.
-
-        Args:
-            pivot (vector.VectorObject3D): The new pivot point for the helix.
         """
         if len(args) == 3:
             x, y, z = args
@@ -998,7 +993,7 @@ class HelixAwkwardArray(ak.Array):
         Check if two helix records are close to each other.
 
         Args:
-            value (HelixAwkwardRecord): The helix record to compare with.
+            other (HelixAwkwardRecord): The helix record to compare with.
 
         Returns:
             ak.Array: A boolean array indicating if the records are close.
