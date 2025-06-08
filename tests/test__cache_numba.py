@@ -37,3 +37,9 @@ def test_detector_geometry_emc(capsys, monkeypatch):
     # Check output
     captured = capsys.readouterr()
     assert captured.out.startswith("Removed cache files:")
+
+
+if __name__ == "__main__":
+    import pytest
+
+    pytest.main([__file__, "-v", "-s"])

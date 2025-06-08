@@ -68,3 +68,7 @@ def test_helix():
     with pytest.warns(DeprecationWarning):
         c_helix_np = p3.compute_helix(p_helix_np)
     assert np.all(np.isclose(c_helix_np, r_helix_np))
+
+
+if __name__ == "__main__":
+    pytest.main([__file__, "-v", "-s"])

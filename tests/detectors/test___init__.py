@@ -453,3 +453,9 @@ def test_parse_cgem_digi_id():
     assert int_res2["sheet"] == sheet_np[0]
     assert int_res2["strip"] == strip_np[0]
     assert int_res2["is_x_strip"] == is_x_strip_np[0]
+
+
+if __name__ == "__main__":
+    import pytest
+
+    pytest.main([__file__, "-v", "-s"])

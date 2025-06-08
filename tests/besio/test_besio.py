@@ -160,3 +160,9 @@ def test_raw():
     arr_workers = f_raw.arrays(n_blocks=10, max_workers=4)
     assert set(arr_workers.fields) == {"evt_header", "mdc", "tof", "emc", "muc"}
     assert awkward.all(awkward.count(arr_workers.mdc.id, axis=1) == n_mdc_digis)
+
+
+if __name__ == "__main__":
+    import pytest
+
+    pytest.main([__file__, "-v", "-s"])
