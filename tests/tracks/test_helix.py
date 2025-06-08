@@ -28,141 +28,62 @@ def test_helix_obj_1(error):
 
         # case 1
         h1 = p3.helix_obj(
-            dr=dr,
-            phi0=phi0,
-            kappa=kappa,
-            dz=dz,
-            tanl=tanl,
-            pivot=raw_pivot,
+            dr,
+            phi0,
+            kappa,
+            dz,
+            tanl,
             error=np_error,
+            pivot=raw_pivot,
         )
 
         # case 2
         h2 = p3.helix_obj(
             params=(dr, phi0, kappa, dz, tanl),
-            pivot=raw_pivot,
             error=np_error,
+            pivot=raw_pivot,
         )
 
         momentum = h1.momentum
         position = h1.position
 
-        # case 3
-        h3 = p3.helix_obj(
-            px=momentum.px,
-            py=momentum.py,
-            pz=momentum.pz,
-            x=position.x,
-            y=position.y,
-            z=position.z,
-            charge=h1.charge,
-            pivot=h1.pivot,
-            error=np_error,
-        )
-
-        # case 4
-        h4 = p3.helix_obj(
-            px=momentum.px,
-            py=momentum.py,
-            pz=momentum.pz,
-            position=position,
-            charge=h1.charge,
-            pivot=raw_pivot,
-            error=np_error,
-        )
-
-        # case 5
-        h5 = p3.helix_obj(
-            pt=momentum.pt,
-            costheta=momentum.costheta,
-            phi=momentum.phi,
-            x=position.x,
-            y=position.y,
-            z=position.z,
-            charge=h1.charge,
-            pivot=raw_pivot,
-            error=np_error,
-        )
-
-        # case 6
-        h6 = p3.helix_obj(
-            pt=momentum.pt,
-            costheta=momentum.costheta,
-            phi=momentum.phi,
-            position=position,
-            charge=h1.charge,
-            pivot=raw_pivot,
-            error=np_error,
-        )
-
-        # case 7
-        h7 = p3.helix_obj(
-            p=momentum.p,
-            costheta=momentum.costheta,
-            phi=momentum.phi,
-            x=position.x,
-            y=position.y,
-            z=position.z,
-            charge=h1.charge,
-            pivot=raw_pivot,
-            error=np_error,
-        )
-
-        # case 8
-        h8 = p3.helix_obj(
-            p=momentum.p,
-            costheta=momentum.costheta,
-            phi=momentum.phi,
-            position=position,
-            charge=h1.charge,
-            pivot=raw_pivot,
-            error=np_error,
-        )
-
-        # case 9
-        h9 = p3.helix_obj(
-            pt=momentum.pt,
-            phi=momentum.phi,
-            pz=momentum.pz,
-            x=position.x,
-            y=position.y,
-            z=position.z,
-            charge=h1.charge,
-            pivot=raw_pivot,
-            error=np_error,
-        )
-
-        # case 10
-        h10 = p3.helix_obj(
-            pt=momentum.pt,
-            phi=momentum.phi,
-            pz=momentum.pz,
-            position=position,
-            charge=h1.charge,
-            pivot=raw_pivot,
-            error=np_error,
-        )
-
-        # case 11
-        h11 = p3.helix_obj(
-            momentum=momentum,
-            x=position.x,
-            y=position.y,
-            z=position.z,
-            charge=h1.charge,
-            pivot=raw_pivot,
-            error=np_error,
-        )
-        # case 12
-        h12 = p3.helix_obj(
+        # case 3-1: momentum and position are both vector
+        h3_1 = p3.helix_obj(
             momentum=momentum,
             position=position,
             charge=h1.charge,
-            pivot=raw_pivot,
             error=np_error,
+            pivot=raw_pivot,
         )
 
-        for h in [h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12]:
+        # case 3-2: momentum as tuple, position as vector
+        h3_2 = p3.helix_obj(
+            momentum=(momentum.px, momentum.py, momentum.pz),
+            position=position,
+            charge=h1.charge,
+            error=np_error,
+            pivot=raw_pivot,
+        )
+
+        # case 3-3: momentum as vector, position as tuple
+        h3_3 = p3.helix_obj(
+            momentum=momentum,
+            position=(position.x, position.y, position.z),
+            charge=h1.charge,
+            error=np_error,
+            pivot=raw_pivot,
+        )
+
+        # case 3-4: momentum and position as tuple
+        h3_4 = p3.helix_obj(
+            momentum=(momentum.px, momentum.py, momentum.pz),
+            position=(position.x, position.y, position.z),
+            charge=h1.charge,
+            error=np_error,
+            pivot=raw_pivot,
+        )
+
+        for h in [h1, h2, h3_1, h3_2, h3_3, h3_4]:
             assert h.dr == pytest.approx(dr, rel=1e-6)
             assert h.phi0 == pytest.approx(phi0, rel=1e-6)
             assert h.kappa == pytest.approx(kappa, rel=1e-6)
@@ -208,8 +129,8 @@ def test_helix_obj_2():
         h4 = h4_raw
 
         for new_pivot in new_pivots:
-            h1 = h1.change_pivot(new_pivot)
-            h2 = h2.change_pivot(new_pivot)
+            h1 = h1.change_pivot(*new_pivot)
+            h2 = h2.change_pivot(*new_pivot)
 
             vec_new_pivot = vector.obj(x=new_pivot[0], y=new_pivot[1], z=new_pivot[2])
             h3 = h3.change_pivot(vec_new_pivot)
@@ -241,7 +162,6 @@ def test_helix_obj_2():
     "raw_pivot",
     [
         (0, 0, 0),
-        ((0, 0, 0),),
         (vector.obj(x=0, y=0, z=0),),
     ],
 )
@@ -249,7 +169,6 @@ def test_helix_obj_2():
     "new_pivot",
     [
         (10, 10, 10),
-        ((10, 10, 10),),
         (vector.obj(x=10, y=10, z=10),),
     ],
 )
@@ -298,17 +217,17 @@ def test_helix_awk_1():
 
     # test helix_awk and change_pivot
 
-    # case 1: positional arguments
-    h1 = p3.helix_awk(raw_helix_arr, raw_helix_err_arr)
-    assert ak.all(h0.isclose(h1))
-    assert ak.all(h1.change_pivot(new_pivot).change_pivot(raw_pivot).isclose(h1))
+    # case 1-1: positional helix and error arguments
+    h1_1 = p3.helix_awk(raw_helix_arr, raw_helix_err_arr)
+    assert ak.all(h0.isclose(h1_1))
+    assert ak.all(h1_1.change_pivot(new_pivot).change_pivot(raw_pivot).isclose(h1_1))
 
-    # case 2: keyword arguments helix, error
-    h2 = p3.helix_awk(helix=raw_helix_arr, error=raw_helix_err_arr)
-    assert ak.all(h0.isclose(h2))
+    # case 1-2: keyword arguments helix, error
+    h1_2 = p3.helix_awk(helix=raw_helix_arr, error=raw_helix_err_arr)
+    assert ak.all(h0.isclose(h1_2))
 
-    # case 3: keyword arguments dr, phi0, kappa, dz, tanl
-    h3 = p3.helix_awk(
+    # case 2: keyword arguments dr, phi0, kappa, dz, tanl
+    h2 = p3.helix_awk(
         dr=raw_helix_arr[..., 0],
         phi0=raw_helix_arr[..., 1],
         kappa=raw_helix_arr[..., 2],
@@ -316,12 +235,24 @@ def test_helix_awk_1():
         tanl=raw_helix_arr[..., 4],
         error=raw_helix_err_arr,
     )
+    assert ak.all(h0.isclose(h2))
+
+    # case 3: keyword arguments momentum, position, charge
+    momentum = h0.momentum
+    position = h0.position
+    charge = h0.charge
+    h3 = p3.helix_awk(
+        momentum=momentum,
+        position=position,
+        charge=charge,
+        error=raw_helix_err_arr,
+    )
     assert ak.all(h0.isclose(h3))
 
     # test isclose method, no-error and with-error helix comparison
     h4 = p3.helix_awk(raw_helix_arr)
     with pytest.warns(UserWarning, match="Ignoring error matrix for isclose check."):
-        assert ak.all(h1.isclose(h4))
+        assert ak.all(h1_1.isclose(h4))
 
     # check strict criteria
     assert not ak.all(
@@ -364,7 +295,6 @@ def test_helix_awk_1():
             ),
         ),
         (0, 0, 0),
-        ((0, 0, 0),),
     ],
 )
 @pytest.mark.parametrize(
@@ -381,7 +311,6 @@ def test_helix_awk_1():
             ),
         ),
         (10, 10, 10),
-        ((10, 10, 10),),
     ],
 )
 def test_helix_awk_2(init_pivot, raw_pivot, new_pivot):
@@ -398,7 +327,6 @@ def test_helix_awk_2(init_pivot, raw_pivot, new_pivot):
     "new_pivot",
     [
         (10, 10, 10),
-        ((10, 10, 10),),
         (vector.obj(x=10, y=10, z=10),),
     ],
 )

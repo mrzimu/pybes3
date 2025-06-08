@@ -12,39 +12,72 @@ import vector.backends.awkward as vec_ak
 
 vector.register_awkward()
 
-TypeObjPivot = Union[vector.VectorObject3D, tuple[float, float, float]]
 from ..typing import FloatLike, IntLike
 
+TypeObjPosition = Union[vector.VectorObject3D, tuple[float, float, float]]
+TypeObjMomentum = Union[vector.MomentumObject3D, tuple[float, float, float]]
+TypeAwkPosition = Union[ak.Array, vector.VectorObject3D, tuple[float, float, float]]
 
-def _regularize_pivot(args: Union[tuple, vector.VectorObject3D]) -> vector.VectorObject3D:
+
+def _regularize_obj_position(
+    args: Union[TypeObjPosition, tuple[TypeObjPosition]],
+) -> vector.VectorObject3D:
     """
-    Regularizes the pivot argument to always return a VectorObject3D.
+    Regularizes the position argument to always return a VectorObject3D.
 
     Args:
-        args: A tuple of (x, y, z), a tuple of ((x, y, z),), a VectorObject3D, or a tuple of ak.Record.
+        args: A tuple of (x, y, z), a VectorObject3D, an ak.Record, or a tuple
+            containing one of them.
 
     Returns:
-        A VectorObject3D representing the pivot point.
+        A VectorObject3D representing the position point.
     """
+    if isinstance(args, tuple) and len(args) == 1:
+        args = args[0]
+
     if isinstance(args, vector.VectorObject3D):
         return args
 
-    if len(args) == 1:
-        arg = args[0]
-        if isinstance(arg, ak.Record):
-            pivot = (arg["x"], arg["y"], arg["z"])
-        else:
-            pivot = arg
-    else:
-        pivot = args
+    if isinstance(args, ak.Record):
+        return vector.VectorObject3D(x=args["x"], y=args["y"], z=args["z"])
 
-    if isinstance(pivot, vector.VectorObject3D):
-        return pivot
-    else:
-        if pivot is None:
-            pivot = (0, 0, 0)
-        assert len(pivot) == 3, "Pivot must be a tuple of (x, y, z)."
-        return vector.VectorObject3D(x=pivot[0], y=pivot[1], z=pivot[2])
+    # tuple
+    point = args if args is not None else (0, 0, 0)
+
+    assert len(point) == 3, "Pivot must be a tuple of (x, y, z)."
+    return vector.VectorObject3D(x=point[0], y=point[1], z=point[2])
+
+
+def _regularize_obj_momentum(
+    args: Union[TypeObjMomentum, tuple[TypeObjMomentum]],
+) -> vector.MomentumObject3D:
+    """
+    Regularizes the momentum argument to always return a MomentumObject3D.
+
+    Args:
+        args: A tuple of (px, py, pz), a MomentumObject3D, an ak.Record, or a tuple
+            containing one of them.
+
+    Returns:
+        A MomentumObject3D representing the momentum vector.
+    """
+    if isinstance(args, tuple) and len(args) == 1:
+        args = args[0]
+
+    if isinstance(args, vector.MomentumObject3D):
+        return args
+
+    if isinstance(args, ak.Record):
+        return vector.MomentumObject3D(
+            px=args["px"],
+            py=args["py"],
+            pz=args["pz"],
+        )
+
+    # tuple
+    momentum = args
+    assert len(momentum) == 3, "Momentum must be a tuple of (px, py, pz)."
+    return vector.MomentumObject3D(px=momentum[0], py=momentum[1], pz=momentum[2])
 
 
 def _change_pivot(
@@ -178,7 +211,7 @@ class HelixObject:
         tanl: float,
         *,
         error: np.ndarray = None,
-        pivot: TypeObjPivot = (0, 0, 0),
+        pivot: TypeObjPosition = (0, 0, 0),
     ):
         self.dr = float(dr)
         self.phi0 = float(phi0)
@@ -186,7 +219,7 @@ class HelixObject:
         self.dz = float(dz)
         self.tanl = float(tanl)
         self.error = error
-        self.pivot = _regularize_pivot(pivot)
+        self.pivot = _regularize_obj_position(pivot)
 
     @property
     def radius(self) -> float:
@@ -237,7 +270,7 @@ class HelixObject:
         kappa = self.kappa
 
         old_pivot = self.pivot
-        new_pivot = _regularize_pivot(args)
+        new_pivot = _regularize_obj_position(args)
 
         new_dr, new_phi0, new_dz, new_error = _change_pivot(
             r=r,
@@ -299,14 +332,14 @@ def _check_kwargs_used_up(left_kwargs):
 # case 1
 @overload
 def helix_obj(
-    *,
     dr: float,
     phi0: float,
     kappa: float,
     dz: float,
     tanl: float,
-    pivot: TypeObjPivot = (0, 0, 0),
+    *,
     error: Optional[np.ndarray] = None,
+    pivot: TypeObjPosition = (0, 0, 0),
 ) -> HelixObject: ...
 
 
@@ -315,8 +348,8 @@ def helix_obj(
 def helix_obj(
     *,
     params: tuple[float, float, float, float, float],
-    pivot: TypeObjPivot = (0, 0, 0),
     error: Optional[np.ndarray] = None,
+    pivot: TypeObjPosition = (0, 0, 0),
 ) -> HelixObject: ...
 
 
@@ -324,170 +357,27 @@ def helix_obj(
 @overload
 def helix_obj(
     *,
-    px: float,
-    py: float,
-    pz: float,
-    x: float,
-    y: float,
-    z: float,
+    momentum: TypeObjMomentum,
+    position: TypeObjPosition,
     charge: Literal[-1, 1],
-    pivot: TypeObjPivot = (0, 0, 0),
     error: Optional[np.ndarray] = None,
+    pivot: TypeObjPosition = (0, 0, 0),
 ) -> HelixObject: ...
 
 
-# case 4
-@overload
-def helix_obj(
-    *,
-    px: float,
-    py: float,
-    pz: float,
-    position: vector.VectorObject3D,
-    charge: Literal[-1, 1],
-    pivot: TypeObjPivot = (0, 0, 0),
-    error: Optional[np.ndarray] = None,
-) -> HelixObject: ...
-
-
-# case 5
-@overload
-def helix_obj(
-    *,
-    pt: float,
-    costheta: float,
-    phi: float,
-    x: float,
-    y: float,
-    z: float,
-    charge: Literal[-1, 1],
-    pivot: TypeObjPivot = (0, 0, 0),
-    error: Optional[np.ndarray] = None,
-) -> HelixObject: ...
-
-
-# case 6
-@overload
-def helix_obj(
-    *,
-    pt: float,
-    costheta: float,
-    phi: float,
-    position: vector.VectorObject3D,
-    charge: Literal[-1, 1],
-    pivot: TypeObjPivot = (0, 0, 0),
-    error: Optional[np.ndarray] = None,
-) -> HelixObject: ...
-
-
-# case 7
-@overload
-def helix_obj(
-    *,
-    p: float,
-    costheta: float,
-    phi: float,
-    x: float,
-    y: float,
-    z: float,
-    charge: Literal[-1, 1],
-    pivot: TypeObjPivot = (0, 0, 0),
-    error: Optional[np.ndarray] = None,
-) -> HelixObject: ...
-
-
-# case 8
-@overload
-def helix_obj(
-    *,
-    p: float,
-    costheta: float,
-    phi: float,
-    position: vector.VectorObject3D,
-    charge: Literal[-1, 1],
-    pivot: TypeObjPivot = (0, 0, 0),
-    error: Optional[np.ndarray] = None,
-) -> HelixObject: ...
-
-
-# case 9
-@overload
-def helix_obj(
-    *,
-    pt: float,
-    phi: float,
-    pz: float,
-    x: float,
-    y: float,
-    z: float,
-    charge: Literal[-1, 1],
-    pivot: TypeObjPivot = (0, 0, 0),
-    error: Optional[np.ndarray] = None,
-) -> HelixObject: ...
-
-
-# case 10
-@overload
-def helix_obj(
-    *,
-    pt: float,
-    phi: float,
-    pz: float,
-    position: vector.VectorObject3D,
-    charge: Literal[-1, 1],
-    pivot: TypeObjPivot = (0, 0, 0),
-    error: Optional[np.ndarray] = None,
-) -> HelixObject: ...
-
-
-# case 11
-@overload
-def helix_obj(
-    *,
-    momentum: vector.MomentumObject3D,
-    x: float,
-    y: float,
-    z: float,
-    charge: Literal[-1, 1],
-    pivot: TypeObjPivot = (0, 0, 0),
-    error: Optional[np.ndarray] = None,
-) -> HelixObject: ...
-
-
-# case 12
-@overload
-def helix_obj(
-    *,
-    momentum: vector.MomentumObject3D,
-    position: vector.VectorObject3D,
-    charge: Literal[-1, 1],
-    pivot: TypeObjPivot = (0, 0, 0),
-    error: Optional[np.ndarray] = None,
-) -> HelixObject: ...
-
-
-def helix_obj(**kwargs) -> HelixObject:
-    pivot = kwargs.pop("pivot", (0, 0, 0))
-
-    if not isinstance(pivot, vector.VectorObject3D):
-        try:
-            pivot = vector.obj(x=pivot["x"], y=pivot["y"], z=pivot["z"])
-        except:
-            pivot = vector.obj(x=pivot[0], y=pivot[1], z=pivot[2])
+def helix_obj(*args, **kwargs) -> HelixObject:
+    pivot = _regularize_obj_position(kwargs.pop("pivot", (0, 0, 0)))
 
     error = kwargs.pop("error", None)
     if isinstance(error, ak.Array):
         error = error.to_numpy()
 
-    # given helix parameters
-    if "params" in kwargs:
-        params = kwargs.pop("params")
-        if len(params) != 5:
-            raise ValueError("params must be a tuple of 5 elements")
-
+    # given helix parameters as positional arguments
+    if len(args) > 0:
         _check_kwargs_used_up(kwargs)
-        return HelixObject(*params, pivot=pivot, error=error)
+        return HelixObject(*args, error=error, pivot=pivot)
 
+    # given helix parameters as keyword arguments
     if "dr" in kwargs:
         dr = kwargs.pop("dr")
         phi0 = kwargs.pop("phi0")
@@ -497,67 +387,24 @@ def helix_obj(**kwargs) -> HelixObject:
 
         _check_kwargs_used_up(kwargs)
         return HelixObject(
-            dr=dr,
-            phi0=phi0,
-            kappa=kappa,
-            dz=dz,
-            tanl=tanl,
-            pivot=pivot,
-            error=error,
+            dr=dr, phi0=phi0, kappa=kappa, dz=dz, tanl=tanl, pivot=pivot, error=error
         )
 
+    # given helix parameters as a tuple
+    if "params" in kwargs:
+        params = kwargs.pop("params")
+        if len(params) != 5:
+            raise ValueError("params must be a tuple of 5 elements")
+
+        _check_kwargs_used_up(kwargs)
+        return HelixObject(*params, pivot=pivot, error=error)
+
     # given momentum, position and charge
-    charge: Literal[-1, 1] = kwargs.pop("charge")
-    momentum = None
-    position = None
+    charge: Literal[-1, 1] = int(kwargs.pop("charge"))
+    assert charge in (-1, 1), "Charge must be either -1 or 1"
 
-    # match momentum
-    if "momentum" in kwargs:  # Momentum3D
-        momentum = kwargs.pop("momentum")
-
-    if "px" in kwargs:
-        px = kwargs.pop("px")
-        py = kwargs.pop("py")
-        pz = kwargs.pop("pz")
-        momentum = vector.obj(px=px, py=py, pz=pz)
-
-    if "pt" in kwargs:
-        pt = kwargs.pop("pt")
-        phi = kwargs.pop("phi")
-
-        if "costheta" in kwargs:
-            costheta = kwargs.pop("costheta")
-            theta = math.acos(costheta)
-            pz = pt / math.tan(theta)
-            momentum = vector.obj(pt=pt, phi=phi, pz=pz)
-
-        if "pz" in kwargs:
-            pz = kwargs.pop("pz")
-            momentum = vector.obj(pt=pt, phi=phi, pz=pz)
-
-    if "p" in kwargs:
-        p = kwargs.pop("p")
-        costheta = kwargs.pop("costheta")
-        theta = math.acos(costheta)
-        pt = p * math.sin(theta)
-        phi = kwargs.pop("phi")
-        momentum = vector.obj(pt=pt, phi=phi, theta=theta)
-
-    if not isinstance(momentum, vector.MomentumObject3D):
-        raise ValueError("Cannot determine momentum from given arguments")
-
-    # match position
-    if "position" in kwargs:  # Vector3D
-        position = kwargs.pop("position")
-
-    if "x" in kwargs:
-        x = kwargs.pop("x")
-        y = kwargs.pop("y")
-        z = kwargs.pop("z")
-        position = vector.obj(x=x, y=y, z=z)
-
-    if not isinstance(position, vector.VectorObject3D):
-        raise ValueError("Cannot determine position from given arguments")
+    momentum = _regularize_obj_momentum(kwargs.pop("momentum"))
+    position = _regularize_obj_position(kwargs.pop("position"))
 
     # compute helix parameters
     kappa = charge / momentum.pt
@@ -707,7 +554,7 @@ def _compute_momentum(kappa, tanl, phi0):
     pt = kappa_to_pt(kappa)
     pz = pt * tanl
     phi = phi0_to_phi(phi0)
-    return pt, pz, phi
+    return pt, phi, pz
 
 
 def _compute_position(dr, phi0, dz):
@@ -730,7 +577,7 @@ class HelixAwkwardRecord(ak.Record):
         Returns:
             vector.MomentumObject3D: The momentum vector of the helix.
         """
-        pt, pz, phi = _compute_momentum(self.kappa, self.tanl, self.phi0)
+        pt, phi, pz = _compute_momentum(self.kappa, self.tanl, self.phi0)
         return vector.obj(pt=pt, phi=phi, pz=pz)
 
     @property
@@ -766,7 +613,7 @@ class HelixAwkwardRecord(ak.Record):
 
     def change_pivot(self, *args):
         # regularize pivot
-        new_pivot = _regularize_pivot(args)
+        new_pivot = _regularize_obj_position(args)
 
         old_pivot = vector.obj(
             x=self.pivot.x,
@@ -861,7 +708,7 @@ class HelixAwkwardArray(ak.Array):
             vector.MomentumNumpy3D: The momentum vectors of the helix.
         """
         pt, phi, pz = _compute_momentum(self.kappa, self.tanl, self.phi0)
-        return ak.Array({"pt": pt, "phi": phi, "pz": pz}, with_name="Vector3D")
+        return ak.Array({"pt": pt, "phi": phi, "pz": pz}, with_name="Momentum3D")
 
     @property
     def position(self) -> vec_ak.VectorAwkward3D:
@@ -1038,14 +885,16 @@ ak.behavior["*", "Bes3Helix"] = HelixAwkwardArray
 ###############################################################################################
 
 
+# case 1
 @overload
 def helix_awk(
     helix: ak.Array,
     error: Optional[ak.Array] = None,
-    pivot: Union[tuple[float, float, float], ak.Array] = (0, 0, 0),
+    pivot: TypeAwkPosition = (0, 0, 0),
 ) -> HelixAwkwardArray: ...
 
 
+# case 2
 @overload
 def helix_awk(
     *,
@@ -1055,15 +904,56 @@ def helix_awk(
     dz: ak.Array,
     tanl: ak.Array,
     error: Optional[ak.Array] = None,
-    pivot: Union[tuple[float, float, float], ak.Array] = (0, 0, 0),
+    pivot: TypeAwkPosition = (0, 0, 0),
 ) -> HelixAwkwardArray: ...
 
 
+# case 3
+@overload
+def helix_awk(
+    *,
+    momentum: ak.Array,
+    position: ak.Array,
+    charge: Union[Literal[-1, 1], ak.Array],
+    error: Optional[ak.Array] = None,
+    pivot: TypeAwkPosition = (0, 0, 0),
+) -> HelixAwkwardArray: ...
+
+
+@nb.vectorize(cache=True)
+def _fix_dr_sign(dr: FloatLike, phi0: FloatLike, dist_phi: FloatLike) -> FloatLike:
+    """
+    Fix the sign of dr based on the azimuthal angle.
+
+    Parameters:
+        dr (float): The radial distance.
+        phi0 (float): The azimuthal angle.
+        dist_phi (float): The difference between the azimuthal angle and phi0.
+
+    Returns:
+        float: The corrected radial distance.
+    """
+    if not np.isclose(dist_phi % (2 * np.pi), phi0):
+        return -dr
+    return dr
+
+
 def helix_awk(*args, **kwargs) -> HelixAwkwardArray:
+    error = None
+    pivot = (0, 0, 0)
+
     if len(args) > 0:
         helix = args[0]
-        error = args[1] if len(args) > 1 else None
-        pivot = args[2] if len(args) > 2 else (0, 0, 0)
+
+        if len(args) > 1:
+            error = args[1]
+            if "error" in kwargs:
+                raise ValueError("Cannot pass both helix and error as positional arguments.")
+
+        if len(args) > 2:
+            pivot = args[2]
+            if "pivot" in kwargs:
+                raise ValueError("Cannot pass both helix and pivot as positional arguments.")
 
         dr = helix[..., 0]
         phi0 = helix[..., 1]
@@ -1073,8 +963,6 @@ def helix_awk(*args, **kwargs) -> HelixAwkwardArray:
 
     elif "helix" in kwargs:
         helix = kwargs.pop("helix")
-        error = kwargs.pop("error", None)
-        pivot = kwargs.pop("pivot", (0, 0, 0))
 
         dr = helix[..., 0]
         phi0 = helix[..., 1]
@@ -1089,17 +977,34 @@ def helix_awk(*args, **kwargs) -> HelixAwkwardArray:
         dz = kwargs.pop("dz")
         tanl = kwargs.pop("tanl")
 
-        error = kwargs.pop("error", None)
-        pivot = kwargs.pop("pivot", (0, 0, 0))
     else:
-        raise ValueError(
-            "helix_awk requires either a helix array or dr, phi0, kappa, dz, tanl parameters."
-        )
+        momentum = kwargs.pop("momentum")
+        position = kwargs.pop("position")
+        charge = kwargs.pop("charge")
+
+        pivot = kwargs.pop("pivot", (0, 0, 0))
+        if not isinstance(pivot, ak.Array):
+            pivot = _regularize_obj_position(pivot)
+
+        # compute helix parameters
+        kappa = charge / momentum.pt
+        phi0 = (momentum.phi - np.pi / 2) % (2 * np.pi)
+
+        dist = (position - pivot).to_2D()
+        dr = _fix_dr_sign(dist.rho, phi0, dist.phi)
+
+        dz = position.z - pivot.z
+        tanl = momentum.pz / momentum.pt
+
+    error = kwargs.pop("error", error)
+    pivot = kwargs.pop("pivot", pivot)
 
     if not isinstance(pivot, ak.Array):
-        x0 = ak.ones_like(dr) * pivot[0]
-        y0 = ak.ones_like(dr) * pivot[1]
-        z0 = ak.ones_like(dr) * pivot[2]
+        pivot = _regularize_obj_position(pivot)
+
+        x0 = ak.ones_like(dr) * pivot.x
+        y0 = ak.ones_like(dr) * pivot.y
+        z0 = ak.ones_like(dr) * pivot.z
         pivot = ak.Array({"x": x0, "y": y0, "z": z0}, with_name="Vector3D")
 
     res_dict = {
@@ -1114,4 +1019,5 @@ def helix_awk(*args, **kwargs) -> HelixAwkwardArray:
     if error is not None:
         res_dict["error"] = error
 
+    _check_kwargs_used_up(kwargs)
     return ak.Array(res_dict, with_name="Bes3Helix")
