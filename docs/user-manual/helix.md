@@ -446,3 +446,11 @@ You can compare two helix objects or awkward arrays of helix using `isclose` met
     # Compare two helix awkward arrays, returns an awkward array of boolean values
     is_close = helix1.isclose(helix2)
     ```
+
+The comparison uses `numpy.isclose` to check if the helix parameters and error matrix are close enough. You can specify the `rtol`, `atol` and `equal_nan` parameters to control the comparison behavior:
+
+```python
+is_close = helix1.isclose(helix2, rtol=1e-5, atol=1e-8, equal_nan=False)
+```
+
+See [numpy.isclose](https://numpy.org/doc/stable/reference/generated/numpy.isclose.html) for more details on these parameters.

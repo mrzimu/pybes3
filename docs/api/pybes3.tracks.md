@@ -1,4 +1,4 @@
-## Helix parsing
+## Helix operations
 
 ::: pybes3.tracks.helix.HelixObject
 ---
@@ -24,6 +24,9 @@
 ---
 
 ### Old helix
+
+!!! warning "Deprecated"
+    This component is deprecated and will be removed in the future. Please use the new `pybes3.tracks.helix` module instead.
 
 ::: pybes3.tracks.old_helix.parse_helix
 ---

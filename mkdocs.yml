@@ -1,4 +1,4 @@
-site_name: pybes3
+site_name: Documentation for pybes3
 repo_url: https://github.com/mrzimu/pybes3
 site_author: Mingrun Li
 
@@ -75,13 +75,13 @@ plugins:
 nav:
   - Home: index.md
   - Installation: installation.md
-  - User Manual:
-      - BES3 Data Reading: user-manual/bes3-data-reading.md
-      - Digi Identifier: user-manual/digi-identifier.md
+  - User manual:
+      - BES3 data reading: user-manual/bes3-data-reading.md
+      - Digi identifier: user-manual/digi-identifier.md
       - Detector:
           - Global ID (gid): user-manual/detector/global-id.md
           - Geometry: user-manual/detector/geometry.md
-      - Helix: user-manual/helix.md
+      - Helix operations: user-manual/helix.md
   - API Reference:
       - pybes3: api/pybes3.md
       - pybes3.besio: api/pybes3.besio.md
