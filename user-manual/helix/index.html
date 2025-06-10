@@ -1,0 +1,1467 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Mingrun Li">
+      
+      
+      
+        <link rel="prev" href="../detector/geometry/">
+      
+      
+        <link rel="next" href="../../api/pybes3/">
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.11">
+    
+    
+      
+        <title>Helix operations - Documentation for pybes3</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.4af4bdda.min.css">
+      
+        
+        <link rel="stylesheet" href="../../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="../../stylesheets/extra.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+      
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#helix-operations" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Documentation for pybes3" class="md-header__button md-logo" aria-label="Documentation for pybes3" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Documentation for pybes3
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Helix operations
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+        <form class="md-header__option" data-md-component="palette">
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to light mode"  type="radio" name="__palette" id="__palette_0">
+    
+      <label class="md-header__button md-icon" title="Switch to light mode" for="__palette_1" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="m14.3 16-.7-2h-3.2l-.7 2H7.8L11 7h2l3.2 9zM20 8.69V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12zm-9.15 3.96h2.3L12 9z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: light)" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to dark mode"  type="radio" name="__palette" id="__palette_1">
+    
+      <label class="md-header__button md-icon" title="Switch to dark mode" for="__palette_2" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a4 4 0 0 0-4 4 4 4 0 0 0 4 4 4 4 0 0 0 4-4 4 4 0 0 0-4-4m0 10a6 6 0 0 1-6-6 6 6 0 0 1 6-6 6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+    
+    
+    
+    <input class="md-option" data-md-color-media="(prefers-color-scheme: dark)" data-md-color-scheme="slate" data-md-color-primary="indigo" data-md-color-accent="indigo"  aria-label="Switch to system preference"  type="radio" name="__palette" id="__palette_2">
+    
+      <label class="md-header__button md-icon" title="Switch to system preference" for="__palette_0" hidden>
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 18c-.89 0-1.74-.2-2.5-.55C11.56 16.5 13 14.42 13 12s-1.44-4.5-3.5-5.45C10.26 6.2 11.11 6 12 6a6 6 0 0 1 6 6 6 6 0 0 1-6 6m8-9.31V4h-4.69L12 .69 8.69 4H4v4.69L.69 12 4 15.31V20h4.69L12 23.31 15.31 20H20v-4.69L23.31 12z"/></svg>
+      </label>
+    
+  
+</form>
+      
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/mrzimu/pybes3" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Documentation for pybes3" class="md-nav__button md-logo" aria-label="Documentation for pybes3" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Documentation for pybes3
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/mrzimu/pybes3" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../installation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Installation
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    User manual
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            User manual
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../bes3-data-reading/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    BES3 data reading
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../digi-identifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Digi identifier
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Detector
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            Detector
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../detector/global-id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Global ID (gid)
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../detector/geometry/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Geometry
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    Helix operations
+    
+  </span>
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    Helix operations
+    
+  </span>
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#transformation-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transformation rules
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-helix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create helix
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Create helix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-helix-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create helix object
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-helix-array" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create helix array
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#from-physical-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      From physical parameters
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#physics-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Physics information
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Physics information">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#position" class="md-nav__link">
+    <span class="md-ellipsis">
+      Position
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#momentum" class="md-nav__link">
+    <span class="md-ellipsis">
+      Momentum
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pivot-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pivot point
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#charge" class="md-nav__link">
+    <span class="md-ellipsis">
+      Charge
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#circular-radius" class="md-nav__link">
+    <span class="md-ellipsis">
+      Circular radius
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pivot-transformation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pivot transformation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#helix-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Helix comparison
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    API Reference
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            API Reference
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/pybes3/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pybes3
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/pybes3.besio/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pybes3.besio
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/pybes3.detectors/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pybes3.detectors
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/pybes3.tracks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pybes3.tracks
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/pybes3._cache_numba/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    pybes3._cache_numba
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#transformation-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      Transformation rules
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#create-helix" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create helix
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Create helix">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#create-helix-object" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create helix object
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#create-helix-array" class="md-nav__link">
+    <span class="md-ellipsis">
+      Create helix array
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#from-physical-parameters" class="md-nav__link">
+    <span class="md-ellipsis">
+      From physical parameters
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#physics-information" class="md-nav__link">
+    <span class="md-ellipsis">
+      Physics information
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Physics information">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#position" class="md-nav__link">
+    <span class="md-ellipsis">
+      Position
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#momentum" class="md-nav__link">
+    <span class="md-ellipsis">
+      Momentum
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#pivot-point" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pivot point
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#charge" class="md-nav__link">
+    <span class="md-ellipsis">
+      Charge
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#circular-radius" class="md-nav__link">
+    <span class="md-ellipsis">
+      Circular radius
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#pivot-transformation" class="md-nav__link">
+    <span class="md-ellipsis">
+      Pivot transformation
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#helix-comparison" class="md-nav__link">
+    <span class="md-ellipsis">
+      Helix comparison
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="helix-operations">Helix operations</h1>
+<p>In BES3, helix is represented by 5 parameters: <code>dr</code>, <code>phi0</code>, <code>kappa</code>, <code>dz</code>, <code>tanl</code>. <code>pybes3</code> provides a convenient way to parse these parameters, and do pivot transformation with parameters and error matrix.</p>
+<p>The implementation of helix depends on <a href="https://vector.readthedocs.io/en/latest/"><code>vector</code></a>. It is recommended to take a look at <a href="https://vector.readthedocs.io/en/latest/src/object.html">Vector objects</a> and <a href="https://vector.readthedocs.io/en/latest/src/awkward.html">Awkward Arrays of vectors</a> before using helix objects, as they are used to represent helix position, momentum and pivot point.</p>
+<h2 id="transformation-rules">Transformation rules</h2>
+<p>The implementation follows formulas below:</p>
+<ul>
+<li>
+<p>Position <span class="arithmatex">\([\mathrm{cm}]\)</span>:</p>
+<ul>
+<li><span class="arithmatex">\(x = x_0 + dr \times \cos \varphi_0\)</span></li>
+<li><span class="arithmatex">\(y = y_0 + dr \times \sin \varphi_0\)</span></li>
+<li><span class="arithmatex">\(z = z_0 + dz\)</span></li>
+</ul>
+</li>
+<li>
+<p>Momentum <span class="arithmatex">\([\mathrm{GeV}/c]\)</span>:</p>
+<ul>
+<li><span class="arithmatex">\(p_t = \frac{1}{\left| \kappa \right|}\)</span></li>
+<li><span class="arithmatex">\(\varphi = \varphi_0 + \frac{\pi}{2}\)</span></li>
+<li><span class="arithmatex">\(p_x = p_t \times \cos(\varphi)\)</span></li>
+<li><span class="arithmatex">\(p_y = p_t \times \sin(\varphi)\)</span></li>
+<li><span class="arithmatex">\(p_z = p_t \times \tan\lambda\)</span></li>
+</ul>
+</li>
+<li>
+<p>Others:</p>
+<ul>
+<li><span class="arithmatex">\(\mathrm{charge} = \mathrm{sign}(\kappa)\)</span></li>
+<li><span class="arithmatex">\(r_{\mathrm{trk}} \ [\mathrm{cm}] = \frac{1000}{2.99792458} \times p_t \ [\mathrm{GeV}/c]\)</span></li>
+</ul>
+</li>
+</ul>
+<p>The magnetic field in BES3 is assumed to be <code>1T</code>.</p>
+<h2 id="create-helix">Create helix</h2>
+<h3 id="create-helix-object">Create helix object</h3>
+<p>If you are working with a single track, you can use <code>pybes3.helix_obj</code> to create a helix object:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
+
+<span class="n">helix</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">helix_obj</span><span class="p">(</span>
+    <span class="n">params</span><span class="o">=</span><span class="p">(</span><span class="n">dr</span><span class="p">,</span> <span class="n">phi0</span><span class="p">,</span> <span class="n">kappa</span><span class="p">,</span> <span class="n">dz</span><span class="p">,</span> <span class="n">tanl</span><span class="p">),</span> <span class="c1"># helix parameters</span>
+    <span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">,</span>                        <span class="c1"># error matrix (optional</span>
+    <span class="n">pivot</span><span class="o">=</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">z0</span><span class="p">),</span>                 <span class="c1"># initial pivot point (optional)</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>When <code>error</code> is not provided, it defaults to <code>None</code>. When <code>pivot</code> is not provided, it defaults to <code>(0, 0, 0)</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Overload of <code>helix_obj</code></p>
+<p>When calling <code>helix_obj</code>, you can pass the helix parameters and initial pivot point in different ways:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:2"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Helix parameters</label><label for="__tabbed_1_2">Pivot point</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>You can specify the helix parameters in two ways:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:2"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Directly specify each parameter</label><label for="__tabbed_2_2">As a tuple</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">p3</span><span class="o">.</span><span class="n">helix_obj</span><span class="p">(</span><span class="n">dr</span><span class="p">,</span> <span class="n">phi0</span><span class="p">,</span> <span class="n">kappa</span><span class="p">,</span> <span class="n">dz</span><span class="p">,</span> <span class="n">tanl</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+<span class="c1"># or</span>
+<span class="n">p3</span><span class="o">.</span><span class="n">helix_obj</span><span class="p">(</span><span class="n">dr</span><span class="o">=</span><span class="n">dr</span><span class="p">,</span> <span class="n">phi0</span><span class="o">=</span><span class="n">phi0</span><span class="p">,</span> <span class="n">kappa</span><span class="o">=</span><span class="n">kappa</span><span class="p">,</span> <span class="n">dz</span><span class="o">=</span><span class="n">dz</span><span class="p">,</span> <span class="n">tanl</span><span class="o">=</span><span class="n">tanl</span><span class="p">,</span> <span class="o">...</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">p3</span><span class="o">.</span><span class="n">helix_obj</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">(</span><span class="n">dr</span><span class="p">,</span> <span class="n">phi0</span><span class="p">,</span> <span class="n">kappa</span><span class="p">,</span> <span class="n">dz</span><span class="p">,</span> <span class="n">tanl</span><span class="p">),</span> <span class="o">...</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="tabbed-block">
+<p>You can specify the initial pivot point in different ways:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:2"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">As a tuple</label><label for="__tabbed_3_2">As a Vector3D object</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">p3</span><span class="o">.</span><span class="n">helix_obj</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">z0</span><span class="p">))</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">pivot</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">vector</span><span class="o">.</span><span class="n">obj</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z0</span><span class="p">)</span>
+<span class="n">p3</span><span class="o">.</span><span class="n">helix_obj</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="n">pivot</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<h3 id="create-helix-array">Create helix array</h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>You must import <code>pybes3</code> before creating a helix array, even though the creation may not involve any <code>pybes3</code> functions.</p>
+</div>
+<p>The helix array is implemented with awkward <a href="https://awkward-array.org/doc/main/reference/ak.behavior.html">"behavior" machanism</a>. One can create a helix array via <code>pybes3.helix_awk</code>, or directly create an awkward array with the <code>Bes3Helix</code> behavior.</p>
+<p>A very common case is to read helix parameters from a BES3 file, and create a helix array:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
+
+<span class="c1"># Open a BES3 file and read the helix parameters</span>
+<span class="n">dst_evt</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;test.dst&quot;</span><span class="p">)[</span><span class="s2">&quot;Event/TDstEvent&quot;</span><span class="p">]</span>
+<span class="n">mdc_trks</span> <span class="o">=</span> <span class="n">dst_evt</span><span class="p">[</span><span class="s2">&quot;m_mdcTrackCol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">array</span><span class="p">()</span>
+
+<span class="c1"># Extract the helix parameters and error matrix</span>
+<span class="n">raw_helix</span> <span class="o">=</span> <span class="n">mdc_trks</span><span class="p">[</span><span class="s2">&quot;m_helix&quot;</span><span class="p">]</span>
+<span class="n">raw_helix_err</span> <span class="o">=</span> <span class="n">mdc_trks</span><span class="p">[</span><span class="s2">&quot;m_err&quot;</span><span class="p">]</span>
+
+<span class="c1"># Create a helix array</span>
+<span class="n">helix</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">helix_awk</span><span class="p">(</span><span class="n">raw_helix</span><span class="p">,</span> <span class="n">raw_helix_err</span><span class="p">)</span>
+</code></pre></div>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>This overload of <code>helix_awk</code> follows such convention:</p>
+<div class="highlight"><pre><span></span><code><span class="n">dr</span> <span class="o">=</span> <span class="n">raw_helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">phi0</span> <span class="o">=</span> <span class="n">raw_helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">kappa</span> <span class="o">=</span> <span class="n">raw_helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+<span class="n">dz</span> <span class="o">=</span> <span class="n">raw_helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+<span class="n">tanl</span> <span class="o">=</span> <span class="n">raw_helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+</code></pre></div>
+</div>
+<p>If you want to specify the helix parameters directly, just pass them as keyword arguments:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Prepare helix parameters arrays</span>
+<span class="n">dr</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">phi0</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">kappa</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">dz</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">tanl</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># Optional, if you have an error matrix</span>
+<span class="n">error</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># Create a helix array with the parameters</span>
+<span class="n">helix</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">helix_awk</span><span class="p">(</span>
+    <span class="n">dr</span><span class="o">=</span><span class="n">dr</span><span class="p">,</span>
+    <span class="n">phi0</span><span class="o">=</span><span class="n">phi0</span><span class="p">,</span>
+    <span class="n">kappa</span><span class="o">=</span><span class="n">kappa</span><span class="p">,</span>
+    <span class="n">dz</span><span class="o">=</span><span class="n">dz</span><span class="p">,</span>
+    <span class="n">tanl</span><span class="o">=</span><span class="n">tanl</span><span class="p">,</span>
+    <span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">,</span> <span class="c1"># Optional, if you have an error matrix</span>
+<span class="p">)</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Since each track has a <code>5x5</code> error matrix, if a track array has shape <code>(n, var)</code>, the error matrix should have shape <code>(n, var, 5, 5)</code>.</p>
+</div>
+<p>You can also specify the initial pivot point:</p>
+<div class="highlight"><pre><span></span><code><span class="n">helix</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">helix_awk</span><span class="p">(</span>
+    <span class="n">dr</span><span class="o">=</span><span class="n">dr</span><span class="p">,</span>
+    <span class="n">phi0</span><span class="o">=</span><span class="n">phi0</span><span class="p">,</span>
+    <span class="n">kappa</span><span class="o">=</span><span class="n">kappa</span><span class="p">,</span>
+    <span class="n">dz</span><span class="o">=</span><span class="n">dz</span><span class="p">,</span>
+    <span class="n">tanl</span><span class="o">=</span><span class="n">tanl</span><span class="p">,</span>
+    <span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">,</span>        <span class="c1"># Optional, if you have an error matrix</span>
+    <span class="n">pivot</span><span class="o">=</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">z0</span><span class="p">)</span>  <span class="c1"># Initial pivot point</span>
+<span class="p">)</span>
+</code></pre></div>
+<div class="admonition note">
+<p class="admonition-title">Different types of pivot point</p>
+<p>The <code>pivot</code> can be specified in different ways when using <code>helix_awk</code>:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="4:2"><input checked="checked" id="__tabbed_4_1" name="__tabbed_4" type="radio" /><input id="__tabbed_4_2" name="__tabbed_4" type="radio" /><div class="tabbed-labels"><label for="__tabbed_4_1">As a tuple or <code>Vector3D</code> object</label><label for="__tabbed_4_2">As an awkward array</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>This will set all tracks to have such pivot point:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># As a tuple</span>
+<span class="n">helix</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">helix_awk</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">z0</span><span class="p">))</span>
+
+<span class="c1"># As a Vector3D object</span>
+<span class="n">pivot</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">vector</span><span class="o">.</span><span class="n">obj</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x0</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">y0</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="n">z0</span><span class="p">)</span>
+<span class="n">helix</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">helix_awk</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="n">pivot</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>If you have different pivot points for each track, you can provide a <code>Vector3D</code> awkward array:</p>
+<div class="highlight"><pre><span></span><code><span class="n">pivot</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">({</span>
+    <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
+    <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
+    <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
+<span class="p">},</span> <span class="n">with_name</span><span class="o">=</span><span class="s2">&quot;Vector3D&quot;</span><span class="p">)</span>
+
+<span class="n">helix</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">helix_awk</span><span class="p">(</span><span class="o">...</span><span class="p">,</span> <span class="n">pivot</span><span class="o">=</span><span class="n">pivot</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+</div>
+<details class="note">
+<summary>Directly create helix array</summary>
+<p>To create a helix array directly, first import necessary modules:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">awkward</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ak</span>
+</code></pre></div>
+<p>Prepare helix parameters:</p>
+<div class="highlight"><pre><span></span><code><span class="n">dr</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">phi0</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">kappa</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">dz</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">tanl</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+</code></pre></div>
+<p>Prepare initial pivot point:</p>
+<div class="highlight"><pre><span></span><code><span class="n">pivot</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">({</span>
+    <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">dr</span><span class="p">),</span>
+    <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">dr</span><span class="p">),</span>
+    <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">dr</span><span class="p">),</span>
+<span class="p">},</span> <span class="n">with_name</span><span class="o">=</span><span class="s2">&quot;Vector3D&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>Create helix array (with no error matrix)</p>
+<div class="highlight"><pre><span></span><code><span class="n">helix</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">({</span>
+    <span class="s2">&quot;dr&quot;</span><span class="p">:</span> <span class="n">dr</span><span class="p">,</span>
+    <span class="s2">&quot;phi0&quot;</span><span class="p">:</span> <span class="n">phi0</span><span class="p">,</span>
+    <span class="s2">&quot;kappa&quot;</span><span class="p">:</span> <span class="n">kappa</span><span class="p">,</span>
+    <span class="s2">&quot;dz&quot;</span><span class="p">:</span> <span class="n">dz</span><span class="p">,</span>
+    <span class="s2">&quot;tanl&quot;</span><span class="p">:</span> <span class="n">tanl</span><span class="p">,</span>
+    <span class="s2">&quot;pivot&quot;</span><span class="p">:</span> <span class="n">pivot</span><span class="p">,</span>
+<span class="p">},</span> <span class="n">with_name</span><span class="o">=</span><span class="s2">&quot;Bes3Helix&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>Optionally, you can also create an error matrix. </p>
+<div class="highlight"><pre><span></span><code><span class="n">error</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="n">helix</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">({</span>
+    <span class="s2">&quot;dr&quot;</span><span class="p">:</span> <span class="n">dr</span><span class="p">,</span>
+    <span class="s2">&quot;phi0&quot;</span><span class="p">:</span> <span class="n">phi0</span><span class="p">,</span>
+    <span class="s2">&quot;kappa&quot;</span><span class="p">:</span> <span class="n">kappa</span><span class="p">,</span>
+    <span class="s2">&quot;dz&quot;</span><span class="p">:</span> <span class="n">dz</span><span class="p">,</span>
+    <span class="s2">&quot;tanl&quot;</span><span class="p">:</span> <span class="n">tanl</span><span class="p">,</span>
+    <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="n">error</span><span class="p">,</span>
+    <span class="s2">&quot;pivot&quot;</span><span class="p">:</span> <span class="n">pivot</span><span class="p">,</span>
+<span class="p">},</span> <span class="n">with_name</span><span class="o">=</span><span class="s2">&quot;Bes3Helix&quot;</span><span class="p">)</span>
+</code></pre></div>
+</details>
+<h2 id="from-physical-parameters">From physical parameters</h2>
+<p>Sometimes you may need to create a helix from position, momentum and charge. You can pass these parameters to <code>pybes3.helix_obj</code> or <code>pybes3.helix_awk</code> to create a helix object or a helix array. <code>pybes3</code> will automatically calculate the helix parameters for you.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="5:2"><input checked="checked" id="__tabbed_5_1" name="__tabbed_5" type="radio" /><input id="__tabbed_5_2" name="__tabbed_5" type="radio" /><div class="tabbed-labels"><label for="__tabbed_5_1">Object</label><label for="__tabbed_5_2">Array</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p>To create a helix object, use:</p>
+<div class="highlight"><pre><span></span><code><span class="n">p3</span><span class="o">.</span><span class="n">helix_obj</span><span class="p">(</span>
+    <span class="n">position</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span><span class="p">),</span>     <span class="c1"># position of the track</span>
+    <span class="n">momentum</span><span class="o">=</span><span class="p">(</span><span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">pz</span><span class="p">),</span>  <span class="c1"># momentum of the track</span>
+    <span class="n">charge</span><span class="o">=</span><span class="n">charge</span><span class="p">,</span>          <span class="c1"># charge of the track</span>
+    <span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">,</span>            <span class="c1"># error matrix (optional)</span>
+    <span class="n">pivot</span><span class="o">=</span><span class="p">(</span><span class="n">x0</span><span class="p">,</span> <span class="n">y0</span><span class="p">,</span> <span class="n">z0</span><span class="p">)</span>      <span class="c1"># initial pivot point (optional)</span>
+<span class="p">)</span>
+</code></pre></div>
+<p>where <code>charge</code> should be <code>1</code> or <code>-1</code>, and the <code>pivot</code> defaults to <code>(0, 0, 0)</code> if not provided. </p>
+</div>
+<div class="tabbed-block">
+<p>To create a helix array, use:</p>
+<div class="highlight"><pre><span></span><code><span class="n">position</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">({</span>
+    <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
+    <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
+    <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
+<span class="p">},</span> <span class="n">with_name</span><span class="o">=</span><span class="s2">&quot;Vector3D&quot;</span><span class="p">)</span>
+
+<span class="n">momentum</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">({</span>
+    <span class="s2">&quot;px&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
+    <span class="s2">&quot;py&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
+    <span class="s2">&quot;pz&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
+<span class="p">},</span> <span class="n">with_name</span><span class="o">=</span><span class="s2">&quot;Vector3D&quot;</span><span class="p">)</span>
+
+<span class="n">charge</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>  <span class="c1"># values should be 1 or -1</span>
+
+<span class="n">p3</span><span class="o">.</span><span class="n">helix_awk</span><span class="p">(</span>
+    <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span>
+    <span class="n">momentum</span><span class="o">=</span><span class="n">momentum</span><span class="p">,</span>
+    <span class="n">charge</span><span class="o">=</span><span class="n">charge</span><span class="p">,</span>
+    <span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">,</span>    <span class="c1"># error matrix (optional)</span>
+    <span class="n">pivot</span><span class="o">=</span><span class="n">pivot</span>     <span class="c1"># initial pivot point (optional)</span>
+<span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<h2 id="physics-information">Physics information</h2>
+<p>Once you have an object or an awkward array of helix, you can retrieve the physical parameters such as position, momentum, charge and circular radius of the track.</p>
+<h3 id="position">Position</h3>
+<p>The position is defined as the closest point to the pivot point on the helix. You can retrieve the position with:</p>
+<div class="highlight"><pre><span></span><code><span class="n">position</span> <span class="o">=</span> <span class="n">helix</span><span class="o">.</span><span class="n">position</span>
+</code></pre></div>
+<p>This will return a <code>Vector3D</code> object with the position of the track. You can access the <code>x</code>, <code>y</code>, and <code>z</code> coordinates with:</p>
+<div class="highlight"><pre><span></span><code><span class="n">x</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">x</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">y</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">z</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">See Also</p>
+<p>See <a href="https://vector.readthedocs.io/en/latest/src/vector3d.html">Interface for 3D vectors</a> for more properties.</p>
+</div>
+<h3 id="momentum">Momentum</h3>
+<p>The momentum is defined as the momentum at the closest point to the pivot point on the helix. You can retrieve the momentum with:</p>
+<div class="highlight"><pre><span></span><code><span class="n">momentum</span> <span class="o">=</span> <span class="n">helix</span><span class="o">.</span><span class="n">momentum</span>
+</code></pre></div>
+<p>This will return a <code>Momentum3D</code> object with the momentum of the track. You can access the many components of the momentum with:</p>
+<div class="highlight"><pre><span></span><code><span class="n">px</span> <span class="o">=</span> <span class="n">momentum</span><span class="o">.</span><span class="n">px</span>
+<span class="n">py</span> <span class="o">=</span> <span class="n">momentum</span><span class="o">.</span><span class="n">py</span>
+<span class="n">pz</span> <span class="o">=</span> <span class="n">momentum</span><span class="o">.</span><span class="n">pz</span>
+<span class="n">pt</span> <span class="o">=</span> <span class="n">momentum</span><span class="o">.</span><span class="n">pt</span>  <span class="c1"># transverse momentum</span>
+<span class="n">p</span> <span class="o">=</span> <span class="n">momentum</span><span class="o">.</span><span class="n">p</span>    <span class="c1"># total momentum</span>
+<span class="n">costheta</span> <span class="o">=</span> <span class="n">momentum</span><span class="o">.</span><span class="n">costheta</span>  <span class="c1"># cosine of the polar angle</span>
+<span class="n">theta</span> <span class="o">=</span> <span class="n">momentum</span><span class="o">.</span><span class="n">theta</span>  <span class="c1"># polar angle</span>
+<span class="n">phi</span> <span class="o">=</span> <span class="n">momentum</span><span class="o">.</span><span class="n">phi</span>  <span class="c1"># azimuthal angle</span>
+</code></pre></div>
+<div class="admonition tip">
+<p class="admonition-title">See Also</p>
+<p>See <a href="https://vector.readthedocs.io/en/latest/src/momentum3d.html">Interface for 3D momentum</a> for more properties.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Momentum changes with pivot point</p>
+<p>When changing pivot point, the momentum will also change. This is because the momentum is defined at the closest point to the pivot point on the helix.</p>
+</div>
+<h3 id="pivot-point">Pivot point</h3>
+<p>You can retrieve the pivot point of the helix with:</p>
+<div class="highlight"><pre><span></span><code><span class="n">pivot</span> <span class="o">=</span> <span class="n">helix</span><span class="o">.</span><span class="n">pivot</span>
+</code></pre></div>
+<p>Similar to the position, this will return a <code>Vector3D</code> object with the pivot point of the track.</p>
+<h3 id="charge">Charge</h3>
+<p>The charge of the track can be retrieved with:</p>
+<div class="highlight"><pre><span></span><code><span class="n">charge</span> <span class="o">=</span> <span class="n">helix</span><span class="o">.</span><span class="n">charge</span>
+</code></pre></div>
+<p>This will return <code>1</code> or <code>-1</code>, or an awkward array of these values if the helix is an awkward array.</p>
+<h3 id="circular-radius">Circular radius</h3>
+<p>The circular radius is defined as the radius of the 2D circle in the XY plane that the track follows. You can retrieve the circular radius with:</p>
+<div class="highlight"><pre><span></span><code><span class="n">r</span> <span class="o">=</span> <span class="n">helix</span><span class="o">.</span><span class="n">radius</span>
+</code></pre></div>
+<p>This will return a scalar value or an awkward array of values, depending on whether the helix is an object or an awkward array.</p>
+<h2 id="pivot-transformation">Pivot transformation</h2>
+<p>To change pivot point of helix, use <code>change_pivot</code> method. This will transform the helix parameters and error matrix to the new pivot point:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="6:2"><input checked="checked" id="__tabbed_6_1" name="__tabbed_6" type="radio" /><input id="__tabbed_6_2" name="__tabbed_6" type="radio" /><div class="tabbed-labels"><label for="__tabbed_6_1">Object</label><label for="__tabbed_6_2">Array</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">helix</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">helix_obj</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># Change pivot point to (3, 4, 5)</span>
+<span class="n">helix</span> <span class="o">=</span> <span class="n">helix</span><span class="o">.</span><span class="n">change_pivot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</code></pre></div>
+<p>or pass a <code>Vector3D</code> object:</p>
+<div class="highlight"><pre><span></span><code><span class="n">pivot</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">vector</span><span class="o">.</span><span class="n">obj</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">helix</span> <span class="o">=</span> <span class="n">helix</span><span class="o">.</span><span class="n">change_pivot</span><span class="p">(</span><span class="n">pivot</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<p>You can change the pivot for each track in an awkward array of helix:</p>
+<div class="highlight"><pre><span></span><code><span class="n">helix</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">helix_awk</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">new_pivot</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">({</span>
+    <span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
+    <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
+    <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">(</span><span class="o">...</span><span class="p">),</span>
+<span class="p">},</span> <span class="n">with_name</span><span class="o">=</span><span class="s2">&quot;Vector3D&quot;</span><span class="p">)</span>
+
+<span class="n">helix</span> <span class="o">=</span> <span class="n">helix</span><span class="o">.</span><span class="n">change_pivot</span><span class="p">(</span><span class="n">new_pivot</span><span class="p">)</span>
+</code></pre></div>
+<p>or change the pivot point to a specific point for each track:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Change pivot point to (3, 4, 5) for each track</span>
+<span class="n">helix</span> <span class="o">=</span> <span class="n">helix</span><span class="o">.</span><span class="n">change_pivot</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p><code>change_pivot</code> will not modify the original helix object or array, but return a new one with the pivot point changed.</p>
+</div>
+<h2 id="helix-comparison">Helix comparison</h2>
+<p>You can compare two helix objects or awkward arrays of helix using <code>isclose</code> method. If two helix objects have different pivot points, the second helix will be transformed to the first helix's pivot point before comparison.</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="7:2"><input checked="checked" id="__tabbed_7_1" name="__tabbed_7" type="radio" /><input id="__tabbed_7_2" name="__tabbed_7" type="radio" /><div class="tabbed-labels"><label for="__tabbed_7_1">Object</label><label for="__tabbed_7_2">Array</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">helix1</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">helix_obj</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">helix2</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">helix_obj</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># Compare two helix objects, returns a boolean value</span>
+<span class="n">is_close</span> <span class="o">=</span> <span class="n">helix1</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">helix2</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="n">helix1</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">helix_awk</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="n">helix2</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">helix_awk</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+
+<span class="c1"># Compare two helix awkward arrays, returns an awkward array of boolean values</span>
+<span class="n">is_close</span> <span class="o">=</span> <span class="n">helix1</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">helix2</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The comparison uses <code>numpy.isclose</code> to check if the helix parameters and error matrix are close enough. You can specify the <code>rtol</code>, <code>atol</code> and <code>equal_nan</code> parameters to control the comparison behavior:</p>
+<div class="highlight"><pre><span></span><code><span class="n">is_close</span> <span class="o">=</span> <span class="n">helix1</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">helix2</span><span class="p">,</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-5</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">,</span> <span class="n">equal_nan</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</code></pre></div>
+<p>See <a href="https://numpy.org/doc/stable/reference/generated/numpy.isclose.html">numpy.isclose</a> for more details on these parameters.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "../..", "features": ["toc", "search", "search.suggest", "footer"], "search": "../../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+        <script src="../../javascripts/mathjax.js"></script>
+      
+        <script src="https://unpkg.com/mathjax@3/es5/tex-mml-chtml.js"></script>
+      
+    
+  </body>
+</html>
