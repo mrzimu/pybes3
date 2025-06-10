@@ -57,8 +57,8 @@
 </div>
 
 <div class="grid cards" markdown>
-- <a href="user-manual/tracks" style="text-decoration: none; color: inherit;">
-    :material-vector-curve: __Tracks__
+- <a href="user-manual/helix" style="text-decoration: none; color: inherit;">
+    :material-vector-curve: __Helix__
 
     Parse and transform track parameters, such as helix, etc.
   </a>

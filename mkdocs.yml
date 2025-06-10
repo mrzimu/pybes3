@@ -81,7 +81,7 @@ nav:
       - Detector:
           - Global ID (gid): user-manual/detector/global-id.md
           - Geometry: user-manual/detector/geometry.md
-      - Tracks: user-manual/tracks.md
+      - Helix: user-manual/helix.md
   - API Reference:
       - pybes3: api/pybes3.md
       - pybes3.besio: api/pybes3.besio.md
