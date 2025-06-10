@@ -1,7 +1,11 @@
 ## v0.3.0
 
-* Add `pybes3.tracks.helix`, support helix parameter conversion to/from physical variables and pivot transformation.
-* Deprecate old `pybes3.tracks.parse_helix`, move it to `pybes3.tracks.old_helix`.
+* Add `pybes3.tracks.helix`, support:
+    - Helix parameter conversion to/from physical variables.
+    - Helix comparison.
+    - Pivot transformation.
+
+* Deprecate old helix operations, move it to `pybes3.tracks.old_helix`.
 
 ## v0.2.1.2
 
