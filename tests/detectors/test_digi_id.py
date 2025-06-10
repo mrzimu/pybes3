@@ -302,3 +302,9 @@ def test_cgem_digi_id():
     assert tmp_is_x_strip == np_is_x_strip[0]
     assert det.get_cgem_digi_id(tmp_layer, tmp_sheet, tmp_strip, tmp_is_x_strip) == tmp_id
     assert digi_id.check_cgem_id(tmp_id)
+
+
+if __name__ == "__main__":
+    import pytest
+
+    pytest.main([__file__, "-v", "-s"])

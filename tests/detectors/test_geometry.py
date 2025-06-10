@@ -45,3 +45,9 @@ def test_emc_geom():
     assert np.allclose(p3.emc_gid_to_front_center_x(gid), geom.emc._front_center_x, atol=1e-6)
     assert np.allclose(p3.emc_gid_to_front_center_y(gid), geom.emc._front_center_y, atol=1e-6)
     assert np.allclose(p3.emc_gid_to_front_center_z(gid), geom.emc._front_center_z, atol=1e-6)
+
+
+if __name__ == "__main__":
+    import pytest
+
+    pytest.main([__file__, "-v", "-s"])
