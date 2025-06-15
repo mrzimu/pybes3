@@ -1,10 +1,16 @@
+## v0.3.1
+
+* Optimize `besio`:
+  * Fix some reading bugs.
+  * Better reconstruct `ak.Array` from raw data.
+
 ## v0.3.0
 
 * Add `pybes3.tracks.helix`, support:
-    - Helix parameter conversion to/from physical variables.
-    - Helix comparison.
-    - Pivot transformation.
 
+  - Helix parameter conversion to/from physical variables.
+  - Helix comparison.
+  - Pivot transformation.
 * Deprecate old helix operations, move it to `pybes3.tracks.old_helix`.
 
 ## v0.2.1.2
