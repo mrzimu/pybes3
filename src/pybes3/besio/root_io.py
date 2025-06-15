@@ -168,9 +168,9 @@ def get_reader_instance(tree_config: dict):
 
 
 def reconstruct_array(
-    raw_data: np.ndarray | tuple | list | None,
+    raw_data: Union[np.ndarray, tuple, list, None],
     tree_config: dict,
-) -> ak.Array | None:
+) -> Union[ak.Array, None]:
     for reader in sorted(readers, key=lambda x: x.priority(), reverse=True):
         data = reader.reconstruct_array(raw_data, tree_config)
         if data is not None:
@@ -235,9 +235,9 @@ class BaseReader:
     @classmethod
     def reconstruct_array(
         cls,
-        raw_data: np.ndarray | tuple | list | None,
+        raw_data: Union[np.ndarray, tuple, list, None],
         tree_config: dict,
-    ) -> ak.Array | None:
+    ) -> Union[ak.Array, None]:
         """
         Args:
             raw_data (Union[np.ndarray, tuple, list, None]): The raw data to be

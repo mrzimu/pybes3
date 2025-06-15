@@ -1,4 +1,4 @@
-from typing import Any
+from typing import Any, Optional
 import numpy as np
 from numpy.typing import NDArray
 
@@ -133,5 +133,5 @@ def read_data(
 ) -> Any: ...
 def read_bes_raw(
     data: NDArray[np.uint32],
-    sub_detectors: list[str] | None = None,
+    sub_detectors: Optional[list[str]] = None,
 ) -> dict: ...
