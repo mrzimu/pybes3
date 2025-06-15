@@ -1,4 +1,5 @@
-from collections import deque
+import re
+from enum import Enum
 from typing import Literal, Union
 
 import awkward as ak
@@ -6,356 +7,1032 @@ import awkward.contents
 import awkward.index
 import numpy as np
 import uproot
-import uproot.behaviors
 import uproot.behaviors.TBranch
+import uproot.extras
 import uproot.interpretation
-import uproot.interpretation.identify
-import uproot.interpretation.library
-import uproot.models.TBranch
 
-from .besio_cpp import read_bes_stl, read_bes_tobjarray, read_bes_tobject
+from . import besio_cpp as bcpp
 
-##########################################################################################
-#                                       Constants
-##########################################################################################
-kBASE = "BASE"
-kCtype = "ctype"
-kTString = "TString"
-kVector = "vector"
-kList = "list"
-kDeque = "deque"
-kMap = "map"
-kSet = "set"
-kMultiMap = "multimap"
-kMultiSet = "multiset"
-
-kTArrayC = "TArrayC"
-kTArrayS = "TArrayS"
-kTArrayI = "TArrayI"
-kTArrayL = "TArrayL"
-kTArrayF = "TArrayF"
-kTArrayD = "TArrayD"
-
-CTYPE_NAMES = {
-    "bool",
-    "char",
-    "short",
-    "int",
-    "long",
-    "float",
-    "double",
-    "unsigned char",
-    "unsigned short",
-    "unsigned int",
-    "unsigned long",
-    "int8_t",
-    "uint8_t",
-    "int16_t",
-    "uint16_t",
-    "int32_t",
-    "uint32_t",
-    "int64_t",
-    "uint64_t",
+type_np2array = {
+    "u1": "B",
+    "u2": "H",
+    "u4": "I",
+    "u8": "Q",
+    "i1": "b",
+    "i2": "h",
+    "i4": "i",
+    "i8": "q",
+    "f": "f",
+    "d": "d",
 }
 
-STL_NAMES = {kVector, kList, kDeque, kMap, kSet, kMultiMap, kMultiSet}
-
-TARRAY_NAMES = {kTArrayC, kTArrayS, kTArrayI, kTArrayL, kTArrayF, kTArrayD}
-
-BES_BRANCH_NAMES = {
-    "TEvtHeader",
-    "TMcEvent",
-    "TDigiEvent",
-    "TDstEvent",
-    "TRecEvent",
-    "TEvtRecObject",
-    "THltEvent",
+num_typenames = {
+    "bool": "i1",
+    "char": "i1",
+    "short": "i2",
+    "int": "i4",
+    "long": "i8",
+    "unsigned char": "u1",
+    "unsigned short": "u2",
+    "unsigned int": "u4",
+    "unsigned long": "u8",
+    "float": "f",
+    "double": "d",
+    # cstdint
+    "int8_t": "i1",
+    "int16_t": "i2",
+    "int32_t": "i4",
+    "int64_t": "i8",
+    "uint8_t": "u1",
+    "uint16_t": "u2",
+    "uint32_t": "u4",
+    "uint64_t": "u8",
+    # ROOT types
+    "Bool_t": "i1",
+    "Char_t": "i1",
+    "Short_t": "i2",
+    "Int_t": "i4",
+    "Long_t": "i8",
+    "UChar_t": "u1",
+    "UShort_t": "u2",
+    "UInt_t": "u4",
+    "ULong_t": "u8",
+    "Float_t": "f",
+    "Double_t": "d",
 }
 
-kFallBack = "fallback"
-kTObjArray = "TObjArray"
-kTObject = "TObject"
-kSTL = "STL"
-branchname_to_element_type = {
-    "TEvtHeader/m_eventId": (kFallBack, None),
-    "TEvtHeader/m_runId": (kFallBack, None),
-    "TEvtHeader/m_time": (kFallBack, None),
-    "TEvtHeader/m_eventTag": (kFallBack, None),
-    "TEvtHeader/m_flag1": (kFallBack, None),
-    "TEvtHeader/m_flag2": (kFallBack, None),
-    "TEvtHeader/m_etsT1": (kFallBack, None),
-    "TEvtHeader/m_etsT2": (kFallBack, None),
-    # multimap and map are the same
-    "EventNavigator/m_mcMdcMcHits": (kSTL, "map<int,int>"),
-    "EventNavigator/m_mcMdcTracks": (kSTL, "map<int,int>"),
-    "EventNavigator/m_mcEmcMcHits": (kSTL, "map<int,int>"),
-    "EventNavigator/m_mcEmcRecShowers": (kSTL, "map<int,int>"),
-    "TMcEvent/m_mdcMcHitCol": (kTObjArray, "TMdcMc"),
-    "TMcEvent/m_cgemMcHitCol": (kTObjArray, "TCgemMc"),
-    "TMcEvent/m_emcMcHitCol": (kTObjArray, "TEmcMc"),
-    "TMcEvent/m_tofMcHitCol": (kTObjArray, "TTofMc"),
-    "TMcEvent/m_mucMcHitCol": (kTObjArray, "TMucMc"),
-    "TMcEvent/m_mcParticleCol": (kTObjArray, "TMcParticle"),
-    "TDigiEvent/m_fromMc": (kFallBack, None),
-    "TDigiEvent/m_mdcDigiCol": (kTObjArray, "TMdcDigi"),
-    "TDigiEvent/m_cgemDigiCol": (kTObjArray, "TCgemDigi"),
-    "TDigiEvent/m_emcDigiCol": (kTObjArray, "TEmcDigi"),
-    "TDigiEvent/m_tofDigiCol": (kTObjArray, "TTofDigi"),
-    "TDigiEvent/m_mucDigiCol": (kTObjArray, "TMucDigi"),
-    "TDigiEvent/m_lumiDigiCol": (kTObjArray, "TLumiDigi"),
-    "TDstEvent/m_mdcTrackCol": (kTObjArray, "TMdcTrack"),
-    "TDstEvent/m_emcTrackCol": (kTObjArray, "TEmcTrack"),
-    "TDstEvent/m_tofTrackCol": (kTObjArray, "TTofTrack"),
-    "TDstEvent/m_mucTrackCol": (kTObjArray, "TMucTrack"),
-    "TDstEvent/m_mdcDedxCol": (kTObjArray, "TMdcDedx"),
-    "TDstEvent/m_extTrackCol": (kTObjArray, "TExtTrack"),
-    "TDstEvent/m_mdcKalTrackCol": (kTObjArray, "TMdcKalTrack"),
-    "TRecEvent/m_recMdcTrackCol": (kTObjArray, "TRecMdcTrack"),
-    "TRecEvent/m_recMdcHitCol": (kTObjArray, "TRecMdcHit"),
-    "TRecEvent/m_recEmcHitCol": (kTObjArray, "TRecEmcHit"),
-    "TRecEvent/m_recEmcClusterCol": (kTObjArray, "TRecEmcCluster"),
-    "TRecEvent/m_recEmcShowerCol": (kTObjArray, "TRecEmcShower"),
-    "TRecEvent/m_recTofTrackCol": (kTObjArray, "TRecTofTrack"),
-    "TRecEvent/m_recMucTrackCol": (kTObjArray, "TRecMucTrack"),
-    "TRecEvent/m_recMdcDedxCol": (kTObjArray, "TRecMdcDedx"),
-    "TRecEvent/m_recMdcDedxHitCol": (kTObjArray, "TRecMdcDedxHit"),
-    "TRecEvent/m_recExtTrackCol": (kTObjArray, "TRecExtTrack"),
-    "TRecEvent/m_recMdcKalTrackCol": (kTObjArray, "TRecMdcKalTrack"),
-    "TRecEvent/m_recMdcKalHelixSegCol": (kTObjArray, "TRecMdcKalHelixSeg"),
-    "TRecEvent/m_recEvTimeCol": (kTObjArray, "TRecEvTime"),
-    "TRecEvent/m_recZddChannelCol": (kTObjArray, "TRecZddChannel"),
-    # This is an TObject, not a TObjArray
-    "TEvtRecObject/m_evtRecEvent": (kTObject, "TEvtRecEvent"),
-    "TEvtRecObject/m_evtRecTrackCol": (kTObjArray, "TEvtRecTrack"),
-    # This is an TObject, not a TObjArray
-    "TEvtRecObject/m_evtRecPrimaryVertex": (kTObject, "TEvtRecPrimaryVertex"),
-    "TEvtRecObject/m_evtRecVeeVertexCol": (kTObjArray, "TEvtRecVeeVertex"),
-    "TEvtRecObject/m_evtRecPi0Col": (kTObjArray, "TEvtRecPi0"),
-    "TEvtRecObject/m_evtRecEtaToGGCol": (kTObjArray, "TEvtRecEtaToGG"),
-    "TEvtRecObject/m_evtRecDTagCol": (kTObjArray, "TEvtRecDTag"),
-    "THltEvent/m_hltRawCol": (kTObjArray, "THltRaw"),
-    # This is an TObject, not a TObjArray
-    "THltEvent/m_hltInf": (kTObject, "THltInf"),
-    # This is an TObject, not a TObjArray
-    "THltEvent/m_dstHltInf": (kTObject, "TDstHltInf"),
+stl_typenames = {
+    "vector",
+    "array",
+    "map",
+    "unordered_map",
+    "string",
+    "multimap",
 }
 
 
-##########################################################################################
-#                                 C++ output to awkward
-##########################################################################################
+tarray_typenames = {
+    "TArrayC": "i1",
+    "TArrayS": "i2",
+    "TArrayI": "i4",
+    "TArrayL": "i8",
+    "TArrayF": "f",
+    "TArrayD": "d",
+}
+
+readers: set["BaseReader"] = set()
+
+
+ctype_hints = Literal["bool", "i1", "i2", "i4", "i8", "u1", "u2", "u4", "u8", "f", "d"]
+
+
+class ReaderType(Enum):
+    CType = "CType"
+    STLSequence = "STLSequence"
+    STLMap = "STLMap"
+    STLString = "STLString"
+    TArray = "TArray"
+    TString = "TString"
+    TObject = "TObject"
+    CArray = "CArray"
+    BaseObject = "BaseObject"
+    ObjectHeader = "ObjectHeader"
+    Empty = "Empty"
 
 
 def get_top_type_name(type_name: str) -> str:
-    if type_name in CTYPE_NAMES:
-        return kCtype
-
-    elif "<" in type_name:
-        top_type_name = type_name.split("<")[0]
-        if top_type_name in STL_NAMES:
-            return top_type_name
-        else:
-            raise NotImplementedError(f"Unsupported type_name: {type_name}")
-
-    elif type_name == kTString:
-        return kTString
-
-    else:
-        if type_name.endswith("*"):
-            type_name = type_name[:-1]
-        return type_name
+    if type_name.endswith("*"):
+        type_name = type_name[:-1].strip()
+    type_name = type_name.replace("std::", "").strip()
+    return type_name.split("<")[0]
 
 
-def get_vector_subtype(type_name: str) -> str:
-    assert type_name.startswith("vector<") and type_name.endswith(
-        ">"
-    ), f"Unsupported type_name: {type_name}"
-    return type_name[7:-1].strip()
+def gen_tree_config(
+    cls_streamer_info: dict,
+    all_streamer_info: dict,
+    item_path: str = "",
+) -> dict:
+    """
+    Generate reader configuration for a class streamer information.
 
+    The content it returns should be:
 
-def get_map_subtypes(type_name: str) -> tuple[str, str]:
-    assert type_name.startswith("map<") and type_name.endswith(
-        ">"
-    ), f"Unsupported type_name: {type_name}"
+    ```python
+    {
+        "reader": ReaderType,
+        "name": str,
+        "ctype": str, # for CTypeReader, TArrayReader
+        "element_reader": dict, # reader config of the element, for STLVectorReader, SimpleCArrayReader, TObjectCArrayReader
+        "flat_size": int, # for SimpleCArrayReader, TObjectCArrayReader
+        "fMaxIndex": list[int], # for SimpleCArrayReader, TObjectCArrayReader
+        "fArrayDim": int, # for SimpleCArrayReader, TObjectCArrayReader
+        "key_reader": dict, # reader config of the key, for STLMapReader
+        "val_reader": dict, # reader config of the value, for STLMapReader
+        "sub_readers": list[dict], # for BaseObjectReader, ObjectHeaderReader
+        "is_top_level": bool, # for STLVectorReader, STLMapReader, STLStringReader
+    }
+    ```
 
-    pos_split = 0
-    n_level = 0
-    for i, c in enumerate(type_name):
-        if c == "<":
-            n_level += 1
-        elif c == ">":
-            n_level -= 1
-        if n_level == 1 and c == ",":
-            pos_split = i
-            break
+    Args:
+        cls_streamer_info (dict): Class streamer information.
+        all_streamer_info (dict): All streamer information.
+        item_path (str): Path to the item.
 
-    assert pos_split != 0, f"Unsupported type_name: {type_name}"
-    return type_name[4:pos_split].strip(), type_name[pos_split + 1 : -1].strip()
+    Returns:
+        dict: Reader configuration.
+    """
+    fName = cls_streamer_info["fName"]
+    item_path = fName if item_path == "" else f"{item_path}.{fName}"
 
-
-def recover_basic_element(
-    streamer_info: dict, org_data: tuple, all_streamer_info: dict
-) -> awkward.contents.Content:
-    fTypeName = streamer_info["fTypeName"]
-    fName = streamer_info["fName"]
-    top_type_name = get_top_type_name(fTypeName)
-
-    if "fArrayDim" in streamer_info and streamer_info["fArrayDim"] > 0:
-        fMaxIndex = streamer_info["fMaxIndex"]
-
-        new_info = streamer_info.copy()
-        new_info["fArrayDim"] = 0
-
-        flat_content = recover_basic_element(new_info, org_data, all_streamer_info)
-        shape = deque(fMaxIndex[fMaxIndex > 0].tolist())
-        return recover_array_shape(flat_content, shape)
-
-    if top_type_name == kCtype:
-        return awkward.contents.NumpyArray(org_data[0])
-
-    elif top_type_name == kTString:
-        offset, data = org_data
-        return awkward.contents.ListOffsetArray(
-            awkward.index.Index(offset),
-            awkward.contents.NumpyArray(data.view(np.uint8), parameters={"__array__": "char"}),
-            parameters={"__array__": "string"},
+    for reader in sorted(readers, key=lambda x: x.priority(), reverse=True):
+        top_type_name = get_top_type_name(cls_streamer_info["fTypeName"])
+        tree_config = reader.gen_tree_config(
+            top_type_name,
+            cls_streamer_info,
+            all_streamer_info,
+            item_path,
         )
+        if tree_config is not None:
+            return tree_config
 
-    elif top_type_name in STL_NAMES:
-        if top_type_name == kVector:
-            element_type = get_vector_subtype(fTypeName)
-            element_info = {
-                "fName": fName + "_element",
-                "fTypeName": element_type,
-                "fType": -1,
+    raise ValueError(f"Unknown type: {cls_streamer_info['fTypeName']} for {item_path}")
+
+
+def get_reader_instance(tree_config: dict):
+    for cls_reader in sorted(readers, key=lambda x: x.priority(), reverse=True):
+        reader = cls_reader.get_reader_instance(tree_config)
+        if reader is not None:
+            return reader
+
+    raise ValueError(f"Unknown reader type: {tree_config['reader']} for {tree_config['name']}")
+
+
+def reconstruct_array(
+    raw_data: np.ndarray | tuple | list | None,
+    tree_config: dict,
+) -> ak.Array | None:
+    for reader in sorted(readers, key=lambda x: x.priority(), reverse=True):
+        data = reader.reconstruct_array(raw_data, tree_config)
+        if data is not None:
+            return data
+
+    raise ValueError(f"Unknown reader type: {tree_config['reader']} for {tree_config['name']}")
+
+
+def gen_tree_config_from_type_name(
+    type_name: str,
+    all_streamer_info: dict,
+    item_path: str = "",
+):
+    return gen_tree_config(
+        {
+            "fName": type_name,
+            "fTypeName": type_name,
+        },
+        all_streamer_info,
+        item_path,
+    )
+
+
+def regularize_object_path(object_path: str) -> str:
+    return re.sub(r";[0-9]+", r"", object_path)
+
+
+class BaseReader:
+    """
+    Base class for all readers.
+    """
+
+    @classmethod
+    def priority(cls) -> int:
+        """
+        The priority of the reader. Higher priority means the reader will be
+        used first.
+        """
+        return 20
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name: str,
+        cls_streamer_info: dict,
+        all_streamer_info: dict,
+        item_path: str = "",
+    ) -> dict:
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
+    @classmethod
+    def get_reader_instance(cls, tree_config: dict):
+        """
+        Args:
+            tree_config (dict): The configuration dictionary for the reader.
+
+        Returns:
+            An instance of the appropriate reader class.
+        """
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
+    @classmethod
+    def reconstruct_array(
+        cls,
+        raw_data: np.ndarray | tuple | list | None,
+        tree_config: dict,
+    ) -> ak.Array | None:
+        """
+        Args:
+            raw_data (Union[np.ndarray, tuple, list, None]): The raw data to be
+                recovered.
+            tree_config (dict): The configuration dictionary for the reader.
+
+        Returns:
+            awkward.Array: The recovered data as an awkward array.
+        """
+        raise NotImplementedError("This method should be implemented in subclasses.")
+
+
+class CTypeReader(BaseReader):
+    """
+    This class reads C++ primitive types from a binary parser.
+    """
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name,
+        cls_streamer_info,
+        all_streamer_info,
+        item_path,
+    ):
+        if top_type_name in num_typenames:
+            ctype = num_typenames[top_type_name]
+            return {
+                "reader": ReaderType.CType,
+                "name": cls_streamer_info["fName"],
+                "ctype": ctype,
             }
-
-            offsets, sub_org_data = org_data
-            sub_content = recover_basic_element(element_info, sub_org_data, all_streamer_info)
-
-            return awkward.contents.ListOffsetArray(awkward.index.Index(offsets), sub_content)
-
-        elif top_type_name == kMap or top_type_name == kMultiMap:
-            key_type, val_type = get_map_subtypes(fTypeName)
-
-            key_info = {"fName": fName + "_key", "fTypeName": key_type, "fType": -1}
-            val_info = {"fName": fName + "_val", "fTypeName": val_type, "fType": -1}
-
-            offset, key_org_data, val_org_data = org_data
-
-            key_content = recover_basic_element(key_info, key_org_data, all_streamer_info)
-            val_content = recover_basic_element(val_info, val_org_data, all_streamer_info)
-
-            return awkward.contents.ListOffsetArray(
-                awkward.index.Index(offset),
-                awkward.contents.RecordArray([key_content, val_content], ["key", "val"]),
-            )
         else:
-            raise NotImplementedError(f"Unsupported STL type: {top_type_name}")
-
-    elif top_type_name == kBASE:
-        fType = streamer_info["fType"]
-        if fType == 66:
             return None
 
-        elif fType == 0:
-            sub_streamers = all_streamer_info[fName]
-            sub_field_names = []
-            sub_field_contents = []
-            for s_info, s_data in zip(sub_streamers, org_data):
-                sub_content = recover_basic_element(s_info, s_data, all_streamer_info)
-                sub_name = s_info["fName"]
+    @classmethod
+    def get_reader_instance(cls, tree_config: dict):
+        if tree_config["reader"] != ReaderType.CType:
+            return None
 
-                # skip TObject result
-                if sub_content is not None:
-                    sub_field_contents.append(sub_content)
-                    sub_field_names.append(sub_name)
-            return awkward.contents.RecordArray(sub_field_contents, sub_field_names)
+        ctype = tree_config["ctype"]
+        return {
+            "i1": bcpp.Int8Reader,
+            "i2": bcpp.Int16Reader,
+            "i4": bcpp.Int32Reader,
+            "i8": bcpp.Int64Reader,
+            "u1": bcpp.UInt8Reader,
+            "u2": bcpp.UInt16Reader,
+            "u4": bcpp.UInt32Reader,
+            "u8": bcpp.UInt64Reader,
+            "f": bcpp.FloatReader,
+            "d": bcpp.DoubleReader,
+        }[ctype](tree_config["name"])
+
+    @classmethod
+    def reconstruct_array(cls, raw_data, tree_config):
+        if tree_config["reader"] != ReaderType.CType:
+            return None
+
+        return ak.Array(raw_data)
+
+
+class STLSequenceReader(BaseReader):
+    """
+    This class reads STL sequence (vector, array) from a binary parser.
+    """
+
+    @staticmethod
+    def get_sequence_element_typename(type_name: str) -> str:
+        """
+        Get the element type name of a vector type.
+
+        e.g. vector<vector<int>> -> vector<int>
+        """
+        type_name = (
+            type_name.replace("std::", "").replace("< ", "<").replace(" >", ">").strip()
+        )
+        return re.match(r"^(vector|array)<(.*)>$", type_name).group(2)
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name,
+        cls_streamer_info,
+        all_streamer_info,
+        item_path,
+    ):
+        if top_type_name not in ["vector", "array"]:
+            return None
+
+        fName = cls_streamer_info["fName"]
+        fTypeName = cls_streamer_info["fTypeName"]
+        element_type = cls.get_sequence_element_typename(fTypeName)
+        element_info = {
+            "fName": fName,
+            "fTypeName": element_type,
+        }
+
+        element_tree_config = gen_tree_config(
+            element_info,
+            all_streamer_info,
+            item_path,
+        )
+
+        top_element_type = get_top_type_name(element_type)
+        if top_element_type in stl_typenames:
+            element_tree_config["is_top"] = False
+
+        return {
+            "reader": ReaderType.STLSequence,
+            "name": fName,
+            "element_reader": element_tree_config,
+        }
+
+    @classmethod
+    def get_reader_instance(cls, tree_config: dict):
+        if tree_config["reader"] != ReaderType.STLSequence:
+            return None
+
+        element_reader = get_reader_instance(tree_config["element_reader"])
+        is_top = tree_config.get("is_top", True)
+        return bcpp.STLSeqReader(tree_config["name"], is_top, element_reader)
+
+    @classmethod
+    def reconstruct_array(cls, raw_data, tree_config):
+        if tree_config["reader"] != ReaderType.STLSequence:
+            return None
+
+        counts, element_raw_data = raw_data
+        element_data = reconstruct_array(
+            element_raw_data,
+            tree_config["element_reader"],
+        )
+        return ak.unflatten(element_data, counts)
+
+
+class STLMapReader(BaseReader):
+    """
+    This class reads std::map from a binary parser.
+    """
+
+    @staticmethod
+    def get_map_key_val_typenames(type_name: str) -> tuple[str, str]:
+        """
+        Get the key and value type names of a map type.
+
+        e.g. map<int, vector<int>> -> (int, vector<int>)
+        """
+        type_name = (
+            type_name.replace("std::", "").replace("< ", "<").replace(" >", ">").strip()
+        )
+        return re.match(r"^(map|unordered_map|multimap)<(.*),(.*)>$", type_name).groups()[1:3]
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name,
+        cls_streamer_info,
+        all_streamer_info,
+        item_path,
+    ):
+        if top_type_name not in ["map", "unordered_map", "multimap"]:
+            return None
+
+        fTypeName = cls_streamer_info["fTypeName"]
+        key_type_name, val_type_name = cls.get_map_key_val_typenames(fTypeName)
+
+        fName = cls_streamer_info["fName"]
+        key_info = {
+            "fName": "key",
+            "fTypeName": key_type_name,
+        }
+
+        val_info = {
+            "fName": "val",
+            "fTypeName": val_type_name,
+        }
+
+        key_tree_config = gen_tree_config(key_info, all_streamer_info, item_path)
+        if get_top_type_name(key_type_name) in stl_typenames:
+            key_tree_config["is_top"] = False
+
+        val_tree_config = gen_tree_config(val_info, all_streamer_info, item_path)
+        if get_top_type_name(val_type_name) in stl_typenames:
+            val_tree_config["is_top"] = False
+
+        return {
+            "reader": ReaderType.STLMap,
+            "name": fName,
+            "key_reader": key_tree_config,
+            "val_reader": val_tree_config,
+        }
+
+    @classmethod
+    def get_reader_instance(cls, tree_config: dict):
+        if tree_config["reader"] != ReaderType.STLMap:
+            return None
+
+        key_cpp_reader = get_reader_instance(tree_config["key_reader"])
+        val_cpp_reader = get_reader_instance(tree_config["val_reader"])
+        is_top = tree_config.get("is_top", True)
+        return bcpp.STLMapReader(
+            tree_config["name"],
+            is_top,
+            key_cpp_reader,
+            val_cpp_reader,
+        )
+
+    @classmethod
+    def reconstruct_array(cls, raw_data, tree_config):
+        if tree_config["reader"] != ReaderType.STLMap:
+            return None
+
+        key_tree_config = tree_config["key_reader"]
+        val_tree_config = tree_config["val_reader"]
+        counts, key_raw_data, val_raw_data = raw_data
+        key_data = reconstruct_array(key_raw_data, key_tree_config)
+        val_data = reconstruct_array(val_raw_data, val_tree_config)
+
+        return ak.unflatten(
+            ak.zip(
+                {
+                    key_tree_config["name"]: key_data,
+                    val_tree_config["name"]: val_data,
+                },
+                with_name="pair",
+            ),
+            counts,
+        )
+
+
+class STLStringReader(BaseReader):
+    """
+    This class reads std::string from a binary parser.
+    """
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name,
+        cls_streamer_info,
+        all_streamer_info,
+        item_path,
+    ):
+        if top_type_name != "string":
+            return None
+
+        return {
+            "reader": ReaderType.STLString,
+            "name": cls_streamer_info["fName"],
+        }
+
+    @classmethod
+    def get_reader_instance(cls, tree_config: dict):
+        if tree_config["reader"] != ReaderType.STLString:
+            return None
+
+        return bcpp.STLStringReader(
+            tree_config["name"],
+            tree_config.get("is_top", True),
+        )
+
+    @classmethod
+    def reconstruct_array(cls, raw_data, tree_config):
+        if tree_config["reader"] != ReaderType.STLString:
+            return None
+
+        counts, data = raw_data
+        return ak.enforce_type(ak.unflatten(data, counts), "string")
+
+
+class TArrayReader(BaseReader):
+    """
+    This class reads TArray from a binary paerser.
+
+    TArray includes TArrayC, TArrayS, TArrayI, TArrayL, TArrayF, and TArrayD.
+    Corresponding ctype is u1, u2, i4, i8, f, and d.
+    """
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name,
+        cls_streamer_info,
+        all_streamer_info,
+        item_path,
+    ):
+        if top_type_name not in tarray_typenames:
+            return None
+
+        ctype = tarray_typenames[top_type_name]
+        return {
+            "reader": ReaderType.TArray,
+            "name": cls_streamer_info["fName"],
+            "ctype": ctype,
+        }
+
+    @classmethod
+    def get_reader_instance(cls, tree_config: dict):
+        if tree_config["reader"] != ReaderType.TArray:
+            return None
+
+        ctype = tree_config["ctype"]
+
+        return {
+            "i1": bcpp.TArrayCReader,
+            "i2": bcpp.TArraySReader,
+            "i4": bcpp.TArrayIReader,
+            "i8": bcpp.TArrayLReader,
+            "f": bcpp.TArrayFReader,
+            "d": bcpp.TArrayDReader,
+        }[ctype](tree_config["name"])
+
+    @classmethod
+    def reconstruct_array(cls, raw_data, tree_config):
+        if tree_config["reader"] != ReaderType.TArray:
+            return None
+
+        counts, data = raw_data
+        return ak.unflatten(data, counts)
+
+
+class TStringReader(BaseReader):
+    """
+    This class reads TString from a binary parser.
+    """
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name,
+        cls_streamer_info,
+        all_streamer_info,
+        item_path,
+    ):
+        if top_type_name != "TString":
+            return None
+
+        return {
+            "reader": ReaderType.TString,
+            "name": cls_streamer_info["fName"],
+        }
+
+    @classmethod
+    def get_reader_instance(cls, tree_config: dict):
+        if tree_config["reader"] != ReaderType.TString:
+            return None
+
+        return bcpp.TStringReader(tree_config["name"])
+
+    @classmethod
+    def reconstruct_array(cls, raw_data, tree_config):
+        if tree_config["reader"] != ReaderType.TString:
+            return None
+
+        counts, data = raw_data
+        offsets = np.zeros(len(counts) + 1, dtype=counts.dtype)
+        np.cumsum(counts, out=offsets[1:])
+
+        return ak.Array(
+            awkward.contents.ListOffsetArray(
+                awkward.index.Index(offsets),
+                awkward.contents.NumpyArray(data, parameters={"__array__": "char"}),
+                parameters={"__array__": "string"},
+            )
+        )
+
+
+class TObjectReader(BaseReader):
+    """
+    This class reads TObject from a binary parser.
+
+    It will not record any data.
+    """
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name,
+        cls_streamer_info,
+        all_streamer_info,
+        item_path,
+    ):
+        if top_type_name != "BASE":
+            return None
+
+        fType = cls_streamer_info["fType"]
+        if fType != 66:
+            return None
+
+        return {
+            "reader": ReaderType.TObject,
+            "name": cls_streamer_info["fName"],
+        }
+
+    @classmethod
+    def get_reader_instance(cls, tree_config: dict):
+        if tree_config["reader"] != ReaderType.TObject:
+            return None
+
+        return bcpp.TObjectReader(tree_config["name"])
+
+    @classmethod
+    def reconstruct_array(cls, raw_data, tree_config):
+        return None
+
+
+class CArrayReader(BaseReader):
+    """
+    This class reads a C-array from a binary parser.
+    """
+
+    @classmethod
+    def priority(cls):
+        return 100  # This reader should be called first
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name,
+        cls_streamer_info,
+        all_streamer_info,
+        item_path,
+    ):
+        if cls_streamer_info.get("fArrayDim", 0) == 0:
+            return None
+
+        fName = cls_streamer_info["fName"]
+        fTypeName = cls_streamer_info["fTypeName"]
+        fArrayDim = cls_streamer_info["fArrayDim"]
+        fMaxIndex = cls_streamer_info["fMaxIndex"]
+
+        element_streamer_info = cls_streamer_info.copy()
+        element_streamer_info["fArrayDim"] = 0
+
+        element_tree_config = gen_tree_config(
+            element_streamer_info,
+            all_streamer_info,
+        )
+
+        flat_size = np.prod(fMaxIndex[:fArrayDim])
+        assert flat_size > 0, f"flatten_size should be greater than 0, but got {flat_size}"
+
+        # c-type number or TArray
+        if top_type_name in num_typenames or top_type_name in tarray_typenames:
+            return {
+                "reader": ReaderType.CArray,
+                "name": fName,
+                "is_obj": False,
+                "element_reader": element_tree_config,
+                "flat_size": flat_size,
+                "fMaxIndex": fMaxIndex,
+                "fArrayDim": fArrayDim,
+            }
+
+        # TSTring
+        elif top_type_name == "TString":
+            return {
+                "reader": ReaderType.CArray,
+                "name": fName,
+                "is_obj": True,
+                "element_reader": element_tree_config,
+                "flat_size": flat_size,
+                "fMaxIndex": fMaxIndex,
+                "fArrayDim": fArrayDim,
+            }
+
+        # STL
+        elif top_type_name in stl_typenames:
+            element_tree_config["is_top"] = False
+            return {
+                "reader": ReaderType.CArray,
+                "name": fName,
+                "is_obj": True,
+                "flat_size": flat_size,
+                "element_reader": element_tree_config,
+                "fMaxIndex": fMaxIndex,
+                "fArrayDim": fArrayDim,
+            }
 
         else:
-            raise NotImplementedError(f"Unsupported fType: {fType}")
+            raise ValueError(f"Unknown type: {top_type_name} for C-array: {fTypeName}")
 
-    elif top_type_name in TARRAY_NAMES:
-        offsets, sub_org_data = org_data
-        return awkward.contents.ListOffsetArray(
-            awkward.index.Index(offsets), awkward.contents.NumpyArray(sub_org_data)
+    @classmethod
+    def get_reader_instance(cls, tree_config: dict):
+        reader_type = tree_config["reader"]
+        if reader_type != ReaderType.CArray:
+            return None
+
+        element_reader = get_reader_instance(tree_config["element_reader"])
+
+        return bcpp.CArrayReader(
+            tree_config["name"],
+            tree_config["is_obj"],
+            tree_config["flat_size"],
+            element_reader,
         )
 
-    else:
-        sub_streamers = all_streamer_info[top_type_name]
-        sub_field_names = []
-        sub_field_contents = []
-        for s_info, s_data in zip(sub_streamers, org_data):
-            sub_content = recover_basic_element(s_info, s_data, all_streamer_info)
-            sub_name = s_info["fName"]
+    @classmethod
+    def reconstruct_array(cls, raw_data, tree_config):
+        if tree_config["reader"] != ReaderType.CArray:
+            return None
 
-            # skip TObject result
-            if sub_content is not None:
-                sub_field_contents.append(sub_content)
-                sub_field_names.append(sub_name)
+        element_tree_config = tree_config["element_reader"]
+        fMaxIndex = tree_config["fMaxIndex"]
+        fArrayDim = tree_config["fArrayDim"]
+        shape = [fMaxIndex[i] for i in range(fArrayDim)]
 
-        return awkward.contents.RecordArray(sub_field_contents, sub_field_names)
-
-
-def recover_array_shape(
-    content: awkward.contents.Content, shape: deque[int]
-) -> awkward.contents.Content:
-    cur_shape = shape.popleft()
-    if len(shape) > 0:
-        content = recover_array_shape(content, shape)
-    return awkward.contents.RegularArray(content, cur_shape)
-
-
-def tobjarray_np2ak(
-    element_type_name: str, org_array_dict: dict, all_streamer_info: dict
-) -> awkward.Array:
-    org_data_tuple: tuple = org_array_dict["data"]
-    obj_offsets: np.ndarray = org_array_dict["obj_offsets"]
-    element_streamer_info = all_streamer_info[element_type_name]
-
-    field_names = []
-    field_contents = []
-    for s, org_data in zip(element_streamer_info, org_data_tuple):
-        element_content = recover_basic_element(s, org_data, all_streamer_info)
-        if element_content is None:
-            continue
-
-        # Make object-offsets, then it's event-by-event array
-        evt_contents = awkward.contents.ListOffsetArray(
-            awkward.index.Index(obj_offsets), element_content
+        element_data = reconstruct_array(
+            raw_data,
+            element_tree_config,
         )
 
-        field_names.append(s["fName"])
-        field_contents.append(evt_contents)
+        for s in shape[::-1]:
+            element_data = ak.unflatten(element_data, s)
 
-    return awkward.Array(awkward.contents.RecordArray(field_contents, field_names))
-
-
-def tobject_np2ak(
-    element_type_name: str, org_data_list: tuple, all_streamer_info: dict
-) -> awkward.Array:
-    field_names = []
-    field_contents = []
-    element_streamer_info = all_streamer_info[element_type_name]
-    for s, org_data in zip(element_streamer_info, org_data_list):
-        element_content = recover_basic_element(s, org_data, all_streamer_info)
-        if element_content is None:
-            continue
-
-        field_names.append(s["fName"])
-        field_contents.append(element_content)
-
-    return awkward.Array(awkward.contents.RecordArray(field_contents, field_names))
+        return element_data
 
 
-def stl_np2ak(org_data: tuple, type_name: str, all_streamer_info: dict) -> awkward.Array:
-    tmp_info = {
-        "fName": "tmp",
-        "fTypeName": type_name,
-        "fType": -1,
+class BaseObjectReader(BaseReader):
+    """
+    Base class is what a custom class inherits from.
+    It has fNBytes(uint32), fVersion(uint16) at the beginning.
+    """
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name,
+        cls_streamer_info,
+        all_streamer_info,
+        item_path,
+    ):
+        if top_type_name != "BASE":
+            return None
+
+        fType = cls_streamer_info["fType"]
+        if fType != 0:
+            return None
+
+        fName = cls_streamer_info["fName"]
+        sub_streamers: list = all_streamer_info[fName]
+
+        sub_tree_configs = [
+            gen_tree_config(s, all_streamer_info, item_path) for s in sub_streamers
+        ]
+
+        return {
+            "reader": ReaderType.BaseObject,
+            "name": fName,
+            "sub_readers": sub_tree_configs,
+        }
+
+    @classmethod
+    def get_reader_instance(cls, tree_config: dict):
+        if tree_config["reader"] != ReaderType.BaseObject:
+            return None
+
+        sub_readers = [get_reader_instance(s) for s in tree_config["sub_readers"]]
+        return bcpp.BaseObjectReader(tree_config["name"], sub_readers)
+
+    @classmethod
+    def reconstruct_array(cls, raw_data, tree_config):
+        if tree_config["reader"] != ReaderType.BaseObject:
+            return None
+
+        sub_tree_configs = tree_config["sub_readers"]
+
+        arr_dict = {}
+        for s_cfg, s_data in zip(sub_tree_configs, raw_data):
+            s_name = s_cfg["name"]
+            s_reader_type = s_cfg["reader"]
+
+            if s_reader_type == ReaderType.TObject:
+                continue
+
+            arr_dict[s_name] = reconstruct_array(s_data, s_cfg)
+
+        return ak.Array(arr_dict)
+
+
+class ObjectHeaderReader(BaseReader):
+    """
+    This class read an object starting with an object header.
+    """
+
+    @classmethod
+    def priority(cls):
+        return 0  # should be called last
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name,
+        cls_streamer_info,
+        all_streamer_info,
+        item_path,
+    ):
+        sub_streamers: list = all_streamer_info[top_type_name]
+        sub_tree_configs = [
+            gen_tree_config(s, all_streamer_info, item_path) for s in sub_streamers
+        ]
+        return {
+            "reader": ReaderType.ObjectHeader,
+            "name": top_type_name,
+            "sub_readers": sub_tree_configs,
+        }
+
+    @classmethod
+    def get_reader_instance(cls, tree_config: dict):
+        if tree_config["reader"] != ReaderType.ObjectHeader:
+            return None
+
+        sub_readers = [get_reader_instance(s) for s in tree_config["sub_readers"]]
+        return bcpp.ObjectHeaderReader(tree_config["name"], sub_readers)
+
+    @classmethod
+    def reconstruct_array(cls, raw_data, tree_config):
+        if tree_config["reader"] != ReaderType.ObjectHeader:
+            return None
+
+        sub_tree_configs = tree_config["sub_readers"]
+
+        arr_dict = {}
+        for s_cfg, s_data in zip(sub_tree_configs, raw_data):
+            s_name = s_cfg["name"]
+            s_reader_type = s_cfg["reader"]
+
+            if s_reader_type == ReaderType.TObject:
+                continue
+
+            arr_dict[s_name] = reconstruct_array(s_data, s_cfg)
+
+        return ak.Array(arr_dict)
+
+
+class EmptyReader(BaseReader):
+    """
+    This class does nothing.
+    """
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name,
+        cls_streamer_info,
+        all_streamer_info,
+        item_path,
+    ):
+        return None
+
+    @classmethod
+    def get_reader_instance(cls, tree_config: dict):
+        if tree_config["reader"] != ReaderType.Empty:
+            return None
+
+        return bcpp.EmptyReader(tree_config["name"])
+
+    @classmethod
+    def reconstruct_array(cls, raw_data, tree_config):
+        if tree_config["reader"] != ReaderType.Empty:
+            return None
+
+        return np.empty(shape=(0,))
+
+
+class Bes3TObjArrayReader(BaseReader):
+    bes3_branch2types = {
+        "/Event:TMcEvent/m_mdcMcHitCol": "TMdcMc",
+        "/Event:TMcEvent/m_cgemMcHitCol": "TCgemMc",
+        "/Event:TMcEvent/m_emcMcHitCol": "TEmcMc",
+        "/Event:TMcEvent/m_tofMcHitCol": "TTofMc",
+        "/Event:TMcEvent/m_mucMcHitCol": "TMucMc",
+        "/Event:TMcEvent/m_mcParticleCol": "TMcParticle",
+        "/Event:TDigiEvent/m_mdcDigiCol": "TMdcDigi",
+        "/Event:TDigiEvent/m_cgemDigiCol": "TCgemDigi",
+        "/Event:TDigiEvent/m_emcDigiCol": "TEmcDigi",
+        "/Event:TDigiEvent/m_tofDigiCol": "TTofDigi",
+        "/Event:TDigiEvent/m_mucDigiCol": "TMucDigi",
+        "/Event:TDigiEvent/m_lumiDigiCol": "TLumiDigi",
+        "/Event:TDstEvent/m_mdcTrackCol": "TMdcTrack",
+        "/Event:TDstEvent/m_emcTrackCol": "TEmcTrack",
+        "/Event:TDstEvent/m_tofTrackCol": "TTofTrack",
+        "/Event:TDstEvent/m_mucTrackCol": "TMucTrack",
+        "/Event:TDstEvent/m_mdcDedxCol": "TMdcDedx",
+        "/Event:TDstEvent/m_extTrackCol": "TExtTrack",
+        "/Event:TDstEvent/m_mdcKalTrackCol": "TMdcKalTrack",
+        "/Event:TRecEvent/m_recMdcTrackCol": "TRecMdcTrack",
+        "/Event:TRecEvent/m_recMdcHitCol": "TRecMdcHit",
+        "/Event:TRecEvent/m_recEmcHitCol": "TRecEmcHit",
+        "/Event:TRecEvent/m_recEmcClusterCol": "TRecEmcCluster",
+        "/Event:TRecEvent/m_recEmcShowerCol": "TRecEmcShower",
+        "/Event:TRecEvent/m_recTofTrackCol": "TRecTofTrack",
+        "/Event:TRecEvent/m_recMucTrackCol": "TRecMucTrack",
+        "/Event:TRecEvent/m_recMdcDedxCol": "TRecMdcDedx",
+        "/Event:TRecEvent/m_recMdcDedxHitCol": "TRecMdcDedxHit",
+        "/Event:TRecEvent/m_recExtTrackCol": "TRecExtTrack",
+        "/Event:TRecEvent/m_recMdcKalTrackCol": "TRecMdcKalTrack",
+        "/Event:TRecEvent/m_recMdcKalHelixSegCol": "TRecMdcKalHelixSeg",
+        "/Event:TRecEvent/m_recEvTimeCol": "TRecEvTime",
+        "/Event:TRecEvent/m_recZddChannelCol": "TRecZddChannel",
+        "/Event:TEvtRecObject/m_evtRecTrackCol": "TEvtRecTrack",
+        "/Event:TEvtRecObject/m_evtRecVeeVertexCol": "TEvtRecVeeVertex",
+        "/Event:TEvtRecObject/m_evtRecPi0Col": "TEvtRecPi0",
+        "/Event:TEvtRecObject/m_evtRecEtaToGGCol": "TEvtRecEtaToGG",
+        "/Event:TEvtRecObject/m_evtRecDTagCol": "TEvtRecDTag",
+        "/Event:THltEvent/m_hltRawCol": "THltRaw",
+        "/Event:EventNavigator/m_mcMdcMcHits": "map<int,int>",
+        "/Event:EventNavigator/m_mcMdcTracks": "map<int,int>",
+        "/Event:EventNavigator/m_mcEmcMcHits": "map<int,int>",
+        "/Event:EventNavigator/m_mcEmcRecShowers": "map<int,int>",
     }
-    element_content = recover_basic_element(tmp_info, org_data, all_streamer_info)
-    return awkward.Array(element_content)
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name: str,
+        cls_streamer_info: dict,
+        all_streamer_info: dict,
+        item_path: str = "",
+    ):
+        if top_type_name != "TObjArray":
+            return None
+
+        obj_typename = Bes3TObjArrayReader.bes3_branch2types.get(
+            item_path.replace(".TObjArray*", "")
+        )
+        if obj_typename is None:
+            return None
+
+        if obj_typename not in all_streamer_info:
+            return {
+                "reader": "MyTObjArrayReader",
+                "name": cls_streamer_info["fName"],
+                "element_reader": {
+                    "reader": ReaderType.Empty,
+                    "name": obj_typename,
+                },
+            }
+
+        sub_reader_config = []
+        for s in all_streamer_info[obj_typename]:
+            sub_reader_config.append(
+                gen_tree_config(s, all_streamer_info, item_path + f".{obj_typename}")
+            )
+
+        return {
+            "reader": "MyTObjArrayReader",
+            "name": cls_streamer_info["fName"],
+            "element_reader": {
+                "reader": ReaderType.ObjectHeader,
+                "name": obj_typename,
+                "sub_readers": sub_reader_config,
+            },
+        }
+
+    @staticmethod
+    def get_reader_instance(reader_config: dict):
+        if reader_config["reader"] != "MyTObjArrayReader":
+            return None
+
+        element_reader_config = reader_config["element_reader"]
+        element_reader = get_reader_instance(element_reader_config)
+
+        return bcpp.Bes3TObjArrayReader(reader_config["name"], element_reader)
+
+    @staticmethod
+    def reconstruct_array(raw_data, reader_config: dict):
+        if reader_config["reader"] != "MyTObjArrayReader":
+            return None
+
+        counts, element_raw_data = raw_data
+        element_reader_config = reader_config["element_reader"]
+        element_data = reconstruct_array(
+            element_raw_data,
+            element_reader_config,
+        )
+
+        return ak.unflatten(element_data, counts)
+
+
+readers |= {
+    CTypeReader,
+    STLSequenceReader,
+    STLMapReader,
+    STLStringReader,
+    TArrayReader,
+    TStringReader,
+    TObjectReader,
+    CArrayReader,
+    BaseObjectReader,
+    ObjectHeaderReader,
+    EmptyReader,
+    Bes3TObjArrayReader,
+}
 
 
 ##########################################################################################
@@ -620,6 +1297,7 @@ def process_rec_m_recMdcKalTrackCol(org_arr: ak.Array) -> ak.Array:
 # Main function
 #############################################
 def preprocess_subbranch(full_branch_path: str, org_arr: ak.Array) -> ak.Array:
+    full_branch_path = full_branch_path.replace("/Event:", "")
     evt_name, subbranch_name = full_branch_path.split("/")
 
     if evt_name == "TDigiEvent" and subbranch_name != "m_fromMc":
@@ -653,17 +1331,83 @@ def preprocess_subbranch(full_branch_path: str, org_arr: ak.Array) -> ak.Array:
     return org_arr
 
 
-##########################################################################################
-#                                      Interpretation
-##########################################################################################
+class Bes3Interpretation(uproot.interpretation.Interpretation):
+    """
+    Custom interpretation for Bes3 data.
+    """
 
+    target_branches: set[str] = set(Bes3TObjArrayReader.bes3_branch2types.keys())
 
-class BesInterpretation(uproot.interpretation.Interpretation):
-    def __init__(self, full_branch_name: str) -> None:
-        super().__init__()
+    def __init__(
+        self,
+        branch: uproot.behaviors.TBranch.TBranch,
+        context: dict,
+        simplify: bool,
+    ):
+        """
+        Args:
+            branch (:doc:`uproot.behaviors.TBranch.TBranch`): The ``TBranch`` to
+                interpret as an array.
+            context (dict): Auxiliary data used in deserialization.
+            simplify (bool): If True, call
+                :ref:`uproot.interpretation.objects.AsObjects.simplify` on any
+                :doc:`uproot.interpretation.objects.AsObjects` to try to get a
+                more efficient interpretation.
 
-        self.full_branch_name = full_branch_name
-        self.parse_rule, self.element_type_name = branchname_to_element_type[full_branch_name]
+        Accept arguments from `uproot.interpretation.identify.interpretation_of`.
+        """
+        self._branch = branch
+        self._context = context
+        self._simplify = simplify
+
+        # simplify streamer information
+        self.all_streamer_info: dict[str, list[dict]] = {}
+        for k, v in branch.file.streamers.items():
+            cur_infos = [i.all_members for i in next(iter(v.values())).member("fElements")]
+            self.all_streamer_info[k] = cur_infos
+
+    @classmethod
+    def match_branch(
+        cls,
+        branch: uproot.behaviors.TBranch.TBranch,
+        context: dict,
+        simplify: bool,
+    ) -> bool:
+        """
+        Args:
+            branch (:doc:`uproot.behaviors.TBranch.TBranch`): The ``TBranch`` to
+                interpret as an array.
+            context (dict): Auxiliary data used in deserialization.
+            simplify (bool): If True, call
+                :ref:`uproot.interpretation.objects.AsObjects.simplify` on any
+                :doc:`uproot.interpretation.objects.AsObjects` to try to get a
+                more efficient interpretation.
+
+        Accept arguments from `uproot.interpretation.identify.interpretation_of`,
+        determine whether this interpretation can be applied to the given branch.
+        """
+        full_path = regularize_object_path(branch.object_path)
+        return full_path in cls.target_branches
+
+    @property
+    def typename(self) -> str:
+        """
+        The name of the type of the interpretation.
+        """
+        return self._branch.streamer.typename
+
+    @property
+    def cache_key(self) -> str:
+        """
+        The cache key of the interpretation.
+        """
+        return id(self)
+
+    def __repr__(self) -> str:
+        """
+        The string representation of the interpretation.
+        """
+        return f"AsBes3Custom({self.typename})"
 
     def final_array(
         self,
@@ -675,6 +1419,12 @@ class BesInterpretation(uproot.interpretation.Interpretation):
         branch,
         options,
     ):
+        """
+        Concatenate the arrays from the baskets and return the final array.
+        """
+
+        awkward = uproot.extras.awkward()
+
         basket_entry_starts = np.array(entry_offsets[:-1])
         basket_entry_stops = np.array(entry_offsets[1:])
 
@@ -682,111 +1432,44 @@ class BesInterpretation(uproot.interpretation.Interpretation):
         basket_end_idx = np.where(basket_entry_stops >= entry_stop)[0].min()
 
         arr_to_concat = [basket_arrays[i] for i in range(basket_start_idx, basket_end_idx + 1)]
-        tot_array = ak.concatenate(arr_to_concat)
+        tot_array = awkward.concatenate(arr_to_concat)
 
         relative_entry_start = entry_start - basket_entry_starts[basket_start_idx]
         relative_entry_stop = entry_stop - basket_entry_starts[basket_start_idx]
 
         return tot_array[relative_entry_start:relative_entry_stop]
 
-    def __eq__(self, other):
-        return isinstance(other, self.__class__)
-
-    def __repr__(self) -> str:
-        return f"BES::As({self.typename})"
-
-    @property
-    def cache_key(self):
-        return str(self.__class__)
-
-    @property
-    def typename(self):
-        res = "BES::"
-        if self.parse_rule == kTObjArray:
-            res += f"TObjArray<{self.element_type_name}>"
-        elif self.parse_rule == kTObject:
-            res += self.element_type_name
-        elif self.parse_rule == kSTL:
-            res += self.element_type_name
-        else:
-            raise NotImplementedError(
-                f"Unsupported parse_rule: {self.parse_rule}, {self.element_type_name}"
-            )
-        return res
-
     def basket_array(
         self,
-        data: np.ndarray,
-        byte_offsets: np.ndarray,
+        data,
+        byte_offsets,
         basket,
-        branch: uproot.models.TBranch.Model_TBranchElement,
+        branch,
         context,
         cursor_offset,
         library,
-        options,
+        interp_options,
     ):
-        # For BES TObject and TObjArray, element class streamers are needed
-        # Check streamers and versions
-        if self.parse_rule == kTObjArray or self.parse_rule == kTObject:
-            obj_streamer = branch.file.streamers.get(self.element_type_name)
-            if obj_streamer is None:
-                raise ValueError(
-                    f"Streamer for {self.element_type_name} not found, maybe this branch is empty?"
-                )
+        assert library.name == "ak", "Only awkward arrays are supported"
 
-            obj_versions = list(obj_streamer.keys())
-            assert (
-                len(obj_versions) == 1
-            ), "Only one version of streamer is supported. Maybe you mixed data from different versions?"
+        full_branch_path = regularize_object_path(branch.object_path)
 
-        def get_streamer_list(type_name: str) -> list[dict]:
-            return [
-                i.all_members
-                for i in list(branch.file.streamers[type_name].values())[0].member("fElements")
-            ]
-
-        all_streamer_info = {k: get_streamer_list(k) for k in branch.file.streamers.keys()}
-
-        if self.parse_rule == kTObjArray:
-            org_data = read_bes_tobjarray(
-                data, byte_offsets, self.element_type_name, all_streamer_info
-            )
-        elif self.parse_rule == kTObject:
-            org_data = read_bes_tobject(
-                data, byte_offsets, self.element_type_name, all_streamer_info
-            )
-        elif self.parse_rule == kSTL:
-            org_data = read_bes_stl(
-                data, byte_offsets, self.element_type_name, all_streamer_info
-            )
-        else:
-            raise NotImplementedError(
-                f"Unsupported parse_rule: {self.parse_rule}, {self.element_type_name}"
-            )
-
-        if isinstance(library, uproot.interpretation.library.NumPy):
-            raise NotImplementedError("Numpy library is not supported")
-
-        if isinstance(library, uproot.interpretation.library.Pandas):
-            raise NotImplementedError("Pandas library is not supported")
-
-        assert isinstance(library, uproot.interpretation.library.Awkward), (
-            "Unknown library: %s" % library
+        # generate reader config
+        tree_config = gen_tree_config_from_type_name(
+            branch.streamer.typename, self.all_streamer_info, full_branch_path
         )
 
-        if self.parse_rule == kTObjArray:
-            ak_arr = tobjarray_np2ak(self.element_type_name, org_data, all_streamer_info)
-        elif self.parse_rule == kTObject:
-            ak_arr = tobject_np2ak(self.element_type_name, org_data, all_streamer_info)
-        elif self.parse_rule == kSTL:
-            ak_arr = stl_np2ak(org_data, self.element_type_name, all_streamer_info)
-        else:
-            raise NotImplementedError(
-                f"Unsupported parse_rule: {self.parse_rule}, {self.element_type_name}"
-            )
+        # get reader
+        reader = get_reader_instance(tree_config)
 
-        # preprocess awkward array
-        return preprocess_subbranch(self.full_branch_name, ak_arr)
+        # do read
+        raw_data = bcpp.read_data(data, byte_offsets, reader)
+
+        # recover raw data
+        raw_ak_arr = reconstruct_array(raw_data, tree_config)
+
+        # preprocess awkward array and return
+        return preprocess_subbranch(full_branch_path, raw_ak_arr)
 
 
 ##########################################################################################
@@ -804,16 +1487,10 @@ def bes_interpretation_of(
     if not hasattr(branch, "parent"):
         return _uproot_interpretation_of(branch, context, simplify)
 
-    parent_name = branch.parent.name
-    full_branch_name = f"{parent_name}/{branch.name}"
+    if Bes3Interpretation.match_branch(branch, context, simplify):
+        return Bes3Interpretation(branch, context, simplify)
 
-    if full_branch_name not in branchname_to_element_type.keys():
-        return _uproot_interpretation_of(branch, context, simplify)
-
-    if branchname_to_element_type[full_branch_name][0] == kFallBack:
-        return _uproot_interpretation_of(branch, context, simplify)
-
-    return BesInterpretation(full_branch_name=full_branch_name)
+    return _uproot_interpretation_of(branch, context, simplify)
 
 
 def wrap_uproot_interpretation():
@@ -825,18 +1502,31 @@ def wrap_uproot_interpretation():
 
 def wrap_uproot_TBranchElement_branches():
     def branches(self):
-        if self.name not in BES_BRANCH_NAMES:
+
+        if self.name not in {
+            "TEvtHeader",
+            "TMcEvent",
+            "TDigiEvent",
+            "TDstEvent",
+            "TRecEvent",
+            "TEvtRecObject",
+            "THltEvent",
+        }:
             return self.member("fBranches")
         else:
+
             res = []
             for br in self.member("fBranches"):
                 if br.name == "TObject":
                     continue
 
-                interpret_type, class_name = branchname_to_element_type[
-                    f"{self.name}/{br.name}"
-                ]
-                if interpret_type == kFallBack or class_name in self.file.streamers:
+                full_path = regularize_object_path(br.object_path)
+                if full_path not in Bes3TObjArrayReader.bes3_branch2types:
+                    res.append(br)
+                    continue
+
+                class_name = Bes3TObjArrayReader.bes3_branch2types[full_path]
+                if class_name in self.file.streamers:
                     res.append(br)
                 else:
                     continue

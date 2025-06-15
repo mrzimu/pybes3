@@ -9,7 +9,7 @@ import pybes3.besio as besio
 
 besio.wrap_uproot()
 
-data_dir = Path(__file__).parent.parent / "data"
+data_dir = Path(__file__).parent / "data"
 
 
 def test_uproot_branches():
