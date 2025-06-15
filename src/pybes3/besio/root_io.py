@@ -222,7 +222,7 @@ class BaseReader:
         raise NotImplementedError("This method should be implemented in subclasses.")
 
     @classmethod
-    def get_reader_instance(cls, tree_config: dict):
+    def get_reader_instance(cls, tree_config: dict) -> bcpp.BaseReader:
         """
         Args:
             tree_config (dict): The configuration dictionary for the reader.
