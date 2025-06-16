@@ -12,6 +12,7 @@ import uproot.extras
 import uproot.interpretation
 
 from . import besio_cpp as bcpp
+from .._utils import _extract_index, _flat_to_numpy
 
 type_np2array = {
     "u1": "B",
@@ -1041,7 +1042,7 @@ readers |= {
 def get_symetric_matrix_idx(
     i: Union[int, ak.Array, np.ndarray], j: Union[int, ak.Array, np.ndarray], ndim: int
 ) -> int:
-    r"""
+    """
     Returns the index of the similarity matrix given the row and column indices.
 
     The matrix is assumed to be symmetric-like. (i, j) -> index relationship is:
@@ -1132,40 +1133,41 @@ def expand_zipped_symetric_matrix(
     Raises:
         ValueError: If the input array does not have a symmetric shape.
     """
-    ndim_data: int = arr.ndim
 
     # Get the number of elements in the symmetric matrix
     if isinstance(arr, ak.Array):
         type_strs = [i.strip() for i in arr.typestr.split("*")[:-1]]
         n_err_elements = int(type_strs[-1])
-
-        ndim_err = (np.sqrt(1 + 8 * n_err_elements) - 1) / 2
-        if not ndim_err.is_integer():
-            raise ValueError("The array does not have a symmetric shape.")
-        ndim_err = int(ndim_err)
-    elif isinstance(arr, np.ndarray):
-        n_err_elements = arr.shape[-1]
-
-    # Reshape the array
-    tmp_matrix = []
-    for i in range(ndim_err):
-        tmp_row = []
-        for j in range(ndim_err):
-            tmp_idx = tuple(
-                [slice(None)] * (ndim_data - 1)
-                + [get_symetric_matrix_idx(i, j, ndim_err), np.newaxis, np.newaxis]
-            )
-            tmp_row.append(arr[tmp_idx])
-
-        if isinstance(arr, ak.Array):
-            tmp_matrix.append(ak.concatenate(tmp_row, axis=-1))
-        else:
-            tmp_matrix.append(np.concatenate(tmp_row, axis=-1))
-
-    if isinstance(arr, ak.Array):
-        res = ak.concatenate(tmp_matrix, axis=-2)
+        raw_shape = _extract_index(arr.layout)[:-1]
+        flat_arr = _flat_to_numpy(arr).flatten().reshape(-1, n_err_elements)
     else:
-        res = np.concatenate(tmp_matrix, axis=-2)
+        n_err_elements = arr.shape[-1]
+        raw_shape = arr.shape[:-1]
+        flat_arr = arr.reshape(-1, n_err_elements)
+
+    ndim_err = (np.sqrt(1 + 8 * n_err_elements) - 1) / 2
+    if not ndim_err.is_integer():
+        raise ValueError("The array does not have a symmetric shape.")
+    ndim_err = int(ndim_err)
+
+    # Preapre output array
+    n_raw_len = len(flat_arr.flatten())
+    n_out_len = n_raw_len // n_err_elements * (ndim_err**2)
+    raw_out = np.zeros(n_out_len, dtype=flat_arr.dtype).reshape(-1, ndim_err, ndim_err)
+
+    # Fill error matrix
+    for i in range(ndim_err):
+        for j in range(ndim_err):
+            idx = get_symetric_matrix_idx(i, j, ndim_err)
+            raw_out[:, i, j] = flat_arr[:, idx]
+
+    # Reshape the output array to match the original shape
+    if isinstance(arr, ak.Array):
+        res = ak.Array(raw_out)
+        for count in raw_shape:
+            res = ak.unflatten(res, count)
+    else:
+        res = raw_out.reshape(*raw_shape, ndim_err, ndim_err)
 
     return res
 
@@ -1187,13 +1189,23 @@ def expand_subbranch_symetric_matrix(
         matrix_fields = {matrix_fields}
     matrix_fields = set(matrix_fields)
 
+    raw_shape = _extract_index(sub_br_arr.layout)
+
     res_dict = {}
     for field_name in sub_br_arr.fields:
+        flat_sub_arr = sub_br_arr[field_name]
+        for _ in range(len(raw_shape)):
+            flat_sub_arr = ak.flatten(flat_sub_arr)
+
         if field_name in matrix_fields:
-            res_dict[field_name] = expand_zipped_symetric_matrix(sub_br_arr[field_name])
+            res_dict[field_name] = expand_zipped_symetric_matrix(flat_sub_arr)
         else:
-            res_dict[field_name] = sub_br_arr[field_name]
-    return ak.Array(res_dict)
+            res_dict[field_name] = flat_sub_arr
+
+    res_arr = ak.Array(res_dict)
+    for count in raw_shape:
+        res_arr = ak.unflatten(res_arr, count)
+    return res_arr
 
 
 #############################################

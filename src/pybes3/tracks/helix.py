@@ -12,6 +12,7 @@ import vector.backends.awkward as vec_ak
 
 vector.register_awkward()
 
+from .._utils import _extract_index, _flat_to_numpy
 from ..typing import FloatLike, IntLike
 
 TypeObjPosition = Union[vector.VectorObject3D, tuple[float, float, float]]
@@ -520,34 +521,6 @@ def kappa_to_radius(kappa: FloatLike) -> FloatLike:
 
 
 ###############################################################################################
-
-
-def _extract_index(layout) -> list:
-    if isinstance(layout, awkward.contents.ListOffsetArray):
-        offsets = layout.offsets.data
-        return [offsets[1:] - offsets[:-1]] + _extract_index(layout.content)
-
-    if isinstance(layout, awkward.contents.RegularArray):
-        return [layout.size] + _extract_index(layout.content)
-
-    if isinstance(layout, awkward.contents.NumpyArray):
-        return []
-
-
-def _flat_to_numpy(array) -> np.ndarray:
-    """
-    Converts a flat awkward array to a numpy array.
-
-    Args:
-        array (ak.Array): The input awkward array.
-
-    Returns:
-        np.ndarray: The converted numpy array.
-    """
-    if isinstance(array, ak.Array):
-        return ak.flatten(array, axis=None).to_numpy()
-    else:
-        return array
 
 
 def _compute_momentum(kappa, tanl, phi0):

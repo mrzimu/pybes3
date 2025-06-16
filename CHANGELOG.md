@@ -1,3 +1,8 @@
+## v0.3.2
+
+* Optimize `besio`: Better reconstruct `ak.Array` from raw data.
+* Add `_utils.py` to store utility methods.
+
 ## v0.3.1
 
 * Optimize `besio`:
