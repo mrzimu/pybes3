@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional
 
 import numba as nb
 import numpy as np
@@ -76,9 +76,7 @@ DIGI_CGEM_XSTRIP = np.uint32(0)
 #                                     MDC                                     #
 ###############################################################################
 @nb.vectorize(cache=True)
-def check_mdc_id(
-    mdc_digi_id: IntLike,
-) -> BoolLike:
+def check_mdc_id(mdc_digi_id: IntLike) -> BoolLike:
     """
     Check if the MDC digi ID is valid.
 
@@ -92,9 +90,7 @@ def check_mdc_id(
 
 
 @nb.vectorize(cache=True)
-def mdc_id_to_wire(
-    mdc_digi_id: IntLike,
-) -> IntLike:
+def mdc_id_to_wire(mdc_digi_id: IntLike) -> IntLike:
     """
     Convert MDC digi ID to wire number.
 
@@ -108,9 +104,7 @@ def mdc_id_to_wire(
 
 
 @nb.vectorize(cache=True)
-def mdc_id_to_layer(
-    mdc_digi_id: IntLike,
-) -> IntLike:
+def mdc_id_to_layer(mdc_digi_id: IntLike) -> IntLike:
     """
     Convert the MDC digi ID to the layer number.
 
@@ -124,9 +118,7 @@ def mdc_id_to_layer(
 
 
 @nb.vectorize(cache=True)
-def mdc_id_to_is_stereo(
-    mdc_digi_id: IntLike,
-) -> BoolLike:
+def mdc_id_to_is_stereo(mdc_digi_id: IntLike) -> BoolLike:
     """
     Convert the MDC digi ID to whether it is a stereo wire.
 
@@ -170,9 +162,7 @@ def get_mdc_digi_id(
 #                                     TOF                                     #
 ###############################################################################
 @nb.vectorize(cache=True)
-def check_tof_id(
-    tof_digi_id: IntLike,
-) -> BoolLike:
+def check_tof_id(tof_digi_id: IntLike) -> BoolLike:
     """
     Check if the TOF digi ID is valid.
 
@@ -186,9 +176,7 @@ def check_tof_id(
 
 
 @nb.vectorize(cache=True)
-def tof_id_to_part(
-    tof_digi_id: IntLike,
-) -> IntLike:
+def tof_id_to_part(tof_digi_id: IntLike) -> IntLike:
     """
     Convert TOF digi ID to part number. 0, 1, 2 for scintillator endcap0/barrel/endcap1,
     3, 4 for MRPC endcap0/endcap1.
@@ -206,9 +194,7 @@ def tof_id_to_part(
 
 
 @nb.vectorize(cache=True)
-def tof_id_to_end(
-    tof_digi_id: IntLike,
-) -> IntLike:
+def tof_id_to_end(tof_digi_id: IntLike) -> IntLike:
     """
     Convert the TOF digi ID to the readout end number.
 
@@ -222,11 +208,10 @@ def tof_id_to_end(
 
 
 @nb.vectorize(cache=True)
-def _tof_id_to_layer_or_module_1(
-    tof_digi_id: IntLike,
-) -> IntLike:
+def _tof_id_to_layer_or_module_1(tof_digi_id: IntLike) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator layer or MRPC module number.
+    No part number is provided, so it will be calculated based on the TOF digi ID.
 
     This function is used by `tof_id_to_layerOrModule` when part number is not provided.
 
@@ -248,7 +233,6 @@ def _tof_id_to_layer_or_module_1(
 def _tof_id_to_layer_or_module_2(tof_digi_id: IntLike, part: IntLike) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator layer or MRPC module number.
-    No part number is provided, so it will be calculated based on the TOF digi ID.
 
     This function is used by `tof_id_to_layerOrModule` when part number is provided.
 
@@ -268,7 +252,7 @@ def _tof_id_to_layer_or_module_2(tof_digi_id: IntLike, part: IntLike) -> IntLike
 
 def tof_id_to_layer_or_module(
     tof_digi_id: IntLike,
-    part: Union[IntLike, None] = None,
+    part: Optional[IntLike] = None,
 ) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator layer or MRPC module number.
@@ -289,9 +273,7 @@ def tof_id_to_layer_or_module(
 
 
 @nb.vectorize(cache=True)
-def _tof_id_to_phi_or_strip_1(
-    tof_digi_id: IntLike,
-) -> IntLike:
+def _tof_id_to_phi_or_strip_1(tof_digi_id: IntLike) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator phi or MRPC strip number.
     No part number is provided, so it will be calculated based on the TOF digi ID.
@@ -335,7 +317,7 @@ def _tof_id_to_phi_or_strip_2(tof_digi_id: IntLike, part: IntLike) -> IntLike:
 
 def tof_id_to_phi_or_strip(
     tof_digi_id: IntLike,
-    part: Union[IntLike, None] = None,
+    part: Optional[IntLike] = None,
 ) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator phi or MRPC strip number, based on the part number.
@@ -397,9 +379,7 @@ def get_tof_digi_id(
 #                                     EMC                                     #
 ###############################################################################
 @nb.vectorize(cache=True)
-def check_emc_id(
-    emc_digi_id: IntLike,
-) -> BoolLike:
+def check_emc_id(emc_digi_id: IntLike) -> BoolLike:
     """
     Check if the EMC digi ID is valid.
 
@@ -413,9 +393,7 @@ def check_emc_id(
 
 
 @nb.vectorize(cache=True)
-def emc_id_to_module(
-    emc_digi_id: IntLike,
-) -> IntLike:
+def emc_id_to_module(emc_digi_id: IntLike) -> IntLike:
     """
     Convert EMC digi ID to module number
 
@@ -429,9 +407,7 @@ def emc_id_to_module(
 
 
 @nb.vectorize(cache=True)
-def emc_id_to_theta(
-    emc_digi_id: IntLike,
-) -> IntLike:
+def emc_id_to_theta(emc_digi_id: IntLike) -> IntLike:
     """
     Convert the EMC digi ID to the theta number.
 
@@ -445,9 +421,7 @@ def emc_id_to_theta(
 
 
 @nb.vectorize(cache=True)
-def emc_id_to_phi(
-    emc_digi_id: IntLike,
-) -> IntLike:
+def emc_id_to_phi(emc_digi_id: IntLike) -> IntLike:
     """
     Convert the EMC digi ID to the phi number.
 
@@ -489,9 +463,7 @@ def get_emc_digi_id(
 #                                     MUC                                     #
 ###############################################################################
 @nb.vectorize(cache=True)
-def check_muc_id(
-    muc_digi_id: IntLike,
-) -> BoolLike:
+def check_muc_id(muc_digi_id: IntLike) -> BoolLike:
     """
     Check if the MUC digi ID is valid.
 
@@ -505,9 +477,7 @@ def check_muc_id(
 
 
 @nb.vectorize(cache=True)
-def muc_id_to_part(
-    muc_digi_id: IntLike,
-) -> IntLike:
+def muc_id_to_part(muc_digi_id: IntLike) -> IntLike:
     """
     Convert MUC digi ID to part number
 
@@ -521,9 +491,7 @@ def muc_id_to_part(
 
 
 @nb.vectorize(cache=True)
-def muc_id_to_segment(
-    muc_digi_id: IntLike,
-) -> IntLike:
+def muc_id_to_segment(muc_digi_id: IntLike) -> IntLike:
     """
     Convert the MUC digi ID to the segment number.
 
@@ -537,9 +505,7 @@ def muc_id_to_segment(
 
 
 @nb.vectorize(cache=True)
-def muc_id_to_layer(
-    muc_digi_id: IntLike,
-) -> IntLike:
+def muc_id_to_layer(muc_digi_id: IntLike) -> IntLike:
     """
     Convert the MUC digi ID to the layer number.
 
@@ -553,9 +519,7 @@ def muc_id_to_layer(
 
 
 @nb.vectorize(cache=True)
-def muc_id_to_channel(
-    muc_digi_id: IntLike,
-) -> IntLike:
+def muc_id_to_channel(muc_digi_id: IntLike) -> IntLike:
     """
     Convert the MUC digi ID to the channel number.
 
@@ -596,9 +560,7 @@ def get_muc_digi_id(
     )
 
 
-def muc_id_to_gap(
-    muc_digi_id: IntLike,
-) -> IntLike:
+def muc_id_to_gap(muc_digi_id: IntLike) -> IntLike:
     """
     Convert the MUC digi ID to the gap ID, which is equivalent to layer number.
 
@@ -611,9 +573,7 @@ def muc_id_to_gap(
     return muc_id_to_layer(muc_digi_id)
 
 
-def muc_id_to_strip(
-    muc_digi_id: IntLike,
-) -> IntLike:
+def muc_id_to_strip(muc_digi_id: IntLike) -> IntLike:
     """
     Convert the MUC digi ID to the strip number, which is equivalent to channel number.
 
@@ -630,9 +590,7 @@ def muc_id_to_strip(
 #                                    CGEM                                     #
 ###############################################################################
 @nb.vectorize(cache=True)
-def check_cgem_id(
-    cgem_digi_id: IntLike,
-) -> BoolLike:
+def check_cgem_id(cgem_digi_id: IntLike) -> BoolLike:
     """
     Check if the CGEM digi ID is valid.
 
@@ -646,9 +604,7 @@ def check_cgem_id(
 
 
 @nb.vectorize(cache=True)
-def cgem_id_to_layer(
-    cgem_digi_id: IntLike,
-) -> IntLike:
+def cgem_id_to_layer(cgem_digi_id: IntLike) -> IntLike:
     """
     Convert the CGEM digi ID to the layer number.
 
@@ -662,9 +618,7 @@ def cgem_id_to_layer(
 
 
 @nb.vectorize(cache=True)
-def cgem_id_to_sheet(
-    cgem_digi_id: IntLike,
-) -> IntLike:
+def cgem_id_to_sheet(cgem_digi_id: IntLike) -> IntLike:
     """
     Convert the CGEM digi ID to the sheet number.
 
@@ -678,9 +632,7 @@ def cgem_id_to_sheet(
 
 
 @nb.vectorize(cache=True)
-def cgem_id_to_strip(
-    cgem_digi_id: IntLike,
-) -> IntLike:
+def cgem_id_to_strip(cgem_digi_id: IntLike) -> IntLike:
     """
     Convert CGEM digi ID to strip number
 
@@ -694,9 +646,7 @@ def cgem_id_to_strip(
 
 
 @nb.vectorize(cache=True)
-def cgem_id_to_is_x_strip(
-    cgem_digi_id: IntLike,
-) -> BoolLike:
+def cgem_id_to_is_x_strip(cgem_digi_id: IntLike) -> BoolLike:
     """
     Convert the CGEM digi ID to whether it is an X-strip.
 
