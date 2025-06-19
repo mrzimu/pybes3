@@ -8,7 +8,7 @@ import numpy as np
 from ..typing import FloatLike, IntLike
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def _helix01_to_x(helix0: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert helix parameters to x location.
@@ -23,7 +23,7 @@ def _helix01_to_x(helix0: FloatLike, helix1: FloatLike) -> FloatLike:
     return helix0 * np.cos(helix1)
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def _helix01_to_y(helix0: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert helix parameters to y location.
@@ -38,7 +38,7 @@ def _helix01_to_y(helix0: FloatLike, helix1: FloatLike) -> FloatLike:
     return helix0 * np.sin(helix1)
 
 
-@nb.vectorize([nb.float64(nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def _helix2_to_pt(
     helix2: FloatLike,
 ) -> FloatLike:
@@ -54,7 +54,7 @@ def _helix2_to_pt(
     return 1 / np.abs(helix2)
 
 
-@nb.vectorize([nb.int8(nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def _helix2_to_charge(
     helix2: FloatLike,
 ) -> FloatLike:
@@ -68,11 +68,11 @@ def _helix2_to_charge(
         charge of the helix.
     """
     if -1e-10 < helix2 < 1e-10:
-        return 0
-    return 1 if helix2 > 0 else -1
+        return np.int8(0)
+    return np.int8(1) if helix2 > 0 else np.int8(-1)
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def _pt_helix1_to_px(pt: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert pt and helix1 to px.
@@ -87,7 +87,7 @@ def _pt_helix1_to_px(pt: FloatLike, helix1: FloatLike) -> FloatLike:
     return -pt * np.sin(helix1)
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def _pt_helix1_to_py(pt: FloatLike, helix1: FloatLike) -> FloatLike:
     """
     Convert pt and helix1 to py.
@@ -102,7 +102,7 @@ def _pt_helix1_to_py(pt: FloatLike, helix1: FloatLike) -> FloatLike:
     return pt * np.cos(helix1)
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def _pt_helix4_to_p(pt: FloatLike, helix4: FloatLike) -> FloatLike:
     """
     Convert pt and helix4 to p.
@@ -117,7 +117,7 @@ def _pt_helix4_to_p(pt: FloatLike, helix4: FloatLike) -> FloatLike:
     return pt * np.sqrt(1 + helix4**2)
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def _pz_p_to_theta(pz: FloatLike, p: FloatLike) -> FloatLike:
     """
     Convert pz and p to theta.
@@ -202,7 +202,7 @@ def parse_helix(
         return res_dict
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def _xy_to_helix0(x: FloatLike, y: FloatLike) -> FloatLike:
     """
     Convert x and y to helix[0] parameter, dr.
@@ -217,7 +217,7 @@ def _xy_to_helix0(x: FloatLike, y: FloatLike) -> FloatLike:
     return np.sqrt(x**2 + y**2)
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def _xy_to_helix1(x: FloatLike, y: FloatLike) -> FloatLike:
     """
     Convert x and y to helix[1] parameter, phi0.
@@ -232,7 +232,7 @@ def _xy_to_helix1(x: FloatLike, y: FloatLike) -> FloatLike:
     return (np.arctan2(y, x) + 2 * np.pi) % (2 * np.pi)  # make sure that phi0 is in [0, 2pi)
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.int8)], cache=True)
+@nb.vectorize(cache=True)
 def _ptcharge_to_helix2(pt: FloatLike, charge: IntLike) -> FloatLike:
     """
     Convert pt, charge to helix[2] parameter, kappa.
@@ -247,7 +247,7 @@ def _ptcharge_to_helix2(pt: FloatLike, charge: IntLike) -> FloatLike:
     return np.sign(charge) / pt if pt != 0 else 0
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def _pxpy_to_pt(px: FloatLike, py: FloatLike) -> FloatLike:
     """
     Convert px and py to pt.
@@ -315,7 +315,7 @@ def compute_helix(
         return np.vstack([helix0, helix1, helix2, helix3, helix4]).T
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def _regularize_phi0(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     """
     Regularize phi0 to make sure that dr is positive.

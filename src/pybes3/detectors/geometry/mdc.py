@@ -72,7 +72,7 @@ def get_mdc_wire_position(library: Literal["np", "ak", "pd"] = "np"):
         raise ValueError(f"Invalid library {library}. Choose from 'ak', 'np', 'pd'.")
 
 
-@nb.vectorize([nb.uint16(nb.int_, nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def get_mdc_gid(layer: IntLike, wire: IntLike) -> IntLike:
     """
     Get MDC gid of given layer and wire.
@@ -87,7 +87,7 @@ def get_mdc_gid(layer: IntLike, wire: IntLike) -> IntLike:
     return layer_start_gid[layer] + wire
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_gid_to_superlayer(gid: IntLike) -> IntLike:
     """
     Convert gid to superlayer.
@@ -101,7 +101,7 @@ def mdc_gid_to_superlayer(gid: IntLike) -> IntLike:
     return _superlayer[gid]
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
     """
     Convert layer to superlayer.
@@ -115,7 +115,7 @@ def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
     return np.digitize(layer, superlayer_splits, right=False) - 1
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_gid_to_layer(gid: IntLike) -> IntLike:
     """
     Convert gid to layer.
@@ -129,7 +129,7 @@ def mdc_gid_to_layer(gid: IntLike) -> IntLike:
     return _layer[gid]
 
 
-@nb.vectorize([nb.uint16(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_gid_to_wire(gid: IntLike) -> IntLike:
     """
     Convert gid to wire.
@@ -143,7 +143,7 @@ def mdc_gid_to_wire(gid: IntLike) -> IntLike:
     return _wire[gid]
 
 
-@nb.vectorize([nb.int8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_gid_to_stereo(gid: IntLike) -> IntLike:
     """
     Convert gid to stereo.
@@ -160,7 +160,7 @@ def mdc_gid_to_stereo(gid: IntLike) -> IntLike:
     return _stereo[gid]
 
 
-@nb.vectorize([nb.boolean(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_layer_to_is_stereo(layer: IntLike) -> BoolLike:
     """
     Convert layer to is_stereo.
@@ -174,7 +174,7 @@ def mdc_layer_to_is_stereo(layer: IntLike) -> BoolLike:
     return is_layer_stereo[layer]
 
 
-@nb.vectorize([nb.boolean(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_gid_to_is_stereo(gid: IntLike) -> BoolLike:
     """
     Convert gid to is_stereo.
@@ -188,7 +188,7 @@ def mdc_gid_to_is_stereo(gid: IntLike) -> BoolLike:
     return _is_stereo[gid]
 
 
-@nb.vectorize([nb.float64(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_x (cm).
@@ -202,7 +202,7 @@ def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
     return _west_x[gid]
 
 
-@nb.vectorize([nb.float64(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_gid_to_west_y(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_y (cm).
@@ -216,7 +216,7 @@ def mdc_gid_to_west_y(gid: IntLike) -> FloatLike:
     return _west_y[gid]
 
 
-@nb.vectorize([nb.float64(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_z (cm).
@@ -230,7 +230,7 @@ def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
     return _west_z[gid]
 
 
-@nb.vectorize([nb.float64(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_gid_to_east_x(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_x (cm).
@@ -244,7 +244,7 @@ def mdc_gid_to_east_x(gid: IntLike) -> FloatLike:
     return _east_x[gid]
 
 
-@nb.vectorize([nb.float64(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_y (cm).
@@ -258,7 +258,7 @@ def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
     return _east_y[gid]
 
 
-@nb.vectorize([nb.float64(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_gid_to_east_z(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_z (cm).
@@ -272,7 +272,7 @@ def mdc_gid_to_east_z(gid: IntLike) -> FloatLike:
     return _east_z[gid]
 
 
-@nb.vectorize([nb.float64(nb.int_, nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
     """
     Get the x (cm) position of the wire at z (cm).
@@ -287,7 +287,7 @@ def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
     return _west_x[gid] + dx_dz[gid] * (z - _west_z[gid])
 
 
-@nb.vectorize([nb.float64(nb.int_, nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
     """
     Get the y (cm) position of the wire at z (cm).

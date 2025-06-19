@@ -434,7 +434,7 @@ def helix_obj(*args, **kwargs) -> HelixObject:
 ###############################################################################################
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def dr_phi0_to_x(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     """
     Convert helix parameters to x location.
@@ -449,7 +449,7 @@ def dr_phi0_to_x(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     return dr * np.cos(phi0)
 
 
-@nb.vectorize([nb.float64(nb.float64, nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def dr_phi0_to_y(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     """
     Convert helix parameters to y location.
@@ -464,7 +464,7 @@ def dr_phi0_to_y(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     return dr * np.sin(phi0)
 
 
-@nb.vectorize([nb.float64(nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def phi0_to_phi(phi0: FloatLike) -> FloatLike:
     """
     Convert helix parameter phi0 to momentum phi.
@@ -478,7 +478,7 @@ def phi0_to_phi(phi0: FloatLike) -> FloatLike:
     return (phi0 + np.pi / 2) % (2 * np.pi)
 
 
-@nb.vectorize([nb.float64(nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def kappa_to_pt(kappa: FloatLike) -> FloatLike:
     """
     Convert helix parameter to pt.
@@ -492,7 +492,7 @@ def kappa_to_pt(kappa: FloatLike) -> FloatLike:
     return 1 / np.abs(kappa)
 
 
-@nb.vectorize([nb.int8(nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def kappa_to_charge(kappa: IntLike) -> FloatLike:
     """
     Convert helix parameter to charge.
@@ -503,10 +503,10 @@ def kappa_to_charge(kappa: IntLike) -> FloatLike:
     Returns:
         charge of the helix.
     """
-    return 1 if kappa > 1e-10 else -1 if kappa < -1e-10 else 0
+    return np.int8(1) if kappa > 1e-10 else np.int8(-1) if kappa < -1e-10 else np.int8(0)
 
 
-@nb.vectorize([nb.float64(nb.float64)], cache=True)
+@nb.vectorize(cache=True)
 def kappa_to_radius(kappa: FloatLike) -> FloatLike:
     """
     Convert helix parameter kappa to circular radius.

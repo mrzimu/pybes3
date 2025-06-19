@@ -75,7 +75,7 @@ DIGI_CGEM_XSTRIP = np.uint32(0)
 ###############################################################################
 #                                     MDC                                     #
 ###############################################################################
-@nb.vectorize([nb.boolean(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def check_mdc_id(
     mdc_digi_id: IntLike,
 ) -> BoolLike:
@@ -91,7 +91,7 @@ def check_mdc_id(
     return (mdc_digi_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_MDC_FLAG
 
 
-@nb.vectorize([nb.uint16(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_id_to_wire(
     mdc_digi_id: IntLike,
 ) -> IntLike:
@@ -104,10 +104,10 @@ def mdc_id_to_wire(
     Returns:
         The wire number.
     """
-    return (mdc_digi_id & DIGI_MDC_WIRE_MASK) >> DIGI_MDC_WIRE_OFFSET
+    return np.uint16((mdc_digi_id & DIGI_MDC_WIRE_MASK) >> DIGI_MDC_WIRE_OFFSET)
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_id_to_layer(
     mdc_digi_id: IntLike,
 ) -> IntLike:
@@ -120,10 +120,10 @@ def mdc_id_to_layer(
     Returns:
         The layer number.
     """
-    return (mdc_digi_id & DIGI_MDC_LAYER_MASK) >> DIGI_MDC_LAYER_OFFSET
+    return np.uint8((mdc_digi_id & DIGI_MDC_LAYER_MASK) >> DIGI_MDC_LAYER_OFFSET)
 
 
-@nb.vectorize([nb.boolean(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def mdc_id_to_is_stereo(
     mdc_digi_id: IntLike,
 ) -> BoolLike:
@@ -141,9 +141,7 @@ def mdc_id_to_is_stereo(
     ) >> DIGI_MDC_WIRETYPE_OFFSET == DIGI_MDC_STEREO_WIRE
 
 
-@nb.vectorize(
-    [nb.uint32(nb.int_, nb.int_, nb.int_), nb.uint32(nb.int_, nb.int_, nb.boolean)], cache=True
-)
+@nb.vectorize(cache=True)
 def get_mdc_digi_id(
     wire: IntLike,
     layer: IntLike,
@@ -160,7 +158,7 @@ def get_mdc_digi_id(
     Returns:
         The MDC digi ID.
     """
-    return (
+    return np.uint32(
         ((wire << DIGI_MDC_WIRE_OFFSET) & DIGI_MDC_WIRE_MASK)
         | ((layer << DIGI_MDC_LAYER_OFFSET) & DIGI_MDC_LAYER_MASK)
         | ((wire_type << DIGI_MDC_WIRETYPE_OFFSET) & DIGI_MDC_WIRETYPE_MASK)
@@ -171,7 +169,7 @@ def get_mdc_digi_id(
 ###############################################################################
 #                                     TOF                                     #
 ###############################################################################
-@nb.vectorize([nb.boolean(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def check_tof_id(
     tof_digi_id: IntLike,
 ) -> BoolLike:
@@ -187,7 +185,7 @@ def check_tof_id(
     return (tof_digi_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_TOF_FLAG
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def tof_id_to_part(
     tof_digi_id: IntLike,
 ) -> IntLike:
@@ -204,10 +202,10 @@ def tof_id_to_part(
     part = (tof_digi_id & DIGI_TOF_PART_MASK) >> DIGI_TOF_PART_OFFSET
     if part == 3:  # += MRPC endcap number
         part += (tof_digi_id & DIGI_TOF_MRPC_ENDCAP_MASK) >> DIGI_TOF_MRPC_ENDCAP_OFFSET
-    return part
+    return np.uint8(part)
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def tof_id_to_end(
     tof_digi_id: IntLike,
 ) -> IntLike:
@@ -220,10 +218,10 @@ def tof_id_to_end(
     Returns:
         The readout end number.
     """
-    return tof_digi_id % 2
+    return np.uint8(tof_digi_id % 2)
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def _tof_id_to_layer_or_module_1(
     tof_digi_id: IntLike,
 ) -> IntLike:
@@ -240,12 +238,13 @@ def _tof_id_to_layer_or_module_1(
     """
     part = tof_id_to_part(tof_digi_id)
     if part < 3:
-        return (tof_digi_id & DIGI_TOF_SCINT_LAYER_MASK) >> DIGI_TOF_SCINT_LAYER_OFFSET
+        res = (tof_digi_id & DIGI_TOF_SCINT_LAYER_MASK) >> DIGI_TOF_SCINT_LAYER_OFFSET
     else:
-        return (tof_digi_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
+        res = (tof_digi_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
+    return np.uint8(res)
 
 
-@nb.vectorize([nb.uint8(nb.int_, nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def _tof_id_to_layer_or_module_2(tof_digi_id: IntLike, part: IntLike) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator layer or MRPC module number.
@@ -261,9 +260,10 @@ def _tof_id_to_layer_or_module_2(tof_digi_id: IntLike, part: IntLike) -> IntLike
         The scintillator layer or MRPC module number based on the part number.
     """
     if part < 3:
-        return (tof_digi_id & DIGI_TOF_SCINT_LAYER_MASK) >> DIGI_TOF_SCINT_LAYER_OFFSET
+        res = (tof_digi_id & DIGI_TOF_SCINT_LAYER_MASK) >> DIGI_TOF_SCINT_LAYER_OFFSET
     else:
-        return (tof_digi_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
+        res = (tof_digi_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
+    return np.uint8(res)
 
 
 def tof_id_to_layer_or_module(
@@ -288,7 +288,7 @@ def tof_id_to_layer_or_module(
         return _tof_id_to_layer_or_module_2(tof_digi_id, part)
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def _tof_id_to_phi_or_strip_1(
     tof_digi_id: IntLike,
 ) -> IntLike:
@@ -306,12 +306,13 @@ def _tof_id_to_phi_or_strip_1(
     """
     part = tof_id_to_part(tof_digi_id)
     if part < 3:
-        return (tof_digi_id & DIGI_TOF_SCINT_PHI_MASK) >> DIGI_TOF_SCINT_PHI_OFFSET
+        res = (tof_digi_id & DIGI_TOF_SCINT_PHI_MASK) >> DIGI_TOF_SCINT_PHI_OFFSET
     else:
-        return (tof_digi_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
+        res = (tof_digi_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
+    return np.uint8(res)
 
 
-@nb.vectorize([nb.uint8(nb.int_, nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def _tof_id_to_phi_or_strip_2(tof_digi_id: IntLike, part: IntLike) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator phi or MRPC strip number.
@@ -326,9 +327,10 @@ def _tof_id_to_phi_or_strip_2(tof_digi_id: IntLike, part: IntLike) -> IntLike:
         The scintillator phi or MRPC strip number based on the part number.
     """
     if part < 3:
-        return (tof_digi_id & DIGI_TOF_SCINT_PHI_MASK) >> DIGI_TOF_SCINT_PHI_OFFSET
+        res = (tof_digi_id & DIGI_TOF_SCINT_PHI_MASK) >> DIGI_TOF_SCINT_PHI_OFFSET
     else:
-        return (tof_digi_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
+        res = (tof_digi_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
+    return np.uint8(res)
 
 
 def tof_id_to_phi_or_strip(
@@ -353,7 +355,7 @@ def tof_id_to_phi_or_strip(
         return _tof_id_to_phi_or_strip_2(tof_digi_id, part)
 
 
-@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_, nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def get_tof_digi_id(
     part: IntLike,
     layer_or_module: IntLike,
@@ -373,7 +375,7 @@ def get_tof_digi_id(
         The TOF digi ID.
     """
     if part < 3:
-        return (
+        return np.uint32(
             ((part << DIGI_TOF_PART_OFFSET) & DIGI_TOF_PART_MASK)
             | ((layer_or_module << DIGI_TOF_SCINT_LAYER_OFFSET) & DIGI_TOF_SCINT_LAYER_MASK)
             | ((phi_or_strip << DIGI_TOF_SCINT_PHI_OFFSET) & DIGI_TOF_SCINT_PHI_MASK)
@@ -381,7 +383,7 @@ def get_tof_digi_id(
             | (DIGI_TOF_FLAG << DIGI_FLAG_OFFSET)
         )
     else:
-        return (
+        return np.uint32(
             ((3 << DIGI_TOF_PART_OFFSET) & DIGI_TOF_PART_MASK)
             | (((part - 3) << DIGI_TOF_MRPC_ENDCAP_OFFSET) & DIGI_TOF_MRPC_ENDCAP_MASK)
             | ((layer_or_module << DIGI_TOF_MRPC_MODULE_OFFSET) & DIGI_TOF_MRPC_MODULE_MASK)
@@ -394,7 +396,7 @@ def get_tof_digi_id(
 ###############################################################################
 #                                     EMC                                     #
 ###############################################################################
-@nb.vectorize([nb.boolean(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def check_emc_id(
     emc_digi_id: IntLike,
 ) -> BoolLike:
@@ -410,7 +412,7 @@ def check_emc_id(
     return (emc_digi_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_EMC_FLAG
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def emc_id_to_module(
     emc_digi_id: IntLike,
 ) -> IntLike:
@@ -423,10 +425,10 @@ def emc_id_to_module(
     Returns:
         The module number.
     """
-    return (emc_digi_id & DIGI_EMC_MODULE_MASK) >> DIGI_EMC_MODULE_OFFSET
+    return np.uint8((emc_digi_id & DIGI_EMC_MODULE_MASK) >> DIGI_EMC_MODULE_OFFSET)
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def emc_id_to_theta(
     emc_digi_id: IntLike,
 ) -> IntLike:
@@ -439,10 +441,10 @@ def emc_id_to_theta(
     Returns:
         The theta number.
     """
-    return (emc_digi_id & DIGI_EMC_THETA_MASK) >> DIGI_EMC_THETA_OFFSET
+    return np.uint8((emc_digi_id & DIGI_EMC_THETA_MASK) >> DIGI_EMC_THETA_OFFSET)
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def emc_id_to_phi(
     emc_digi_id: IntLike,
 ) -> IntLike:
@@ -455,10 +457,10 @@ def emc_id_to_phi(
     Returns:
         The phi number.
     """
-    return (emc_digi_id & DIGI_EMC_PHI_MASK) >> DIGI_EMC_PHI_OFFSET
+    return np.uint8((emc_digi_id & DIGI_EMC_PHI_MASK) >> DIGI_EMC_PHI_OFFSET)
 
 
-@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def get_emc_digi_id(
     module: IntLike,
     theta: IntLike,
@@ -475,7 +477,7 @@ def get_emc_digi_id(
     Returns:
         The EMC digi ID.
     """
-    return (
+    return np.uint32(
         ((module << DIGI_EMC_MODULE_OFFSET) & DIGI_EMC_MODULE_MASK)
         | ((theta << DIGI_EMC_THETA_OFFSET) & DIGI_EMC_THETA_MASK)
         | ((phi << DIGI_EMC_PHI_OFFSET) & DIGI_EMC_PHI_MASK)
@@ -486,7 +488,7 @@ def get_emc_digi_id(
 ###############################################################################
 #                                     MUC                                     #
 ###############################################################################
-@nb.vectorize([nb.boolean(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def check_muc_id(
     muc_digi_id: IntLike,
 ) -> BoolLike:
@@ -502,7 +504,7 @@ def check_muc_id(
     return (muc_digi_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_MUC_FLAG
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def muc_id_to_part(
     muc_digi_id: IntLike,
 ) -> IntLike:
@@ -515,10 +517,10 @@ def muc_id_to_part(
     Returns:
         The part number.
     """
-    return (muc_digi_id & DIGI_MUC_PART_MASK) >> DIGI_MUC_PART_OFFSET
+    return np.uint8((muc_digi_id & DIGI_MUC_PART_MASK) >> DIGI_MUC_PART_OFFSET)
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def muc_id_to_segment(
     muc_digi_id: IntLike,
 ) -> IntLike:
@@ -531,10 +533,10 @@ def muc_id_to_segment(
     Returns:
         The segment number.
     """
-    return (muc_digi_id & DIGI_MUC_SEGMENT_MASK) >> DIGI_MUC_SEGMENT_OFFSET
+    return np.uint8((muc_digi_id & DIGI_MUC_SEGMENT_MASK) >> DIGI_MUC_SEGMENT_OFFSET)
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def muc_id_to_layer(
     muc_digi_id: IntLike,
 ) -> IntLike:
@@ -547,10 +549,10 @@ def muc_id_to_layer(
     Returns:
         The layer number.
     """
-    return (muc_digi_id & DIGI_MUC_LAYER_MASK) >> DIGI_MUC_LAYER_OFFSET
+    return np.uint8((muc_digi_id & DIGI_MUC_LAYER_MASK) >> DIGI_MUC_LAYER_OFFSET)
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def muc_id_to_channel(
     muc_digi_id: IntLike,
 ) -> IntLike:
@@ -563,10 +565,10 @@ def muc_id_to_channel(
     Returns:
         The channel number.
     """
-    return (muc_digi_id & DIGI_MUC_CHANNEL_MASK) >> DIGI_MUC_CHANNEL_OFFSET
+    return np.uint8((muc_digi_id & DIGI_MUC_CHANNEL_MASK) >> DIGI_MUC_CHANNEL_OFFSET)
 
 
-@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_, nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def get_muc_digi_id(
     part: IntLike,
     segment: IntLike,
@@ -585,7 +587,7 @@ def get_muc_digi_id(
     Returns:
         The MUC digi ID.
     """
-    return (
+    return np.uint32(
         ((part << DIGI_MUC_PART_OFFSET) & DIGI_MUC_PART_MASK)
         | ((segment << DIGI_MUC_SEGMENT_OFFSET) & DIGI_MUC_SEGMENT_MASK)
         | ((layer << DIGI_MUC_LAYER_OFFSET) & DIGI_MUC_LAYER_MASK)
@@ -627,7 +629,7 @@ def muc_id_to_strip(
 ###############################################################################
 #                                    CGEM                                     #
 ###############################################################################
-@nb.vectorize([nb.boolean(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def check_cgem_id(
     cgem_digi_id: IntLike,
 ) -> BoolLike:
@@ -643,7 +645,7 @@ def check_cgem_id(
     return (cgem_digi_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_CGEM_FLAG
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def cgem_id_to_layer(
     cgem_digi_id: IntLike,
 ) -> IntLike:
@@ -656,10 +658,10 @@ def cgem_id_to_layer(
     Returns:
         The layer number.
     """
-    return (cgem_digi_id & DIGI_CGEM_LAYER_MASK) >> DIGI_CGEM_LAYER_OFFSET
+    return np.uint8((cgem_digi_id & DIGI_CGEM_LAYER_MASK) >> DIGI_CGEM_LAYER_OFFSET)
 
 
-@nb.vectorize([nb.uint8(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def cgem_id_to_sheet(
     cgem_digi_id: IntLike,
 ) -> IntLike:
@@ -672,10 +674,10 @@ def cgem_id_to_sheet(
     Returns:
         The sheet number.
     """
-    return (cgem_digi_id & DIGI_CGEM_SHEET_MASK) >> DIGI_CGEM_SHEET_OFFSET
+    return np.uint8((cgem_digi_id & DIGI_CGEM_SHEET_MASK) >> DIGI_CGEM_SHEET_OFFSET)
 
 
-@nb.vectorize([nb.uint16(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def cgem_id_to_strip(
     cgem_digi_id: IntLike,
 ) -> IntLike:
@@ -688,10 +690,10 @@ def cgem_id_to_strip(
     Returns:
         The strip number.
     """
-    return (cgem_digi_id & DIGI_CGEM_STRIP_MASK) >> DIGI_CGEM_STRIP_OFFSET
+    return np.uint16((cgem_digi_id & DIGI_CGEM_STRIP_MASK) >> DIGI_CGEM_STRIP_OFFSET)
 
 
-@nb.vectorize([nb.boolean(nb.int_)], cache=True)
+@nb.vectorize(cache=True)
 def cgem_id_to_is_x_strip(
     cgem_digi_id: IntLike,
 ) -> BoolLike:
@@ -709,7 +711,7 @@ def cgem_id_to_is_x_strip(
     ) == DIGI_CGEM_XSTRIP
 
 
-@nb.vectorize([nb.uint32(nb.int_, nb.int_, nb.int_, nb.boolean)], cache=True)
+@nb.vectorize(cache=True)
 def get_cgem_digi_id(
     layer: IntLike,
     sheet: IntLike,
@@ -728,7 +730,7 @@ def get_cgem_digi_id(
     Returns:
         The CGEM digi ID.
     """
-    return (
+    return np.uint32(
         ((strip << DIGI_CGEM_STRIP_OFFSET) & DIGI_CGEM_STRIP_MASK)
         | ((~is_x_strip << DIGI_CGEM_STRIPTYPE_OFFSET) & DIGI_CGEM_STRIPTYPE_MASK)
         | ((sheet << DIGI_CGEM_SHEET_OFFSET) & DIGI_CGEM_SHEET_MASK)
