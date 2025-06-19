@@ -4,7 +4,6 @@ from operator import xor
 from typing import Literal, Optional, Union, overload
 
 import awkward as ak
-import awkward.contents
 import numba as nb
 import numpy as np
 import vector
