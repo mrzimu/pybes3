@@ -11,8 +11,8 @@ import uproot.behaviors.TBranch
 import uproot.extras
 import uproot.interpretation
 
+from .._utils import _extract_index, _flat_to_numpy, _recover_shape
 from . import besio_cpp as bcpp
-from .._utils import _extract_index, _flat_to_numpy
 
 type_np2array = {
     "u1": "B",
@@ -1163,9 +1163,7 @@ def expand_zipped_symetric_matrix(
 
     # Reshape the output array to match the original shape
     if isinstance(arr, ak.Array):
-        res = ak.Array(raw_out)
-        for count in raw_shape:
-            res = ak.unflatten(res, count)
+        res = _recover_shape(ak.Array(raw_out), raw_shape)
     else:
         res = raw_out.reshape(*raw_shape, ndim_err, ndim_err)
 
@@ -1202,9 +1200,7 @@ def expand_subbranch_symetric_matrix(
         else:
             res_dict[field_name] = flat_sub_arr
 
-    res_arr = ak.Array(res_dict)
-    for count in raw_shape:
-        res_arr = ak.unflatten(res_arr, count)
+    res_arr = _recover_shape(ak.Array(res_dict), raw_shape)
     return res_arr
 
 
