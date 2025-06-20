@@ -1,3 +1,8 @@
+## v0.3.3
+
+* Fix: Call `ak.zip` when creating `Helix` array.
+* Modify: Make `nb.vectorize` AOT to JIT.
+
 ## v0.3.2
 
 * Optimize `besio`: Better reconstruct `ak.Array` from raw data.
