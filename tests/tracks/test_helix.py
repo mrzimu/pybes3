@@ -17,6 +17,12 @@ flat_helix_arr = ak.flatten(raw_helix_arr)
 flat_helix_err_arr = ak.flatten(raw_helix_err_arr)
 
 
+def _make_arr_pivot(base_arr, x, y, z):
+    x = ak.flatten(ak.ones_like(base_arr) * x, axis=None)
+    y = ak.flatten(ak.ones_like(base_arr) * y, axis=None)
+    z = ak.flatten(ak.ones_like(base_arr) * z, axis=None)
+
+
 @pytest.mark.parametrize("error", [None, flat_helix_err_arr])
 def test_helix_obj_1(error):
     """Test initialization, momentum, position, charge, and pivot of helix_obj."""
@@ -181,7 +187,7 @@ def test_helix_obj_3(init_pivot, raw_pivot, new_pivot):
 
 def test_helix_awk_1():
     """Test helix_awk, change_pivot, and isclose methods."""
-    raw_pivot = ak.Array(
+    raw_pivot = ak.zip(
         {
             "x": ak.zeros_like(raw_helix_arr[..., 0]),
             "y": ak.zeros_like(raw_helix_arr[..., 0]),
@@ -190,7 +196,7 @@ def test_helix_awk_1():
         with_name="Vector3D",
     )
 
-    new_pivot = ak.Array(
+    new_pivot = ak.zip(
         {
             "x": ak.ones_like(raw_helix_arr[..., 0]) * 10,
             "y": ak.ones_like(raw_helix_arr[..., 0]) * 10,
@@ -270,7 +276,7 @@ def test_helix_awk_1():
 @pytest.mark.parametrize(
     "init_pivot",
     [
-        ak.Array(
+        ak.zip(
             {
                 "x": ak.zeros_like(raw_helix_arr[..., 0]),
                 "y": ak.zeros_like(raw_helix_arr[..., 0]),
@@ -285,7 +291,7 @@ def test_helix_awk_1():
     "raw_pivot",
     [
         (
-            ak.Array(
+            ak.zip(
                 {
                     "x": ak.zeros_like(raw_helix_arr[..., 0]),
                     "y": ak.zeros_like(raw_helix_arr[..., 0]),
@@ -301,7 +307,7 @@ def test_helix_awk_1():
     "new_pivot",
     [
         (
-            ak.Array(
+            ak.zip(
                 {
                     "x": ak.ones_like(raw_helix_arr[..., 0]) * 10,
                     "y": ak.ones_like(raw_helix_arr[..., 0]) * 10,
@@ -330,9 +336,8 @@ def test_helix_awk_2(init_pivot, raw_pivot, new_pivot):
         (vector.obj(x=10, y=10, z=10),),
     ],
 )
-def test_HelixAwkwardRecord(new_pivot):
-    """Test HelixAwkwardRecord class."""
-
+def test_HelixAwkwardRecord_1(new_pivot):
+    """Test HelixAwkwardRecord class with 1 track."""
     helix_arr = p3.helix_awk(helix=raw_helix_arr, error=raw_helix_err_arr)
     helix_rec = helix_arr[0, 0]
     helix_obj = p3.helix_obj(
@@ -350,10 +355,38 @@ def test_HelixAwkwardRecord(new_pivot):
     assert helix_rec.change_pivot(*new_pivot).isclose(helix_rec)
 
     # test attributes
-    assert abs(helix_rec.position - helix_obj.position) == pytest.approx(0, rel=1e-6)
-    assert abs(helix_rec.momentum - helix_obj.momentum) == pytest.approx(0, rel=1e-6)
+    assert isinstance(helix_rec.position, ak.Record)
+    assert isinstance(helix_rec.momentum, ak.Record)
+    assert helix_rec.position.isclose(helix_obj.position)
+    assert helix_rec.momentum.isclose(helix_obj.momentum)
     assert helix_rec.charge == helix_obj.charge
     assert helix_rec.radius == pytest.approx(helix_obj.radius, rel=1e-6)
+
+
+@pytest.mark.parametrize(
+    "new_pivot",
+    [
+        (10, 10, 10),
+        (vector.obj(x=10, y=10, z=10),),
+    ],
+)
+def test_helix_awk_3(new_pivot):
+    """Test HelixAwkwardArray slices."""
+
+    helix_arr = p3.helix_awk(helix=raw_helix_arr, error=raw_helix_err_arr)
+    helix_rec = helix_arr[0]
+
+    # test isclose
+    assert ak.all(helix_rec.change_pivot(*new_pivot).change_pivot(0, 0, 0).isclose(helix_rec))
+    assert ak.all(helix_rec.change_pivot(*new_pivot).isclose(helix_rec))
+
+    # test attributes
+    assert isinstance(helix_rec.position, ak.Array)
+    assert isinstance(helix_rec.momentum, ak.Array)
+    assert ak.all(helix_rec.position.isclose(helix_arr.position[0]))
+    assert ak.all(helix_rec.momentum.isclose(helix_arr.momentum[0]))
+    assert ak.all(helix_rec.charge == helix_arr.charge[0])
+    assert ak.all(np.isclose(helix_rec.radius, helix_arr.radius[0]))
 
 
 if __name__ == "__main__":

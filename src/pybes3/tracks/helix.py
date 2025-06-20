@@ -11,7 +11,7 @@ import vector.backends.awkward as vec_ak
 
 vector.register_awkward()
 
-from .._utils import _extract_index, _flat_to_numpy
+from .._utils import _extract_index, _flat_to_numpy, _recover_shape
 from ..typing import FloatLike, IntLike
 
 TypeObjPosition = Union[vector.VectorObject3D, tuple[float, float, float]]
@@ -176,7 +176,6 @@ def _change_pivot(
 
 def _obj_isclose(self, other, *, rtol: float, atol: float, equal_nan: bool) -> bool:
     kwargs = {"rtol": rtol, "atol": atol, "equal_nan": equal_nan}
-
     other = other.change_pivot(self.pivot)
 
     # when `self` is an ak.Record, its pivot needs to be converted to a VectorObject3D
@@ -196,6 +195,44 @@ def _obj_isclose(self, other, *, rtol: float, atol: float, equal_nan: bool) -> b
         condition = condition and np.allclose(self.error, other.error, **kwargs)
 
     return bool(condition)
+
+
+def _arr_isclose(self, other, *, rtol: float, atol: float, equal_nan: bool) -> ak.Array:
+    kwargs = {"rtol": rtol, "atol": atol, "equal_nan": equal_nan}
+    other = other.change_pivot(self.pivot)
+
+    condition = ak.ones_like(self.dr, dtype=bool)
+    for f in [
+        "dr",
+        "phi0",
+        "kappa",
+        "tanl",
+        "dz",
+    ]:
+        condition = condition & ak.isclose(self[f], other[f], **kwargs)
+
+    # Check pivot separately
+    if isinstance(self, ak.Record):
+        self_pivot = ak.Record(
+            {"x": self.pivot.x, "y": self.pivot.y, "z": self.pivot.z},
+            with_name="Vector3D",
+        )
+        other_pivot = ak.Record(
+            {"x": other.pivot.x, "y": other.pivot.y, "z": other.pivot.z},
+            with_name="Vector3D",
+        )
+    else:
+        self_pivot = self.pivot
+        other_pivot = other.pivot
+
+    condition = condition & ak.isclose(np.abs(self_pivot - other_pivot), 0, **kwargs)
+
+    if "error" in self.fields and "error" in other.fields:
+        condition = condition & ak.all(
+            ak.all(ak.isclose(self.error, other.error, **kwargs), axis=-1), axis=-1
+        )
+
+    return condition
 
 
 ###############################################################################################
@@ -550,7 +587,7 @@ class HelixAwkwardRecord(ak.Record):
             vector.MomentumObject3D: The momentum vector of the helix.
         """
         pt, phi, pz = _compute_momentum(self.kappa, self.tanl, self.phi0)
-        return vector.obj(pt=pt, phi=phi, pz=pz)
+        return ak.zip({"pt": pt, "phi": phi, "pz": pz}, with_name="Momentum3D")
 
     @property
     def position(self) -> vector.VectorObject3D:
@@ -561,7 +598,7 @@ class HelixAwkwardRecord(ak.Record):
             vector.VectorObject3D: The position vector of the helix.
         """
         x, y, z = _compute_position(self.dr, self.phi0, self.dz)
-        return vector.obj(x=x, y=y, z=z)
+        return ak.zip({"x": x, "y": y, "z": z}, with_name="Vector3D")
 
     @property
     def charge(self) -> int:
@@ -584,27 +621,85 @@ class HelixAwkwardRecord(ak.Record):
         return kappa_to_radius(self.kappa)
 
     def change_pivot(self, *args):
-        # regularize pivot
-        new_pivot = _regularize_obj_position(args)
+        multi_trk = isinstance(self.pivot.x, ak.Array)
 
-        old_pivot = vector.obj(
-            x=self.pivot.x,
-            y=self.pivot.y,
-            z=self.pivot.z,
-        )
+        # regularize pivot
+        if multi_trk:
+            if len(args) == 3:
+                x, y, z = args
+                new_pivot = None
+            elif len(args) == 1:
+                new_pivot = args[0]
+                if isinstance(new_pivot, (vector.VectorObject3D, ak.Array, ak.Record)):
+                    x = new_pivot.x
+                    y = new_pivot.y
+                    z = new_pivot.z
+                    new_pivot = None
+                else:
+                    x = new_pivot[0]
+                    y = new_pivot[1]
+                    z = new_pivot[2]
+                    new_pivot = None
+            else:
+                raise ValueError(
+                    "change_pivot requires either 3 arguments (x, y, z) or 1 argument (pivot)."
+                )
+
+            if new_pivot is None:
+                x = (
+                    ak.ones_like(self.dr) * x
+                    if not isinstance(x, (ak.Array, ak.Record))
+                    else x
+                )
+                y = (
+                    ak.ones_like(self.dr) * y
+                    if not isinstance(y, (ak.Array, ak.Record))
+                    else y
+                )
+                z = (
+                    ak.ones_like(self.dr) * z
+                    if not isinstance(z, (ak.Array, ak.Record))
+                    else z
+                )
+                new_pivot = ak.Array({"x": x, "y": y, "z": z}, with_name="Vector3D")
+
+            old_pivot_x = _flat_to_numpy(self.pivot.x)
+            old_pivot_y = _flat_to_numpy(self.pivot.y)
+            old_pivot_z = _flat_to_numpy(self.pivot.z)
+            old_pivot = vector.arr({"x": old_pivot_x, "y": old_pivot_y, "z": old_pivot_z})
+
+            new_pivot_x = _flat_to_numpy(new_pivot.x)
+            new_pivot_y = _flat_to_numpy(new_pivot.y)
+            new_pivot_z = _flat_to_numpy(new_pivot.z)
+            new_pivot = vector.arr({"x": new_pivot_x, "y": new_pivot_y, "z": new_pivot_z})
+
+        else:
+            new_pivot = _regularize_obj_position(args)
+            old_pivot = vector.obj(
+                x=self.pivot.x,
+                y=self.pivot.y,
+                z=self.pivot.z,
+            )
 
         # do transformation
+        r = _flat_to_numpy(self.radius)
         old_dr = _flat_to_numpy(self.dr)
         old_phi0 = _flat_to_numpy(self.phi0)
         old_dz = _flat_to_numpy(self.dz)
         tanl = _flat_to_numpy(self.tanl)
         kappa = _flat_to_numpy(self.kappa)
-        old_error = (
-            _flat_to_numpy(self.error).reshape(5, 5) if "error" in self.fields else None
-        )
+
+        if "error" in self.fields:
+            old_error = (
+                _flat_to_numpy(self.error).reshape(-1, 5, 5)
+                if multi_trk
+                else _flat_to_numpy(self.error).reshape(5, 5)
+            )
+        else:
+            old_error = None
 
         new_dr, new_phi0, new_dz, new_error = _change_pivot(
-            r=self.radius,
+            r=r,
             old_dr=old_dr,
             old_phi0=old_phi0,
             old_dz=old_dz,
@@ -630,10 +725,14 @@ class HelixAwkwardRecord(ak.Record):
         if new_error is not None:
             res_dict["error"] = new_error
 
-        return ak.Record(
-            res_dict,
-            with_name="Bes3Helix",
-        )
+        res = ak.Record(res_dict, with_name="Bes3Helix")
+
+        if multi_trk:
+            raw_shape = _extract_index(self.dr.layout)
+            for count in raw_shape:
+                res = ak.unflatten(res, count)
+
+        return res
 
     def isclose(
         self,
@@ -662,10 +761,15 @@ class HelixAwkwardRecord(ak.Record):
                 UserWarning,
             )
 
-        return _obj_isclose(self, value, rtol=rtol, atol=atol, equal_nan=equal_nan)
+        multi_trk = isinstance(self.pivot.x, ak.Array)
+        if multi_trk:
+            return _arr_isclose(self, value, rtol=rtol, atol=atol, equal_nan=equal_nan)
+        else:
+            return _obj_isclose(self, value, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
 ak.behavior["Bes3Helix"] = HelixAwkwardRecord
+
 
 ###############################################################################################
 
@@ -680,7 +784,7 @@ class HelixAwkwardArray(ak.Array):
             vector.MomentumNumpy3D: The momentum vectors of the helix.
         """
         pt, phi, pz = _compute_momentum(self.kappa, self.tanl, self.phi0)
-        return ak.Array({"pt": pt, "phi": phi, "pz": pz}, with_name="Momentum3D")
+        return ak.zip({"pt": pt, "phi": phi, "pz": pz}, with_name="Momentum3D")
 
     @property
     def position(self) -> vec_ak.VectorAwkward3D:
@@ -691,7 +795,7 @@ class HelixAwkwardArray(ak.Array):
             vector.VectorNumpy3D: The position vectors of the helix.
         """
         x, y, z = _compute_position(self.dr, self.phi0, self.dz)
-        return ak.Array({"x": x, "y": y, "z": z}, with_name="Vector3D")
+        return ak.zip({"x": x, "y": y, "z": z}, with_name="Vector3D")
 
     @property
     def charge(self) -> ak.Array:
@@ -722,7 +826,12 @@ class HelixAwkwardArray(ak.Array):
             pivot = None
         elif len(args) == 1:
             pivot = args[0]
-            if not isinstance(pivot, ak.Array):
+            if isinstance(pivot, vector.VectorObject3D):
+                x = pivot.x
+                y = pivot.y
+                z = pivot.z
+                pivot = None
+            elif not isinstance(pivot, ak.Array):
                 x = pivot[0]
                 y = pivot[1]
                 z = pivot[2]
@@ -780,12 +889,8 @@ class HelixAwkwardArray(ak.Array):
             "kappa": kappa,
             "tanl": tanl,
             "dz": new_dz,
-            "pivot": ak.Array(
-                {
-                    "x": new_pivot.x,
-                    "y": new_pivot.y,
-                    "z": new_pivot.z,
-                },
+            "pivot": ak.zip(
+                {"x": new_pivot.x, "y": new_pivot.y, "z": new_pivot.z},
                 with_name="Vector3D",
             ),
         }
@@ -793,6 +898,7 @@ class HelixAwkwardArray(ak.Array):
         if new_error is not None:
             res_dict["error"] = new_error
 
+        raw_shape = _extract_index(self.dr.layout)
         res = ak.Array(res_dict, with_name="Bes3Helix")
 
         for count in raw_shape:
@@ -827,29 +933,7 @@ class HelixAwkwardArray(ak.Array):
                 UserWarning,
             )
 
-        other = other.change_pivot(self.pivot)
-
-        kwargs = {"rtol": rtol, "atol": atol, "equal_nan": equal_nan}
-
-        condition = ak.ones_like(self.dr, dtype=bool)
-        for f in [
-            "dr",
-            "phi0",
-            "kappa",
-            "tanl",
-            "dz",
-        ]:
-            condition = condition & ak.isclose(self[f], other[f], **kwargs)
-
-        # Check pivot separately
-        condition = condition & ak.isclose(np.abs(self.pivot - other.pivot), 0, **kwargs)
-
-        if "error" in self.fields and "error" in other.fields:
-            condition = condition & ak.all(
-                ak.all(ak.isclose(self.error, other.error, **kwargs), axis=-1), axis=-1
-            )
-
-        return condition
+        return _arr_isclose(self, other, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
 ak.behavior["*", "Bes3Helix"] = HelixAwkwardArray
@@ -977,7 +1061,7 @@ def helix_awk(*args, **kwargs) -> HelixAwkwardArray:
         x0 = ak.ones_like(dr) * pivot.x
         y0 = ak.ones_like(dr) * pivot.y
         z0 = ak.ones_like(dr) * pivot.z
-        pivot = ak.Array({"x": x0, "y": y0, "z": z0}, with_name="Vector3D")
+        pivot = ak.zip({"x": x0, "y": y0, "z": z0}, with_name="Vector3D")
 
     res_dict = {
         "dr": dr,
@@ -992,4 +1076,6 @@ def helix_awk(*args, **kwargs) -> HelixAwkwardArray:
         res_dict["error"] = error
 
     _check_kwargs_used_up(kwargs)
-    return ak.Array(res_dict, with_name="Bes3Helix")
+
+    raw_shape = _extract_index(dr.layout)
+    return ak.zip(res_dict, depth_limit=len(raw_shape) + 1, with_name="Bes3Helix")
