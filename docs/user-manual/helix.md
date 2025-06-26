@@ -250,9 +250,9 @@ helix = p3.helix_awk(
     }, with_name="Bes3Helix")
     ```
 
-## From physical parameters
+### Create helix from physics parameters
 
-Sometimes you may need to create a helix from position, momentum and charge. You can pass these parameters to `pybes3.helix_obj` or `pybes3.helix_awk` to create a helix object or a helix array. `pybes3` will automatically calculate the helix parameters for you.
+Sometimes you may need to create a helix from position, momentum and charge. You can pass these parameters to `pybes3.helix_obj` or `pybes3.helix_awk` to create a helix object or array. `pybes3` will automatically calculate the helix parameters for you.
 
 === "Object"
 
@@ -297,6 +297,34 @@ Sometimes you may need to create a helix from position, momentum and charge. You
         pivot=pivot     # initial pivot point (optional)
     )
     ```
+
+    where `charge` should be array of `1` or `-1`, and the `pivot` defaults to `(0, 0, 0)` if not provided. 
+
+!!! tip "Create helix from MC truth"
+
+    If you are creating helix from MC truth, you should let `pivot` be the same as the MC truth position, then change the pivot point to `(0, 0, 0)` later with `change_pivot` method:
+
+    ```python
+    truth_helix = p3.helix_obj(
+        position=(x, y, z),
+        momentum=(px, py, pz),
+        charge=charge,
+        pivot=(x, y, z)  # use the MC truth position as pivot
+    ).change_pivot(0, 0, 0)  # change pivot to (0, 0, 0)
+    ```
+
+    or, for awkward array:
+
+    ```python
+    truth_helix = p3.helix_awk(
+        position=position,
+        momentum=momentum,
+        charge=charge,
+        pivot=position  # use the MC truth position as pivot
+    ).change_pivot(0, 0, 0)  # change pivot to (0, 0, 0)
+    ```
+
+    Then you can retrieve helix parameters of truth via `dr`, `phi0`, `kappa`, `dz`, `tanl` properties of the helix.
 
 ## Physics information
 
