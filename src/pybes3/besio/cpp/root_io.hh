@@ -149,7 +149,7 @@ class STLSeqReader : public BaseReader {
         : BaseReader( name )
         , m_is_top( is_top )
         , m_element_reader( element_reader )
-        , m_counts() {}
+        , m_offsets( { 0 } ) {}
 
     /**
      * @brief Reads data from a BinaryParser object.
@@ -170,7 +170,7 @@ class STLSeqReader : public BaseReader {
         }
 
         auto fSize = bparser.read<uint32_t>();
-        m_counts.push_back( fSize );
+        m_offsets.push_back( m_offsets.back() + fSize );
         for ( uint32_t i = 0; i < fSize; i++ ) { m_element_reader->read( bparser ); }
     }
 
@@ -180,19 +180,19 @@ class STLSeqReader : public BaseReader {
      * @return A tuple of counts array and element data.
      */
     py::object data() override {
-        py::array_t<uint32_t> counts_array( m_counts.size() );
-        auto ptr_counts = counts_array.mutable_data();
-        std::copy( m_counts.begin(), m_counts.end(), ptr_counts );
+        py::array_t<uint32_t> offsets_array( m_offsets.size() );
+        auto ptr_offsets = offsets_array.mutable_data();
+        std::copy( m_offsets.begin(), m_offsets.end(), ptr_offsets );
 
         py::object element_data = m_element_reader->data();
-        return py::make_tuple( counts_array, element_data );
+        return py::make_tuple( offsets_array, element_data );
     }
 
   private:
     bool m_is_top;
 
     shared_ptr<BaseReader> m_element_reader;
-    std::vector<uint32_t> m_counts;
+    std::vector<uint32_t> m_offsets;
 };
 
 /**
@@ -208,7 +208,7 @@ class STLMapReader : public BaseReader {
         , m_is_top( is_top )
         , m_key_reader( key_reader )
         , m_val_reader( val_reader )
-        , m_counts() {}
+        , m_offsets( { 0 } ) {}
 
     /**
      * @brief Reads data from a BinaryParser object.
@@ -229,7 +229,7 @@ class STLMapReader : public BaseReader {
         }
 
         auto fSize = bparser.read<uint32_t>();
-        m_counts.push_back( fSize );
+        m_offsets.push_back( m_offsets.back() + fSize );
 
         if ( m_is_top )
         {
@@ -255,11 +255,11 @@ class STLMapReader : public BaseReader {
         auto key_data = m_key_reader->data();
         auto val_data = m_val_reader->data();
 
-        py::array_t<uint32_t> counts_array( m_counts.size() );
-        auto ptr_counts = counts_array.mutable_data();
-        std::copy( m_counts.begin(), m_counts.end(), ptr_counts );
+        py::array_t<uint32_t> offsets_array( m_offsets.size() );
+        auto ptr_offsets = offsets_array.mutable_data();
+        std::copy( m_offsets.begin(), m_offsets.end(), ptr_offsets );
 
-        return py::make_tuple( counts_array, key_data, val_data );
+        return py::make_tuple( offsets_array, key_data, val_data );
     }
 
   private:
@@ -267,13 +267,13 @@ class STLMapReader : public BaseReader {
 
     shared_ptr<BaseReader> m_key_reader;
     shared_ptr<BaseReader> m_val_reader;
-    std::vector<uint32_t> m_counts;
+    std::vector<uint32_t> m_offsets;
 };
 
 class STLStringReader : public BaseReader {
   public:
     STLStringReader( std::string_view name, bool is_top )
-        : BaseReader( name ), m_data( 0 ), m_is_top( is_top ), m_counts() {}
+        : BaseReader( name ), m_data( 0 ), m_is_top( is_top ), m_offsets( { 0 } ) {}
 
     void read( BinaryParser& bparser ) override {
         if ( m_is_top )
@@ -285,7 +285,7 @@ class STLStringReader : public BaseReader {
         uint32_t fSize = bparser.read<uint8_t>();
         if ( fSize == 255 ) { fSize = bparser.read<uint32_t>(); }
 
-        m_counts.push_back( fSize );
+        m_offsets.push_back( m_offsets.back() + fSize );
         for ( uint32_t i = 0; i < fSize; i++ ) { m_data.push_back( bparser.read<char>() ); }
     }
 
@@ -294,18 +294,18 @@ class STLStringReader : public BaseReader {
         auto ptr_data = data_array.mutable_data();
         std::copy( m_data.begin(), m_data.end(), ptr_data );
 
-        py::array_t<uint32_t> counts_array( m_counts.size() );
-        auto ptr_counts = counts_array.mutable_data();
-        std::copy( m_counts.begin(), m_counts.end(), ptr_counts );
+        py::array_t<uint32_t> offsets_array( m_offsets.size() );
+        auto ptr_offsets = offsets_array.mutable_data();
+        std::copy( m_offsets.begin(), m_offsets.end(), ptr_offsets );
 
-        return py::make_tuple( counts_array, data_array );
+        return py::make_tuple( offsets_array, data_array );
     }
 
   private:
     bool m_is_top;
 
     std::vector<char> m_data;
-    std::vector<uint32_t> m_counts;
+    std::vector<uint32_t> m_offsets;
 };
 
 /**
@@ -322,12 +322,13 @@ class STLStringReader : public BaseReader {
 template <typename T>
 class TArrayReader : public BaseReader {
   public:
-    TArrayReader( std::string_view name ) : BaseReader( name ), m_data( 0 ), m_counts( 0 ) {}
+    TArrayReader( std::string_view name )
+        : BaseReader( name ), m_data( 0 ), m_offsets( { 0 } ) {}
 
     void read( BinaryParser& bparser ) override {
         uint32_t fSize = bparser.read<uint32_t>();
         for ( uint32_t i = 0; i < fSize; i++ ) m_data.push_back( bparser.read<T>() );
-        m_counts.push_back( fSize );
+        m_offsets.push_back( m_offsets.back() + fSize );
     }
 
     py::object data() override {
@@ -337,16 +338,16 @@ class TArrayReader : public BaseReader {
         std::copy( m_data.begin(), m_data.end(), ptr_data );
 
         // prepare offsets
-        py::array_t<uint32_t> counts_array( m_counts.size() );
-        auto ptr_counts = counts_array.mutable_data();
-        std::copy( m_counts.begin(), m_counts.end(), ptr_counts );
+        py::array_t<uint32_t> offsets_array( m_offsets.size() );
+        auto ptr_offsets = offsets_array.mutable_data();
+        std::copy( m_offsets.begin(), m_offsets.end(), ptr_offsets );
 
-        return py::make_tuple( counts_array, data_array );
+        return py::make_tuple( offsets_array, data_array );
     }
 
   private:
     std::vector<T> m_data;
-    std::vector<uint32_t> m_counts;
+    std::vector<uint32_t> m_offsets;
 };
 
 /**
@@ -356,7 +357,8 @@ class TArrayReader : public BaseReader {
  */
 class TStringReader : public BaseReader {
   public:
-    TStringReader( std::string_view name ) : BaseReader( name ), m_data( 0 ), m_counts( 0 ) {}
+    TStringReader( std::string_view name )
+        : BaseReader( name ), m_data( 0 ), m_offsets( { 0 } ) {}
 
     /**
      * @brief Reads data from a BinaryParser object.
@@ -373,7 +375,7 @@ class TStringReader : public BaseReader {
         if ( fSize == 255 ) fSize = bparser.read<uint32_t>();
 
         for ( uint32_t i = 0; i < fSize; i++ ) m_data.push_back( bparser.read<uint8_t>() );
-        m_counts.push_back( fSize );
+        m_offsets.push_back( m_offsets.back() + fSize );
     }
 
     /**
@@ -388,16 +390,16 @@ class TStringReader : public BaseReader {
         std::copy( m_data.begin(), m_data.end(), ptr_data );
 
         // prepare offsets
-        py::array_t<uint32_t> counts_array( m_counts.size() );
-        auto ptr_counts = counts_array.mutable_data();
-        std::copy( m_counts.begin(), m_counts.end(), ptr_counts );
+        py::array_t<uint32_t> offsets_array( m_offsets.size() );
+        auto ptr_offsets = offsets_array.mutable_data();
+        std::copy( m_offsets.begin(), m_offsets.end(), ptr_offsets );
 
-        return py::make_tuple( counts_array, data_array );
+        return py::make_tuple( offsets_array, data_array );
     }
 
   private:
     std::vector<uint8_t> m_data;
-    std::vector<uint32_t> m_counts;
+    std::vector<uint32_t> m_offsets;
 };
 
 /**
@@ -555,11 +557,11 @@ class EmptyReader : public BaseReader {
 class Bes3TObjArrayReader : public BaseReader {
   private:
     shared_ptr<BaseReader> m_element_reader;
-    std::vector<uint32_t> m_counts;
+    std::vector<uint32_t> m_offsets;
 
   public:
     Bes3TObjArrayReader( std::string_view name, shared_ptr<BaseReader> element_reader )
-        : BaseReader( name ), m_element_reader( element_reader ), m_counts( 0 ) {}
+        : BaseReader( name ), m_element_reader( element_reader ), m_offsets( { 0 } ) {}
 
     void read( BinaryParser& bparser ) override {
         bparser.read_fNBytes();
@@ -572,17 +574,17 @@ class Bes3TObjArrayReader : public BaseReader {
         auto fSize = bparser.read<uint32_t>();
         bparser.read<uint32_t>(); // fLowerBound
 
-        m_counts.push_back( fSize );
+        m_offsets.push_back( m_offsets.back() + fSize );
         for ( uint32_t i = 0; i < fSize; i++ ) { m_element_reader->read( bparser ); }
     }
 
     py::object data() override {
-        py::array_t<uint32_t> counts_array( m_counts.size() );
-        auto ptr_counts = counts_array.mutable_data();
-        std::copy( m_counts.begin(), m_counts.end(), ptr_counts );
+        py::array_t<uint32_t> offsets_array( m_offsets.size() );
+        auto ptr_offsets = offsets_array.mutable_data();
+        std::copy( m_offsets.begin(), m_offsets.end(), ptr_offsets );
 
         py::object element_data = m_element_reader->data();
-        return py::make_tuple( counts_array, element_data );
+        return py::make_tuple( offsets_array, element_data );
     }
 };
 

@@ -1,3 +1,7 @@
+## v0.3.4
+
+* Fix: When reading 0 entry, `besio` will break because `ak.unflatten` doesn't support empty input.
+
 ## v0.3.3
 
 * Fix: Call `ak.zip` when creating `Helix` array.

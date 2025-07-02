@@ -297,8 +297,7 @@ class CTypeReader(BaseReader):
     def reconstruct_array(cls, raw_data, tree_config):
         if tree_config["reader"] != ReaderType.CType:
             return None
-
-        return ak.Array(raw_data)
+        return awkward.contents.NumpyArray(raw_data)
 
 
 class STLSequenceReader(BaseReader):
@@ -367,12 +366,16 @@ class STLSequenceReader(BaseReader):
         if tree_config["reader"] != ReaderType.STLSequence:
             return None
 
-        counts, element_raw_data = raw_data
+        offsets, element_raw_data = raw_data
         element_data = reconstruct_array(
             element_raw_data,
             tree_config["element_reader"],
         )
-        return ak.unflatten(element_data, counts)
+
+        return awkward.contents.ListOffsetArray(
+            awkward.index.Index64(offsets),
+            element_data,
+        )
 
 
 class STLMapReader(BaseReader):
@@ -454,19 +457,16 @@ class STLMapReader(BaseReader):
 
         key_tree_config = tree_config["key_reader"]
         val_tree_config = tree_config["val_reader"]
-        counts, key_raw_data, val_raw_data = raw_data
+        offsets, key_raw_data, val_raw_data = raw_data
         key_data = reconstruct_array(key_raw_data, key_tree_config)
         val_data = reconstruct_array(val_raw_data, val_tree_config)
 
-        return ak.unflatten(
-            ak.zip(
-                {
-                    key_tree_config["name"]: key_data,
-                    val_tree_config["name"]: val_data,
-                },
-                with_name="pair",
+        return awkward.contents.ListOffsetArray(
+            awkward.index.Index64(offsets),
+            awkward.contents.RecordArray(
+                [key_data, val_data],
+                [key_tree_config["name"], val_tree_config["name"]],
             ),
-            counts,
         )
 
 
@@ -506,8 +506,12 @@ class STLStringReader(BaseReader):
         if tree_config["reader"] != ReaderType.STLString:
             return None
 
-        counts, data = raw_data
-        return ak.enforce_type(ak.unflatten(data, counts), "string")
+        offsets, data = raw_data
+        return awkward.contents.ListOffsetArray(
+            awkward.index.Index64(offsets),
+            awkward.contents.NumpyArray(data, parameters={"__array__": "char"}),
+            parameters={"__array__": "string"},
+        )
 
 
 class TArrayReader(BaseReader):
@@ -557,8 +561,11 @@ class TArrayReader(BaseReader):
         if tree_config["reader"] != ReaderType.TArray:
             return None
 
-        counts, data = raw_data
-        return ak.unflatten(data, counts)
+        offsets, data = raw_data
+        return awkward.contents.ListOffsetArray(
+            awkward.index.Index64(offsets),
+            awkward.contents.NumpyArray(data),
+        )
 
 
 class TStringReader(BaseReader):
@@ -594,16 +601,11 @@ class TStringReader(BaseReader):
         if tree_config["reader"] != ReaderType.TString:
             return None
 
-        counts, data = raw_data
-        offsets = np.zeros(len(counts) + 1, dtype=counts.dtype)
-        np.cumsum(counts, out=offsets[1:])
-
-        return ak.Array(
-            awkward.contents.ListOffsetArray(
-                awkward.index.Index(offsets),
-                awkward.contents.NumpyArray(data, parameters={"__array__": "char"}),
-                parameters={"__array__": "string"},
-            )
+        offsets, data = raw_data
+        return awkward.contents.ListOffsetArray(
+            awkward.index.Index64(offsets),
+            awkward.contents.NumpyArray(data, parameters={"__array__": "char"}),
+            parameters={"__array__": "string"},
         )
 
 
@@ -753,7 +755,7 @@ class CArrayReader(BaseReader):
         )
 
         for s in shape[::-1]:
-            element_data = ak.unflatten(element_data, s)
+            element_data = awkward.contents.RegularArray(element_data, int(s))
 
         return element_data
 
@@ -817,7 +819,10 @@ class BaseObjectReader(BaseReader):
 
             arr_dict[s_name] = reconstruct_array(s_data, s_cfg)
 
-        return ak.Array(arr_dict)
+        return awkward.contents.RecordArray(
+            [arr_dict[k] for k in arr_dict],
+            [k for k in arr_dict],
+        )
 
 
 class ObjectHeaderReader(BaseReader):
@@ -872,7 +877,10 @@ class ObjectHeaderReader(BaseReader):
 
             arr_dict[s_name] = reconstruct_array(s_data, s_cfg)
 
-        return ak.Array(arr_dict)
+        return awkward.contents.RecordArray(
+            [arr_dict[k] for k in arr_dict],
+            [k for k in arr_dict],
+        )
 
 
 class EmptyReader(BaseReader):
@@ -902,7 +910,7 @@ class EmptyReader(BaseReader):
         if tree_config["reader"] != ReaderType.Empty:
             return None
 
-        return np.empty(shape=(0,))
+        return awkward.contents.EmptyArray()
 
 
 class Bes3TObjArrayReader(BaseReader):
@@ -1010,14 +1018,17 @@ class Bes3TObjArrayReader(BaseReader):
         if reader_config["reader"] != "MyTObjArrayReader":
             return None
 
-        counts, element_raw_data = raw_data
+        offsets, element_raw_data = raw_data
         element_reader_config = reader_config["element_reader"]
         element_data = reconstruct_array(
             element_raw_data,
             element_reader_config,
         )
 
-        return ak.unflatten(element_data, counts)
+        return awkward.contents.ListOffsetArray(
+            awkward.index.Index64(offsets),
+            element_data,
+        )
 
 
 readers |= {
@@ -1474,7 +1485,8 @@ class Bes3Interpretation(uproot.interpretation.Interpretation):
         raw_data = bcpp.read_data(data, byte_offsets, reader)
 
         # recover raw data
-        raw_ak_arr = reconstruct_array(raw_data, tree_config)
+        raw_ak_layout = reconstruct_array(raw_data, tree_config)
+        raw_ak_arr = ak.Array(raw_ak_layout)
 
         # preprocess awkward array and return
         return preprocess_subbranch(full_branch_path, raw_ak_arr)
