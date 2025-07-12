@@ -2,3 +2,8 @@
 .md-typeset details {
     font-size: 16px;
 }
+
+/* Table alignment */
+.center-table {
+    text-align: center;
+}

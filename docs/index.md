@@ -64,3 +64,57 @@
     Parse and transform track parameters, such as helix, etc.
   </a>
 </div>
+
+## Performance
+
+`pybes3` is designed to be fast and efficient. It uses `numba` to accelerate some of the operations, such as helix operations, digi identifier conversion, etc. When `numba` is not available, `pybes3` will use C++ to accelerate the operations.
+
+### Data reading
+
+A simple benchmark is provided to compare the reading performance `pybes3` and `BOSS8`:
+
+- For `pybes3`, we directly read out the `Event` tree:
+
+    ```python
+    import uproot
+    import pybes3
+    pybes3.wrap_uproot()
+
+    n_evt = ... # number of events to read
+    files = [...] # list of ROOT files to read
+
+    data_array = uproot.concatenate({f: "Event" for f in files}, entry_stop=n_evt)
+    ```
+
+
+- For `BOSS8`, a pure loop on all events is performed:
+
+    ```
+    #include "$ROOTIOROOT/share/jobOptions_ReadRec.txt"
+    #include "$OFFLINEEVENTLOOPMGRROOT/share/OfflineEventLoopMgr_Option.txt"
+
+    EventCnvSvc.digiRootInputFile = { ... }; // list of ROOT files to read
+    ApplicationMgr.EvtMax = ...; // number of events to read
+    MessageSvc.OutputLevel = 7; // suppress messages
+    ```
+
+The machine used for the benchmark is a `Intel i7-12700` with `Great Wall GW7000 4TB` SSD. The operating system is `AlmaLinuxOS9` on `WSL2`.
+
+!!! note
+    We use SSD to avoid the disk I/O bottleneck here. But on IHEP cluster, the disk I/O may be the bottleneck, leaving no significant difference between `pybes3` and `BOSS8`.
+
+The number of events is set to `1000`, `5000`, `10000`, `50000`, `100000`, `500000`, and `1000000`. The results are shown below:
+
+![Dummy Reading Performance](image/io-benchmarking.png)
+
+The fitting results with a linear function is:
+
+
+<div class="center-table" markdown>
+|          | Initialization time (s) | Slope (s/10k-event) |
+| :------: | :---------------------: | :-----------------: |
+| `pybes3` | 1.462                   | 1.482               |
+| `BOSS8`  | 0.615                   | 2.766               |
+</div>
+
+The result shows that `pybes3` can read faster than `BOSS8` in most of the cases. It is slower than `BOSS8` when reading small number of events (~1000), becuase the module importing and initialization time is counted in the benchmark.
