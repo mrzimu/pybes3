@@ -328,6 +328,30 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data reading
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -759,6 +783,30 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#performance" class="md-nav__link">
+    <span class="md-ellipsis">
+      Performance
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Performance">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#data-reading" class="md-nav__link">
+    <span class="md-ellipsis">
+      Data reading
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -857,6 +905,66 @@
 </li>
 </ul>
 </div>
+<h2 id="performance">Performance</h2>
+<p><code>pybes3</code> is designed to be fast and efficient. It uses <code>numba</code> to accelerate some of the operations, such as helix operations, digi identifier conversion, etc. When <code>numba</code> is not available, <code>pybes3</code> will use C++ to accelerate the operations.</p>
+<h3 id="data-reading">Data reading</h3>
+<p>A simple benchmark is provided to compare the reading performance <code>pybes3</code> and <code>BOSS8</code>:</p>
+<ul>
+<li>
+<p>For <code>pybes3</code>, we directly read out the <code>Event</code> tree:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">uproot</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span>
+<span class="n">pybes3</span><span class="o">.</span><span class="n">wrap_uproot</span><span class="p">()</span>
+
+<span class="n">n_evt</span> <span class="o">=</span> <span class="o">...</span> <span class="c1"># number of events to read</span>
+<span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="o">...</span><span class="p">]</span> <span class="c1"># list of ROOT files to read</span>
+
+<span class="n">data_array</span> <span class="o">=</span> <span class="n">uproot</span><span class="o">.</span><span class="n">concatenate</span><span class="p">({</span><span class="n">f</span><span class="p">:</span> <span class="s2">&quot;Event&quot;</span> <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">files</span><span class="p">},</span> <span class="n">entry_stop</span><span class="o">=</span><span class="n">n_evt</span><span class="p">)</span>
+</code></pre></div>
+</li>
+<li>
+<p>For <code>BOSS8</code>, a pure loop on all events is performed:</p>
+<div class="highlight"><pre><span></span><code>#include &quot;$ROOTIOROOT/share/jobOptions_ReadRec.txt&quot;
+#include &quot;$OFFLINEEVENTLOOPMGRROOT/share/OfflineEventLoopMgr_Option.txt&quot;
+
+EventCnvSvc.digiRootInputFile = { ... }; // list of ROOT files to read
+ApplicationMgr.EvtMax = ...; // number of events to read
+MessageSvc.OutputLevel = 7; // suppress messages
+</code></pre></div>
+</li>
+</ul>
+<p>The machine used for the benchmark is a <code>Intel i7-12700</code> with <code>Great Wall GW7000 4TB</code> SSD. The operating system is <code>AlmaLinuxOS9</code> on <code>WSL2</code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We use SSD to avoid the disk I/O bottleneck here. But on IHEP cluster, the disk I/O may be the bottleneck, leaving no significant difference between <code>pybes3</code> and <code>BOSS8</code>.</p>
+</div>
+<p>The number of events is set to <code>1000</code>, <code>5000</code>, <code>10000</code>, <code>50000</code>, <code>100000</code>, <code>500000</code>, and <code>1000000</code>. The results are shown below:</p>
+<p><img alt="Dummy Reading Performance" src="image/io-benchmarking.png" /></p>
+<p>The fitting results with a linear function is:</p>
+<div class="center-table">
+<table>
+<thead>
+<tr>
+<th style="text-align: center;"></th>
+<th style="text-align: center;">Initialization time (s)</th>
+<th style="text-align: center;">Slope (s/10k-event)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;"><code>pybes3</code></td>
+<td style="text-align: center;">1.445</td>
+<td style="text-align: center;">0.426</td>
+</tr>
+<tr>
+<td style="text-align: center;"><code>BOSS8</code></td>
+<td style="text-align: center;">0.615</td>
+<td style="text-align: center;">2.766</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The result shows that <code>pybes3</code> can read <code>6~7x</code> faster than <code>BOSS8</code> in most of the cases. It is slower than <code>BOSS8</code> when reading small number of events (~1000), since the module importing and initialization time is counted in the benchmark.</p>
 
 
 
