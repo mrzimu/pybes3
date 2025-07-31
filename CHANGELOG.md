@@ -1,3 +1,10 @@
+## v0.3.5
+
+* Optimize `besio` performance:
+  - Directly construct numpy array from `std::vector`, instread of copying data from `std::vector` to numpy array.
+  - Move symmetric error matrix recovery to C++ (Add `Bes3SymMatrixArrayReader`).
+  - Optimize reading logic basing on `uproot-custom` project.
+
 ## v0.3.4
 
 * Fix: When reading 0 entry, `besio` will break because `ak.unflatten` doesn't support empty input.
@@ -21,7 +28,6 @@
 ## v0.3.0
 
 * Add `pybes3.tracks.helix`, support:
-
   - Helix parameter conversion to/from physical variables.
   - Helix comparison.
   - Pivot transformation.

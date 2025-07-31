@@ -23,7 +23,7 @@ name = "pybes3"
 authors = [{ name = "Mingrun Li", email = "mrun_lee@foxmail.com" }]
 description = "Unofficial Python module for BES3"
 requires-python = ">=3.9"
-dependencies = ["pybind11", "uproot>=5.0", "awkward", "numba", "vector"]
+dependencies = ["uproot>=5.0", "awkward", "numba", "vector"]
 readme = "README.md"
 dynamic = ["version"]
 urls = { "Homepage" = "https://github.com/mrzimu/pybes3", "Documentation" = "https://pybes3.readthedocs.io/en/stable/" }
@@ -68,5 +68,4 @@ before-test = "pip install ."
 test-command = ["pytest {package}/tests"]
 
 # Build options
-# build = ["cp*-manylinux_x86_64", "cp*-macosx_arm64", "cp*-win_amd64"]
-build = ["cp*-manylinux_x86_64"]
+build = ["cp*-manylinux_x86_64", "cp*-macosx_arm64", "cp*-win_amd64"]
