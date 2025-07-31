@@ -10,6 +10,8 @@
 #include "root_io.hh"
 
 PYBIND11_MODULE( besio_cpp, m ) {
+    IMPORT_UPROOT_CUSTOM_CPP;
+
     m.doc() = "Binary Event Structure I/O";
 
     m.def( "read_bes_raw", &py_read_bes_raw, "Read BES raw data", py::arg( "data" ),
