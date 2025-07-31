@@ -96,8 +96,7 @@ class ReaderType(Enum):
     TString = "TString"
     TObject = "TObject"
     CArray = "CArray"
-    BaseObject = "BaseObject"
-    ObjectHeader = "ObjectHeader"
+    ObjectReader = "ObjectReader"
     Empty = "Empty"
 
 
@@ -112,6 +111,7 @@ def gen_tree_config(
     cls_streamer_info: dict,
     all_streamer_info: dict,
     item_path: str = "",
+    called_from_top: bool = False,
 ) -> dict:
     """
     Generate reader configuration for a class streamer information.
@@ -143,10 +143,17 @@ def gen_tree_config(
         dict: Reader configuration.
     """
     fName = cls_streamer_info["fName"]
-    item_path = fName if item_path == "" else f"{item_path}.{fName}"
+
+    top_type_name = (
+        get_top_type_name(cls_streamer_info["fTypeName"])
+        if "fTypeName" in cls_streamer_info
+        else None
+    )
+
+    if not called_from_top:
+        item_path = f"{item_path}.{fName}"
 
     for reader in sorted(readers, key=lambda x: x.priority(), reverse=True):
-        top_type_name = get_top_type_name(cls_streamer_info["fTypeName"])
         tree_config = reader.gen_tree_config(
             top_type_name,
             cls_streamer_info,
@@ -178,21 +185,6 @@ def reconstruct_array(
             return data
 
     raise ValueError(f"Unknown reader type: {tree_config['reader']} for {tree_config['name']}")
-
-
-def gen_tree_config_from_type_name(
-    type_name: str,
-    all_streamer_info: dict,
-    item_path: str = "",
-):
-    return gen_tree_config(
-        {
-            "fName": type_name,
-            "fTypeName": type_name,
-        },
-        all_streamer_info,
-        item_path,
-    )
 
 
 def regularize_object_path(object_path: str) -> str:
@@ -655,7 +647,7 @@ class CArrayReader(BaseReader):
 
     @classmethod
     def priority(cls):
-        return 100  # This reader should be called first
+        return 30
 
     @classmethod
     def gen_tree_config(
@@ -760,7 +752,7 @@ class CArrayReader(BaseReader):
         return element_data
 
 
-class BaseObjectReader(BaseReader):
+class ObjectReader(BaseReader):
     """
     Base class is what a custom class inherits from.
     It has fNBytes(uint32), fVersion(uint16) at the beginning.
@@ -789,80 +781,22 @@ class BaseObjectReader(BaseReader):
         ]
 
         return {
-            "reader": ReaderType.BaseObject,
+            "reader": ReaderType.ObjectReader,
             "name": fName,
             "sub_readers": sub_tree_configs,
         }
 
     @classmethod
     def get_reader_instance(cls, tree_config: dict):
-        if tree_config["reader"] != ReaderType.BaseObject:
+        if tree_config["reader"] != ReaderType.ObjectReader:
             return None
 
         sub_readers = [get_reader_instance(s) for s in tree_config["sub_readers"]]
-        return bcpp.BaseObjectReader(tree_config["name"], sub_readers)
+        return bcpp.ObjectReader(tree_config["name"], sub_readers)
 
     @classmethod
     def reconstruct_array(cls, raw_data, tree_config):
-        if tree_config["reader"] != ReaderType.BaseObject:
-            return None
-
-        sub_tree_configs = tree_config["sub_readers"]
-
-        arr_dict = {}
-        for s_cfg, s_data in zip(sub_tree_configs, raw_data):
-            s_name = s_cfg["name"]
-            s_reader_type = s_cfg["reader"]
-
-            if s_reader_type == ReaderType.TObject:
-                continue
-
-            arr_dict[s_name] = reconstruct_array(s_data, s_cfg)
-
-        return awkward.contents.RecordArray(
-            [arr_dict[k] for k in arr_dict],
-            [k for k in arr_dict],
-        )
-
-
-class ObjectHeaderReader(BaseReader):
-    """
-    This class read an object starting with an object header.
-    """
-
-    @classmethod
-    def priority(cls):
-        return 0  # should be called last
-
-    @classmethod
-    def gen_tree_config(
-        cls,
-        top_type_name,
-        cls_streamer_info,
-        all_streamer_info,
-        item_path,
-    ):
-        sub_streamers: list = all_streamer_info[top_type_name]
-        sub_tree_configs = [
-            gen_tree_config(s, all_streamer_info, item_path) for s in sub_streamers
-        ]
-        return {
-            "reader": ReaderType.ObjectHeader,
-            "name": top_type_name,
-            "sub_readers": sub_tree_configs,
-        }
-
-    @classmethod
-    def get_reader_instance(cls, tree_config: dict):
-        if tree_config["reader"] != ReaderType.ObjectHeader:
-            return None
-
-        sub_readers = [get_reader_instance(s) for s in tree_config["sub_readers"]]
-        return bcpp.ObjectHeaderReader(tree_config["name"], sub_readers)
-
-    @classmethod
-    def reconstruct_array(cls, raw_data, tree_config):
-        if tree_config["reader"] != ReaderType.ObjectHeader:
+        if tree_config["reader"] != ReaderType.ObjectReader:
             return None
 
         sub_tree_configs = tree_config["sub_readers"]
@@ -961,6 +895,10 @@ class Bes3TObjArrayReader(BaseReader):
     }
 
     @classmethod
+    def priority(cls):
+        return 50
+
+    @classmethod
     def gen_tree_config(
         cls,
         top_type_name: str,
@@ -971,9 +909,8 @@ class Bes3TObjArrayReader(BaseReader):
         if top_type_name != "TObjArray":
             return None
 
-        obj_typename = Bes3TObjArrayReader.bes3_branch2types.get(
-            item_path.replace(".TObjArray*", "")
-        )
+        item_path = item_path.replace(".TObjArray*", "")
+        obj_typename = cls.bes3_branch2types.get(item_path)
         if obj_typename is None:
             return None
 
@@ -990,14 +927,18 @@ class Bes3TObjArrayReader(BaseReader):
         sub_reader_config = []
         for s in all_streamer_info[obj_typename]:
             sub_reader_config.append(
-                gen_tree_config(s, all_streamer_info, item_path + f".{obj_typename}")
+                gen_tree_config(
+                    cls_streamer_info=s,
+                    all_streamer_info=all_streamer_info,
+                    item_path=f"{item_path}.{obj_typename}",
+                )
             )
 
         return {
             "reader": "MyTObjArrayReader",
             "name": cls_streamer_info["fName"],
             "element_reader": {
-                "reader": ReaderType.ObjectHeader,
+                "reader": ReaderType.ObjectReader,
                 "name": obj_typename,
                 "sub_readers": sub_reader_config,
             },
@@ -1031,6 +972,85 @@ class Bes3TObjArrayReader(BaseReader):
         )
 
 
+class Bes3SymMatrixArrayReader(BaseReader):
+    target_items = {
+        "/Event:TDstEvent/m_mdcTrackCol.TMdcTrack.m_err",
+        "/Event:TDstEvent/m_emcTrackCol.TEmcTrack.m_err",
+        "/Event:TDstEvent/m_extTrackCol.TExtTrack.myTof1ErrorMatrix",
+        "/Event:TDstEvent/m_extTrackCol.TExtTrack.myTof2ErrorMatrix",
+        "/Event:TDstEvent/m_extTrackCol.TExtTrack.myEmcErrorMatrix",
+        "/Event:TDstEvent/m_extTrackCol.TExtTrack.myMucErrorMatrix",
+        "/Event:TDstEvent/m_mdcKalTrackCol.TMdcKalTrack.m_zerror",
+        "/Event:TDstEvent/m_mdcKalTrackCol.TMdcKalTrack.m_zerror_e",
+        "/Event:TDstEvent/m_mdcKalTrackCol.TMdcKalTrack.m_zerror_mu",
+        "/Event:TDstEvent/m_mdcKalTrackCol.TMdcKalTrack.m_zerror_k",
+        "/Event:TDstEvent/m_mdcKalTrackCol.TMdcKalTrack.m_zerror_p",
+        "/Event:TDstEvent/m_mdcKalTrackCol.TMdcKalTrack.m_ferror",
+        "/Event:TDstEvent/m_mdcKalTrackCol.TMdcKalTrack.m_ferror_e",
+        "/Event:TDstEvent/m_mdcKalTrackCol.TMdcKalTrack.m_ferror_mu",
+        "/Event:TDstEvent/m_mdcKalTrackCol.TMdcKalTrack.m_ferror_k",
+        "/Event:TDstEvent/m_mdcKalTrackCol.TMdcKalTrack.m_ferror_p",
+        "/Event:TEvtRecObject/m_evtRecVeeVertexCol.TEvtRecVeeVertex.m_Ew",
+        "/Event:TEvtRecObject/m_evtRecPrimaryVertex.m_Evtx",  # TODO: use BES3 interpretation
+        "/Event:TRecEvent/m_recMdcTrackCol.TRecMdcTrack.m_err",
+        "/Event:TRecEvent/m_recEmcShowerCol.TRecEmcShower.m_err",
+        "/Event:TRecEvent/m_recMdcKalTrackCol.TRecMdcKalTrack.m_terror",
+    }
+
+    @classmethod
+    def priority(cls):
+        return 40
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name,
+        cls_streamer_info,
+        all_streamer_info,
+        item_path="",
+    ):
+        if item_path not in Bes3SymMatrixArrayReader.target_items:
+            return None
+
+        fArrayDim = cls_streamer_info["fArrayDim"]
+        fMaxIndex = cls_streamer_info["fMaxIndex"]
+        ctype = num_typenames[top_type_name]
+
+        flat_size = np.prod(fMaxIndex[:fArrayDim])
+        assert flat_size > 0, f"flatten_size should be greater than 0, but got {flat_size}"
+
+        full_dim = int((np.sqrt(1 + 8 * flat_size) - 1) / 2)
+        return {
+            "reader": cls,
+            "name": cls_streamer_info["fName"],
+            "ctype": ctype,
+            "flat_size": flat_size,
+            "full_dim": full_dim,
+        }
+
+    @classmethod
+    def get_reader_instance(cls, tree_config):
+        if tree_config["reader"] != cls:
+            return None
+
+        ctype = tree_config["ctype"]
+        assert ctype == "d", "Only double precision symmetric matrix is supported."
+
+        return bcpp.Bes3SymMatrixArrayReader(
+            tree_config["name"],
+            tree_config["flat_size"],
+            tree_config["full_dim"],
+        )
+
+    @classmethod
+    def reconstruct_array(cls, raw_data, tree_config):
+        if tree_config["reader"] != cls:
+            return None
+
+        full_dim = tree_config["full_dim"]
+        return awkward.contents.NumpyArray(raw_data.reshape(-1, full_dim, full_dim))
+
+
 readers |= {
     CTypeReader,
     STLSequenceReader,
@@ -1040,10 +1060,10 @@ readers |= {
     TStringReader,
     TObjectReader,
     CArrayReader,
-    BaseObjectReader,
-    ObjectHeaderReader,
+    ObjectReader,
     EmptyReader,
     Bes3TObjArrayReader,
+    Bes3SymMatrixArrayReader,
 }
 
 
@@ -1246,73 +1266,6 @@ def process_digi_subbranch(org_arr: ak.Array) -> ak.Array:
 
 
 #############################################
-# TEvtRecObject
-#############################################
-def process_evtrec_m_Evtx(org_arr: ak.Array) -> ak.Array:
-    return expand_subbranch_symetric_matrix(org_arr, "m_Evtx")
-
-
-def process_evtrec_m_evtRecVeeVertexCol(org_arr: ak.Array) -> ak.Array:
-    return expand_subbranch_symetric_matrix(org_arr, "m_Ew")
-
-
-#############################################
-# TDstEvent
-#############################################
-def process_dst_m_mdcTrackCol(org_arr: ak.Array) -> ak.Array:
-    return expand_subbranch_symetric_matrix(org_arr, "m_err")
-
-
-def process_dst_m_emcTrackCol(org_arr: ak.Array) -> ak.Array:
-    return expand_subbranch_symetric_matrix(org_arr, "m_err")
-
-
-def process_dst_m_extTrackCol(org_arr: ak.Array) -> ak.Array:
-    return expand_subbranch_symetric_matrix(
-        org_arr,
-        {
-            "myEmcErrorMatrix",
-            "myMucErrorMatrix",
-            "myTof1ErrorMatrix",
-            "myTof2ErrorMatrix",
-        },
-    )
-
-
-def process_dst_m_mdcKalTrackCol(org_arr: ak.Array) -> ak.Array:
-    return expand_subbranch_symetric_matrix(
-        org_arr,
-        {
-            "m_zerror",
-            "m_zerror_e",
-            "m_zerror_mu",
-            "m_zerror_k",
-            "m_zerror_p",
-            "m_ferror",
-            "m_ferror_e",
-            "m_ferror_mu",
-            "m_ferror_k",
-            "m_ferror_p",
-        },
-    )
-
-
-#############################################
-# TRecEvent
-#############################################
-def process_rec_m_recMdcTrackCol(org_arr: ak.Array) -> ak.Array:
-    return expand_subbranch_symetric_matrix(org_arr, "m_err")
-
-
-def process_rec_m_recEmcShowerCol(org_arr: ak.Array) -> ak.Array:
-    return expand_subbranch_symetric_matrix(org_arr, "m_err")
-
-
-def process_rec_m_recMdcKalTrackCol(org_arr: ak.Array) -> ak.Array:
-    return expand_subbranch_symetric_matrix(org_arr, "m_terror")
-
-
-#############################################
 # Main function
 #############################################
 def preprocess_subbranch(full_branch_path: str, org_arr: ak.Array) -> ak.Array:
@@ -1321,30 +1274,6 @@ def preprocess_subbranch(full_branch_path: str, org_arr: ak.Array) -> ak.Array:
 
     if evt_name == "TDigiEvent" and subbranch_name != "m_fromMc":
         return process_digi_subbranch(org_arr)
-
-    if evt_name == "TEvtRecObject":
-        if subbranch_name == "m_Evtx":
-            return process_evtrec_m_Evtx(org_arr)
-        if subbranch_name == "m_evtRecVeeVertexCol":
-            return process_evtrec_m_evtRecVeeVertexCol(org_arr)
-
-    if evt_name == "TDstEvent":
-        if subbranch_name == "m_mdcTrackCol":
-            return process_dst_m_mdcTrackCol(org_arr)
-        if subbranch_name == "m_emcTrackCol":
-            return process_dst_m_emcTrackCol(org_arr)
-        if subbranch_name == "m_extTrackCol":
-            return process_dst_m_extTrackCol(org_arr)
-        if subbranch_name == "m_mdcKalTrackCol":
-            return process_dst_m_mdcKalTrackCol(org_arr)
-
-    if evt_name == "TRecEvent":
-        if subbranch_name == "m_recMdcTrackCol":
-            return process_rec_m_recMdcTrackCol(org_arr)
-        if subbranch_name == "m_recEmcShowerCol":
-            return process_rec_m_recEmcShowerCol(org_arr)
-        if subbranch_name == "m_recMdcKalTrackCol":
-            return process_rec_m_recMdcKalTrackCol(org_arr)
 
     # Default return
     return org_arr
@@ -1474,8 +1403,11 @@ class Bes3Interpretation(uproot.interpretation.Interpretation):
         full_branch_path = regularize_object_path(branch.object_path)
 
         # generate reader config
-        tree_config = gen_tree_config_from_type_name(
-            branch.streamer.typename, self.all_streamer_info, full_branch_path
+        tree_config = gen_tree_config(
+            branch.streamer.all_members,
+            self.all_streamer_info,
+            full_branch_path,
+            called_from_top=True,
         )
 
         # get reader
