@@ -584,21 +584,21 @@ class Bes3SymMatrixArrayReader : public BaseReader {
         , m_full_dim( full_dim ) {
         for ( auto i = 0; i < full_dim; i++ )
         {
-            for ( auto j = 0; j <= i; j++ )
+            for ( auto j = 0; j < full_dim; j++ )
             {
-                auto idx = get_symetric_matrix_index( i, j );
+                auto idx = get_symmetric_matrix_index( i, j );
                 if ( idx >= flat_size )
                 {
                     throw std::runtime_error(
-                        "Invalid flat size: " + std::to_string( flat_size ) +
-                        ", full dim: " + std::to_string( full_dim ) +
-                        ", i: " + std::to_string( i ) + ", j: " + std::to_string( j ) );
+                        "Invalid flat size: " + std::to_string( flat_size ) + ", full dim: " +
+                        std::to_string( full_dim ) + ", i: " + std::to_string( i ) +
+                        ", j: " + std::to_string( j ) + ", idx: " + std::to_string( idx ) );
                 }
             }
         }
     }
 
-    const int get_symetric_matrix_index( int i, int j ) const {
+    const int get_symmetric_matrix_index( int i, int j ) const {
         return i < j ? j * ( j + 1 ) / 2 + i : i * ( i + 1 ) / 2 + j;
     }
 
@@ -612,7 +612,7 @@ class Bes3SymMatrixArrayReader : public BaseReader {
         {
             for ( int j = 0; j < m_full_dim; j++ )
             {
-                auto idx = get_symetric_matrix_index( i, j );
+                auto idx = get_symmetric_matrix_index( i, j );
                 m_data->push_back( flat_array[idx] );
             }
         }

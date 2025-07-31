@@ -924,26 +924,25 @@ class Bes3TObjArrayReader(BaseReader):
                 },
             }
 
-        else:
-            sub_reader_config = []
-            for s in all_streamer_info[obj_typename]:
-                sub_reader_config.append(
-                    gen_tree_config(
-                        cls_streamer_info=s,
-                        all_streamer_info=all_streamer_info,
-                        item_path=f"{item_path}.{obj_typename}",
-                    )
+        sub_reader_config = []
+        for s in all_streamer_info[obj_typename]:
+            sub_reader_config.append(
+                gen_tree_config(
+                    cls_streamer_info=s,
+                    all_streamer_info=all_streamer_info,
+                    item_path=f"{item_path}.{obj_typename}",
                 )
+            )
 
-            return {
-                "reader": "MyTObjArrayReader",
-                "name": cls_streamer_info["fName"],
-                "element_reader": {
-                    "reader": ReaderType.ObjectReader,
-                    "name": obj_typename,
-                    "sub_readers": sub_reader_config,
-                },
-            }
+        return {
+            "reader": "MyTObjArrayReader",
+            "name": cls_streamer_info["fName"],
+            "element_reader": {
+                "reader": ReaderType.ObjectReader,
+                "name": obj_typename,
+                "sub_readers": sub_reader_config,
+            },
+        }
 
     @staticmethod
     def get_reader_instance(reader_config: dict):
