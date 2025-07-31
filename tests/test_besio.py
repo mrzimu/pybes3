@@ -1,3 +1,4 @@
+import json
 from pathlib import Path
 
 import awkward
@@ -22,32 +23,42 @@ def test_uproot_branches():
 
 def test_mc_full():
     f_rtraw = uproot.open(data_dir / "test_full_mc_evt_1.rtraw")
+    truth_str = open(data_dir / "test_full_mc_evt_1.rtraw.json").read()
     arr = f_rtraw["Event"].arrays()
     assert len(arr) == 10
+    assert json.dumps(arr.to_list(), indent=2) == truth_str
 
 
 def test_mc_only_particles():
     f_rtraw = uproot.open(data_dir / "test_only_mc_particles.rtraw")
+    truth_str = open(data_dir / "test_only_mc_particles.rtraw.json").read()
     arr = f_rtraw["Event"].arrays()
     assert len(arr) == 10
+    assert json.dumps(arr.to_list(), indent=2) == truth_str
 
 
 def test_dst():
     f_dst = uproot.open(data_dir / "test_full_mc_evt_1.dst")
-    arr_dst = f_dst["Event"].arrays()
-    assert len(arr_dst) == 10
+    truth_str = open(data_dir / "test_full_mc_evt_1.dst.json").read()
+    arr = f_dst["Event"].arrays()
+    assert len(arr) == 10
+    assert json.dumps(arr.to_list(), indent=2) == truth_str
 
 
 def test_rec():
     f_rec = uproot.open(data_dir / "test_full_mc_evt_1.rec")
-    arr_rec = f_rec["Event"].arrays()
-    assert len(arr_rec) == 10
+    truth_str = open(data_dir / "test_full_mc_evt_1.rec.json").read()
+    arr = f_rec["Event"].arrays()
+    assert len(arr) == 10
+    assert json.dumps(arr.to_list(), indent=2) == truth_str
 
 
 def test_cgem_rtraw():
     f_rtraw = uproot.open(data_dir / "test_cgem.rtraw")
+    truth_str = open(data_dir / "test_cgem.rtraw.json").read()
     arr = f_rtraw["Event"].arrays()
     assert len(arr) == 200
+    assert json.dumps(arr.to_list(), indent=2) == truth_str
 
 
 def test_uproot_concatenate():
