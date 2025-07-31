@@ -607,7 +607,7 @@ class Bes3SymMatrixArrayReader : public BaseReader {
         std::vector<T> flat_array( m_flat_size );
         for ( int i = 0; i < m_flat_size; i++ ) flat_array[i] = bparser.read<T>();
 
-        // fill the m_data with the symetric matrix data
+        // fill the m_data with the symmetric matrix data
         for ( int i = 0; i < m_full_dim; i++ )
         {
             for ( int j = 0; j < m_full_dim; j++ )
