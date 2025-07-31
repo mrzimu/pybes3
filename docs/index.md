@@ -113,8 +113,8 @@ The fitting results with a linear function is:
 <div class="center-table" markdown>
 |          | Initialization time (s) | Slope (s/10k-event) |
 | :------: | :---------------------: | :-----------------: |
-| `pybes3` | 1.462                   | 1.482               |
+| `pybes3` | 1.445                   | 0.426               |
 | `BOSS8`  | 0.615                   | 2.766               |
 </div>
 
-The result shows that `pybes3` can read faster than `BOSS8` in most of the cases. It is slower than `BOSS8` when reading small number of events (~1000), becuase the module importing and initialization time is counted in the benchmark.
+The result shows that `pybes3` can read `6~7x` faster than `BOSS8` in most of the cases. It is slower than `BOSS8` when reading small number of events (~1000), since the module importing and initialization time is counted in the benchmark.

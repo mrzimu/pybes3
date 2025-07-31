@@ -49,12 +49,11 @@ PYBIND11_MODULE( besio_cpp, m ) {
     register_reader<TStringReader>( m, "TStringReader" );
     register_reader<TObjectReader>( m, "TObjectReader" );
     register_reader<CArrayReader, bool, uint32_t, shared_ptr<BaseReader>>( m, "CArrayReader" );
-    register_reader<BaseObjectReader, std::vector<shared_ptr<BaseReader>>>(
-        m, "BaseObjectReader" );
-    register_reader<ObjectHeaderReader, std::vector<shared_ptr<BaseReader>>>(
-        m, "ObjectHeaderReader" );
+    register_reader<ObjectReader, std::vector<shared_ptr<BaseReader>>>( m, "ObjectReader" );
     register_reader<EmptyReader>( m, "EmptyReader" );
 
     // BES3 reader
     register_reader<Bes3TObjArrayReader, shared_ptr<BaseReader>>( m, "Bes3TObjArrayReader" );
+    register_reader<Bes3SymMatrixArrayReader<double>, uint32_t, uint32_t>(
+        m, "Bes3SymMatrixArrayReader" );
 }

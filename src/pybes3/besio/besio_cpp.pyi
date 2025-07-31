@@ -99,15 +99,7 @@ class CArrayReader(BaseReader):
         element_reader: BaseReader,
     ): ...
 
-class BaseObjectReader(BaseReader):
-    def __init__(
-        self,
-        name: str,
-        sub_readers: list[BaseReader],
-    ): ...
-    def data(self) -> list: ...
-
-class ObjectHeaderReader(BaseReader):
+class ObjectReader(BaseReader):
     def __init__(
         self,
         name: str,
@@ -125,6 +117,15 @@ class Bes3TObjArrayReader(BaseReader):
         element_reader: BaseReader,
     ): ...
     def data(self) -> tuple[NDArray[np.uint32], Any]: ...
+
+class Bes3SymMatrixArrayReader(BaseReader):
+    def __init__(
+        self,
+        name: str,
+        flat_size: int,
+        full_dim: int,
+    ): ...
+    def data(self) -> NDArray[np.float64]: ...
 
 def read_data(
     data: NDArray[np.uint8],

@@ -94,6 +94,13 @@ class BinaryParser {
         return std::string( start, m_cursor );
     }
 
+    const std::string read_obj_header() {
+        read_fNBytes();
+        auto fTag = read<uint32_t>();
+        if ( fTag == 0xFFFFFFFF ) return read_null_terminated_string();
+        else return std::string();
+    }
+
   private:
     uint8_t* m_cursor;
     const uint8_t* m_data;
@@ -106,10 +113,30 @@ class BaseReader {
 
   public:
     BaseReader( std::string_view name ) : m_name( name ) {}
-    virtual ~BaseReader()                      = default;
+    virtual ~BaseReader() = default;
+
     virtual void read( BinaryParser& bparser ) = 0;
-    virtual py::object data()                  = 0;
+    virtual const py::object data() const      = 0;
 };
+
+template <typename T>
+using SharedVector = std::shared_ptr<std::vector<T>>;
+
+template <typename T, typename... Args>
+inline SharedVector<T> make_shared_vector( Args&&... args ) {
+    return std::make_shared<std::vector<T>>( std::forward<Args>( args )... );
+}
+
+template <typename T>
+inline py::array_t<T> make_np_array( SharedVector<T> seq ) {
+    auto size = seq->size();
+    auto data = seq->data();
+
+    auto capsule = py::capsule(
+        new auto( seq ), []( void* p ) { delete reinterpret_cast<SharedVector<T>*>( p ); } );
+
+    return py::array_t<T>( size, data, capsule );
+}
 
 /**
  * @brief Reader for C types.
@@ -123,19 +150,17 @@ class BaseReader {
 template <typename T>
 class CTypeReader : public BaseReader {
   public:
-    CTypeReader( std::string_view name ) : BaseReader( name ), m_data( 0 ) {}
+    CTypeReader( std::string_view name )
+        : BaseReader( name ), m_data( make_shared_vector<T>() ) {}
 
-    void read( BinaryParser& bparser ) override { m_data.push_back( bparser.read<T>() ); }
-
-    py::object data() override {
-        py::array_t<T> array( m_data.size() );
-        auto ptr_data = array.mutable_data();
-        std::copy( m_data.begin(), m_data.end(), ptr_data );
-        return array;
+    void read( BinaryParser& bparser ) override final {
+        m_data->push_back( bparser.read<T>() );
     }
 
+    const py::object data() const override final { return make_np_array( m_data ); }
+
   private:
-    std::vector<T> m_data;
+    SharedVector<T> m_data;
 };
 
 /**
@@ -149,7 +174,7 @@ class STLSeqReader : public BaseReader {
         : BaseReader( name )
         , m_is_top( is_top )
         , m_element_reader( element_reader )
-        , m_offsets( { 0 } ) {}
+        , m_offsets( make_shared_vector<uint32_t>( 1, 0 ) ) {}
 
     /**
      * @brief Reads data from a BinaryParser object.
@@ -162,7 +187,7 @@ class STLSeqReader : public BaseReader {
      *
      * @param bparser The BinaryParser object to read data from.
      */
-    void read( BinaryParser& bparser ) override {
+    void read( BinaryParser& bparser ) override final {
         if ( m_is_top )
         {
             bparser.read_fNBytes();
@@ -170,7 +195,7 @@ class STLSeqReader : public BaseReader {
         }
 
         auto fSize = bparser.read<uint32_t>();
-        m_offsets.push_back( m_offsets.back() + fSize );
+        m_offsets->push_back( m_offsets->back() + fSize );
         for ( uint32_t i = 0; i < fSize; i++ ) { m_element_reader->read( bparser ); }
     }
 
@@ -179,12 +204,9 @@ class STLSeqReader : public BaseReader {
      *
      * @return A tuple of counts array and element data.
      */
-    py::object data() override {
-        py::array_t<uint32_t> offsets_array( m_offsets.size() );
-        auto ptr_offsets = offsets_array.mutable_data();
-        std::copy( m_offsets.begin(), m_offsets.end(), ptr_offsets );
-
-        py::object element_data = m_element_reader->data();
+    const py::object data() const override final {
+        auto offsets_array = make_np_array( m_offsets );
+        auto element_data  = m_element_reader->data();
         return py::make_tuple( offsets_array, element_data );
     }
 
@@ -192,7 +214,7 @@ class STLSeqReader : public BaseReader {
     bool m_is_top;
 
     shared_ptr<BaseReader> m_element_reader;
-    std::vector<uint32_t> m_offsets;
+    SharedVector<uint32_t> m_offsets;
 };
 
 /**
@@ -208,7 +230,7 @@ class STLMapReader : public BaseReader {
         , m_is_top( is_top )
         , m_key_reader( key_reader )
         , m_val_reader( val_reader )
-        , m_offsets( { 0 } ) {}
+        , m_offsets( make_shared_vector<uint32_t>( 1, 0 ) ) {}
 
     /**
      * @brief Reads data from a BinaryParser object.
@@ -221,7 +243,7 @@ class STLMapReader : public BaseReader {
      *
      * @param bparser The BinaryParser object to read data from.
      */
-    void read( BinaryParser& bparser ) override {
+    void read( BinaryParser& bparser ) override final {
         if ( m_is_top )
         {
             bparser.read_fNBytes();
@@ -229,7 +251,7 @@ class STLMapReader : public BaseReader {
         }
 
         auto fSize = bparser.read<uint32_t>();
-        m_offsets.push_back( m_offsets.back() + fSize );
+        m_offsets->push_back( m_offsets->back() + fSize );
 
         if ( m_is_top )
         {
@@ -251,14 +273,10 @@ class STLMapReader : public BaseReader {
      *
      * @return A tuple of offsets array, key data, and value data.
      */
-    py::object data() override {
-        auto key_data = m_key_reader->data();
-        auto val_data = m_val_reader->data();
-
-        py::array_t<uint32_t> offsets_array( m_offsets.size() );
-        auto ptr_offsets = offsets_array.mutable_data();
-        std::copy( m_offsets.begin(), m_offsets.end(), ptr_offsets );
-
+    const py::object data() const override final {
+        auto key_data      = m_key_reader->data();
+        auto val_data      = m_val_reader->data();
+        auto offsets_array = make_np_array( m_offsets );
         return py::make_tuple( offsets_array, key_data, val_data );
     }
 
@@ -267,15 +285,18 @@ class STLMapReader : public BaseReader {
 
     shared_ptr<BaseReader> m_key_reader;
     shared_ptr<BaseReader> m_val_reader;
-    std::vector<uint32_t> m_offsets;
+    SharedVector<uint32_t> m_offsets;
 };
 
 class STLStringReader : public BaseReader {
   public:
     STLStringReader( std::string_view name, bool is_top )
-        : BaseReader( name ), m_data( 0 ), m_is_top( is_top ), m_offsets( { 0 } ) {}
+        : BaseReader( name )
+        , m_data( make_shared_vector<uint8_t>() )
+        , m_is_top( is_top )
+        , m_offsets( make_shared_vector<uint32_t>( 1, 0 ) ) {}
 
-    void read( BinaryParser& bparser ) override {
+    void read( BinaryParser& bparser ) override final {
         if ( m_is_top )
         {
             bparser.read_fNBytes();
@@ -285,27 +306,22 @@ class STLStringReader : public BaseReader {
         uint32_t fSize = bparser.read<uint8_t>();
         if ( fSize == 255 ) { fSize = bparser.read<uint32_t>(); }
 
-        m_offsets.push_back( m_offsets.back() + fSize );
-        for ( uint32_t i = 0; i < fSize; i++ ) { m_data.push_back( bparser.read<char>() ); }
+        m_offsets->push_back( m_offsets->back() + fSize );
+        for ( uint32_t i = 0; i < fSize; i++ )
+        { m_data->push_back( bparser.read<uint8_t>() ); }
     }
 
-    py::object data() override {
-        py::array_t<char> data_array( m_data.size() );
-        auto ptr_data = data_array.mutable_data();
-        std::copy( m_data.begin(), m_data.end(), ptr_data );
-
-        py::array_t<uint32_t> offsets_array( m_offsets.size() );
-        auto ptr_offsets = offsets_array.mutable_data();
-        std::copy( m_offsets.begin(), m_offsets.end(), ptr_offsets );
-
+    const py::object data() const override final {
+        auto data_array    = make_np_array( m_data );
+        auto offsets_array = make_np_array( m_offsets );
         return py::make_tuple( offsets_array, data_array );
     }
 
   private:
     bool m_is_top;
 
-    std::vector<char> m_data;
-    std::vector<uint32_t> m_offsets;
+    SharedVector<uint8_t> m_data;
+    SharedVector<uint32_t> m_offsets;
 };
 
 /**
@@ -323,31 +339,25 @@ template <typename T>
 class TArrayReader : public BaseReader {
   public:
     TArrayReader( std::string_view name )
-        : BaseReader( name ), m_data( 0 ), m_offsets( { 0 } ) {}
+        : BaseReader( name )
+        , m_data( make_shared_vector<T>() )
+        , m_offsets( make_shared_vector<uint32_t>( 1, 0 ) ) {}
 
-    void read( BinaryParser& bparser ) override {
+    void read( BinaryParser& bparser ) override final {
         uint32_t fSize = bparser.read<uint32_t>();
-        for ( uint32_t i = 0; i < fSize; i++ ) m_data.push_back( bparser.read<T>() );
-        m_offsets.push_back( m_offsets.back() + fSize );
+        for ( uint32_t i = 0; i < fSize; i++ ) m_data->push_back( bparser.read<T>() );
+        m_offsets->push_back( m_offsets->back() + fSize );
     }
 
-    py::object data() override {
-        // prepare data
-        py::array_t<T> data_array( m_data.size() );
-        auto ptr_data = data_array.mutable_data();
-        std::copy( m_data.begin(), m_data.end(), ptr_data );
-
-        // prepare offsets
-        py::array_t<uint32_t> offsets_array( m_offsets.size() );
-        auto ptr_offsets = offsets_array.mutable_data();
-        std::copy( m_offsets.begin(), m_offsets.end(), ptr_offsets );
-
+    const py::object data() const override final {
+        auto data_array    = make_np_array( m_data );
+        auto offsets_array = make_np_array( m_offsets );
         return py::make_tuple( offsets_array, data_array );
     }
 
   private:
-    std::vector<T> m_data;
-    std::vector<uint32_t> m_offsets;
+    SharedVector<T> m_data;
+    SharedVector<uint32_t> m_offsets;
 };
 
 /**
@@ -358,7 +368,9 @@ class TArrayReader : public BaseReader {
 class TStringReader : public BaseReader {
   public:
     TStringReader( std::string_view name )
-        : BaseReader( name ), m_data( 0 ), m_offsets( { 0 } ) {}
+        : BaseReader( name )
+        , m_data( make_shared_vector<uint8_t>() )
+        , m_offsets( make_shared_vector<uint32_t>( 1, 0 ) ) {}
 
     /**
      * @brief Reads data from a BinaryParser object.
@@ -370,12 +382,12 @@ class TStringReader : public BaseReader {
      *
      * @param bparser The BinaryParser object to read data from.
      */
-    void read( BinaryParser& bparser ) override {
+    void read( BinaryParser& bparser ) override final {
         uint32_t fSize = bparser.read<uint8_t>();
         if ( fSize == 255 ) fSize = bparser.read<uint32_t>();
 
-        for ( uint32_t i = 0; i < fSize; i++ ) m_data.push_back( bparser.read<uint8_t>() );
-        m_offsets.push_back( m_offsets.back() + fSize );
+        for ( uint32_t i = 0; i < fSize; i++ ) m_data->push_back( bparser.read<uint8_t>() );
+        m_offsets->push_back( m_offsets->back() + fSize );
     }
 
     /**
@@ -383,23 +395,15 @@ class TStringReader : public BaseReader {
      *
      * @return A tuple of offsets array and data array.
      */
-    py::object data() override {
-        // prepare data
-        py::array_t<uint8_t> data_array( m_data.size() );
-        auto ptr_data = data_array.mutable_data();
-        std::copy( m_data.begin(), m_data.end(), ptr_data );
-
-        // prepare offsets
-        py::array_t<uint32_t> offsets_array( m_offsets.size() );
-        auto ptr_offsets = offsets_array.mutable_data();
-        std::copy( m_offsets.begin(), m_offsets.end(), ptr_offsets );
-
+    const py::object data() const override final {
+        auto data_array    = make_np_array( m_data );
+        auto offsets_array = make_np_array( m_offsets );
         return py::make_tuple( offsets_array, data_array );
     }
 
   private:
-    std::vector<uint8_t> m_data;
-    std::vector<uint32_t> m_offsets;
+    SharedVector<uint8_t> m_data;
+    SharedVector<uint32_t> m_offsets;
 };
 
 /**
@@ -421,7 +425,7 @@ class TObjectReader : public BaseReader {
      *
      * @param bparser The BinaryParser object to read data from.
      */
-    void read( BinaryParser& bparser ) override {
+    void read( BinaryParser& bparser ) override final {
         bparser.read_fVersion();
         auto fUniqueID = bparser.read<uint32_t>();
         auto fBits     = bparser.read<uint32_t>();
@@ -432,7 +436,7 @@ class TObjectReader : public BaseReader {
      *
      * @return An empty tuple.
      */
-    py::object data() override { return py::none(); }
+    const py::object data() const override final { return py::none(); }
 
   private:
 };
@@ -451,7 +455,7 @@ class CArrayReader : public BaseReader {
         , m_flat_size( flat_size )
         , m_element_reader( element_reader ) {}
 
-    void read( BinaryParser& bparser ) override {
+    void read( BinaryParser& bparser ) override final {
         if ( m_is_obj )
         {
             bparser.read_fNBytes();
@@ -461,7 +465,7 @@ class CArrayReader : public BaseReader {
         for ( uint32_t i = 0; i < m_flat_size; i++ ) { m_element_reader->read( bparser ); }
     }
 
-    py::object data() override { return m_element_reader->data(); }
+    const py::object data() const override final { return m_element_reader->data(); }
 };
 
 /**
@@ -471,7 +475,7 @@ class CArrayReader : public BaseReader {
  * beginning.
  *
  */
-class BaseObjectReader : public BaseReader {
+class ObjectReader : public BaseReader {
   public:
     /**
      * @brief Constructs a BaseObjectReader object.
@@ -481,10 +485,10 @@ class BaseObjectReader : public BaseReader {
      * @param name Reader's name.
      * @param sub_readers The readers for the object's members.
      */
-    BaseObjectReader( std::string_view name, std::vector<shared_ptr<BaseReader>> sub_readers )
+    ObjectReader( std::string_view name, std::vector<shared_ptr<BaseReader>> sub_readers )
         : BaseReader( name ), m_sub_readers( sub_readers ) {}
 
-    void read( BinaryParser& bparser ) override {
+    void read( BinaryParser& bparser ) override final {
 #ifdef PRINT_DEBUG_INFO
         std::cout << "BaseObjectReader " << m_name << "::read(): " << std::endl;
         for ( int i = 0; i < 40; i++ ) std::cout << (int)bparser.get_cursor()[i] << " ";
@@ -509,7 +513,7 @@ class BaseObjectReader : public BaseReader {
      *
      * @return A tuple with the data of sub-readers.
      */
-    py::object data() override {
+    const py::object data() const override final {
         py::list res;
         for ( auto& parser : m_sub_readers ) res.append( parser->data() );
         return res;
@@ -517,32 +521,6 @@ class BaseObjectReader : public BaseReader {
 
   private:
     std::vector<shared_ptr<BaseReader>> m_sub_readers;
-};
-
-class ObjectHeaderReader : public BaseReader {
-  private:
-    std::vector<shared_ptr<BaseReader>> m_sub_readers;
-
-  public:
-    ObjectHeaderReader( std::string_view name,
-                        std::vector<shared_ptr<BaseReader>> sub_readers )
-        : BaseReader( name ), m_sub_readers( sub_readers ) {}
-
-    void read( BinaryParser& bparser ) override {
-        bparser.read_fNBytes();
-        auto fTag = bparser.read<int32_t>();
-        if ( fTag == -1 ) bparser.read_null_terminated_string();
-
-        bparser.read_fNBytes();
-        bparser.read_fVersion();
-        for ( auto& reader : m_sub_readers ) { reader->read( bparser ); }
-    }
-
-    py::object data() override {
-        py::list res;
-        for ( auto& parser : m_sub_readers ) res.append( parser->data() );
-        return res;
-    }
 };
 
 class EmptyReader : public BaseReader {
@@ -550,20 +528,22 @@ class EmptyReader : public BaseReader {
   public:
     EmptyReader( std::string_view name ) : BaseReader( name ) {}
 
-    void read( BinaryParser& bparser ) override {}
-    py::object data() override { return py::none(); }
+    void read( BinaryParser& bparser ) override final {}
+    const py::object data() const override final { return py::none(); }
 };
 
 class Bes3TObjArrayReader : public BaseReader {
   private:
     shared_ptr<BaseReader> m_element_reader;
-    std::vector<uint32_t> m_offsets;
+    SharedVector<uint32_t> m_offsets;
 
   public:
     Bes3TObjArrayReader( std::string_view name, shared_ptr<BaseReader> element_reader )
-        : BaseReader( name ), m_element_reader( element_reader ), m_offsets( { 0 } ) {}
+        : BaseReader( name )
+        , m_element_reader( element_reader )
+        , m_offsets( make_shared_vector<uint32_t>( 1, 0 ) ) {}
 
-    void read( BinaryParser& bparser ) override {
+    void read( BinaryParser& bparser ) override final {
         bparser.read_fNBytes();
         bparser.read_fVersion();
         bparser.read_fVersion();
@@ -574,17 +554,73 @@ class Bes3TObjArrayReader : public BaseReader {
         auto fSize = bparser.read<uint32_t>();
         bparser.read<uint32_t>(); // fLowerBound
 
-        m_offsets.push_back( m_offsets.back() + fSize );
-        for ( uint32_t i = 0; i < fSize; i++ ) { m_element_reader->read( bparser ); }
+        m_offsets->push_back( m_offsets->back() + fSize );
+        for ( uint32_t i = 0; i < fSize; i++ )
+        {
+            bparser.read_obj_header();
+            m_element_reader->read( bparser );
+        }
     }
 
-    py::object data() override {
-        py::array_t<uint32_t> offsets_array( m_offsets.size() );
-        auto ptr_offsets = offsets_array.mutable_data();
-        std::copy( m_offsets.begin(), m_offsets.end(), ptr_offsets );
-
+    const py::object data() const override final {
+        auto offsets_array      = make_np_array( m_offsets );
         py::object element_data = m_element_reader->data();
         return py::make_tuple( offsets_array, element_data );
+    }
+};
+
+template <typename T>
+class Bes3SymMatrixArrayReader : public BaseReader {
+  private:
+    SharedVector<T> m_data;
+    const uint32_t m_flat_size;
+    const uint32_t m_full_dim;
+
+  public:
+    Bes3SymMatrixArrayReader( std::string_view name, uint32_t flat_size, uint32_t full_dim )
+        : BaseReader( name )
+        , m_data( make_shared_vector<T>() )
+        , m_flat_size( flat_size )
+        , m_full_dim( full_dim ) {
+        for ( auto i = 0; i < full_dim; i++ )
+        {
+            for ( auto j = 0; j <= i; j++ )
+            {
+                auto idx = get_symetric_matrix_index( i, j );
+                if ( idx >= flat_size )
+                {
+                    throw std::runtime_error(
+                        "Invalid flat size: " + std::to_string( flat_size ) +
+                        ", full dim: " + std::to_string( full_dim ) +
+                        ", i: " + std::to_string( i ) + ", j: " + std::to_string( j ) );
+                }
+            }
+        }
+    }
+
+    const int get_symetric_matrix_index( int i, int j ) const {
+        return i < j ? j * ( j + 1 ) / 2 + i : i * ( i + 1 ) / 2 + j;
+    }
+
+    void read( BinaryParser& bparser ) override final {
+        // temporary flat array to hold the data
+        std::vector<T> flat_array( m_flat_size );
+        for ( int i = 0; i < m_flat_size; i++ ) flat_array[i] = bparser.read<T>();
+
+        // fill the m_data with the symetric matrix data
+        for ( int i = 0; i < m_full_dim; i++ )
+        {
+            for ( int j = 0; j < m_full_dim; j++ )
+            {
+                auto idx = get_symetric_matrix_index( i, j );
+                m_data->push_back( flat_array[idx] );
+            }
+        }
+    }
+
+    const py::object data() const override final {
+        auto data_array = make_np_array( m_data );
+        return data_array;
     }
 };
 
