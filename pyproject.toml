@@ -1,5 +1,5 @@
 [build-system]
-requires = ["scikit-build-core", "pybind11>=2.10.0"]
+requires = ["scikit-build-core", "pybind11>=2.10.0", "uproot-custom"]
 build-backend = "scikit_build_core.build"
 
 [project]
@@ -23,7 +23,7 @@ name = "pybes3"
 authors = [{ name = "Mingrun Li", email = "mrun_lee@foxmail.com" }]
 description = "Unofficial Python module for BES3"
 requires-python = ">=3.9"
-dependencies = ["uproot>=5.0", "awkward", "numba", "vector"]
+dependencies = ["uproot>=5.0", "awkward", "numba", "vector", "uproot-custom"]
 readme = "README.md"
 dynamic = ["version"]
 urls = { "Homepage" = "https://github.com/mrzimu/pybes3", "Documentation" = "https://pybes3.readthedocs.io/en/stable/" }
@@ -66,6 +66,3 @@ before-all = "uname -a"
 test-requires = "pytest"
 before-test = "pip install ."
 test-command = ["pytest {package}/tests"]
-
-# Build options
-build = ["cp*-manylinux_x86_64", "cp*-macosx_arm64", "cp*-win_amd64"]

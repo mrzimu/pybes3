@@ -5,7 +5,7 @@ if(CMAKE_VERSION VERSION_GREATER_EQUAL 3.27)
 endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 
 project(${SKBUILD_PROJECT_NAME}
     VERSION ${SKBUILD_PROJECT_VERSION}
@@ -14,5 +14,6 @@ project(${SKBUILD_PROJECT_NAME}
 
 set(PYBIND11_NEWPYTHON ON)
 find_package(pybind11 REQUIRED)
+find_package(uproot-custom REQUIRED)
 
 add_subdirectory(src/pybes3/besio/cpp)

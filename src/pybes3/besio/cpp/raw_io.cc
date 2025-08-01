@@ -71,14 +71,13 @@ void RawBinaryParser::read_event() {
     auto header_size = read();
 
     auto format_version = read();
-#ifdef SAFETY_PARSE
+
     if ( format_version != 0x3000000 )
     {
         throw std::runtime_error(
             "Invalid event format version: expecting 0x3000000 but get " +
             std::to_string( format_version ) );
     }
-#endif
 
     skip(); // source_id
 
