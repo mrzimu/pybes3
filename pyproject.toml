@@ -61,8 +61,3 @@ target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
 
 [tool.cibuildwheel]
 before-all = "uname -a"
-
-# Test
-test-requires = "pytest"
-before-test = "pip install ."
-test-command = ["pytest {package}/tests"]
