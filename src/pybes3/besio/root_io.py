@@ -16,7 +16,7 @@ from uproot_custom import (
     BaseReader,
     BasicTypeReader,
     EmptyReader,
-    ObjectReader,
+    BaseObjectReader,
     gen_tree_config,
     get_cpp_reader,
     reconstruct_array,
@@ -83,7 +83,8 @@ class Bes3TObjArrayReader(BaseReader):
         top_type_name: str,
         cls_streamer_info: dict,
         all_streamer_info: dict,
-        item_path: str = "",
+        item_path: str,
+        called_from_top: bool,
     ):
         if top_type_name != "TObjArray":
             return None
@@ -117,7 +118,7 @@ class Bes3TObjArrayReader(BaseReader):
             "reader": "MyTObjArrayReader",
             "name": cls_streamer_info["fName"],
             "element_reader": {
-                "reader": ObjectReader,
+                "reader": BaseObjectReader,
                 "name": obj_typename,
                 "sub_readers": sub_reader_config,
             },
@@ -186,7 +187,8 @@ class Bes3SymMatrixArrayReader(BaseReader):
         top_type_name,
         cls_streamer_info,
         all_streamer_info,
-        item_path="",
+        item_path,
+        called_from_top: bool,
     ):
         if item_path not in Bes3SymMatrixArrayReader.target_items:
             return None
