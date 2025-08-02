@@ -22,7 +22,7 @@ optional-dependencies = { "all" = [
 name = "pybes3"
 authors = [{ name = "Mingrun Li", email = "mrun_lee@foxmail.com" }]
 description = "Unofficial Python module for BES3"
-requires-python = ">=3.9"
+requires-python = ">=3.9, <3.14"
 dependencies = ["uproot>=5.0", "awkward", "numba", "vector", "uproot-custom"]
 readme = "README.md"
 dynamic = ["version"]
@@ -66,3 +66,5 @@ before-all = "uname -a"
 test-requires = "pytest"
 before-test = "pip install ."
 test-command = ["pytest {package}/tests"]
+
+build = ["cp*-manylinux_x86_64", "cp*-macosx_arm64", "cp*-win_amd64"]
