@@ -1,3 +1,8 @@
+## v0.3.6
+
+* Upgrade `cibuildwheel` to v3.1.3.
+* Use `uproot-custom` as besio C++ reading backend.
+
 ## v0.3.5
 
 * Optimize `besio` performance:
