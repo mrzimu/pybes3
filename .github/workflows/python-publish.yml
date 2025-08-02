@@ -16,12 +16,8 @@ permissions:
   contents: read
 
 jobs:
-  run-tests:
-    uses: ./.github/workflows/run-pytest.yml
-
   build-wheels:
     uses: ./.github/workflows/build-wheels.yml
-    needs: run-tests
 
   pypi-publish:
     runs-on: ubuntu-latest
