@@ -8,10 +8,11 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+  workflow_call:
 
 jobs:
   test-package:
-    name: Test for py-${{ matrix.python-version }} on ${{ matrix.os }}
+    name: Test for ${{ matrix.os }}-${{ matrix.python-version }}
     runs-on: ${{ matrix.os }}
     strategy:
         matrix:
@@ -33,6 +34,3 @@ jobs:
 
       - name: Run tests
         run: python3 -m pytest
-
-      - name: Build documentation
-        run: python3 -m mkdocs build
