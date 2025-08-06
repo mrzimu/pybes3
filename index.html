@@ -908,7 +908,7 @@
 <h2 id="performance">Performance</h2>
 <p><code>pybes3</code> is designed to be fast and efficient. It uses <code>numba</code> to accelerate some of the operations, such as helix operations, digi identifier conversion, etc. When <code>numba</code> is not available, <code>pybes3</code> will use C++ to accelerate the operations.</p>
 <h3 id="data-reading">Data reading</h3>
-<p>A simple benchmark is provided to compare the reading performance <code>pybes3</code> and <code>BOSS8</code>:</p>
+<p>A simple benchmark is provided to compare the performance of <code>pybes3</code> and <code>BOSS8</code> in reading <code>dst</code> files:</p>
 <ul>
 <li>
 <p>For <code>pybes3</code>, we directly read out the <code>Event</code> tree:</p>
@@ -923,7 +923,10 @@
 </code></pre></div>
 </li>
 <li>
-<p>For <code>BOSS8</code>, a pure loop on all events is performed:</p>
+<p>For <code>BOSS8</code>, since when reading reconstruction data, it will load a <code>RecMakerAlg</code> algorithm for each event, which slows down the reading performance significantly (4~5 times slower than pure reading), we test 2 cases:</p>
+<ul>
+<li>
+<p>A loop on all events with default job-options (with <code>RecMakerAlg</code> algorithm):</p>
 <div class="highlight"><pre><span></span><code>#include &quot;$ROOTIOROOT/share/jobOptions_ReadRec.txt&quot;
 #include &quot;$OFFLINEEVENTLOOPMGRROOT/share/OfflineEventLoopMgr_Option.txt&quot;
 
@@ -932,13 +935,23 @@ ApplicationMgr.EvtMax = ...; // number of events to read
 MessageSvc.OutputLevel = 7; // suppress messages
 </code></pre></div>
 </li>
+<li>
+<p>A loop on all events without loading <code>RecMakerAlg</code> algorithm. This is similar to reading <code>rtraw</code> files and is the closest case to raw <code>ROOT</code> reading:</p>
+<div class="highlight"><pre><span></span><code>ApplicationMgr.ExtSvc += {&quot;EvtPersistencySvc/EventPersistencySvc&quot;};
+ApplicationMgr.ExtSvc +={&quot;RootEvtSelector/EventSelector&quot;,&quot;RootCnvSvc/EventCnvSvc&quot;};
+EventPersistencySvc.CnvServices += {&quot;EventCnvSvc&quot;};
+#include &quot;$OFFLINEEVENTLOOPMGRROOT/share/OfflineEventLoopMgr_Option.txt&quot;
+
+EventCnvSvc.digiRootInputFile = { ... }; // list of ROOT files to read
+ApplicationMgr.EvtMax = ...; // number of events to read
+MessageSvc.OutputLevel = 7; // suppress messages
+</code></pre></div>
+</li>
 </ul>
-<p>The machine used for the benchmark is a <code>Intel i7-12700</code> with <code>Great Wall GW7000 4TB</code> SSD. The operating system is <code>AlmaLinuxOS9</code> on <code>WSL2</code>.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>We use SSD to avoid the disk I/O bottleneck here. But on IHEP cluster, the disk I/O may be the bottleneck, leaving no significant difference between <code>pybes3</code> and <code>BOSS8</code>.</p>
-</div>
-<p>The number of events is set to <code>1000</code>, <code>5000</code>, <code>10000</code>, <code>50000</code>, <code>100000</code>, <code>500000</code>, and <code>1000000</code>. The results are shown below:</p>
+</li>
+</ul>
+<p>The machine used for the benchmark is a <code>Intel i7-12700</code> with <code>Great Wall GW7000 4TB</code> SSD. The operating system is <code>AlmaLinuxOS9</code> on <code>WSL2</code>. The number of events is set to <code>1000</code>, <code>5000</code>, <code>10000</code>, <code>50000</code>, <code>100000</code>, <code>500000</code>, and <code>1000000</code>.</p>
+<p>The results are shown below:</p>
 <p><img alt="Dummy Reading Performance" src="image/io-benchmarking.png" /></p>
 <p>The fitting results with a linear function is:</p>
 <div class="center-table">
@@ -952,19 +965,25 @@ MessageSvc.OutputLevel = 7; // suppress messages
 </thead>
 <tbody>
 <tr>
-<td style="text-align: center;"><code>pybes3</code></td>
-<td style="text-align: center;">1.445</td>
-<td style="text-align: center;">0.426</td>
-</tr>
-<tr>
-<td style="text-align: center;"><code>BOSS8</code></td>
+<td style="text-align: center;">BOSS8 (with <code>RecMakerAlg</code>)</td>
 <td style="text-align: center;">0.615</td>
 <td style="text-align: center;">2.766</td>
+</tr>
+<tr>
+<td style="text-align: center;">BOSS8 (no <code>RecMakerAlg</code>)</td>
+<td style="text-align: center;">0.451</td>
+<td style="text-align: center;">0.338</td>
+</tr>
+<tr>
+<td style="text-align: center;">pybes3</td>
+<td style="text-align: center;">1.135</td>
+<td style="text-align: center;">0.326</td>
 </tr>
 </tbody>
 </table>
 </div>
-<p>The result shows that <code>pybes3</code> can read <code>6~7x</code> faster than <code>BOSS8</code> in most of the cases. It is slower than <code>BOSS8</code> when reading small number of events (~1000), since the module importing and initialization time is counted in the benchmark.</p>
+<p>The result shows that <code>pybes3</code> is also comparable to <code>BOSS8</code> when <code>RecMakerAlg</code> is not loaded, which means that the reading performance of <code>pybes3</code> is close to the reading performance of <code>ROOT</code> itself. <code>pybes3</code> is several times faster than <code>BOSS8</code> with default settings, and slower when reading small number of events (~1000), since the module importing and initialization time is counted in the benchmark.</p>
+<p>Since users may have to use the default settings of <code>BOSS</code> to read reconstruction data, <code>pybes3</code> is still several times faster in this case.</p>
 
 
 
