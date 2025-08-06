@@ -71,7 +71,7 @@
 
 ### Data reading
 
-A simple benchmark is provided to compare the reading performance `pybes3` and `BOSS8`:
+A simple benchmark is provided to compare the performance of `pybes3` and `BOSS8` in reading `dst` files:
 
 - For `pybes3`, we directly read out the `Event` tree:
 
@@ -86,35 +86,48 @@ A simple benchmark is provided to compare the reading performance `pybes3` and `
     data_array = uproot.concatenate({f: "Event" for f in files}, entry_stop=n_evt)
     ```
 
+- For `BOSS8`, since when reading reconstruction data, it will load a `RecMakerAlg` algorithm for each event, which slows down the reading performance significantly (4~5 times slower than pure reading), we test 2 cases:
 
-- For `BOSS8`, a pure loop on all events is performed:
+    - A loop on all events with default job-options (with `RecMakerAlg` algorithm):
 
-    ```
-    #include "$ROOTIOROOT/share/jobOptions_ReadRec.txt"
-    #include "$OFFLINEEVENTLOOPMGRROOT/share/OfflineEventLoopMgr_Option.txt"
+        ```
+        #include "$ROOTIOROOT/share/jobOptions_ReadRec.txt"
+        #include "$OFFLINEEVENTLOOPMGRROOT/share/OfflineEventLoopMgr_Option.txt"
 
-    EventCnvSvc.digiRootInputFile = { ... }; // list of ROOT files to read
-    ApplicationMgr.EvtMax = ...; // number of events to read
-    MessageSvc.OutputLevel = 7; // suppress messages
-    ```
+        EventCnvSvc.digiRootInputFile = { ... }; // list of ROOT files to read
+        ApplicationMgr.EvtMax = ...; // number of events to read
+        MessageSvc.OutputLevel = 7; // suppress messages
+        ```
 
-The machine used for the benchmark is a `Intel i7-12700` with `Great Wall GW7000 4TB` SSD. The operating system is `AlmaLinuxOS9` on `WSL2`.
+    - A loop on all events without loading `RecMakerAlg` algorithm. This is similar to reading `rtraw` files and is the closest case to raw `ROOT` reading:
 
-!!! note
-    We use SSD to avoid the disk I/O bottleneck here. But on IHEP cluster, the disk I/O may be the bottleneck, leaving no significant difference between `pybes3` and `BOSS8`.
+        ```
+        ApplicationMgr.ExtSvc += {"EvtPersistencySvc/EventPersistencySvc"};
+        ApplicationMgr.ExtSvc +={"RootEvtSelector/EventSelector","RootCnvSvc/EventCnvSvc"};
+        EventPersistencySvc.CnvServices += {"EventCnvSvc"};
+        #include "$OFFLINEEVENTLOOPMGRROOT/share/OfflineEventLoopMgr_Option.txt"
 
-The number of events is set to `1000`, `5000`, `10000`, `50000`, `100000`, `500000`, and `1000000`. The results are shown below:
+        EventCnvSvc.digiRootInputFile = { ... }; // list of ROOT files to read
+        ApplicationMgr.EvtMax = ...; // number of events to read
+        MessageSvc.OutputLevel = 7; // suppress messages
+        ```
+
+The machine used for the benchmark is a `Intel i7-12700` with `Great Wall GW7000 4TB` SSD. The operating system is `AlmaLinuxOS9` on `WSL2`. The number of events is set to `1000`, `5000`, `10000`, `50000`, `100000`, `500000`, and `1000000`.
+
+The results are shown below:
 
 ![Dummy Reading Performance](image/io-benchmarking.png)
 
 The fitting results with a linear function is:
 
-
 <div class="center-table" markdown>
-|          | Initialization time (s) | Slope (s/10k-event) |
-| :------: | :---------------------: | :-----------------: |
-| `pybes3` | 1.445                   | 0.426               |
-| `BOSS8`  | 0.615                   | 2.766               |
+|                            | Initialization time (s) | Slope (s/10k-event) |
+| :------------------------: | :---------------------: | :-----------------: |
+| BOSS8 (with `RecMakerAlg`) | 0.615                   | 2.766               |
+| BOSS8 (no `RecMakerAlg`)   | 0.451                   | 0.338               |
+| pybes3                     | 1.135                   | 0.326               |
 </div>
 
-The result shows that `pybes3` can read `6~7x` faster than `BOSS8` in most of the cases. It is slower than `BOSS8` when reading small number of events (~1000), since the module importing and initialization time is counted in the benchmark.
+The result shows that `pybes3` is also comparable to `BOSS8` when `RecMakerAlg` is not loaded, which means that the reading performance of `pybes3` is close to the reading performance of `ROOT` itself. `pybes3` is several times faster than `BOSS8` with default settings, and slower when reading small number of events (~1000), since the module importing and initialization time is counted in the benchmark.
+
+Since users may have to use the default settings of `BOSS` to read reconstruction data, `pybes3` is still several times faster in this case.
