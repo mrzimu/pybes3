@@ -1,3 +1,11 @@
+## v0.3.8
+
+* Adapt to `uproot-custom` v1.1.3.
+
+## v0.3.7
+
+* Adapt to `uproot-custom` v1.1.2. 
+
 ## v0.3.6
 
 * Upgrade `cibuildwheel` to v3.1.3.
