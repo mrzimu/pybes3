@@ -9,6 +9,7 @@ jobs:
         uses: ./.github/workflows/run-pytest.yml
 
     build-wheels:
+        needs: run-pytest
         runs-on: ${{ matrix.os }}
         name: Build wheels on ${{ matrix.os }}
         strategy:
