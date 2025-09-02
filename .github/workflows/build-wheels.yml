@@ -5,6 +5,9 @@ on:
     workflow_call:
 
 jobs:
+    run-pytest:
+        uses: ./.github/workflows/run-pytest.yml
+
     build-wheels:
         runs-on: ${{ matrix.os }}
         name: Build wheels on ${{ matrix.os }}
