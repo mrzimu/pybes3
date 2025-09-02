@@ -47,6 +47,7 @@ class Bes3TObjArrayReader(BaseReader):
         "/Event:TDstEvent/m_mdcDedxCol": "TMdcDedx",
         "/Event:TDstEvent/m_extTrackCol": "TExtTrack",
         "/Event:TDstEvent/m_mdcKalTrackCol": "TMdcKalTrack",
+        "/Event:TRecEvent/m_recCgemClusterCol": "TRecCgemCluster",
         "/Event:TRecEvent/m_recMdcTrackCol": "TRecMdcTrack",
         "/Event:TRecEvent/m_recMdcHitCol": "TRecMdcHit",
         "/Event:TRecEvent/m_recEmcHitCol": "TRecEmcHit",

@@ -1,3 +1,7 @@
+## v0.3.9
+
+* Fix: Add `/Event:TRecEvent/m_recCgemClusterCol` to `besio` supported branches.
+
 ## v0.3.8
 
 * Adapt to `uproot-custom` v1.2.
