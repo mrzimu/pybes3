@@ -1,7 +1,3 @@
-import re
-from enum import Enum
-from typing import Literal, Union
-
 import awkward as ak
 import awkward.contents
 import awkward.index
@@ -26,53 +22,55 @@ from uproot_custom import (
 from . import besio_cpp as bcpp
 
 
+bes3_branch2types = {
+    "/Event:TMcEvent/m_mdcMcHitCol": "TMdcMc",
+    "/Event:TMcEvent/m_cgemMcHitCol": "TCgemMc",
+    "/Event:TMcEvent/m_emcMcHitCol": "TEmcMc",
+    "/Event:TMcEvent/m_tofMcHitCol": "TTofMc",
+    "/Event:TMcEvent/m_mucMcHitCol": "TMucMc",
+    "/Event:TMcEvent/m_mcParticleCol": "TMcParticle",
+    "/Event:TDigiEvent/m_mdcDigiCol": "TMdcDigi",
+    "/Event:TDigiEvent/m_cgemDigiCol": "TCgemDigi",
+    "/Event:TDigiEvent/m_emcDigiCol": "TEmcDigi",
+    "/Event:TDigiEvent/m_tofDigiCol": "TTofDigi",
+    "/Event:TDigiEvent/m_mucDigiCol": "TMucDigi",
+    "/Event:TDigiEvent/m_lumiDigiCol": "TLumiDigi",
+    "/Event:TDstEvent/m_mdcTrackCol": "TMdcTrack",
+    "/Event:TDstEvent/m_emcTrackCol": "TEmcTrack",
+    "/Event:TDstEvent/m_tofTrackCol": "TTofTrack",
+    "/Event:TDstEvent/m_mucTrackCol": "TMucTrack",
+    "/Event:TDstEvent/m_mdcDedxCol": "TMdcDedx",
+    "/Event:TDstEvent/m_extTrackCol": "TExtTrack",
+    "/Event:TDstEvent/m_mdcKalTrackCol": "TMdcKalTrack",
+    # "/Event:TRecEvent/m_recCgemClusterCol": "TRecCgemCluster", # TODO: wait for update of linkdef.h
+    "/Event:TRecEvent/m_recMdcTrackCol": "TRecMdcTrack",
+    "/Event:TRecEvent/m_recMdcHitCol": "TRecMdcHit",
+    "/Event:TRecEvent/m_recEmcHitCol": "TRecEmcHit",
+    "/Event:TRecEvent/m_recEmcClusterCol": "TRecEmcCluster",
+    "/Event:TRecEvent/m_recEmcShowerCol": "TRecEmcShower",
+    "/Event:TRecEvent/m_recTofTrackCol": "TRecTofTrack",
+    "/Event:TRecEvent/m_recMucTrackCol": "TRecMucTrack",
+    "/Event:TRecEvent/m_recMdcDedxCol": "TRecMdcDedx",
+    "/Event:TRecEvent/m_recMdcDedxHitCol": "TRecMdcDedxHit",
+    "/Event:TRecEvent/m_recExtTrackCol": "TRecExtTrack",
+    "/Event:TRecEvent/m_recMdcKalTrackCol": "TRecMdcKalTrack",
+    "/Event:TRecEvent/m_recMdcKalHelixSegCol": "TRecMdcKalHelixSeg",
+    "/Event:TRecEvent/m_recEvTimeCol": "TRecEvTime",
+    "/Event:TRecEvent/m_recZddChannelCol": "TRecZddChannel",
+    "/Event:TEvtRecObject/m_evtRecTrackCol": "TEvtRecTrack",
+    "/Event:TEvtRecObject/m_evtRecVeeVertexCol": "TEvtRecVeeVertex",
+    "/Event:TEvtRecObject/m_evtRecPi0Col": "TEvtRecPi0",
+    "/Event:TEvtRecObject/m_evtRecEtaToGGCol": "TEvtRecEtaToGG",
+    "/Event:TEvtRecObject/m_evtRecDTagCol": "TEvtRecDTag",
+    "/Event:THltEvent/m_hltRawCol": "THltRaw",
+    "/Event:EventNavigator/m_mcMdcMcHits": "map<int,int>",
+    "/Event:EventNavigator/m_mcMdcTracks": "map<int,int>",
+    "/Event:EventNavigator/m_mcEmcMcHits": "map<int,int>",
+    "/Event:EventNavigator/m_mcEmcRecShowers": "map<int,int>",
+}
+
+
 class Bes3TObjArrayReader(BaseReader):
-    bes3_branch2types = {
-        "/Event:TMcEvent/m_mdcMcHitCol": "TMdcMc",
-        "/Event:TMcEvent/m_cgemMcHitCol": "TCgemMc",
-        "/Event:TMcEvent/m_emcMcHitCol": "TEmcMc",
-        "/Event:TMcEvent/m_tofMcHitCol": "TTofMc",
-        "/Event:TMcEvent/m_mucMcHitCol": "TMucMc",
-        "/Event:TMcEvent/m_mcParticleCol": "TMcParticle",
-        "/Event:TDigiEvent/m_mdcDigiCol": "TMdcDigi",
-        "/Event:TDigiEvent/m_cgemDigiCol": "TCgemDigi",
-        "/Event:TDigiEvent/m_emcDigiCol": "TEmcDigi",
-        "/Event:TDigiEvent/m_tofDigiCol": "TTofDigi",
-        "/Event:TDigiEvent/m_mucDigiCol": "TMucDigi",
-        "/Event:TDigiEvent/m_lumiDigiCol": "TLumiDigi",
-        "/Event:TDstEvent/m_mdcTrackCol": "TMdcTrack",
-        "/Event:TDstEvent/m_emcTrackCol": "TEmcTrack",
-        "/Event:TDstEvent/m_tofTrackCol": "TTofTrack",
-        "/Event:TDstEvent/m_mucTrackCol": "TMucTrack",
-        "/Event:TDstEvent/m_mdcDedxCol": "TMdcDedx",
-        "/Event:TDstEvent/m_extTrackCol": "TExtTrack",
-        "/Event:TDstEvent/m_mdcKalTrackCol": "TMdcKalTrack",
-        "/Event:TRecEvent/m_recCgemClusterCol": "TRecCgemCluster",
-        "/Event:TRecEvent/m_recMdcTrackCol": "TRecMdcTrack",
-        "/Event:TRecEvent/m_recMdcHitCol": "TRecMdcHit",
-        "/Event:TRecEvent/m_recEmcHitCol": "TRecEmcHit",
-        "/Event:TRecEvent/m_recEmcClusterCol": "TRecEmcCluster",
-        "/Event:TRecEvent/m_recEmcShowerCol": "TRecEmcShower",
-        "/Event:TRecEvent/m_recTofTrackCol": "TRecTofTrack",
-        "/Event:TRecEvent/m_recMucTrackCol": "TRecMucTrack",
-        "/Event:TRecEvent/m_recMdcDedxCol": "TRecMdcDedx",
-        "/Event:TRecEvent/m_recMdcDedxHitCol": "TRecMdcDedxHit",
-        "/Event:TRecEvent/m_recExtTrackCol": "TRecExtTrack",
-        "/Event:TRecEvent/m_recMdcKalTrackCol": "TRecMdcKalTrack",
-        "/Event:TRecEvent/m_recMdcKalHelixSegCol": "TRecMdcKalHelixSeg",
-        "/Event:TRecEvent/m_recEvTimeCol": "TRecEvTime",
-        "/Event:TRecEvent/m_recZddChannelCol": "TRecZddChannel",
-        "/Event:TEvtRecObject/m_evtRecTrackCol": "TEvtRecTrack",
-        "/Event:TEvtRecObject/m_evtRecVeeVertexCol": "TEvtRecVeeVertex",
-        "/Event:TEvtRecObject/m_evtRecPi0Col": "TEvtRecPi0",
-        "/Event:TEvtRecObject/m_evtRecEtaToGGCol": "TEvtRecEtaToGG",
-        "/Event:TEvtRecObject/m_evtRecDTagCol": "TEvtRecDTag",
-        "/Event:THltEvent/m_hltRawCol": "THltRaw",
-        "/Event:EventNavigator/m_mcMdcMcHits": "map<int,int>",
-        "/Event:EventNavigator/m_mcMdcTracks": "map<int,int>",
-        "/Event:EventNavigator/m_mcEmcMcHits": "map<int,int>",
-        "/Event:EventNavigator/m_mcEmcRecShowers": "map<int,int>",
-    }
 
     @classmethod
     def priority(cls):
@@ -91,7 +89,7 @@ class Bes3TObjArrayReader(BaseReader):
             return None
 
         item_path = item_path.replace(".TObjArray*", "")
-        obj_typename = cls.bes3_branch2types.get(item_path)
+        obj_typename = bes3_branch2types.get(item_path)
         if obj_typename is None:
             return None
 
@@ -261,6 +259,10 @@ def process_digi_subbranch(org_arr: ak.Array) -> ak.Array:
     Raises:
         AssertionError: If `TRawData` is not found in the input array fields.
     """
+    if not org_arr.fields:
+        assert ak.count(org_arr) == 0, "Input array is empty but has no fields"
+        return org_arr
+
     assert "TRawData" in org_arr.fields, "TRawData not found in the input array"
 
     fields = {}
@@ -293,7 +295,11 @@ class Bes3Interpretation(AsCustom):
     Custom interpretation for Bes3 data.
     """
 
-    target_branches: set[str] = set(Bes3TObjArrayReader.bes3_branch2types.keys())
+    target_branches: set[str] = set(bes3_branch2types.keys())
+
+    def __init__(self, branch, context, simplify):
+        super().__init__(branch, context, simplify)
+        self._typename = bes3_branch2types[regularize_object_path(branch.object_path)]
 
     def basket_array(
         self,
@@ -322,11 +328,23 @@ class Bes3Interpretation(AsCustom):
         full_branch_path = regularize_object_path(branch.object_path)
         return preprocess_subbranch(full_branch_path, raw_ak_arr)
 
+    @property
+    def typename(self) -> str:
+        """
+        The typename of the interpretation.
+        """
+        return self._typename
+
+    def __repr__(self) -> str:
+        """
+        The string representation of the interpretation.
+        """
+        return f"AsBes3(TObjArray[{self.typename}])"
+
 
 ##########################################################################################
 #                                       Wrappers
 ##########################################################################################
-_is_TBranchElement_branches_wrapped = False
 _is_uproot_interpretation_of_wrapped = False
 
 _uproot_interpretation_of = uproot.interpretation.identify.interpretation_of
@@ -351,49 +369,8 @@ def wrap_uproot_interpretation():
         uproot.interpretation.identify.interpretation_of = bes_interpretation_of
 
 
-def wrap_uproot_TBranchElement_branches():
-    def branches(self):
-
-        if self.name not in {
-            "TEvtHeader",
-            "TMcEvent",
-            "TDigiEvent",
-            "TDstEvent",
-            "TRecEvent",
-            "TEvtRecObject",
-            "THltEvent",
-        }:
-            return self.member("fBranches")
-        else:
-
-            res = []
-            for br in self.member("fBranches"):
-                if br.name == "TObject":
-                    continue
-
-                full_path = regularize_object_path(br.object_path)
-                if full_path not in Bes3TObjArrayReader.bes3_branch2types:
-                    res.append(br)
-                    continue
-
-                class_name = Bes3TObjArrayReader.bes3_branch2types[full_path]
-                if class_name in self.file.streamers:
-                    res.append(br)
-                else:
-                    continue
-            return res
-
-    global _is_TBranchElement_branches_wrapped
-    if not _is_TBranchElement_branches_wrapped:
-        _is_TBranchElement_branches_wrapped = True
-        uproot.models.TBranch.Model_TBranchElement.branches = property(branches)
-        for v in uproot.models.TBranch.Model_TBranchElement.known_versions.values():
-            v.branches = property(branches)
-
-
 def wrap_uproot():
     """
     Wraps the uproot functions to use the BES interpretation.
     """
     wrap_uproot_interpretation()
-    wrap_uproot_TBranchElement_branches()
