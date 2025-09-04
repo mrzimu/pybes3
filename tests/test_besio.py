@@ -1,6 +1,5 @@
-import json
 from pathlib import Path
-from typing import Literal, NamedTuple, Optional, Union
+from typing import Literal, NamedTuple, Optional
 
 import awkward as ak
 import numpy as np
@@ -119,10 +118,10 @@ def compare_ak(arr1: ak.Array, arr2: ak.Array, item_path: str = "") -> list[Comp
 
 def test_uproot_branches():
     f_full = uproot.open(data_dir / "test_full_mc_evt_1.rtraw")
-    assert len(f_full["Event/TMcEvent"].branches) == 5
+    assert len(f_full["Event/TMcEvent"].branches) == 6
 
     f_only_mc_particles = uproot.open(data_dir / "test_only_mc_particles.rtraw")
-    assert len(f_only_mc_particles["Event/TMcEvent"].branches) == 1
+    assert len(f_only_mc_particles["Event/TMcEvent"].branches) == 6
 
 
 def test_mc_full():
@@ -165,7 +164,16 @@ def test_cgem_rtraw():
     f_rtraw = uproot.open(data_dir / "test_cgem.rtraw")
     truth_arr = ak.from_parquet(data_dir / "test_cgem.rtraw.parquet")
     arr = f_rtraw["Event"].arrays()
-    assert len(arr) == 200
+    assert len(arr) == 10
+    comp_res = compare_ak(arr, truth_arr)
+    assert all(r.is_same for r in comp_res)
+
+
+def test_cgem_dst():
+    f_dst = uproot.open(data_dir / "test_cgem.dst")
+    truth_arr = ak.from_parquet(data_dir / "test_cgem.dst.parquet")
+    arr = f_dst["Event"].arrays()
+    assert len(arr) == 10
     comp_res = compare_ak(arr, truth_arr)
     assert all(r.is_same for r in comp_res)
 
@@ -190,10 +198,10 @@ def test_uproot_concatenate():
 
 def test_bes_open():
     f = besio.open(data_dir / "test_full_mc_evt_1.rtraw")
-    assert len(f["Event/TMcEvent"].branches) == 5
+    assert len(f["Event/TMcEvent"].branches) == 6
 
     f = besio.open(data_dir / "test_only_mc_particles.rtraw")
-    assert len(f["Event/TMcEvent"].branches) == 1
+    assert len(f["Event/TMcEvent"].branches) == 6
 
 
 def test_bes_concatenate():

@@ -1,3 +1,7 @@
+## v0.3.9
+
+* Fix `besio` to adapt to changes in `uproot`: `https://github.com/scikit-hep/uproot5/pull/1448`.
+
 ## v0.3.8
 
 * Adapt to `uproot-custom` v1.2.
