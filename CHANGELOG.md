@@ -1,3 +1,7 @@
+## v0.3.10
+
+* Use `ak.zip` in `preprocess_digi_subbranch` to improve `awkward` array structure.
+
 ## v0.3.9
 
 * Fix `besio` to adapt to changes in `uproot`: `https://github.com/scikit-hep/uproot5/pull/1448`.
