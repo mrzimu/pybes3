@@ -273,7 +273,7 @@ def process_digi_subbranch(org_arr: ak.Array) -> ak.Array:
         else:
             fields[field_name] = org_arr[field_name]
 
-    return ak.Array(fields)
+    return ak.zip(fields)
 
 
 #############################################
