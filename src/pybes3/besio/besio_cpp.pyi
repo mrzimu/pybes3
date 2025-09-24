@@ -1,7 +1,7 @@
 from typing import Any, Optional
 import numpy as np
 from numpy.typing import NDArray
-from uproot_custom._cpp import IElementReader
+from uproot_custom.cpp import IElementReader
 
 class Bes3TObjArrayReader(IElementReader):
     def __init__(
@@ -19,6 +19,10 @@ class Bes3SymMatrixArrayReader(IElementReader):
         full_dim: int,
     ): ...
     def data(self) -> NDArray[np.float64]: ...
+
+class Bes3CgemClusterColReader(IElementReader):
+    def __init__(self, name: str): ...
+    def data(self) -> dict[str, NDArray]: ...
 
 def read_data(
     data: NDArray[np.uint8],

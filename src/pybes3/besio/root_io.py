@@ -42,7 +42,7 @@ bes3_branch2types = {
     "/Event:TDstEvent/m_mdcDedxCol": "TMdcDedx",
     "/Event:TDstEvent/m_extTrackCol": "TExtTrack",
     "/Event:TDstEvent/m_mdcKalTrackCol": "TMdcKalTrack",
-    # "/Event:TRecEvent/m_recCgemClusterCol": "TRecCgemCluster", # TODO: wait for update of linkdef.h
+    "/Event:TRecEvent/m_recCgemClusterCol": "TRecCgemCluster",
     "/Event:TRecEvent/m_recMdcTrackCol": "TRecMdcTrack",
     "/Event:TRecEvent/m_recMdcHitCol": "TRecMdcHit",
     "/Event:TRecEvent/m_recEmcHitCol": "TRecEmcHit",
@@ -71,7 +71,6 @@ bes3_branch2types = {
 
 
 class Bes3TObjArrayReader(BaseReader):
-
     @classmethod
     def priority(cls):
         return 50
@@ -95,7 +94,7 @@ class Bes3TObjArrayReader(BaseReader):
 
         if obj_typename not in all_streamer_info:
             return {
-                "reader": "MyTObjArrayReader",
+                "reader": cls,
                 "name": cls_streamer_info["fName"],
                 "element_reader": {
                     "reader": EmptyReader,
@@ -114,7 +113,7 @@ class Bes3TObjArrayReader(BaseReader):
             )
 
         return {
-            "reader": "MyTObjArrayReader",
+            "reader": cls,
             "name": cls_streamer_info["fName"],
             "element_reader": {
                 "reader": BaseObjectReader,
@@ -123,9 +122,9 @@ class Bes3TObjArrayReader(BaseReader):
             },
         }
 
-    @staticmethod
-    def get_cpp_reader(reader_config: dict):
-        if reader_config["reader"] != "MyTObjArrayReader":
+    @classmethod
+    def get_cpp_reader(cls, reader_config: dict):
+        if reader_config["reader"] != cls:
             return None
 
         element_reader_config = reader_config["element_reader"]
@@ -133,9 +132,9 @@ class Bes3TObjArrayReader(BaseReader):
 
         return bcpp.Bes3TObjArrayReader(reader_config["name"], element_reader)
 
-    @staticmethod
-    def reconstruct_array(raw_data, reader_config: dict):
-        if reader_config["reader"] != "MyTObjArrayReader":
+    @classmethod
+    def reconstruct_array(cls, raw_data, reader_config: dict):
+        if reader_config["reader"] != cls:
             return None
 
         offsets, element_raw_data = raw_data
@@ -148,6 +147,65 @@ class Bes3TObjArrayReader(BaseReader):
         return awkward.contents.ListOffsetArray(
             awkward.index.Index64(offsets),
             element_data,
+        )
+
+
+class Bes3CgemClusterColReader(BaseReader):
+    @classmethod
+    def priority(cls):
+        return 55
+
+    @classmethod
+    def gen_tree_config(
+        cls,
+        top_type_name,
+        cls_streamer_info,
+        all_streamer_info,
+        item_path,
+        called_from_top: bool,
+    ):
+        item_path = item_path.replace(".TObjArray*", "")
+        if item_path != "/Event:TRecEvent/m_recCgemClusterCol":
+            return None
+
+        if all_streamer_info.get("TCgemCluster") is not None:
+            return None  # Let Bes3TObjArrayReader handle it
+
+        return {
+            "reader": cls,
+            "name": cls_streamer_info["fName"],
+        }
+
+    @classmethod
+    def get_cpp_reader(cls, tree_config):
+        if tree_config["reader"] != cls:
+            return None
+
+        return bcpp.Bes3CgemClusterColReader(tree_config["name"])
+
+    @classmethod
+    def reconstruct_array(cls, raw_data, tree_config):
+        if tree_config["reader"] != cls:
+            return None
+
+        offsets = raw_data.pop("offsets")
+
+        record_contents = []
+        for k, v in raw_data.items():
+            tmp_content = awkward.contents.NumpyArray(v)
+
+            if k == "m_clusterFlag":
+                tmp_content = awkward.contents.RegularArray(tmp_content, 2)
+
+            if k == "m_stripID":
+                tmp_content = awkward.contents.RegularArray(tmp_content, 2)
+                tmp_content = awkward.contents.RegularArray(tmp_content, 2)
+
+            record_contents.append(tmp_content)
+
+        return awkward.contents.ListOffsetArray(
+            awkward.index.Index64(offsets),
+            awkward.contents.RecordArray(record_contents, list(raw_data.keys())),
         )
 
 
@@ -234,6 +292,7 @@ class Bes3SymMatrixArrayReader(BaseReader):
 uproot_custom.registered_readers |= {
     Bes3TObjArrayReader,
     Bes3SymMatrixArrayReader,
+    Bes3CgemClusterColReader,
 }
 
 
