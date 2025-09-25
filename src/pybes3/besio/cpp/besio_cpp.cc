@@ -21,4 +21,5 @@ PYBIND11_MODULE( besio_cpp, m ) {
     register_reader<Bes3TObjArrayReader, SharedReader>( m, "Bes3TObjArrayReader" );
     register_reader<Bes3SymMatrixArrayReader<double>, uint32_t, uint32_t>(
         m, "Bes3SymMatrixArrayReader" );
+    register_reader<Bes3CgemClusterColReader>( m, "Bes3CgemClusterColReader" );
 }

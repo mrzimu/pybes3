@@ -13,6 +13,9 @@ SharedVector<T> make_shared_vector( Args&&... args ) {
 }
 
 class Bes3TObjArrayReader : public IElementReader {
+  private:
+    SharedReader m_element_reader;
+    SharedVector<uint32_t> m_offsets;
 
   public:
     Bes3TObjArrayReader( std::string name, SharedReader element_reader )
@@ -44,10 +47,6 @@ class Bes3TObjArrayReader : public IElementReader {
         py::object element_data = m_element_reader->data();
         return py::make_tuple( offsets_array, element_data );
     }
-
-  private:
-    SharedReader m_element_reader;
-    SharedVector<uint32_t> m_offsets;
 };
 
 template <typename T>
@@ -102,5 +101,117 @@ class Bes3SymMatrixArrayReader : public IElementReader {
     py::object data() const override final {
         auto data_array = make_array( m_data );
         return data_array;
+    }
+};
+
+class Bes3CgemClusterColReader : public IElementReader {
+  private:
+    int m_version{ -1 }; // -1: unknown, 0: with recpositiony, 1: without recpositiony
+
+    SharedVector<uint32_t> m_offsets;
+    SharedVector<int32_t> m_clusterid;
+    SharedVector<int32_t> m_trkid;
+    SharedVector<int32_t> m_layerid;
+    SharedVector<int32_t> m_sheetid;
+    SharedVector<int32_t> m_flag;
+    SharedVector<double> m_energydeposit;
+    SharedVector<double> m_recphi;
+    SharedVector<double> m_recpositiony;
+    SharedVector<double> m_recv;
+    SharedVector<double> m_recZ;
+    SharedVector<int32_t> m_clusterflag;
+    SharedVector<int32_t> m_stripid;
+
+  public:
+    Bes3CgemClusterColReader( std::string name )
+        : IElementReader( name )
+        , m_offsets( make_shared_vector<uint32_t>( 1, 0 ) )
+        , m_clusterid( make_shared_vector<int32_t>() )
+        , m_trkid( make_shared_vector<int32_t>() )
+        , m_layerid( make_shared_vector<int32_t>() )
+        , m_sheetid( make_shared_vector<int32_t>() )
+        , m_flag( make_shared_vector<int32_t>() )
+        , m_energydeposit( make_shared_vector<double>() )
+        , m_recphi( make_shared_vector<double>() )
+        , m_recpositiony( make_shared_vector<double>() )
+        , m_recv( make_shared_vector<double>() )
+        , m_recZ( make_shared_vector<double>() )
+        , m_clusterflag( make_shared_vector<int32_t>() )
+        , m_stripid( make_shared_vector<int32_t>() ) {}
+
+    void read( BinaryBuffer& bparser ) override final {
+        bparser.skip_obj_header();
+
+        // TObjArray
+        bparser.skip_fNBytes();
+        bparser.skip_fVersion();
+        bparser.skip_fVersion();
+        bparser.skip( 4 ); // fUniqueID
+        bparser.skip( 4 ); // fBits
+        bparser.skip( 1 ); // fName
+        auto fSize = bparser.read<uint32_t>();
+        bparser.skip( 4 ); // fLowerBound
+
+        m_offsets->push_back( m_offsets->back() + fSize );
+
+        for ( uint32_t i = 0; i < fSize; i++ )
+        {
+            bparser.skip_obj_header();
+
+            auto fNBytes = bparser.read_fNBytes();
+            bparser.skip_fVersion();
+
+            // Determine class version
+            if ( m_version == -1 )
+            {
+                switch ( fNBytes )
+                {
+                case 96: m_version = 0; break;
+                case 88: m_version = 1; break;
+                default:
+                    throw std::runtime_error( "Unknown TCgemCluster version with fNBytes=" +
+                                              std::to_string( fNBytes ) );
+                }
+            }
+
+            // TObject
+            bparser.skip_TObject();
+
+            // TRecCgemCluster
+            m_clusterid->push_back( bparser.read<int32_t>() );
+            m_trkid->push_back( bparser.read<int32_t>() );
+            m_layerid->push_back( bparser.read<int32_t>() );
+            m_sheetid->push_back( bparser.read<int32_t>() );
+            m_flag->push_back( bparser.read<int32_t>() );
+            m_energydeposit->push_back( bparser.read<double>() );
+            m_recphi->push_back( bparser.read<double>() );
+            if ( m_version == 0 ) m_recpositiony->push_back( bparser.read<double>() );
+            m_recv->push_back( bparser.read<double>() );
+            m_recZ->push_back( bparser.read<double>() );
+
+            // m_clusterflag is int[2]
+            for ( int i = 0; i < 2; i++ ) m_clusterflag->push_back( bparser.read<int32_t>() );
+
+            // m_stripid is int[2][2]
+            for ( int i = 0; i < 4; i++ ) m_stripid->push_back( bparser.read<int32_t>() );
+        }
+    }
+
+    py::object data() const override final {
+        py::dict result;
+        result["offsets"]         = make_array( m_offsets );
+        result["m_clusterID"]     = make_array( m_clusterid );
+        result["m_trkID"]         = make_array( m_trkid );
+        result["m_layerID"]       = make_array( m_layerid );
+        result["m_sheetID"]       = make_array( m_sheetid );
+        result["m_flag"]          = make_array( m_flag );
+        result["m_energyDeposit"] = make_array( m_energydeposit );
+        result["m_recPhi"]        = make_array( m_recphi );
+        if ( m_version == 0 ) result["m_recPositionY"] = make_array( m_recpositiony );
+        result["m_recV"]        = make_array( m_recv );
+        result["m_recZ"]        = make_array( m_recZ );
+        result["m_clusterFlag"] = make_array( m_clusterflag );
+        result["m_stripID"]     = make_array( m_stripid );
+        return result;
     }
 };

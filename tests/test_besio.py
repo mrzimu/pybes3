@@ -178,6 +178,15 @@ def test_cgem_dst():
     assert all(r.is_same for r in comp_res)
 
 
+def test_cgem_rec():
+    f_dst = uproot.open(data_dir / "test_cgem.rec")
+    truth_arr = ak.from_parquet(data_dir / "test_cgem.rec.parquet")
+    arr = f_dst["Event"].arrays()
+    assert len(arr) == 10
+    comp_res = compare_ak(arr, truth_arr)
+    assert all(r.is_same for r in comp_res)
+
+
 def test_uproot_concatenate():
     arr_concat1 = uproot.concatenate(
         {
