@@ -1,3 +1,7 @@
+## v0.3.11
+
+* Support `TRecCgemCluster` reading without any streamer information.
+
 ## v0.3.10
 
 * Use `ak.zip` in `preprocess_digi_subbranch` to improve `awkward` array structure.
