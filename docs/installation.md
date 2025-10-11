@@ -3,7 +3,9 @@
 
 ## Users on lxlogin server
 
-"lxlogin server" means the login server of computation clusters of IHEP. Since there is a quota limitation on user's home path (`~/`), you may also need to create symbolinks for `~/.local` and `~/.cache`, which contains pip caches and packages that installed in "user mode":
+"lxlogin server" means the login server of computation clusters of IHEP. If you are not using lxlogin server, please skip to [Install `pybes3` using pip](#install-pybes3-using-pip).
+
+Since there is a quota limitation on user's home directory (`~/`), you need to create symbolinks for `~/.local` and `~/.cache`, which contains pip packages and caches that installed in "user mode":
 
 ```bash
 # Check whether a `.local` directory and `.cache` already exists.
