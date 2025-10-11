@@ -1,5 +1,8 @@
+from __future__ import annotations
+
 # fmt: off
 from ._cache_numba import check_numba_cache
+
 check_numba_cache()
 # fmt: on
 

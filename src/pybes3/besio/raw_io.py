@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import glob
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass
