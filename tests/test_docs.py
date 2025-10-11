@@ -1,13 +1,10 @@
 import subprocess
-import importlib.util
 
 import pytest
 
+pytest.importorskip("mkdocs")
 
-@pytest.mark.skipif(
-    importlib.util.find_spec("mkdocs") is None,
-    reason="mkdocs is not installed, skipping build test",
-)
+
 def test_mkdocs_build():
     """Test that mkdocs build runs without errors."""
     try:

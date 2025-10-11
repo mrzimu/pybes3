@@ -18,8 +18,8 @@ PYBIND11_MODULE( besio_cpp, m ) {
            py::arg( "sub_detectors" ) = std::vector<std::string>() );
 
     // BES3 reader
-    register_reader<Bes3TObjArrayReader, SharedReader>( m, "Bes3TObjArrayReader" );
-    register_reader<Bes3SymMatrixArrayReader<double>, uint32_t, uint32_t>(
+    declare_reader<Bes3TObjArrayReader, std::string, SharedReader>( m, "Bes3TObjArrayReader" );
+    declare_reader<Bes3SymMatrixArrayReader<double>, std::string, uint32_t, uint32_t>(
         m, "Bes3SymMatrixArrayReader" );
-    register_reader<Bes3CgemClusterColReader>( m, "Bes3CgemClusterColReader" );
+    declare_reader<Bes3CgemClusterColReader, std::string>( m, "Bes3CgemClusterColReader" );
 }
