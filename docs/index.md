@@ -61,7 +61,7 @@
 - <a href="user-manual/helix" style="text-decoration: none; color: inherit;">
     :material-vector-curve: __Helix operations__
 
-    Parse and transform track parameters, such as helix, etc.
+    Parse and transform helix parameters.
   </a>
 </div>
 
