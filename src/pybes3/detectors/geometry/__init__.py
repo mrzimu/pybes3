@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from .emc import (
     emc_barrel_h1,
     emc_barrel_h2,

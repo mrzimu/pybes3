@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import awkward as ak
 import awkward.contents
 import awkward.index
@@ -9,18 +11,15 @@ import uproot.interpretation
 import uproot_custom
 from uproot_custom import (
     AsCustom,
-    BaseReader,
-    BasicTypeReader,
-    EmptyReader,
-    BaseObjectReader,
-    gen_tree_config,
-    get_cpp_reader,
-    reconstruct_array,
+    EmptyFactory,
+    Factory,
+    PrimitiveFactory,
+    BaseObjectFactory,
+    build_factory,
     regularize_object_path,
 )
 
 from . import besio_cpp as bcpp
-
 
 bes3_branch2types = {
     "/Event:TMcEvent/m_mdcMcHitCol": "TMdcMc",
@@ -70,19 +69,19 @@ bes3_branch2types = {
 }
 
 
-class Bes3TObjArrayReader(BaseReader):
+class Bes3TObjArrayFactory(Factory):
     @classmethod
     def priority(cls):
         return 50
 
     @classmethod
-    def gen_tree_config(
+    def build_factory(
         cls,
         top_type_name: str,
-        cls_streamer_info: dict,
+        cur_streamer_info: dict,
         all_streamer_info: dict,
         item_path: str,
-        called_from_top: bool,
+        **kwargs,
     ):
         if top_type_name != "TObjArray":
             return None
@@ -93,76 +92,63 @@ class Bes3TObjArrayReader(BaseReader):
             return None
 
         if obj_typename not in all_streamer_info:
-            return {
-                "reader": cls,
-                "name": cls_streamer_info["fName"],
-                "element_reader": {
-                    "reader": EmptyReader,
-                    "name": obj_typename,
-                },
-            }
+            return cls(
+                name=cur_streamer_info["fName"],
+                element_factory=EmptyFactory(obj_typename),
+            )
 
-        sub_reader_config = []
+        sub_factories = []
         for s in all_streamer_info[obj_typename]:
-            sub_reader_config.append(
-                gen_tree_config(
-                    cls_streamer_info=s,
+            sub_factories.append(
+                build_factory(
+                    cur_streamer_info=s,
                     all_streamer_info=all_streamer_info,
                     item_path=f"{item_path}.{obj_typename}",
                 )
             )
 
-        return {
-            "reader": cls,
-            "name": cls_streamer_info["fName"],
-            "element_reader": {
-                "reader": BaseObjectReader,
-                "name": obj_typename,
-                "sub_readers": sub_reader_config,
-            },
-        }
-
-    @classmethod
-    def get_cpp_reader(cls, reader_config: dict):
-        if reader_config["reader"] != cls:
-            return None
-
-        element_reader_config = reader_config["element_reader"]
-        element_reader = get_cpp_reader(element_reader_config)
-
-        return bcpp.Bes3TObjArrayReader(reader_config["name"], element_reader)
-
-    @classmethod
-    def reconstruct_array(cls, raw_data, reader_config: dict):
-        if reader_config["reader"] != cls:
-            return None
-
-        offsets, element_raw_data = raw_data
-        element_reader_config = reader_config["element_reader"]
-        element_data = reconstruct_array(
-            element_raw_data,
-            element_reader_config,
+        return cls(
+            name=cur_streamer_info["fName"],
+            element_factory=BaseObjectFactory(
+                name=obj_typename,
+                sub_factories=sub_factories,
+            ),
         )
 
+    def __init__(self, name: str, element_factory: Factory):
+        super().__init__(name)
+        self.element_factory = element_factory
+
+    def build_cpp_reader(self):
+        element_reader = self.element_factory.build_cpp_reader()
+        return bcpp.Bes3TObjArrayReader(self.name, element_reader)
+
+    def make_awkward_content(self, raw_data):
+        offsets, element_raw_data = raw_data
+        element_content = self.element_factory.make_awkward_content(element_raw_data)
         return awkward.contents.ListOffsetArray(
             awkward.index.Index64(offsets),
-            element_data,
+            element_content,
         )
 
+    def make_awkward_form(self):
+        element_form = self.element_factory.make_awkward_form()
+        return awkward.forms.ListOffsetForm("i64", element_form)
 
-class Bes3CgemClusterColReader(BaseReader):
+
+class Bes3CgemClusterColFactory(Factory):
     @classmethod
     def priority(cls):
         return 55
 
     @classmethod
-    def gen_tree_config(
+    def build_factory(
         cls,
-        top_type_name,
-        cls_streamer_info,
-        all_streamer_info,
-        item_path,
-        called_from_top: bool,
+        top_type_name: str,
+        cur_streamer_info: dict,
+        all_streamer_info: dict,
+        item_path: str,
+        **kwargs,
     ):
         item_path = item_path.replace(".TObjArray*", "")
         if item_path != "/Event:TRecEvent/m_recCgemClusterCol":
@@ -171,23 +157,12 @@ class Bes3CgemClusterColReader(BaseReader):
         if all_streamer_info.get("TCgemCluster") is not None:
             return None  # Let Bes3TObjArrayReader handle it
 
-        return {
-            "reader": cls,
-            "name": cls_streamer_info["fName"],
-        }
+        return cls(name=cur_streamer_info["fName"])
 
-    @classmethod
-    def get_cpp_reader(cls, tree_config):
-        if tree_config["reader"] != cls:
-            return None
+    def build_cpp_reader(self):
+        return bcpp.Bes3CgemClusterColReader(self.name)
 
-        return bcpp.Bes3CgemClusterColReader(tree_config["name"])
-
-    @classmethod
-    def reconstruct_array(cls, raw_data, tree_config):
-        if tree_config["reader"] != cls:
-            return None
-
+    def make_awkward_content(self, raw_data: dict):
         offsets = raw_data.pop("offsets")
 
         record_contents = []
@@ -209,7 +184,7 @@ class Bes3CgemClusterColReader(BaseReader):
         )
 
 
-class Bes3SymMatrixArrayReader(BaseReader):
+class Bes3SymMatrixArrayFactory(Factory):
     target_items = {
         "/Event:TDstEvent/m_mdcTrackCol.TMdcTrack.m_err",
         "/Event:TDstEvent/m_emcTrackCol.TEmcTrack.m_err",
@@ -239,60 +214,57 @@ class Bes3SymMatrixArrayReader(BaseReader):
         return 40
 
     @classmethod
-    def gen_tree_config(
+    def build_factory(
         cls,
         top_type_name,
-        cls_streamer_info,
+        cur_streamer_info,
         all_streamer_info,
         item_path,
-        called_from_top: bool,
+        **kwargs,
     ):
-        if item_path not in Bes3SymMatrixArrayReader.target_items:
+        if item_path not in Bes3SymMatrixArrayFactory.target_items:
             return None
 
-        fArrayDim = cls_streamer_info["fArrayDim"]
-        fMaxIndex = cls_streamer_info["fMaxIndex"]
-        ctype = BasicTypeReader.typenames[top_type_name]
+        fArrayDim = cur_streamer_info["fArrayDim"]
+        fMaxIndex = cur_streamer_info["fMaxIndex"]
+        ctype = PrimitiveFactory.typenames[top_type_name]
 
         flat_size = np.prod(fMaxIndex[:fArrayDim])
         assert flat_size > 0, f"flatten_size should be greater than 0, but got {flat_size}"
 
         full_dim = int((np.sqrt(1 + 8 * flat_size) - 1) / 2)
-        return {
-            "reader": cls,
-            "name": cls_streamer_info["fName"],
-            "ctype": ctype,
-            "flat_size": flat_size,
-            "full_dim": full_dim,
-        }
 
-    @classmethod
-    def get_cpp_reader(cls, tree_config):
-        if tree_config["reader"] != cls:
-            return None
-
-        ctype = tree_config["ctype"]
-        assert ctype == "d", "Only double precision symmetric matrix is supported."
-
-        return bcpp.Bes3SymMatrixArrayReader(
-            tree_config["name"],
-            tree_config["flat_size"],
-            tree_config["full_dim"],
+        return cls(
+            name=cur_streamer_info["fName"],
+            ctype=ctype,
+            flat_size=flat_size,
+            full_dim=full_dim,
         )
 
-    @classmethod
-    def reconstruct_array(cls, raw_data, tree_config):
-        if tree_config["reader"] != cls:
-            return None
+    def __init__(self, name: str, ctype: str, flat_size: int, full_dim: int):
+        super().__init__(name)
+        assert ctype == "d", "Only double precision symmetric matrix is supported."
+        self.ctype = ctype
+        self.flat_size = flat_size
+        self.full_dim = full_dim
 
-        full_dim = tree_config["full_dim"]
-        return awkward.contents.NumpyArray(raw_data.reshape(-1, full_dim, full_dim))
+    def build_cpp_reader(self):
+        return bcpp.Bes3SymMatrixArrayReader(self.name, self.flat_size, self.full_dim)
+
+    def make_awkward_content(self, raw_data: np.ndarray):
+        return awkward.contents.NumpyArray(
+            raw_data.reshape(
+                -1,
+                self.full_dim,
+                self.full_dim,
+            )
+        )
 
 
-uproot_custom.registered_readers |= {
-    Bes3TObjArrayReader,
-    Bes3SymMatrixArrayReader,
-    Bes3CgemClusterColReader,
+uproot_custom.registered_factories |= {
+    Bes3TObjArrayFactory,
+    Bes3SymMatrixArrayFactory,
+    Bes3CgemClusterColFactory,
 }
 
 

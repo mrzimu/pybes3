@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import glob
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import dataclass
@@ -128,13 +130,13 @@ class RawBinaryReader:
         while n_total_blocks_read < n_blocks or (
             n_blocks == -1 and self._file.tell() < self.data_end
         ):
-            n_tlock_to_read = (
+            n_block_to_read = (
                 min(n_blocks - n_total_blocks_read, n_block_per_batch)
                 if n_blocks != -1
                 else n_block_per_batch
             )
 
-            batch_data, n_read = self._read_batch(n_tlock_to_read)
+            batch_data, n_read = self._read_batch(n_block_to_read)
             futures.append(executor.submit(read_bes_raw, batch_data, sub_detectors))
             n_total_blocks_read += n_read
 

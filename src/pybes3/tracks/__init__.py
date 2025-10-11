@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import vector
 
 vector.register_awkward()
