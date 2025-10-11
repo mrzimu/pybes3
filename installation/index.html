@@ -799,7 +799,8 @@
 <p><code>pybes3</code> requires Python 3.9 or higher.</p>
 </div>
 <h2 id="users-on-lxlogin-server">Users on lxlogin server</h2>
-<p>"lxlogin server" means the login server of computation clusters of IHEP. Since there is a quota limitation on user's home path (<code>~/</code>), you may also need to create symbolinks for <code>~/.local</code> and <code>~/.cache</code>, which contains pip caches and packages that installed in "user mode":</p>
+<p>"lxlogin server" means the login server of computation clusters of IHEP. If you are not using lxlogin server, please skip to <a href="#install-pybes3-using-pip">Install <code>pybes3</code> using pip</a>.</p>
+<p>Since there is a quota limitation on user's home directory (<code>~/</code>), you need to create symbolinks for <code>~/.local</code> and <code>~/.cache</code>, which contains pip packages and caches that installed in "user mode":</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># Check whether a `.local` directory and `.cache` already exists.</span>
 <span class="c1"># If so, move it to somewhere else.</span>
 ls<span class="w"> </span>-a<span class="w"> </span>~
