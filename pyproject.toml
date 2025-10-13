@@ -25,7 +25,13 @@ name = "pybes3"
 authors = [{ name = "Mingrun Li", email = "mrun_lee@foxmail.com" }]
 description = "Unofficial Python module for BES3"
 requires-python = ">=3.9, <3.14"
-dependencies = ["uproot>=5.3.8", "awkward", "numba", "vector", "uproot-custom==2.0.*"]
+dependencies = [
+    "uproot>=5.3.8",
+    "awkward",
+    "numba<0.62",
+    "vector",
+    "uproot-custom==2.0.*",
+]
 readme = "README.md"
 dynamic = ["version"]
 urls = { "Homepage" = "https://github.com/mrzimu/pybes3", "Documentation" = "https://pybes3.readthedocs.io/en/stable/" }
