@@ -132,7 +132,12 @@ The machine used for the benchmark is a `Intel i7-12700` with `Great Wall GW7000
 
 The results are shown below:
 
-![Dummy Reading Performance](./docs/image/io-benchmarking.png)
+<div align="center">
+    <picture>
+        <source srcset="./docs/image/io-benchmarking-dark.svg" media="(prefers-color-scheme: dark)">
+        <img src="./docs/image/io-benchmarking-light.svg" alt="Dummy Reading Performance">
+    </picture>
+</div>
 
 The fitting results with a linear function is:
 
