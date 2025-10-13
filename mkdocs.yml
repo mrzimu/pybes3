@@ -9,6 +9,7 @@ theme:
     - search
     - search.suggest
     - footer
+    - content.code.copy
 
   palette:
     # Palette toggle for automatic mode

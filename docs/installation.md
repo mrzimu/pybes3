@@ -28,3 +28,16 @@ ln -s /path/to/somewhere/.cache ~/.cache
 ```bash
 pip install pybes3
 ```
+
+## Using `pybes3` under `BOSS8` environment
+
+If you are using `pybes3` under `BOSS8` environment, you MUST run following commands after setting up `BOSS8` environment:
+
+```bash
+export PYTHONPATH=`python -m site --user-site`:$PYTHONPATH
+export PATH=`python -m site --user-base`/bin:$PATH
+```
+
+!!! warning
+
+    DO NOT add these commands to your shell configuration file (e.g. `~/.bashrc`), since they will conflict with the default python environment (without `BOSS8`).

@@ -12,6 +12,51 @@ It is highly recommended to take a look at these Python modules before using `py
 
 Visit the [documentation](https://pybes3.readthedocs.io/en/stable/) for more information about installation, usage, and examples.
 
+## Installation
+
+> [!NOTE]
+> `pybes3` requires Python 3.9 or higher.
+
+### Users on lxlogin server
+
+"lxlogin server" means the login server of computation clusters of IHEP. If you are not using lxlogin server, please skip to [Install `pybes3` using pip](#install-pybes3-using-pip).
+
+Since there is a quota limitation on user's home directory (`~/`), you need to create symbolinks for `~/.local` and `~/.cache`, which contains pip packages and caches that installed in "user mode":
+
+```bash
+# Check whether a `.local` directory and `.cache` already exists.
+# If so, move it to somewhere else.
+ls -a ~
+mv ~/.local /path/to/somewhere/
+mv ~/.cache /path/to/somewhere
+
+# If no `.local` or `.cache` exists, create them
+mkdir /path/to/somewhere/.local
+mkdir /path/to/somewhere/.cache
+
+# After moving or creating them, link them back to `~`
+ln -s /path/to/somewhere/.local ~/.local
+ln -s /path/to/somewhere/.cache ~/.cache
+```
+
+### Install `pybes3` using pip
+
+```bash
+pip install pybes3
+```
+
+### Using `pybes3` under `BOSS8` environment
+
+If you are using `pybes3` under `BOSS8` environment, you MUST run following commands after setting up `BOSS8` environment:
+
+```bash
+export PYTHONPATH=`python -m site --user-site`:$PYTHONPATH
+export PATH=`python -m site --user-base`/bin:$PATH
+```
+
+> [!WARNING]
+> DO NOT add these commands to your shell configuration file (e.g. `~/.bashrc`), since they will conflict with the default python environment (without `BOSS8`).
+
 ## Features
 
 At the moment, `pybes3` provides:
@@ -100,36 +145,3 @@ The fitting results with a linear function is:
 The result shows that `pybes3` is also comparable to `BOSS8` when `RecMakerAlg` is not loaded, which means that the reading performance of `pybes3` is close to the reading performance of `ROOT` itself. `pybes3` is several times faster than `BOSS8` with default settings, and slower when reading small number of events (~1000), since the module importing and initialization time is counted in the benchmark.
 
 Since users may have to use the default settings of `BOSS` to read reconstruction data, `pybes3` is still several times faster in this case.
-
-## Installation
-
-> [!NOTE]
-> `pybes3` requires Python 3.9 or higher.
-
-### Users on lxlogin server
-
-"lxlogin server" means the login server of computation clusters of IHEP. If you are not using lxlogin server, please skip to [Install `pybes3` using pip](#install-pybes3-using-pip).
-
-Since there is a quota limitation on user's home directory (`~/`), you need to create symbolinks for `~/.local` and `~/.cache`, which contains pip packages and caches that installed in "user mode":
-
-```bash
-# Check whether a `.local` directory and `.cache` already exists.
-# If so, move it to somewhere else.
-ls -a ~
-mv ~/.local /path/to/somewhere/
-mv ~/.cache /path/to/somewhere
-
-# If no `.local` or `.cache` exists, create them
-mkdir /path/to/somewhere/.local
-mkdir /path/to/somewhere/.cache
-
-# After moving or creating them, link them back to `~`
-ln -s /path/to/somewhere/.local ~/.local
-ln -s /path/to/somewhere/.cache ~/.cache
-```
-
-### Install `pybes3` using pip
-
-```bash
-pip install pybes3
-```
