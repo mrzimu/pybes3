@@ -1,5 +1,5 @@
 [build-system]
-requires = ["scikit-build-core", "pybind11>=2.10.0", "uproot-custom==2.0.*"]
+requires = ["scikit-build-core", "pybind11==3.0.*", "uproot-custom==2.1.*"]
 build-backend = "scikit_build_core.build"
 
 [project]
@@ -30,7 +30,7 @@ dependencies = [
     "awkward",
     "numba",
     "vector",
-    "uproot-custom==2.0.*",
+    "uproot-custom==2.1.*",
 ]
 readme = "README.md"
 dynamic = ["version"]

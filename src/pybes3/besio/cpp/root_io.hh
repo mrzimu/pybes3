@@ -12,18 +12,18 @@ SharedVector<T> make_shared_vector( Args&&... args ) {
     return std::make_shared<std::vector<T>>( std::forward<Args>( args )... );
 }
 
-class Bes3TObjArrayReader : public IElementReader {
+class Bes3TObjArrayReader : public IReader {
   private:
     SharedReader m_element_reader;
     SharedVector<uint32_t> m_offsets;
 
   public:
     Bes3TObjArrayReader( std::string name, SharedReader element_reader )
-        : IElementReader( name )
+        : IReader( name )
         , m_element_reader( element_reader )
         , m_offsets( make_shared_vector<uint32_t>( 1, 0 ) ) {}
 
-    void read( BinaryBuffer& bparser ) override final {
+    void read( BinaryBuffer& bparser ) override {
         bparser.skip_fNBytes();
         bparser.skip_fVersion();
         bparser.skip_fVersion();
@@ -42,7 +42,7 @@ class Bes3TObjArrayReader : public IElementReader {
         }
     }
 
-    py::object data() const override final {
+    py::object data() const override {
         auto offsets_array      = make_array( m_offsets );
         py::object element_data = m_element_reader->data();
         return py::make_tuple( offsets_array, element_data );
@@ -50,7 +50,7 @@ class Bes3TObjArrayReader : public IElementReader {
 };
 
 template <typename T>
-class Bes3SymMatrixArrayReader : public IElementReader {
+class Bes3SymMatrixArrayReader : public IReader {
   private:
     SharedVector<T> m_data;
     const uint32_t m_flat_size;
@@ -58,7 +58,7 @@ class Bes3SymMatrixArrayReader : public IElementReader {
 
   public:
     Bes3SymMatrixArrayReader( std::string name, uint32_t flat_size, uint32_t full_dim )
-        : IElementReader( name )
+        : IReader( name )
         , m_data( make_shared_vector<T>() )
         , m_flat_size( flat_size )
         , m_full_dim( full_dim ) {
@@ -82,7 +82,7 @@ class Bes3SymMatrixArrayReader : public IElementReader {
         return i < j ? j * ( j + 1 ) / 2 + i : i * ( i + 1 ) / 2 + j;
     }
 
-    void read( BinaryBuffer& bparser ) override final {
+    void read( BinaryBuffer& bparser ) override {
         // temporary flat array to hold the data
         std::vector<T> flat_array( m_flat_size );
         for ( int i = 0; i < m_flat_size; i++ ) flat_array[i] = bparser.read<T>();
@@ -98,13 +98,13 @@ class Bes3SymMatrixArrayReader : public IElementReader {
         }
     }
 
-    py::object data() const override final {
+    py::object data() const override {
         auto data_array = make_array( m_data );
         return data_array;
     }
 };
 
-class Bes3CgemClusterColReader : public IElementReader {
+class Bes3CgemClusterColReader : public IReader {
   private:
     int m_version{ -1 }; // -1: unknown, 0: with recpositiony, 1: without recpositiony
 
@@ -124,7 +124,7 @@ class Bes3CgemClusterColReader : public IElementReader {
 
   public:
     Bes3CgemClusterColReader( std::string name )
-        : IElementReader( name )
+        : IReader( name )
         , m_offsets( make_shared_vector<uint32_t>( 1, 0 ) )
         , m_clusterid( make_shared_vector<int32_t>() )
         , m_trkid( make_shared_vector<int32_t>() )
@@ -139,7 +139,7 @@ class Bes3CgemClusterColReader : public IElementReader {
         , m_clusterflag( make_shared_vector<int32_t>() )
         , m_stripid( make_shared_vector<int32_t>() ) {}
 
-    void read( BinaryBuffer& bparser ) override final {
+    void read( BinaryBuffer& bparser ) override {
         bparser.skip_obj_header();
 
         // TObjArray
@@ -197,7 +197,7 @@ class Bes3CgemClusterColReader : public IElementReader {
         }
     }
 
-    py::object data() const override final {
+    py::object data() const override {
         py::dict result;
         result["offsets"]         = make_array( m_offsets );
         result["m_clusterID"]     = make_array( m_clusterid );
