@@ -2,7 +2,7 @@ name: Nightly build
 
 on:
   schedule:
-    - cron: '12 0 * * *'  # Runs every day at 20:00 Beijing time
+    - cron: '0 12 * * *'  # Runs every day at 20:00 Beijing time
   workflow_dispatch:
 
 jobs:
