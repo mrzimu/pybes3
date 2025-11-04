@@ -1,8 +1,8 @@
-name: Nightly build
+name: Weekly build
 
 on:
   schedule:
-    - cron: '0 12 * * *'  # Runs every day at 20:00 Beijing time
+    - cron: "0 12 * * 5"  # Runs every Friday at 12:00 UTC (20:00 Beijing Time)
   workflow_dispatch:
 
 jobs:
