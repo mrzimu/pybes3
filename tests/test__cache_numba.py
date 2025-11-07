@@ -5,10 +5,8 @@ from pathlib import Path
 import pybes3 as p3
 
 
-def test_detector_geometry_mdc(capsys, monkeypatch):
+def test_detector_geometry_mdc(capsys, monkeypatch, geom_dir):
     monkeypatch.setenv("PYBES3_NUMBA_CACHE_SILENT", "1")
-
-    geom_dir = Path(p3.detectors.geometry.__file__).parent
 
     # Change mdc_geom.npz mtime
     mdc_geom_path = geom_dir / "mdc_geom.npz"
@@ -22,10 +20,8 @@ def test_detector_geometry_mdc(capsys, monkeypatch):
     assert captured.out.startswith("Removed cache files:")
 
 
-def test_detector_geometry_emc(capsys, monkeypatch):
+def test_detector_geometry_emc(capsys, monkeypatch, geom_dir):
     monkeypatch.setenv("PYBES3_NUMBA_CACHE_SILENT", "1")
-
-    geom_dir = Path(p3.detectors.geometry.__file__).parent
 
     # Change emc_geom.npz mtime
     emc_geom_path = geom_dir / "emc_geom.npz"

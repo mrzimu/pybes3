@@ -1,21 +1,11 @@
-from pathlib import Path
-
 import awkward as ak
 import numpy as np
 import pytest
 
 import pybes3 as p3
 
-data_dir = Path(__file__).parent.parent / "data"
 
-helix_ak = p3.open(data_dir / "test_full_mc_evt_1.dst")[
-    "Event/TDstEvent/m_mdcTrackCol"
-].array()["m_helix"]
-
-helix_np = ak.flatten(helix_ak, axis=1).to_numpy()
-
-
-def test_helix():
+def test_helix(mdc_trk):
     # parse_helix
     fields = [
         "x",
@@ -32,6 +22,8 @@ def test_helix():
         "charge",
         "r_trk",
     ]
+    helix_ak = mdc_trk["m_helix"]
+    helix_np = ak.flatten(helix_ak, axis=1).to_numpy()
 
     with pytest.warns(DeprecationWarning):
         p_helix_ak1 = p3.parse_helix(helix_ak)
