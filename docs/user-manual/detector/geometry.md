@@ -72,7 +72,7 @@ You can get the whole wires position table of MDC:
 
 ```python
 # get table in `dict[str, np.ndarray]`
-wire_position_np = p3.get_mdc_wire_position() 
+wire_position_np = p3.get_mdc_wire_position()
 
 # get table in `ak.Array`
 wire_position_ak = p3.get_mdc_wire_position(library="ak")

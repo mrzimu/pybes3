@@ -72,7 +72,7 @@ When `error` is not provided, it defaults to `None`. When `pivot` is not provide
         You can specify the initial pivot point in different ways:
 
         === "As a tuple"
-        
+
             ```python
             p3.helix_obj(..., pivot=(x0, y0, z0))
             ```
@@ -112,7 +112,7 @@ helix = p3.helix_awk(raw_helix, raw_helix_err)
 !!! info
 
     This overload of `helix_awk` follows such convention:
-    
+
     ```python
     dr = raw_helix[..., 0]
     phi0 = raw_helix[..., 1]
@@ -178,7 +178,7 @@ helix = p3.helix_awk(
         pivot = p3.vector.obj(x=x0, y=y0, z=z0)
         helix = p3.helix_awk(..., pivot=pivot)
         ```
-    
+
     === "As an awkward array"
 
         If you have different pivot points for each track, you can provide a `Vector3D` awkward array:
@@ -235,7 +235,7 @@ helix = p3.helix_awk(
     }, with_name="Bes3Helix")
     ```
 
-    Optionally, you can also create an error matrix. 
+    Optionally, you can also create an error matrix.
 
     ```python
     error = ak.Array(...)
@@ -269,7 +269,7 @@ Sometimes you may need to create a helix from position, momentum and charge. You
     )
     ```
 
-    where `charge` should be `1` or `-1`, and the `pivot` defaults to `(0, 0, 0)` if not provided. 
+    where `charge` should be `1` or `-1`, and the `pivot` defaults to `(0, 0, 0)` if not provided.
 
 === "Array"
 
@@ -299,7 +299,7 @@ Sometimes you may need to create a helix from position, momentum and charge. You
     )
     ```
 
-    where `charge` should be array of `1` or `-1`, and the `pivot` defaults to `(0, 0, 0)` if not provided. 
+    where `charge` should be array of `1` or `-1`, and the `pivot` defaults to `(0, 0, 0)` if not provided.
 
 !!! tip "Create helix from MC truth"
 

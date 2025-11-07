@@ -72,5 +72,5 @@ tof_digi_id = p3det.get_tof_digi_id(part, layer_or_module, phi_or_strip, end)
 
     - `0,1,2` for scintillator endcap0, barrel, endcap1
     - `3,4` for MRPC endcap0, endcap1.
-    
+
     In this case, TOF ID information can be decoded to 4 fields: `part`, `layer_or_module`, `phi_or_strip`, `end`.

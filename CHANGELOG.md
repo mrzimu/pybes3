@@ -31,7 +31,7 @@
 
 ## v0.3.7
 
-* Adapt to `uproot-custom` v1.1.2. 
+* Adapt to `uproot-custom` v1.1.2.
 
 ## v0.3.6
 

@@ -20,7 +20,7 @@ Print information about this "event" tree:
 
 ```python
 >>> evt.show(name_width=30)
-name                           | typename                 | interpretation                
+name                           | typename                 | interpretation
 -------------------------------+--------------------------+-------------------------------
 TEvtHeader                     | TEvtHeader               | AsGroup(<TBranchElement 'TE...
 TEvtHeader/TObject             | unknown                  | <UnknownInterpretation 'non...
@@ -66,7 +66,7 @@ This indicates that in event 0, there are 12 MC particles. Their PDGIDs are `23,
 
 ---
 
-**It is recommended that only read the branches you need.** 
+**It is recommended that only read the branches you need.**
 
 To read a specific branch (Note: use `array()` instead of `arrays()` here):
 

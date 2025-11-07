@@ -5,7 +5,7 @@ from warnings import warn
 
 import uproot
 
-from . import root_io
+from . import root_io  # noqa: F401
 from .raw_io import RawBinaryReader
 from .raw_io import concatenate as concatenate_raw
 
