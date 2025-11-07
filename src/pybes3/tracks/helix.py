@@ -13,8 +13,8 @@ import vector.backends.awkward as vec_ak
 
 vector.register_awkward()
 
-from .._utils import _extract_index, _flat_to_numpy, _recover_shape
-from ..typing import FloatLike, IntLike
+from pybes3._utils import _extract_index, _flat_to_numpy
+from pybes3.typing import FloatLike, IntLike
 
 TypeObjPosition = Union[vector.VectorObject3D, tuple[float, float, float]]
 TypeObjMomentum = Union[vector.MomentumObject3D, tuple[float, float, float]]

@@ -13,20 +13,20 @@ theme:
 
   palette:
     # Palette toggle for automatic mode
-    - media: "(prefers-color-scheme)"
+    - media: (prefers-color-scheme)
       toggle:
         icon: material/brightness-auto
         name: Switch to light mode
 
     # Palette toggle for light mode
-    - media: "(prefers-color-scheme: light)"
+    - media: '(prefers-color-scheme: light)'
       scheme: default
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
 
     # Palette toggle for dark mode
-    - media: "(prefers-color-scheme: dark)"
+    - media: '(prefers-color-scheme: dark)'
       scheme: slate
       toggle:
         icon: material/brightness-4
@@ -65,13 +65,13 @@ plugins:
         python:
           options:
             docstring_style: google
-            show_source: True
-            show_signature: True
-            show_root_heading: True
-            show_root_full_path: False
+            show_source: true
+            show_signature: true
+            show_root_heading: true
+            show_root_full_path: false
             members_order: source
             heading_level: 3
-            separate_signature: False
+            separate_signature: false
 
 nav:
   - Home: index.md

@@ -28,7 +28,7 @@
 <div class="grid cards" markdown>
 - <a href="user-manual/bes3-data-reading" style="text-decoration: none; color: inherit;">
     :material-import: __BES3 data reading__
-    
+
     Read `rtraw`, `rec`, `dst`, and even `raw` files.
   </a>
 </div>

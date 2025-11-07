@@ -26,8 +26,8 @@ _is_stereo: np.ndarray = _mdc_wire_position["is_stereo"]
 
 # Generate the wire start index of each layer
 layer_start_gid = np.zeros(44, dtype=np.uint16)
-for l in range(43):
-    layer_start_gid[l + 1] = np.sum(_layer == l)
+for _l in range(43):
+    layer_start_gid[_l + 1] = np.sum(_layer == _l)
 layer_start_gid = np.cumsum(layer_start_gid)
 
 # Generate the x position along z of each wire
@@ -36,9 +36,9 @@ dy_dz = (_east_y - _west_y) / (_east_z - _west_z)
 
 # Generate layer -> is_stereo array
 is_layer_stereo = np.zeros(43, dtype=bool)
-for l in range(43):
-    assert np.unique(_is_stereo[_layer == l]).size == 1
-    is_layer_stereo[l] = _is_stereo[_layer == l][0]
+for _l in range(43):
+    assert np.unique(_is_stereo[_layer == _l]).size == 1
+    is_layer_stereo[_l] = _is_stereo[_layer == _l][0]
 
 # Generate layer -> superlayer array
 superlayer_splits = np.array([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 43])

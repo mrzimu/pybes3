@@ -1,6 +1,6 @@
 import pytest
 import uproot
-import pybes3
+import pybes3  # noqa: F401
 
 
 @pytest.fixture(scope="session")

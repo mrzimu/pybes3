@@ -1,0 +1,38 @@
+name: Update pre-commit
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    # update hooks
+    - cron: 0 0 1 * *
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13'
+
+      - name: Install pre-commit
+        run: pip install pre-commit
+
+      - name: Run pre-commit autoupdate
+        if: github.event_name == 'schedule'
+        run: |
+          pre-commit autoupdate
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .pre-commit-config.yaml
+          git commit -m "chore: update pre-commit hooks" || exit 0
+          git push
+
+      - name: Run pre-commit
+        if: github.event_name != 'schedule'
+        run: pre-commit run --all-files

@@ -1,48 +1,41 @@
 [build-system]
-requires = ["scikit-build-core", "pybind11==3.0.*", "uproot-custom==2.1.*"]
 build-backend = "scikit_build_core.build"
+requires = ["scikit-build-core", "pybind11==3.0.*", "uproot-custom==2.1.*"]
+
+[dependency-groups]
+dev = ["black", "pytest", "pyarrow", "pandas", "build", "twine"]
+docs = ["mkdocs", "mkdocs-material", "mkdocstrings", "mkdocstrings-python"]
 
 [project]
-name = "pybes3"
-authors = [{ name = "Mingrun Li", email = "mrun_lee@foxmail.com" }]
-description = "Unofficial Python module for BES3"
-requires-python = ">=3.9, <3.14"
-dependencies = [
-    "uproot>=5.6.8",
-    "awkward",
-    "numba",
-    "vector!=1.7.0", # TODO: remove this constraint when vector 1.7.0 is fixed
-    "uproot-custom==2.1.*",
-]
-readme = "README.md"
-dynamic = ["version"]
-urls = { "Homepage" = "https://github.com/mrzimu/pybes3", "Documentation" = "https://pybes3.readthedocs.io/en/stable/" }
+authors = [{name = "Mingrun Li", email = "mrun_lee@foxmail.com"}]
 classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Intended Audience :: Developers",
-    "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: MIT License",
-    "Programming Language :: C++",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Python :: 3.11",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
-    "Operating System :: OS Independent",
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "Intended Audience :: Science/Research",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: C++",
+  "Programming Language :: Python",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.9",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Operating System :: OS Independent"
 ]
-
-[tool.scikit-build]
-wheel.packages = ["src/pybes3"]
-sdist.exclude = ["tools"]
-sdist.include = ["src/pybes3/_version.py"]
-metadata.version.provider = "scikit_build_core.metadata.setuptools_scm"
-build-dir = "build/{wheel_tag}"
-cmake.build-type = "Release"
-
-[tool.setuptools_scm] # Section required
-write_to = "src/pybes3/_version.py"
+dependencies = [
+  "uproot>=5.6.8",
+  "awkward",
+  "numba",
+  "vector!=1.7.0",  # TODO: remove this constraint when vector 1.7.0 is fixed
+  "uproot-custom==2.1.*"
+]
+description = "Unofficial Python module for BES3"
+dynamic = ["version"]
+name = "pybes3"
+readme = "README.md"
+requires-python = ">=3.9, <3.14"
+urls = {"Homepage" = "https://github.com/mrzimu/pybes3", "Documentation" = "https://pybes3.readthedocs.io/en/stable/"}
 
 [tool.black]
 exclude = "/(build|dist|env|.git|.tox|.eggs|.venv)/"
@@ -52,21 +45,22 @@ target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
 [tool.cibuildwheel]
 build = ["cp*-manylinux_x86_64", "cp*-macosx_arm64", "cp*-win_amd64"]
 
-[dependency-groups]
-dev = [
-    "black",
-    "pytest",
-    "pyarrow",
-    "pandas",
-    "build",
-    "twine",
-]
-docs = [
-    "mkdocs",
-    "mkdocs-material",
-    "mkdocstrings",
-    "mkdocstrings-python",
-]
+[tool.ruff.lint]
+ignore = ["E402"]
+
+[tool.ruff.lint.per-file-ignores]
+"note/*" = ["ALL"]
+
+[tool.scikit-build]
+build-dir = "build/{wheel_tag}"
+cmake.build-type = "Release"
+metadata.version.provider = "scikit_build_core.metadata.setuptools_scm"
+sdist.exclude = ["tools"]
+sdist.include = ["src/pybes3/_version.py"]
+wheel.packages = ["src/pybes3"]
+
+[tool.setuptools_scm]  # Section required
+write_to = "src/pybes3/_version.py"
 
 [tool.uv]
 default-groups = "all"
