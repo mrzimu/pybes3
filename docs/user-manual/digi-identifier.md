@@ -10,9 +10,10 @@ When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, `muc`, `c
 
 ```python
 import pybes3 as p3
+import uproot
 
 # read raw digi array
-mdc_digi = p3.open("test.rtraw")["Event/TDigiEvent/m_mdcDigiCol"].array()
+mdc_digi = uproot.open("test.rtraw")["Event/TDigiEvent/m_mdcDigiCol"].array()
 
 # parse whole digi array
 mdc_digi = p3.parse_mdc_digi(mdc_digi)
@@ -24,8 +25,8 @@ When parsing whole digi array is not necesarry/supported, use `parse_xxx_digi_id
 
 ```python
 # read raw digi array
-tof_digi = p3.open("test.rtraw")["Event/TDigiEvent/m_tofDigiCol"].array()
-emc_digi = p3.open("test.rtraw")["Event/TDigiEvent/m_emcDigiCol"].array()
+tof_digi = uproot.open("test.rtraw")["Event/TDigiEvent/m_tofDigiCol"].array()
+emc_digi = uproot.open("test.rtraw")["Event/TDigiEvent/m_emcDigiCol"].array()
 
 # parse digi ID
 tof_digi_id = p3.parse_tof_digi_id(tof_digi["m_intId"])
