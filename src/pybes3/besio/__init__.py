@@ -1,43 +1,55 @@
 from __future__ import annotations
 
 from typing import Any
+from warnings import warn
 
 import uproot
 
+from . import root_io
 from .raw_io import RawBinaryReader
 from .raw_io import concatenate as concatenate_raw
-from .root_io import wrap_uproot
 
 
 def open(file, **kwargs) -> Any:
     """
-    A wrapper around `uproot.open` that automatically calls `wrap_uproot` before opening the file.
-
-    Parameters:
-        file (str | Path | IO | dict[str | Path | IO, str]): The file to open.
-        **kwargs (dict): Additional arguments to pass to `uproot.open`.
+    Alias for `uproot.open`.
 
     Returns:
         The uproot file object.
+
+    Warning:
+        This function is deprecated and will be removed in future versions.
+        Use `uproot.open` instread.
     """
-    wrap_uproot()
+    # TODO: Remove this in the future.
+    warn(
+        "`pybes3.open` is deprecated and will be removed in future versions. "
+        "Use `uproot.open` instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
     return uproot.open(file, **kwargs)
 
 
-def concatenate(files, branch: str, **kwargs) -> Any:
+def concatenate(files, expressions=None, cut=None, **kwargs) -> Any:
     """
-    A wrapper around `uproot.concatenate` that automatically calls `wrap_uproot` before concatenating the files.
-
-    Parameters:
-        files (list[str | Path | IO, str]): The files to concatenate.
-        branch (str): The branch to concatenate.
-        **kwargs (dict): Additional arguments to pass to `uproot.concatenate`.
+    Alias for `uproot.concatenate`.
 
     Returns:
         The concatenated array.
+
+    Warning:
+        This function is deprecated and will be removed in future versions.
+        Use `uproot.concatenate` instread.
     """
-    wrap_uproot()
-    return uproot.concatenate({str(f): branch for f in files}, **kwargs)
+    # TODO: Remove this in the future.
+    warn(
+        "`pybes3.concatenate` is deprecated and will be removed in future versions. "
+        "Use `uproot.concatenate` instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return uproot.concatenate(files, expressions, cut, **kwargs)
 
 
 def open_raw(file: str) -> RawBinaryReader:
@@ -53,4 +65,4 @@ def open_raw(file: str) -> RawBinaryReader:
     return RawBinaryReader(file)
 
 
-__all__ = ["open", "concatenate", "open_raw", "concatenate_raw", "wrap_uproot"]
+__all__ = ["open", "concatenate", "open_raw", "concatenate_raw"]

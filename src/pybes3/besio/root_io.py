@@ -11,10 +11,10 @@ import uproot.interpretation
 import uproot_custom
 from uproot_custom import (
     AsCustom,
+    BaseObjectFactory,
     EmptyFactory,
     Factory,
     PrimitiveFactory,
-    BaseObjectFactory,
     build_factory,
     regularize_object_path,
 )
@@ -332,32 +332,29 @@ class Bes3Interpretation(AsCustom):
         super().__init__(branch, context, simplify)
         self._typename = bes3_branch2types[regularize_object_path(branch.object_path)]
 
-    def basket_array(
+    def final_array(
         self,
-        data,
-        byte_offsets,
-        basket,
-        branch,
-        context,
-        cursor_offset,
+        basket_arrays,
+        entry_start,
+        entry_stop,
+        entry_offsets,
         library,
-        interp_options,
+        branch,
+        options,
     ):
-        raw_ak_layout = super().basket_array(
-            data,
-            byte_offsets,
-            basket,
-            branch,
-            context,
-            cursor_offset,
+        arr = super().final_array(
+            basket_arrays,
+            entry_start,
+            entry_stop,
+            entry_offsets,
             library,
-            interp_options,
+            branch,
+            options,
         )
-        raw_ak_arr = ak.Array(raw_ak_layout)
 
         # preprocess awkward array and return
         full_branch_path = regularize_object_path(branch.object_path)
-        return preprocess_subbranch(full_branch_path, raw_ak_arr)
+        return preprocess_subbranch(full_branch_path, arr)
 
     @property
     def typename(self) -> str:
@@ -373,35 +370,4 @@ class Bes3Interpretation(AsCustom):
         return f"AsBes3(TObjArray[{self.typename}])"
 
 
-##########################################################################################
-#                                       Wrappers
-##########################################################################################
-_is_uproot_interpretation_of_wrapped = False
-
-_uproot_interpretation_of = uproot.interpretation.identify.interpretation_of
-
-
-def bes_interpretation_of(
-    branch: uproot.behaviors.TBranch.TBranch, context: dict, simplify: bool = True
-) -> uproot.interpretation.Interpretation:
-    if not hasattr(branch, "parent"):
-        return _uproot_interpretation_of(branch, context, simplify)
-
-    if Bes3Interpretation.match_branch(branch, context, simplify):
-        return Bes3Interpretation(branch, context, simplify)
-
-    return _uproot_interpretation_of(branch, context, simplify)
-
-
-def wrap_uproot_interpretation():
-    global _is_uproot_interpretation_of_wrapped
-    if not _is_uproot_interpretation_of_wrapped:
-        _is_uproot_interpretation_of_wrapped = True
-        uproot.interpretation.identify.interpretation_of = bes_interpretation_of
-
-
-def wrap_uproot():
-    """
-    Wraps the uproot functions to use the BES interpretation.
-    """
-    wrap_uproot_interpretation()
+uproot.register_interpretation(Bes3Interpretation)

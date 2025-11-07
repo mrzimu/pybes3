@@ -8,7 +8,7 @@ check_numba_cache()
 
 from . import besio, detectors, tracks
 from ._version import __version__, version
-from .besio import concatenate, concatenate_raw, open, open_raw, wrap_uproot
+from .besio import concatenate, concatenate_raw, open, open_raw
 from .detectors import (
     emc_barrel_h1,
     emc_barrel_h2,

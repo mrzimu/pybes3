@@ -1,6 +1,4 @@
 ## besio
-::: pybes3.wrap_uproot
----
 ::: pybes3.open
 ---
 ::: pybes3.concatenate
