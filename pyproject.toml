@@ -3,24 +3,6 @@ requires = ["scikit-build-core", "pybind11==3.0.*", "uproot-custom==2.1.*"]
 build-backend = "scikit_build_core.build"
 
 [project]
-optional-dependencies = { "all" = [
-    "black",
-    "pytest",
-    "pyarrow",
-    "pandas",
-    "build",
-    "twine",
-    "mkdocs",
-    "mkdocs-material",
-    "mkdocstrings",
-    "mkdocstrings-python",
-], "docs" = [
-    "mkdocs",
-    "mkdocs-material",
-    "mkdocstrings",
-    "mkdocstrings-python",
-] }
-
 name = "pybes3"
 authors = [{ name = "Mingrun Li", email = "mrun_lee@foxmail.com" }]
 description = "Unofficial Python module for BES3"
@@ -69,3 +51,22 @@ target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
 
 [tool.cibuildwheel]
 build = ["cp*-manylinux_x86_64", "cp*-macosx_arm64", "cp*-win_amd64"]
+
+[dependency-groups]
+dev = [
+    "black",
+    "pytest",
+    "pyarrow",
+    "pandas",
+    "build",
+    "twine",
+]
+docs = [
+    "mkdocs",
+    "mkdocs-material",
+    "mkdocstrings",
+    "mkdocstrings-python",
+]
+
+[tool.uv]
+default-groups = "all"
