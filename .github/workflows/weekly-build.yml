@@ -1,0 +1,10 @@
+name: Weekly build
+
+on:
+  schedule:
+    - cron: "0 12 * * 5"  # Runs every Friday at 12:00 UTC (20:00 Beijing Time)
+  workflow_dispatch:
+
+jobs:
+  nightly:
+    uses: ./.github/workflows/build-wheels.yml
