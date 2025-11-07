@@ -95,9 +95,10 @@ A very common case is to read helix parameters from a BES3 file, and create a he
 
 ```python
 import pybes3 as p3
+import uproot
 
 # Open a BES3 file and read the helix parameters
-dst_evt = p3.open("test.dst")["Event/TDstEvent"]
+dst_evt = uproot.open("test.dst")["Event/TDstEvent"]
 mdc_trks = dst_evt["m_mdcTrackCol"].array()
 
 # Extract the helix parameters and error matrix
