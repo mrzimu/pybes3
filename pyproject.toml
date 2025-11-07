@@ -11,7 +11,7 @@ dependencies = [
     "uproot>=5.6.8",
     "awkward",
     "numba",
-    "vector", # TODO: remove this constraint when vector 1.7.0 is fixed
+    "vector!=1.7.0", # TODO: remove this constraint when vector 1.7.0 is fixed
     "uproot-custom==2.1.*",
 ]
 readme = "README.md"
