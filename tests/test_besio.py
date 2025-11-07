@@ -7,11 +7,6 @@ import pytest
 import uproot
 
 import pybes3
-import pybes3.besio as besio
-
-besio.wrap_uproot()
-
-data_dir = Path(__file__).parent / "data"
 
 
 class CompareResult(NamedTuple):
@@ -116,7 +111,7 @@ def compare_ak(arr1: ak.Array, arr2: ak.Array, item_path: str = "") -> list[Comp
             raise e
 
 
-def test_uproot_branches():
+def test_uproot_branches(data_dir):
     f_full = uproot.open(data_dir / "test_full_mc_evt_1.rtraw")
     assert len(f_full["Event/TMcEvent"].branches) == 6
 
@@ -124,7 +119,7 @@ def test_uproot_branches():
     assert len(f_only_mc_particles["Event/TMcEvent"].branches) == 6
 
 
-def test_mc_full():
+def test_mc_full(data_dir):
     f_rtraw = uproot.open(data_dir / "test_full_mc_evt_1.rtraw")
     truth_arr = ak.from_parquet(data_dir / "test_full_mc_evt_1.rtraw.parquet")
     arr = f_rtraw["Event"].arrays()
@@ -133,7 +128,7 @@ def test_mc_full():
     assert all(r.is_same for r in comp_res)
 
 
-def test_mc_only_particles():
+def test_mc_only_particles(data_dir):
     f_rtraw = uproot.open(data_dir / "test_only_mc_particles.rtraw")
     truth_arr = ak.from_parquet(data_dir / "test_only_mc_particles.rtraw.parquet")
     arr = f_rtraw["Event"].arrays()
@@ -142,7 +137,7 @@ def test_mc_only_particles():
     assert all(r.is_same for r in comp_res)
 
 
-def test_dst():
+def test_dst(data_dir):
     f_dst = uproot.open(data_dir / "test_full_mc_evt_1.dst")
     truth_arr = ak.from_parquet(data_dir / "test_full_mc_evt_1.dst.parquet")
     arr = f_dst["Event"].arrays()
@@ -151,7 +146,7 @@ def test_dst():
     assert all(r.is_same for r in comp_res)
 
 
-def test_rec():
+def test_rec(data_dir):
     f_rec = uproot.open(data_dir / "test_full_mc_evt_1.rec")
     truth_arr = ak.from_parquet(data_dir / "test_full_mc_evt_1.rec.parquet")
     arr = f_rec["Event"].arrays()
@@ -160,7 +155,7 @@ def test_rec():
     assert all(r.is_same for r in comp_res)
 
 
-def test_cgem_rtraw():
+def test_cgem_rtraw(data_dir):
     f_rtraw = uproot.open(data_dir / "test_cgem.rtraw")
     truth_arr = ak.from_parquet(data_dir / "test_cgem.rtraw.parquet")
     arr = f_rtraw["Event"].arrays()
@@ -169,7 +164,7 @@ def test_cgem_rtraw():
     assert all(r.is_same for r in comp_res)
 
 
-def test_cgem_dst():
+def test_cgem_dst(data_dir):
     f_dst = uproot.open(data_dir / "test_cgem.dst")
     truth_arr = ak.from_parquet(data_dir / "test_cgem.dst.parquet")
     arr = f_dst["Event"].arrays()
@@ -178,7 +173,7 @@ def test_cgem_dst():
     assert all(r.is_same for r in comp_res)
 
 
-def test_cgem_rec():
+def test_cgem_rec(data_dir):
     f_dst = uproot.open(data_dir / "test_cgem.rec")
     truth_arr = ak.from_parquet(data_dir / "test_cgem.rec.parquet")
     arr = f_dst["Event"].arrays()
@@ -187,7 +182,7 @@ def test_cgem_rec():
     assert all(r.is_same for r in comp_res)
 
 
-def test_uproot_concatenate():
+def test_uproot_concatenate(data_dir):
     arr_concat1 = uproot.concatenate(
         {
             data_dir / "test_full_mc_evt_1.rtraw": "Event",
@@ -205,29 +200,7 @@ def test_uproot_concatenate():
     assert len(arr_concat2) == 20
 
 
-def test_bes_open():
-    f = besio.open(data_dir / "test_full_mc_evt_1.rtraw")
-    assert len(f["Event/TMcEvent"].branches) == 6
-
-    f = besio.open(data_dir / "test_only_mc_particles.rtraw")
-    assert len(f["Event/TMcEvent"].branches) == 6
-
-
-def test_bes_concatenate():
-    arr_concat1 = besio.concatenate(
-        [data_dir / "test_full_mc_evt_1.rtraw", data_dir / "test_full_mc_evt_2.rtraw"],
-        "Event/TMcEvent",
-    )
-    assert len(arr_concat1) == 20
-
-    arr_concat2 = besio.concatenate(
-        [data_dir / "test_full_mc_evt_1.rtraw", data_dir / "test_full_mc_evt_2.rtraw"],
-        "Event/TMcEvent/m_mcParticleCol",
-    )
-    assert len(arr_concat2) == 20
-
-
-def test_symetric_matrix_expansion():
+def test_symetric_matrix_expansion(data_dir):
     def test_symetric_matrix(arr):
         arr = ak.flatten(arr)
         n_dim = int(arr.typestr.split("*")[-2].strip())
@@ -259,7 +232,7 @@ def test_symetric_matrix_expansion():
         test_symetric_matrix(tmp_arr)
 
 
-def test_digi_expand_TRawData():
+def test_digi_expand_TRawData(data_dir):
     f_rec = uproot.open(data_dir / "test_full_mc_evt_1.rec")
     arr_digi = f_rec["Event/TDigiEvent"].arrays()
     for field in arr_digi.fields:

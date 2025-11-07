@@ -1,5 +1,5 @@
 [build-system]
-requires = ["scikit-build-core", "pybind11>=2.10.0", "uproot-custom==2.0.*"]
+requires = ["scikit-build-core", "pybind11==3.0.*", "uproot-custom==2.1.*"]
 build-backend = "scikit_build_core.build"
 
 [project]
@@ -26,11 +26,11 @@ authors = [{ name = "Mingrun Li", email = "mrun_lee@foxmail.com" }]
 description = "Unofficial Python module for BES3"
 requires-python = ">=3.9, <3.14"
 dependencies = [
-    "uproot>=5.3.8",
+    "uproot>=5.6.8",
     "awkward",
     "numba",
-    "vector",
-    "uproot-custom==2.0.*",
+    "vector!=1.7.0", # TODO: remove this constraint when vector 1.7.0 is fixed
+    "uproot-custom==2.1.*",
 ]
 readme = "README.md"
 dynamic = ["version"]

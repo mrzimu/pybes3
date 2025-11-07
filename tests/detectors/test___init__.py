@@ -1,13 +1,9 @@
-from pathlib import Path
-
 import awkward as ak
 import numpy as np
+import uproot
 
 import pybes3 as p3
 import pybes3.detectors as det
-
-data_dir = Path(__file__).parent.parent / "data"
-rtraw_event = p3.open(data_dir / "test_full_mc_evt_1.rtraw")["Event/TDigiEvent"].arrays()
 
 
 def test_mdc_parse_gid():
@@ -50,7 +46,7 @@ def test_mdc_parse_gid():
     ]
 
 
-def test_parse_mdc_digi_id():
+def test_parse_mdc_digi_id(rtraw_event):
     mdc_id_ak: ak.Array = rtraw_event["m_mdcDigiCol"]["m_intId"]
     mdc_fields = [
         "gid",
@@ -109,7 +105,7 @@ def test_parse_mdc_digi_id():
     assert ak.all(ak_res2["is_stereo"] == is_stereo_ak)
 
 
-def test_parse_mdc_digi():
+def test_parse_mdc_digi(rtraw_event):
     mdc_digi_ak: ak.Record = rtraw_event["m_mdcDigiCol"]
     base_fields = [
         "gid",
@@ -174,7 +170,7 @@ def test_parse_emc_gid():
     assert list(np_res2.keys()) == ["gid", "part", "theta", "phi"]
 
 
-def test_parse_emc_digi_id():
+def test_parse_emc_digi_id(rtraw_event):
     emc_id_ak: ak.Array = rtraw_event["m_emcDigiCol"]["m_intId"]
     emc_fields = [
         "gid",
@@ -229,7 +225,7 @@ def test_parse_emc_digi_id():
     assert ak.all(ak_res2["phi"] == phi_ak)
 
 
-def test_parse_emc_digi():
+def test_parse_emc_digi(rtraw_event):
     emc_digi_ak: ak.Record = rtraw_event["m_emcDigiCol"]
     base_fields = [
         "gid",
@@ -261,8 +257,8 @@ def test_parse_emc_digi():
     assert len(ak_res2.positional_axis) == 2
 
 
-def test_parse_tof_digi_id():
-    tof_id_ak: ak.Array = p3.open(data_dir / "test_mrpc.rtraw")[
+def test_parse_tof_digi_id(data_dir):
+    tof_id_ak: ak.Array = uproot.open(data_dir / "test_mrpc.rtraw")[
         "Event/TDigiEvent/m_tofDigiCol"
     ].array()["m_intId"]
 
@@ -321,8 +317,8 @@ def test_parse_tof_digi_id():
     assert int_res2["end"] == end_np[0]
 
 
-def test_parse_muc_digi_id():
-    muc_id_ak: ak.Array = p3.open(data_dir / "test_full_mc_evt_1.rtraw")[
+def test_parse_muc_digi_id(data_dir):
+    muc_id_ak: ak.Array = uproot.open(data_dir / "test_full_mc_evt_1.rtraw")[
         "Event/TDigiEvent/m_mucDigiCol"
     ].array()["m_intId"]
 
@@ -395,8 +391,8 @@ def test_parse_muc_digi_id():
     assert np.all(np_res1["strip"] == strip_np)
 
 
-def test_parse_cgem_digi_id():
-    cgem_id_ak: ak.Array = p3.open(data_dir / "test_cgem.rtraw")[
+def test_parse_cgem_digi_id(data_dir):
+    cgem_id_ak: ak.Array = uproot.open(data_dir / "test_cgem.rtraw")[
         "Event/TDigiEvent/m_cgemDigiCol"
     ].array()["m_intId"]
 

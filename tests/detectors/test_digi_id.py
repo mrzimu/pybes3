@@ -1,17 +1,12 @@
-from pathlib import Path
-
 import awkward as ak
 import numpy as np
+import uproot
 
-import pybes3 as p3
 from pybes3 import detectors as det
 from pybes3.detectors import digi_id
 
-data_dir = Path(__file__).parent.parent / "data"
-rtraw_event = p3.open(data_dir / "test_full_mc_evt_1.rtraw")["Event/TDigiEvent"].arrays()
 
-
-def test_mdc_digi_id():
+def test_mdc_digi_id(rtraw_event):
     mdc_id_ak: ak.Array = rtraw_event["m_mdcDigiCol"]["m_intId"]
 
     # Test awkward
@@ -60,7 +55,7 @@ def test_mdc_digi_id():
     assert digi_id.check_mdc_id(tmp_id)
 
 
-def test_emc_digi_id():
+def test_emc_digi_id(rtraw_event):
     emc_id_ak: ak.Array = rtraw_event["m_emcDigiCol"]["m_intId"]
 
     # Test awkward
@@ -109,7 +104,7 @@ def test_emc_digi_id():
     assert digi_id.check_emc_id(tmp_id)
 
 
-def test_tof_digi_id():
+def test_tof_digi_id(rtraw_event):
     tof_id_ak: ak.Array = rtraw_event["m_tofDigiCol"]["m_intId"]
 
     # Test awkward
@@ -172,7 +167,7 @@ def test_tof_digi_id():
     assert digi_id.check_tof_id(tmp_id)
 
 
-def test_muc_digi_id():
+def test_muc_digi_id(rtraw_event):
     muc_id_ak: ak.Array = rtraw_event["m_mucDigiCol"]["m_intId"]
 
     # Test awkward
@@ -243,8 +238,8 @@ def test_muc_digi_id():
     assert digi_id.check_muc_id(tmp_id)
 
 
-def test_cgem_digi_id():
-    cgem_id_ak: ak.Array = p3.open(data_dir / "test_cgem.rtraw")[
+def test_cgem_digi_id(data_dir):
+    cgem_id_ak: ak.Array = uproot.open(data_dir / "test_cgem.rtraw")[
         "Event/TDigiEvent/m_cgemDigiCol"
     ].array()["m_intId"]
 
