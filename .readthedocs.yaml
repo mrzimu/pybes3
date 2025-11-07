@@ -6,7 +6,8 @@ build:
     python: "3.12"
   jobs:
     pre_install:
-      - pip install .[all]
+      - pip install uv
+      - uv sync --group docs
 
 mkdocs:
   configuration: mkdocs.yml
