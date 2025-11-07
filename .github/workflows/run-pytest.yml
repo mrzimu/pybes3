@@ -28,7 +28,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv sync --upgrade --all-groups
+          uv lock --upgrade
+          uv sync
 
       - name: Run tests
         run: |
