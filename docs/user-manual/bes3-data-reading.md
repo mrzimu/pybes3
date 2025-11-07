@@ -2,47 +2,42 @@
 
 ## Read ROOT file (rtraw, dst, rec)
 
-To make `uproot` know about BES3 ROOT files,  call `pybes3.wrap_uproot()` before opening any file:
+To make `uproot` know about BES3 ROOT files,  import `pybes3` before opening any file:
 
 ```python
+>>> import pybes3
 >>> import uproot
->>> import pybes3 as p3
->>> p3.wrap_uproot()
 ```
 
-Then, open file as using `uproot`:
+Then, open file using `uproot`:
 
 ```python
 >>> f = uproot.open("test.rtraw")
 >>> evt = f["Event"]
 ```
 
-There is a shorthand:
-
-```python
->>> import pybes3 as p3
->>> f = p3.open("test.rtraw") # will automatically call `pybes3.wrap_uproot()`
->>> evt = f["Event"]
-```
-
 Print information about this "event" tree:
 
 ```python
->>> evt.show(name_width=40)
-name                                     | typename                 | interpretation                
------------------------------------------+--------------------------+-------------------------------
-TEvtHeader                               | TEvtHeader               | AsGroup(<TBranchElement 'TE...
-TEvtHeader/m_eventId                     | int32_t                  | AsDtype('>i4')
-TEvtHeader/m_runId                       | int32_t                  | AsDtype('>i4')
+>>> evt.show(name_width=30)
+name                           | typename                 | interpretation                
+-------------------------------+--------------------------+-------------------------------
+TEvtHeader                     | TEvtHeader               | AsGroup(<TBranchElement 'TE...
+TEvtHeader/TObject             | unknown                  | <UnknownInterpretation 'non...
+TEvtHeader/m_eventId           | int32_t                  | AsDtype('>i4')
+TEvtHeader/m_runId             | int32_t                  | AsDtype('>i4')
 ...
-TMcEvent                                 | TMcEvent                 | AsGroup(<TBranchElement 'TM...
-TMcEvent/m_mdcMcHitCol                   | BES::TObjArray<TMdcMc>   | BES::As(BES::TObjArray<TMdc...
-TMcEvent/m_emcMcHitCol                   | BES::TObjArray<TEmcMc>   | BES::As(BES::TObjArray<TEmc...
-TMcEvent/m_tofMcHitCol                   | BES::TObjArray<TTofMc>   | BES::As(BES::TObjArray<TTof...
-TMcEvent/m_mucMcHitCol                   | BES::TObjArray<TMucMc>   | BES::As(BES::TObjArray<TMuc...
-TMcEvent/m_mcParticleCol                 | BES::TObjArray<TMcPar... | BES::As(BES::TObjArray<TMcP...
-TDigiEvent                               | TDigiEvent               | AsGroup(<TBranchElement 'TD...
-TDigiEvent/m_fromMc                      | bool                     | AsDtype('bool')
+TMcEvent                       | TMcEvent                 | AsGroup(<TBranchElement 'TM...
+TMcEvent/TObject               | unknown                  | <UnknownInterpretation 'non...
+TMcEvent/m_mdcMcHitCol         | TMdcMc                   | AsBes3(TObjArray[TMdcMc])
+TMcEvent/m_emcMcHitCol         | TEmcMc                   | AsBes3(TObjArray[TEmcMc])
+TMcEvent/m_tofMcHitCol         | TTofMc                   | AsBes3(TObjArray[TTofMc])
+TMcEvent/m_mucMcHitCol         | TMucMc                   | AsBes3(TObjArray[TMucMc])
+TMcEvent/m_mcParticleCol       | TMcParticle              | AsBes3(TObjArray[TMcParticle])
+TDigiEvent                     | TDigiEvent               | AsGroup(<TBranchElement 'TD...
+TDigiEvent/TObject             | unknown                  | <UnknownInterpretation 'non...
+TDigiEvent/m_fromMc            | bool                     | AsDtype('bool')
+TDigiEvent/m_mdcDigiCol        | TMdcDigi                 | AsBes3(TObjArray[TMdcDigi])
 ...
 ```
 
@@ -71,7 +66,7 @@ This indicates that in event 0, there are 12 MC particles. Their PDGIDs are `23,
 
 ---
 
-**It is recommended that only read the branches you need, otherwise your memory may overflow.** 
+**It is recommended that only read the branches you need.** 
 
 To read a specific branch (Note: use `array()` instead of `arrays()` here):
 

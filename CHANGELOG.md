@@ -1,3 +1,18 @@
+## v0.3.13
+
+* Add docs to help users avoid conflicts to `BOSS8` env by @mrzimu in https://github.com/mrzimu/pybes3/pull/25
+* chore: add action `nightly-build` by @mrzimu in https://github.com/mrzimu/pybes3/pull/27
+* chore: fix the nightly-build time by @mrzimu in https://github.com/mrzimu/pybes3/pull/28
+* chore: turn nightly build to weekly build by @mrzimu in https://github.com/mrzimu/pybes3/pull/29
+* chore: Adopt to uproot-custom v2.1.0 and uproot v5.6.8 by @mrzimu in https://github.com/mrzimu/pybes3/pull/26
+* chore: Use uv to mange development environment by @mrzimu in https://github.com/mrzimu/pybes3/pull/31
+
+## v0.3.12
+
+* Adapt uproot custom 2.0 by @mrzimu in https://github.com/mrzimu/pybes3/pull/22
+* Improve statement in `README.md` and docs pages by @mrzimu in https://github.com/mrzimu/pybes3/pull/23
+* Constraint: `numba<0.62` by @mrzimu in https://github.com/mrzimu/pybes3/pull/24
+
 ## v0.3.11
 
 * Support `TRecCgemCluster` reading without any streamer information.

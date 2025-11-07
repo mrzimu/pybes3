@@ -78,7 +78,6 @@ A simple benchmark is provided to compare the performance of `pybes3` and `BOSS8
     ```python
     import uproot
     import pybes3
-    pybes3.wrap_uproot()
 
     n_evt = ... # number of events to read
     files = [...] # list of ROOT files to read
