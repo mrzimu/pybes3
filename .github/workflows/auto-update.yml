@@ -44,4 +44,4 @@ jobs:
       - name: Merge Pull Request
         if: steps.cpr.outputs.pull-request-number != ''
         run: |
-          gh pr merge ${{ steps.cpr.outputs.pull-request-number }} --squash --admin --delete-branch
+          gh pr merge ${{ steps.cpr.outputs.pull-request-number }} --squash --auto --delete-branch
