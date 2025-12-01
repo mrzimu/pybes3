@@ -1,4 +1,4 @@
-name: Update pre-commit
+name: Run pre-commit
 
 on:
   push:
