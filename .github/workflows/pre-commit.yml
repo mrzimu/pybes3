@@ -19,7 +19,7 @@ jobs:
           python-version: '3.13'
 
       - name: Install pre-commit
-        run: pip install pre-commit
+        run: uv pip install pre-commit
 
       - name: Run pre-commit
         run: pre-commit run --all-files
