@@ -41,8 +41,9 @@ jobs:
           author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
           branch: auto-update/pre-commit-uv
 
-      - name: Enable Pull Request Automerge
-        uses: peter-evans/enable-pull-request-automerge@v3
-        with:
-          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
-          merge-method: squash
+      - name: Merge Pull Request
+        env:
+          GH_TOKEN: ${{ github.token }}
+        if: steps.cpr.outputs.pull-request-number != ''
+        run: |
+          gh pr merge ${{ steps.cpr.outputs.pull-request-number }} --squash --auto --delete-branch
