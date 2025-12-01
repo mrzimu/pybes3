@@ -42,6 +42,8 @@ jobs:
           branch: auto-update/pre-commit-uv
 
       - name: Merge Pull Request
+        env:
+          GH_TOKEN: ${{ github.token }}
         if: steps.cpr.outputs.pull-request-number != ''
         run: |
           gh pr merge ${{ steps.cpr.outputs.pull-request-number }} --squash --auto --delete-branch
