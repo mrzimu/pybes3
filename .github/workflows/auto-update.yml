@@ -1,0 +1,46 @@
+name: Update pre-commit and uv lock
+
+on:
+  workflow_dispatch:
+  schedule:
+    # update hooks
+    - cron: 0 12 1 * *
+
+permissions:
+  contents: write
+
+jobs:
+  pre-commit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          python-version: '3.13'
+
+      - name: Install pre-commit
+        run: uv pip install pre-commit
+
+      - name: Update pre-commit hooks
+        run: pre-commit autoupdate
+
+      - name: Update uv lock
+        run: |
+          uv lock --upgrade
+          uv sync --all-groups
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v7
+        id: cpr
+        with:
+          title: 'chore: auto-update pre-commit hooks and uv lock'
+          commit-message: auto-update pre-commit hooks and uv lock
+          committer: GitHub
+          author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+
+      - name: Enable Pull Request Automerge
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+          merge-method: squash

@@ -3,7 +3,7 @@ build-backend = "scikit_build_core.build"
 requires = ["scikit-build-core", "pybind11==3.0.*", "uproot-custom==2.1.*"]
 
 [dependency-groups]
-dev = ["black", "pytest", "pyarrow", "pandas", "build", "twine"]
+dev = ["black", "pytest", "pyarrow", "pandas", "build", "twine", "pre-commit"]
 docs = ["mkdocs", "mkdocs-material", "mkdocstrings", "mkdocstrings-python"]
 
 [project]
