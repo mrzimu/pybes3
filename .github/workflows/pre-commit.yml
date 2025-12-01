@@ -1,13 +1,12 @@
-name: Update pre-commit
+name: Run pre-commit
 
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
-  schedule:
-    # update hooks
-    - cron: 0 0 1 * *
+  workflow_dispatch:
+  workflow_call:
 
 jobs:
   pre-commit:
@@ -15,24 +14,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
+      - uses: astral-sh/setup-uv@v5
         with:
           python-version: '3.13'
 
       - name: Install pre-commit
         run: pip install pre-commit
 
-      - name: Run pre-commit autoupdate
-        if: github.event_name == 'schedule'
-        run: |
-          pre-commit autoupdate
-          git config --local user.email "action@github.com"
-          git config --local user.name "GitHub Action"
-          git add .pre-commit-config.yaml
-          git commit -m "chore: update pre-commit hooks" || exit 0
-          git push
-
       - name: Run pre-commit
-        if: github.event_name != 'schedule'
         run: pre-commit run --all-files
