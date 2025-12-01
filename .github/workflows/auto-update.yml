@@ -36,7 +36,7 @@ jobs:
         with:
           title: 'chore: auto-update pre-commit hooks and uv lock'
           commit-message: auto-update pre-commit hooks and uv lock
-          committer: GitHub
+          committer: github-actions[bot] ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
           author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
 
       - name: Enable Pull Request Automerge
