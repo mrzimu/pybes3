@@ -7,10 +7,11 @@ on:
     - cron: 0 12 1 * *
 
 permissions:
+  pull-requests: write
   contents: write
 
 jobs:
-  pre-commit:
+  auto-update:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -36,8 +37,9 @@ jobs:
         with:
           title: 'chore: auto-update pre-commit hooks and uv lock'
           commit-message: auto-update pre-commit hooks and uv lock
-          committer: GitHub
+          committer: github-actions[bot] ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
           author: ${{ github.actor }} <${{ github.actor_id }}+${{ github.actor }}@users.noreply.github.com>
+          branch: auto-update/pre-commit-uv
 
       - name: Enable Pull Request Automerge
         uses: peter-evans/enable-pull-request-automerge@v3
