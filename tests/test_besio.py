@@ -232,6 +232,12 @@ def test_symetric_matrix_expansion(data_dir):
         test_symetric_matrix(tmp_arr)
 
 
+def test_bes3_tobjarray_factory_dask(data_dir):
+    dask_arr = uproot.dask({data_dir / "test_full_mc_evt_1.rtraw": "Event/m_mdcDigiCol"})
+
+    dask_arr.compute()
+
+
 def test_symetric_matrix_expansion_dask(data_dir):
     dask_arr = uproot.dask(
         {data_dir / "test_full_mc_evt_1.dst": "Event/TDstEvent/m_mdcTrackCol"}
