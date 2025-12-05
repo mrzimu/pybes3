@@ -8,12 +8,13 @@ import uproot
 import uproot.behaviors.TBranch
 import uproot.extras
 import uproot.interpretation
-import uproot_custom
+import uproot_custom.cpp
 from uproot_custom import (
+    AnyClassFactory,
     AsCustom,
-    BaseObjectFactory,
     EmptyFactory,
     Factory,
+    GroupFactory,
     PrimitiveFactory,
     build_factory,
     regularize_object_path,
@@ -109,7 +110,7 @@ class Bes3TObjArrayFactory(Factory):
 
         return cls(
             name=cur_streamer_info["fName"],
-            element_factory=BaseObjectFactory(
+            element_factory=AnyClassFactory(
                 name=obj_typename,
                 sub_factories=sub_factories,
             ),
@@ -134,6 +135,44 @@ class Bes3TObjArrayFactory(Factory):
     def make_awkward_form(self):
         element_form = self.element_factory.make_awkward_form()
         return awkward.forms.ListOffsetForm("i64", element_form)
+
+
+class Bes3BaseObjectFactory(GroupFactory):
+    @classmethod
+    def priority(cls):
+        return 40
+
+    @classmethod
+    def build_factory(
+        cls,
+        top_type_name,
+        cls_streamer_info,
+        all_streamer_info,
+        item_path,
+        **kwargs,
+    ):
+        if top_type_name != "BASE":
+            return None
+
+        fType = cls_streamer_info["fType"]
+        if fType != 0:
+            return None
+
+        # limit to bes3 relevant branches
+        if all(k not in item_path for k in bes3_branch2types.keys()):
+            return None
+
+        fName = cls_streamer_info["fName"]
+        sub_streamers: list[dict] = all_streamer_info[fName]
+        sub_factories = [build_factory(s, all_streamer_info, item_path) for s in sub_streamers]
+
+        return cls(name=fName, sub_factories=sub_factories)
+
+    def build_cpp_reader(self):
+        sub_readers = [s.build_cpp_reader() for s in self.sub_factories]
+        # In TObjArray, base class always contains fNBytes+fVersion header,
+        # so use `AnyClassReader` instead of `GroupReader` to read it.
+        return uproot_custom.cpp.AnyClassReader(self.name, sub_readers)
 
 
 class Bes3CgemClusterColFactory(Factory):
@@ -265,6 +304,7 @@ uproot_custom.registered_factories |= {
     Bes3TObjArrayFactory,
     Bes3SymMatrixArrayFactory,
     Bes3CgemClusterColFactory,
+    Bes3BaseObjectFactory,
 }
 
 

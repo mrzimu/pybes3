@@ -1,9 +1,18 @@
 [build-system]
 build-backend = "scikit_build_core.build"
-requires = ["scikit-build-core", "pybind11==3.0.*", "uproot-custom==2.1.*"]
+requires = ["scikit-build-core", "pybind11==3.0.*", "uproot-custom>=2.1.1,<2.2"]
 
 [dependency-groups]
-dev = ["black", "pytest", "pyarrow", "pandas", "build", "twine", "pre-commit"]
+dev = [
+  "black",
+  "pytest",
+  "pyarrow",
+  "pandas",
+  "build",
+  "twine",
+  "pre-commit",
+  "ipykernel"
+]
 docs = ["mkdocs", "mkdocs-material", "mkdocstrings", "mkdocstrings-python"]
 
 [project]
@@ -28,7 +37,7 @@ dependencies = [
   "awkward",
   "numba",
   "vector!=1.7.0",  # TODO: remove this constraint when vector 1.7.0 is fixed
-  "uproot-custom==2.1.*"
+  "uproot-custom>=2.1.1,<2.2"
 ]
 description = "Unofficial Python module for BES3"
 dynamic = ["version"]
