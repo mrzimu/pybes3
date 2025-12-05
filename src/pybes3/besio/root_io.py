@@ -222,6 +222,11 @@ class Bes3CgemClusterColFactory(Factory):
             awkward.contents.RecordArray(record_contents, list(raw_data.keys())),
         )
 
+    def make_awkward_form(self):
+        raise NotImplementedError(
+            "make_awkward_form is not implemented for Bes3CgemClusterColFactory"
+        )
+
 
 class Bes3SymMatrixArrayFactory(Factory):
     target_items = {
@@ -298,6 +303,9 @@ class Bes3SymMatrixArrayFactory(Factory):
                 self.full_dim,
             )
         )
+
+    def make_awkward_form(self):
+        return awkward.forms.NumpyForm("float64", inner_shape=[self.full_dim, self.full_dim])
 
 
 uproot_custom.registered_factories |= {

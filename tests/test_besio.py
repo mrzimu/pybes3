@@ -232,6 +232,14 @@ def test_symetric_matrix_expansion(data_dir):
         test_symetric_matrix(tmp_arr)
 
 
+def test_symetric_matrix_expansion_dask(data_dir):
+    dask_arr = uproot.dask(
+        {data_dir / "test_full_mc_evt_1.dst": "Event/TDstEvent/m_mdcTrackCol"}
+    )
+
+    dask_arr.compute()
+
+
 def test_digi_expand_TRawData(data_dir):
     f_rec = uproot.open(data_dir / "test_full_mc_evt_1.rec")
     arr_digi = f_rec["Event/TDigiEvent"].arrays()
