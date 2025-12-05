@@ -24,6 +24,9 @@ class Bes3TObjArrayReader : public IReader {
         , m_offsets( make_shared_vector<uint32_t>( 1, 0 ) ) {}
 
     void read( BinaryBuffer& bparser ) override {
+        debug_printf( "Bes3TObjArrayReader %s: reading...\n", m_name.c_str() );
+        debug_printf( bparser );
+
         bparser.skip_fNBytes();
         bparser.skip_fVersion();
         bparser.skip_fVersion();
@@ -37,7 +40,13 @@ class Bes3TObjArrayReader : public IReader {
         m_offsets->push_back( m_offsets->back() + fSize );
         for ( uint32_t i = 0; i < fSize; i++ )
         {
+
             bparser.skip_obj_header();
+
+            debug_printf( "Bes3TObjArrayReader %s: skipped obj header of %d element\n",
+                          m_name.c_str(), i );
+            debug_printf( bparser );
+
             m_element_reader->read( bparser );
         }
     }
