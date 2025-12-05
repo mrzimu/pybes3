@@ -11,7 +11,9 @@ dev = [
   "build",
   "twine",
   "pre-commit",
-  "ipykernel"
+  "ipykernel",
+  "dask-awkward",
+  "dask[complete]"
 ]
 docs = ["mkdocs", "mkdocs-material", "mkdocstrings", "mkdocstrings-python"]
 
