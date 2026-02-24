@@ -11,6 +11,7 @@ import awkward.contents
 import awkward.index
 import numpy as np
 
+from ._reid import convert_reid_to_teid
 from .besio_cpp import read_bes_raw
 
 
@@ -103,6 +104,7 @@ class RawBinaryReader:
         n_block_per_batch: int = 1000,
         sub_detectors: Optional[list[str]] = None,
         max_workers: Optional[int] = None,
+        decode_reid: bool = True,
     ) -> ak.Array:
         """
         Read and return arrays of data from the BES raw file.
@@ -112,6 +114,10 @@ class RawBinaryReader:
             n_block_per_batch (int, optional): The number of blocks to read per batch. Defaults to 1000.
             sub_detectors (Optional[list[str]]): List of sub-detectors to read. Defaults to `None`, which means read all sub-detectors.
             max_workers (Optional[int]): The maximum number of worker threads to use for reading the data. Defaults to `None`, which means use the default number of worker threads.
+            decode_reid (bool, optional): If True (default), convert raw electronics IDs
+                (REID) to standard detector geometry IDs (digi_id / TEID) so that
+                functions in :mod:`pybes3.detectors.digi_id` can be used directly
+                on the ``id`` field.  Set to False to keep the original REID values.
 
         Returns:
             An Awkward Array containing the read data.
@@ -143,6 +149,8 @@ class RawBinaryReader:
         res = []
         for future in futures:
             org_dict = future.result()
+            if decode_reid:
+                convert_reid_to_teid(org_dict)
             res.append(_raw_dict_to_ak(org_dict))
 
         return ak.concatenate(res)
@@ -272,6 +280,7 @@ def concatenate(
     sub_detectors: Optional[list[str]] = None,
     max_workers: Optional[int] = None,
     verbose: bool = False,
+    decode_reid: bool = True,
 ) -> ak.Array:
     """
     Concatenate multiple raw binary files into `ak.Array`
@@ -282,6 +291,9 @@ def concatenate(
         sub_detectors (Optional[list[str]]): List of sub-detectors to read. Defaults to `None`, which means read all sub-detectors.
         max_workers (Optional[int]): The maximum number of worker threads to use for reading the data. Defaults to `None`, which means use the default number of worker threads.
         verbose (bool): Show reading process.
+        decode_reid (bool, optional): If True (default), convert raw electronics IDs
+            (REID) to standard detector geometry IDs (digi_id / TEID).
+            Set to False to keep the original REID values.
 
     Returns:
         Concatenated raw data array.
@@ -301,7 +313,9 @@ def concatenate(
             print(f"\rreading file {i+1}/{len(files)} ...", end="")
 
         res.append(
-            RawBinaryReader(f).arrays(-1, n_block_per_batch, sub_detectors, max_workers)
+            RawBinaryReader(f).arrays(
+                -1, n_block_per_batch, sub_detectors, max_workers, decode_reid
+            )
         )
 
     if verbose:

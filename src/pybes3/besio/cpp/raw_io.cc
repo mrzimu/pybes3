@@ -253,9 +253,9 @@ void RawBinaryParser::fill_digi( const std::vector<uint32_t>& tmp_data,
         for ( auto digi : tmp_data )
         {
             uint16_t signal_value = digi & 0xFFFF;
-            uint16_t overflow     = ( digi >> 16 ) & 0x1;
-            uint16_t t_or_q       = ( digi >> 17 ) & 0x1;
-            uint16_t id           = digi >> 18;
+            uint16_t overflow     = ( digi & 0x10000 ) >> 16;
+            uint16_t t_or_q       = ( digi & 0x20000 ) >> 17;
+            uint16_t id           = ( digi & 0xFFFC0000 ) >> 18;
 
             digi_data[id][t_or_q] = signal_value;
             digi_data[id][2] |= overflow;
@@ -280,10 +280,10 @@ void RawBinaryParser::fill_digi( const std::vector<uint32_t>& tmp_data,
         std::map<uint16_t, std::array<uint16_t, 3>> digi_data; // t, q, overflow
         for ( auto digi : tmp_data )
         {
-            uint16_t signal_value = digi & 0xFFFF;
-            uint16_t overflow     = ( digi >> 16 ) & 0x1;
-            uint16_t t_or_q       = ( digi >> 17 ) & 0x1;
-            uint16_t id           = ( digi >> 18 ) & 0x3FF;
+            uint16_t signal_value = digi & 0x7FFF;
+            uint16_t overflow     = ( digi & 0x80000 ) >> 19;
+            uint16_t t_or_q       = ( digi & 0x100000 ) >> 20;
+            uint16_t id           = ( digi & 0x7FE00000 ) >> 21;
 
             digi_data[id][t_or_q] = signal_value;
             digi_data[id][2] |= overflow;
@@ -309,9 +309,9 @@ void RawBinaryParser::fill_digi( const std::vector<uint32_t>& tmp_data,
         for ( auto digi : tmp_data )
         {
             uint16_t adc     = digi & 0x7FF;
-            uint16_t measure = ( digi >> 11 ) & 0x3;
-            uint16_t tdc     = ( digi >> 13 ) & 0x7F;
-            uint16_t id      = digi >> 19;
+            uint16_t measure = ( digi & 0x1800 ) >> 11;
+            uint16_t tdc     = ( digi & 0x7E000 ) >> 13;
+            uint16_t id      = ( digi & 0xFFF80000 ) >> 19;
 
             data_id.push_back( id );
             data_t.push_back( tdc );
