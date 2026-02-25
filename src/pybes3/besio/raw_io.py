@@ -1,10 +1,9 @@
 from __future__ import annotations
 
+import enum
 import glob
 from concurrent.futures import Future, ThreadPoolExecutor
-from dataclasses import dataclass
 from pathlib import Path
-from typing import Optional, Union
 
 import awkward as ak
 import awkward.contents
@@ -15,8 +14,7 @@ from ._reid import convert_reid_to_teid
 from .besio_cpp import read_bes_raw
 
 
-@dataclass
-class BesFlag:
+class BesFlag(enum.IntEnum):
     FILE_START = 0x1234AAAA
     FILE_NAME = 0x1234AABB
     RUN_PARAMS = 0x1234BBBB
@@ -31,7 +29,7 @@ class BesFlag:
     ROD = 0xEE1234EE
 
 
-def _raw_dict_to_ak(raw_dict: dict):
+def _raw_dict_to_ak(raw_dict: dict[str, object]) -> ak.Array:
     contents = {}
 
     for field_name, org_data in raw_dict.items():
@@ -98,12 +96,15 @@ class RawBinaryReader:
 
         self._preprocess_file()
 
+    def close(self) -> None:
+        self._file.close()
+
     def arrays(
         self,
         n_blocks: int = -1,
         n_block_per_batch: int = 1000,
-        sub_detectors: Optional[list[str]] = None,
-        max_workers: Optional[int] = None,
+        sub_detectors: list[str] | None = None,
+        max_workers: int | None = None,
         decode_reid: bool = True,
     ) -> ak.Array:
         """
@@ -112,8 +113,8 @@ class RawBinaryReader:
         Parameters:
             n_blocks (int, optional): The number of blocks to read. Defaults to -1, which means read all blocks.
             n_block_per_batch (int, optional): The number of blocks to read per batch. Defaults to 1000.
-            sub_detectors (Optional[list[str]]): List of sub-detectors to read. Defaults to `None`, which means read all sub-detectors.
-            max_workers (Optional[int]): The maximum number of worker threads to use for reading the data. Defaults to `None`, which means use the default number of worker threads.
+            sub_detectors (list[str] | None): List of sub-detectors to read. Defaults to `None`, which means read all sub-detectors.
+            max_workers (int | None): The maximum number of worker threads to use for reading the data. Defaults to `None`, which means use the default number of worker threads.
             decode_reid (bool, optional): If True (default), convert raw electronics IDs
                 (REID) to standard detector geometry IDs (digi_id / TEID) so that
                 functions in :mod:`pybes3.detectors.digi_id` can be used directly
@@ -128,30 +129,29 @@ class RawBinaryReader:
         if sub_detectors is None:
             sub_detectors = []
 
-        executor = ThreadPoolExecutor(max_workers=max_workers)
+        with ThreadPoolExecutor(max_workers=max_workers) as executor:
+            n_total_blocks_read = 0
 
-        n_total_blocks_read = 0
+            futures: list[Future] = []
+            while n_total_blocks_read < n_blocks or (
+                n_blocks == -1 and self._file.tell() < self.data_end
+            ):
+                n_block_to_read = (
+                    min(n_blocks - n_total_blocks_read, n_block_per_batch)
+                    if n_blocks != -1
+                    else n_block_per_batch
+                )
 
-        futures: list[Future] = []
-        while n_total_blocks_read < n_blocks or (
-            n_blocks == -1 and self._file.tell() < self.data_end
-        ):
-            n_block_to_read = (
-                min(n_blocks - n_total_blocks_read, n_block_per_batch)
-                if n_blocks != -1
-                else n_block_per_batch
-            )
+                batch_data, n_read = self._read_batch(n_block_to_read)
+                futures.append(executor.submit(read_bes_raw, batch_data, sub_detectors))
+                n_total_blocks_read += n_read
 
-            batch_data, n_read = self._read_batch(n_block_to_read)
-            futures.append(executor.submit(read_bes_raw, batch_data, sub_detectors))
-            n_total_blocks_read += n_read
-
-        res = []
-        for future in futures:
-            org_dict = future.result()
-            if decode_reid:
-                convert_reid_to_teid(org_dict)
-            res.append(_raw_dict_to_ak(org_dict))
+            res = []
+            for future in futures:
+                org_dict = future.result()
+                if decode_reid:
+                    convert_reid_to_teid(org_dict)
+                res.append(_raw_dict_to_ak(org_dict))
 
         return ak.concatenate(res)
 
@@ -212,11 +212,11 @@ class RawBinaryReader:
 
         self._reset_cursor()
 
-    def _reset_cursor(self):
+    def _reset_cursor(self) -> None:
         self._file.seek(self.data_start)
         self.current_entry = 0
 
-    def _skip_event(self):
+    def _skip_event(self) -> None:
         flag = self._read()
         if flag == BesFlag.DATA_SEPERATOR:
             self._skip(3)
@@ -235,7 +235,7 @@ class RawBinaryReader:
         self._skip(total_size - 2)
         self.current_entry += 1
 
-    def _read_batch(self, n_blocks: int):
+    def _read_batch(self, n_blocks: int) -> tuple[np.ndarray, int]:
         pos_start = self._file.tell()
         block_counter = 0
         for _ in range(n_blocks):
@@ -256,6 +256,12 @@ class RawBinaryReader:
 
         return batch_data, block_counter
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        self._file.close()
+
     def __repr__(self) -> str:
         return (
             f"BesRawReader\n"
@@ -266,19 +272,16 @@ class RawBinaryReader:
         )
 
 
-def _is_raw(file):
-    f = open(file, "rb")
-    if int.from_bytes(f.read(4), "little") == BesFlag.FILE_START:
-        f.close()
-        return True
-    return False
+def _is_raw(file: str | Path) -> bool:
+    with open(file, "rb") as f:
+        return int.from_bytes(f.read(4), "little") == BesFlag.FILE_START
 
 
 def concatenate(
-    files: Union[Union[str, Path], list[Union[str, Path]]],
+    files: str | Path | list[str | Path],
     n_block_per_batch: int = 10000,
-    sub_detectors: Optional[list[str]] = None,
-    max_workers: Optional[int] = None,
+    sub_detectors: list[str] | None = None,
+    max_workers: int | None = None,
     verbose: bool = False,
     decode_reid: bool = True,
 ) -> ak.Array:
@@ -286,10 +289,10 @@ def concatenate(
     Concatenate multiple raw binary files into `ak.Array`
 
     Parameters:
-        files (Union[Union[str, Path], list[Union[str, Path]]]): files to be read.
+        files (str | Path | list[str | Path]): files to be read.
         n_block_per_batch (int, optional): The number of blocks to read per batch. Defaults to 1000.
-        sub_detectors (Optional[list[str]]): List of sub-detectors to read. Defaults to `None`, which means read all sub-detectors.
-        max_workers (Optional[int]): The maximum number of worker threads to use for reading the data. Defaults to `None`, which means use the default number of worker threads.
+        sub_detectors (list[str] | None): List of sub-detectors to read. Defaults to `None`, which means read all sub-detectors.
+        max_workers (int | None): The maximum number of worker threads to use for reading the data. Defaults to `None`, which means use the default number of worker threads.
         verbose (bool): Show reading process.
         decode_reid (bool, optional): If True (default), convert raw electronics IDs
             (REID) to standard detector geometry IDs (digi_id / TEID).
@@ -312,11 +315,10 @@ def concatenate(
         if verbose:
             print(f"\rreading file {i+1}/{len(files)} ...", end="")
 
-        res.append(
-            RawBinaryReader(f).arrays(
-                -1, n_block_per_batch, sub_detectors, max_workers, decode_reid
+        with RawBinaryReader(f) as reader:
+            res.append(
+                reader.arrays(-1, n_block_per_batch, sub_detectors, max_workers, decode_reid)
             )
-        )
 
     if verbose:
         print()

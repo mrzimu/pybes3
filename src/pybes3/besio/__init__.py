@@ -10,7 +10,7 @@ from .raw_io import RawBinaryReader
 from .raw_io import concatenate as concatenate_raw
 
 
-def open(file, **kwargs) -> Any:
+def open(file: str, **kwargs: object) -> Any:
     """
     Alias for `uproot.open`.
 
@@ -31,7 +31,12 @@ def open(file, **kwargs) -> Any:
     return uproot.open(file, **kwargs)
 
 
-def concatenate(files, expressions=None, cut=None, **kwargs) -> Any:
+def concatenate(
+    files: str | list[str],
+    expressions: str | list[str] | None = None,
+    cut: str | None = None,
+    **kwargs: object,
+) -> Any:
     """
     Alias for `uproot.concatenate`.
 

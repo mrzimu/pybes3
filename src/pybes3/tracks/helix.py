@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 import warnings
 from operator import xor
-from typing import Literal, Optional, Union, overload
+from typing import Literal, overload
 
 import awkward as ak
 import numba as nb
@@ -16,13 +16,13 @@ vector.register_awkward()
 from pybes3._utils import _extract_index, _flat_to_numpy
 from pybes3.typing import FloatLike, IntLike
 
-TypeObjPosition = Union[vector.VectorObject3D, tuple[float, float, float]]
-TypeObjMomentum = Union[vector.MomentumObject3D, tuple[float, float, float]]
-TypeAwkPosition = Union[ak.Array, vector.VectorObject3D, tuple[float, float, float]]
+TypeObjPosition = vector.VectorObject3D | tuple[float, float, float]
+TypeObjMomentum = vector.MomentumObject3D | tuple[float, float, float]
+TypeAwkPosition = ak.Array | vector.VectorObject3D | tuple[float, float, float]
 
 
 def _regularize_obj_position(
-    args: Union[TypeObjPosition, tuple[TypeObjPosition]],
+    args: TypeObjPosition | tuple[TypeObjPosition],
 ) -> vector.VectorObject3D:
     """
     Regularizes the position argument to always return a VectorObject3D.
@@ -51,7 +51,7 @@ def _regularize_obj_position(
 
 
 def _regularize_obj_momentum(
-    args: Union[TypeObjMomentum, tuple[TypeObjMomentum]],
+    args: TypeObjMomentum | tuple[TypeObjMomentum],
 ) -> vector.MomentumObject3D:
     """
     Regularizes the momentum argument to always return a MomentumObject3D.
@@ -377,7 +377,7 @@ def helix_obj(
     dz: float,
     tanl: float,
     *,
-    error: Optional[np.ndarray] = None,
+    error: np.ndarray | None = None,
     pivot: TypeObjPosition = (0, 0, 0),
 ) -> HelixObject: ...
 
@@ -387,7 +387,7 @@ def helix_obj(
 def helix_obj(
     *,
     params: tuple[float, float, float, float, float],
-    error: Optional[np.ndarray] = None,
+    error: np.ndarray | None = None,
     pivot: TypeObjPosition = (0, 0, 0),
 ) -> HelixObject: ...
 
@@ -399,7 +399,7 @@ def helix_obj(
     momentum: TypeObjMomentum,
     position: TypeObjPosition,
     charge: Literal[-1, 1],
-    error: Optional[np.ndarray] = None,
+    error: np.ndarray | None = None,
     pivot: TypeObjPosition = (0, 0, 0),
 ) -> HelixObject: ...
 
@@ -531,7 +531,7 @@ def kappa_to_pt(kappa: FloatLike) -> FloatLike:
 
 
 @nb.vectorize(cache=True)
-def kappa_to_charge(kappa: IntLike) -> FloatLike:
+def kappa_to_charge(kappa: FloatLike) -> IntLike:
     """
     Convert helix parameter to charge.
 
@@ -579,6 +579,145 @@ def _compute_position(dr, phi0, dz):
 ###############################################################################################
 
 
+def _awk_regularize_pivot(dr_like, args):
+    """
+    Regularize pivot arguments for awkward-based change_pivot methods.
+
+    Parses the variable-length ``*args`` passed to ``change_pivot`` and returns
+    an ``ak.Array`` of Vector3D pivots broadcast to the same shape as *dr_like*.
+
+    Args:
+        dr_like: An awkward array whose shape is used for broadcasting scalars.
+        args: Either ``(x, y, z)`` or ``(pivot,)``.
+
+    Returns:
+        An ``ak.Array`` with ``with_name="Vector3D"`` containing the new pivot.
+    """
+    if len(args) == 3:
+        x, y, z = args
+    elif len(args) == 1:
+        pivot = args[0]
+        if isinstance(pivot, ak.Array):
+            return pivot
+        if isinstance(pivot, (vector.VectorObject3D, ak.Record)):
+            x, y, z = pivot.x, pivot.y, pivot.z
+        else:
+            x, y, z = pivot[0], pivot[1], pivot[2]
+    else:
+        raise ValueError(
+            "change_pivot requires either 3 arguments (x, y, z) or 1 argument (pivot)."
+        )
+
+    x = ak.ones_like(dr_like) * x if not isinstance(x, (ak.Array, ak.Record)) else x
+    y = ak.ones_like(dr_like) * y if not isinstance(y, (ak.Array, ak.Record)) else y
+    z = ak.ones_like(dr_like) * z if not isinstance(z, (ak.Array, ak.Record)) else z
+    return ak.Array({"x": x, "y": y, "z": z}, with_name="Vector3D")
+
+
+def _awk_change_pivot(helix_self, args, *, is_multi_trk: bool):
+    """
+    Shared change_pivot logic for HelixAwkwardRecord and HelixAwkwardArray.
+
+    Args:
+        helix_self: The helix record or array.
+        args: Pivot arguments forwarded from the caller's ``*args``.
+        is_multi_trk: Whether this helix represents multiple tracks.
+
+    Returns:
+        A tuple ``(res_dict, raw_shape)`` where *res_dict* is the dict of new
+        helix fields and *raw_shape* is the index list for restoring nested
+        structure (empty list for flat data).
+    """
+    if is_multi_trk:
+        ak_new_pivot = _awk_regularize_pivot(helix_self.dr, args)
+        old_pivot = vector.arr(
+            {
+                "x": _flat_to_numpy(helix_self.pivot.x),
+                "y": _flat_to_numpy(helix_self.pivot.y),
+                "z": _flat_to_numpy(helix_self.pivot.z),
+            }
+        )
+        new_pivot = vector.arr(
+            {
+                "x": _flat_to_numpy(ak_new_pivot.x),
+                "y": _flat_to_numpy(ak_new_pivot.y),
+                "z": _flat_to_numpy(ak_new_pivot.z),
+            }
+        )
+    else:
+        old_pivot = vector.obj(
+            x=helix_self.pivot.x,
+            y=helix_self.pivot.y,
+            z=helix_self.pivot.z,
+        )
+        new_pivot = _regularize_obj_position(args)
+
+    r = _flat_to_numpy(helix_self.radius)
+    old_dr = _flat_to_numpy(helix_self.dr)
+    old_phi0 = _flat_to_numpy(helix_self.phi0)
+    old_dz = _flat_to_numpy(helix_self.dz)
+    tanl = _flat_to_numpy(helix_self.tanl)
+    kappa = _flat_to_numpy(helix_self.kappa)
+
+    if "error" in helix_self.fields:
+        old_error = (
+            _flat_to_numpy(helix_self.error).reshape(-1, 5, 5)
+            if is_multi_trk
+            else _flat_to_numpy(helix_self.error).reshape(5, 5)
+        )
+    else:
+        old_error = None
+
+    new_dr, new_phi0, new_dz, new_error = _change_pivot(
+        r=r,
+        old_dr=old_dr,
+        old_phi0=old_phi0,
+        old_dz=old_dz,
+        kappa=kappa,
+        tanl=tanl,
+        old_error=old_error,
+        old_pivot=old_pivot,
+        new_pivot=new_pivot,
+    )
+
+    res_dict = {
+        "dr": new_dr,
+        "phi0": new_phi0,
+        "kappa": kappa,
+        "dz": new_dz,
+        "tanl": tanl,
+        "pivot": (
+            ak.zip(
+                {"x": new_pivot.x, "y": new_pivot.y, "z": new_pivot.z},
+                with_name="Vector3D",
+            )
+            if is_multi_trk
+            else ak.Record(
+                {"x": new_pivot.x, "y": new_pivot.y, "z": new_pivot.z},
+                with_name="Vector3D",
+            )
+        ),
+    }
+
+    if new_error is not None:
+        res_dict["error"] = new_error
+
+    raw_shape = _extract_index(helix_self.dr.layout) if is_multi_trk else []
+    return res_dict, raw_shape
+
+
+def _helix_isclose_check_error(self_fields, other_fields):
+    """Emit a warning when only one side has an error matrix."""
+    has_self = "error" in self_fields
+    has_other = "error" in other_fields
+    if xor(has_self, has_other):
+        warnings.warn(
+            "One of the helix records has an error matrix, but the other does not. "
+            "Ignoring error matrix for isclose check.",
+            UserWarning,
+        )
+
+
 class HelixAwkwardRecord(ak.Record):
     @property
     def momentum(self) -> vector.MomentumObject3D:
@@ -622,118 +761,12 @@ class HelixAwkwardRecord(ak.Record):
         """
         return kappa_to_radius(self.kappa)
 
-    def change_pivot(self, *args):
+    def change_pivot(self, *args) -> HelixAwkwardRecord:
         multi_trk = isinstance(self.pivot.x, ak.Array)
-
-        # regularize pivot
-        if multi_trk:
-            if len(args) == 3:
-                x, y, z = args
-                new_pivot = None
-            elif len(args) == 1:
-                new_pivot = args[0]
-                if isinstance(new_pivot, (vector.VectorObject3D, ak.Array, ak.Record)):
-                    x = new_pivot.x
-                    y = new_pivot.y
-                    z = new_pivot.z
-                    new_pivot = None
-                else:
-                    x = new_pivot[0]
-                    y = new_pivot[1]
-                    z = new_pivot[2]
-                    new_pivot = None
-            else:
-                raise ValueError(
-                    "change_pivot requires either 3 arguments (x, y, z) or 1 argument (pivot)."
-                )
-
-            if new_pivot is None:
-                x = (
-                    ak.ones_like(self.dr) * x
-                    if not isinstance(x, (ak.Array, ak.Record))
-                    else x
-                )
-                y = (
-                    ak.ones_like(self.dr) * y
-                    if not isinstance(y, (ak.Array, ak.Record))
-                    else y
-                )
-                z = (
-                    ak.ones_like(self.dr) * z
-                    if not isinstance(z, (ak.Array, ak.Record))
-                    else z
-                )
-                new_pivot = ak.Array({"x": x, "y": y, "z": z}, with_name="Vector3D")
-
-            old_pivot_x = _flat_to_numpy(self.pivot.x)
-            old_pivot_y = _flat_to_numpy(self.pivot.y)
-            old_pivot_z = _flat_to_numpy(self.pivot.z)
-            old_pivot = vector.arr({"x": old_pivot_x, "y": old_pivot_y, "z": old_pivot_z})
-
-            new_pivot_x = _flat_to_numpy(new_pivot.x)
-            new_pivot_y = _flat_to_numpy(new_pivot.y)
-            new_pivot_z = _flat_to_numpy(new_pivot.z)
-            new_pivot = vector.arr({"x": new_pivot_x, "y": new_pivot_y, "z": new_pivot_z})
-
-        else:
-            new_pivot = _regularize_obj_position(args)
-            old_pivot = vector.obj(
-                x=self.pivot.x,
-                y=self.pivot.y,
-                z=self.pivot.z,
-            )
-
-        # do transformation
-        r = _flat_to_numpy(self.radius)
-        old_dr = _flat_to_numpy(self.dr)
-        old_phi0 = _flat_to_numpy(self.phi0)
-        old_dz = _flat_to_numpy(self.dz)
-        tanl = _flat_to_numpy(self.tanl)
-        kappa = _flat_to_numpy(self.kappa)
-
-        if "error" in self.fields:
-            old_error = (
-                _flat_to_numpy(self.error).reshape(-1, 5, 5)
-                if multi_trk
-                else _flat_to_numpy(self.error).reshape(5, 5)
-            )
-        else:
-            old_error = None
-
-        new_dr, new_phi0, new_dz, new_error = _change_pivot(
-            r=r,
-            old_dr=old_dr,
-            old_phi0=old_phi0,
-            old_dz=old_dz,
-            kappa=kappa,
-            tanl=tanl,
-            old_error=old_error,
-            old_pivot=old_pivot,
-            new_pivot=new_pivot,
-        )
-
-        res_dict = {
-            "dr": new_dr,
-            "phi0": new_phi0,
-            "kappa": kappa,
-            "dz": new_dz,
-            "tanl": tanl,
-            "pivot": ak.Record(
-                {"x": new_pivot.x, "y": new_pivot.y, "z": new_pivot.z},
-                with_name="Vector3D",
-            ),
-        }
-
-        if new_error is not None:
-            res_dict["error"] = new_error
-
+        res_dict, raw_shape = _awk_change_pivot(self, args, is_multi_trk=multi_trk)
         res = ak.Record(res_dict, with_name="Bes3Helix")
-
-        if multi_trk:
-            raw_shape = _extract_index(self.dr.layout)
-            for count in raw_shape:
-                res = ak.unflatten(res, count)
-
+        for count in raw_shape:
+            res = ak.unflatten(res, count)
         return res
 
     def isclose(
@@ -753,16 +786,7 @@ class HelixAwkwardRecord(ak.Record):
         Returns:
             bool: True if the records are close, False otherwise.
         """
-        if xor(
-            ("error" in self.fields),
-            ("error" in value.fields),
-        ):
-            warnings.warn(
-                "One of the helix records has an error matrix, but the other does not. "
-                "Ignoring error matrix for isclose check.",
-                UserWarning,
-            )
-
+        _helix_isclose_check_error(self.fields, value.fields)
         multi_trk = isinstance(self.pivot.x, ak.Array)
         if multi_trk:
             return _arr_isclose(self, value, rtol=rtol, atol=atol, equal_nan=equal_nan)
@@ -823,89 +847,10 @@ class HelixAwkwardArray(ak.Array):
         """
         Changes the pivot point of the helix.
         """
-        if len(args) == 3:
-            x, y, z = args
-            pivot = None
-        elif len(args) == 1:
-            pivot = args[0]
-            if isinstance(pivot, vector.VectorObject3D):
-                x = pivot.x
-                y = pivot.y
-                z = pivot.z
-                pivot = None
-            elif not isinstance(pivot, ak.Array):
-                x = pivot[0]
-                y = pivot[1]
-                z = pivot[2]
-                pivot = None
-        else:
-            raise ValueError(
-                "change_pivot requires either 3 arguments (x, y, z) or 1 argument (pivot)."
-            )
-
-        if pivot is None:
-            x = ak.ones_like(self.dr) * x if not isinstance(x, ak.Array) else x
-            y = ak.ones_like(self.dr) * y if not isinstance(y, ak.Array) else y
-            z = ak.ones_like(self.dr) * z if not isinstance(z, ak.Array) else z
-            pivot = ak.Array({"x": x, "y": y, "z": z}, with_name="Vector3D")
-
-        raw_shape = _extract_index(self.dr.layout)
-
-        r = _flat_to_numpy(self.radius)
-
-        old_dr = _flat_to_numpy(self.dr)
-        old_phi0 = _flat_to_numpy(self.phi0)
-        old_dz = _flat_to_numpy(self.dz)
-        tanl = _flat_to_numpy(self.tanl)
-        kappa = _flat_to_numpy(self.kappa)
-
-        old_pivot_x = _flat_to_numpy(self.pivot.x)
-        old_pivot_y = _flat_to_numpy(self.pivot.y)
-        old_pivot_z = _flat_to_numpy(self.pivot.z)
-        old_pivot = vector.arr({"x": old_pivot_x, "y": old_pivot_y, "z": old_pivot_z})
-
-        new_pivot_x = _flat_to_numpy(pivot.x)
-        new_pivot_y = _flat_to_numpy(pivot.y)
-        new_pivot_z = _flat_to_numpy(pivot.z)
-        new_pivot = vector.arr({"x": new_pivot_x, "y": new_pivot_y, "z": new_pivot_z})
-
-        old_error = (
-            _flat_to_numpy(self.error).reshape(-1, 5, 5) if "error" in self.fields else None
-        )
-
-        new_dr, new_phi0, new_dz, new_error = _change_pivot(
-            r=r,
-            old_dr=old_dr,
-            old_phi0=old_phi0,
-            old_dz=old_dz,
-            kappa=kappa,
-            tanl=tanl,
-            old_error=old_error,
-            old_pivot=old_pivot,
-            new_pivot=new_pivot,
-        )
-
-        res_dict = {
-            "dr": new_dr,
-            "phi0": new_phi0,
-            "kappa": kappa,
-            "tanl": tanl,
-            "dz": new_dz,
-            "pivot": ak.zip(
-                {"x": new_pivot.x, "y": new_pivot.y, "z": new_pivot.z},
-                with_name="Vector3D",
-            ),
-        }
-
-        if new_error is not None:
-            res_dict["error"] = new_error
-
-        raw_shape = _extract_index(self.dr.layout)
+        res_dict, raw_shape = _awk_change_pivot(self, args, is_multi_trk=True)
         res = ak.Array(res_dict, with_name="Bes3Helix")
-
         for count in raw_shape:
             res = ak.unflatten(res, count)
-
         return res
 
     def isclose(
@@ -925,16 +870,7 @@ class HelixAwkwardArray(ak.Array):
         Returns:
             ak.Array: A boolean array indicating if the records are close.
         """
-        if xor(
-            ("error" in self.fields),
-            ("error" in other.fields),
-        ):
-            warnings.warn(
-                "One of the helix records has an error matrix, but the other does not. "
-                "Ignoring error matrix for isclose check.",
-                UserWarning,
-            )
-
+        _helix_isclose_check_error(self.fields, other.fields)
         return _arr_isclose(self, other, rtol=rtol, atol=atol, equal_nan=equal_nan)
 
 
@@ -947,7 +883,7 @@ ak.behavior["*", "Bes3Helix"] = HelixAwkwardArray
 @overload
 def helix_awk(
     helix: ak.Array,
-    error: Optional[ak.Array] = None,
+    error: ak.Array | None = None,
     pivot: TypeAwkPosition = (0, 0, 0),
 ) -> HelixAwkwardArray: ...
 
@@ -961,7 +897,7 @@ def helix_awk(
     kappa: ak.Array,
     dz: ak.Array,
     tanl: ak.Array,
-    error: Optional[ak.Array] = None,
+    error: ak.Array | None = None,
     pivot: TypeAwkPosition = (0, 0, 0),
 ) -> HelixAwkwardArray: ...
 
@@ -972,8 +908,8 @@ def helix_awk(
     *,
     momentum: ak.Array,
     position: ak.Array,
-    charge: Union[Literal[-1, 1], ak.Array],
-    error: Optional[ak.Array] = None,
+    charge: Literal[-1, 1] | ak.Array,
+    error: ak.Array | None = None,
     pivot: TypeAwkPosition = (0, 0, 0),
 ) -> HelixAwkwardArray: ...
 
@@ -996,9 +932,13 @@ def _fix_dr_sign(dr: FloatLike, phi0: FloatLike, dist_phi: FloatLike) -> FloatLi
     return dr
 
 
+_SENTINEL = object()
+
+
 def helix_awk(*args, **kwargs) -> HelixAwkwardArray:
-    error = None
-    pivot = (0, 0, 0)
+    # Use a sentinel to distinguish "not provided" from an explicit None
+    error = _SENTINEL
+    pivot = _SENTINEL
 
     if len(args) > 0:
         helix = args[0]
@@ -1054,8 +994,11 @@ def helix_awk(*args, **kwargs) -> HelixAwkwardArray:
         dz = position.z - pivot.z
         tanl = momentum.pz / momentum.pt
 
-    error = kwargs.pop("error", error)
-    pivot = kwargs.pop("pivot", pivot)
+    # Only pop from kwargs if not already set via positional args
+    if error is _SENTINEL:
+        error = kwargs.pop("error", None)
+    if pivot is _SENTINEL:
+        pivot = kwargs.pop("pivot", (0, 0, 0))
 
     if not isinstance(pivot, ak.Array):
         pivot = _regularize_obj_position(pivot)

@@ -11,37 +11,64 @@ from ...typing import BoolLike, FloatLike, IntLike
 
 _cur_dir = Path(__file__).resolve().parent
 
-_mdc_wire_position: dict[str, np.ndarray] = dict(np.load(_cur_dir / "mdc_geom.npz"))
-_superlayer: np.ndarray = _mdc_wire_position["superlayer"]
-_layer: np.ndarray = _mdc_wire_position["layer"]
-_wire: np.ndarray = _mdc_wire_position["wire"]
-_east_x: np.ndarray = _mdc_wire_position["east_x"]
-_east_y: np.ndarray = _mdc_wire_position["east_y"]
-_east_z: np.ndarray = _mdc_wire_position["east_z"]
-_west_x: np.ndarray = _mdc_wire_position["west_x"]
-_west_y: np.ndarray = _mdc_wire_position["west_y"]
-_west_z: np.ndarray = _mdc_wire_position["west_z"]
-_stereo: np.ndarray = _mdc_wire_position["stereo"]
-_is_stereo: np.ndarray = _mdc_wire_position["is_stereo"]
-
-# Generate the wire start index of each layer
-layer_start_gid = np.zeros(44, dtype=np.uint16)
-for _l in range(43):
-    layer_start_gid[_l + 1] = np.sum(_layer == _l)
-layer_start_gid = np.cumsum(layer_start_gid)
-
-# Generate the x position along z of each wire
-dx_dz = (_east_x - _west_x) / (_east_z - _west_z)
-dy_dz = (_east_y - _west_y) / (_east_z - _west_z)
-
-# Generate layer -> is_stereo array
-is_layer_stereo = np.zeros(43, dtype=bool)
-for _l in range(43):
-    assert np.unique(_is_stereo[_layer == _l]).size == 1
-    is_layer_stereo[_l] = _is_stereo[_layer == _l][0]
-
-# Generate layer -> superlayer array
+# Constant (not dependent on geometry data)
 superlayer_splits = np.array([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 43])
+
+# ---------------------------------------------------------------------------
+# Lazy loading: geometry arrays are loaded from disk on first use.
+# ---------------------------------------------------------------------------
+_mdc_wire_position = None
+_superlayer = None
+_layer = None
+_wire = None
+_east_x = None
+_east_y = None
+_east_z = None
+_west_x = None
+_west_y = None
+_west_z = None
+_stereo = None
+_is_stereo = None
+layer_start_gid = None
+dx_dz = None
+dy_dz = None
+is_layer_stereo = None
+_loaded = False
+
+
+def _ensure_loaded():
+    """Load MDC geometry data from disk on first access."""
+    global _loaded
+    if _loaded:
+        return
+
+    global _mdc_wire_position, _superlayer, _layer, _wire
+    global _east_x, _east_y, _east_z, _west_x, _west_y, _west_z
+    global _stereo, _is_stereo, layer_start_gid, dx_dz, dy_dz, is_layer_stereo
+
+    _mdc_wire_position = dict(np.load(_cur_dir / "mdc_geom.npz"))
+    _superlayer = _mdc_wire_position["superlayer"]
+    _layer = _mdc_wire_position["layer"]
+    _wire = _mdc_wire_position["wire"]
+    _east_x = _mdc_wire_position["east_x"]
+    _east_y = _mdc_wire_position["east_y"]
+    _east_z = _mdc_wire_position["east_z"]
+    _west_x = _mdc_wire_position["west_x"]
+    _west_y = _mdc_wire_position["west_y"]
+    _west_z = _mdc_wire_position["west_z"]
+    _stereo = _mdc_wire_position["stereo"]
+    _is_stereo = _mdc_wire_position["is_stereo"]
+
+    layer_start_gid = np.zeros(44, dtype=np.uint16)
+    layer_start_gid[1:] = np.cumsum(np.bincount(_layer, minlength=43))
+
+    dx_dz = (_east_x - _west_x) / (_east_z - _west_z)
+    dy_dz = (_east_y - _west_y) / (_east_z - _west_z)
+
+    _first_wire_idx = np.searchsorted(_layer, np.arange(43))
+    is_layer_stereo = _is_stereo[_first_wire_idx].astype(bool)
+
+    _loaded = True
 
 
 def get_mdc_wire_position(library: Literal["np", "ak", "pd"] = "np"):
@@ -58,6 +85,7 @@ def get_mdc_wire_position(library: Literal["np", "ak", "pd"] = "np"):
         ValueError: If the library is not 'ak', 'np', or 'pd'.
         ImportError: If the library is 'pd' but pandas is not installed.
     """
+    _ensure_loaded()
     cp: dict[str, np.ndarray] = {k: v.copy() for k, v in _mdc_wire_position.items()}
 
     if library == "ak":
@@ -302,3 +330,40 @@ def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
         The y (cm) position of the wire at z (cm).
     """
     return _west_y[gid] + dy_dz[gid] * (z - _west_z[gid])
+
+
+# ---------------------------------------------------------------------------
+# Apply lazy-loading wrappers to all functions that access geometry data.
+# After wrapping, calling any of these functions will first trigger
+# _ensure_loaded() to load the .npz data if not already loaded.
+# ---------------------------------------------------------------------------
+def _make_lazy(func):
+    def wrapper(*args, **kwargs):
+        _ensure_loaded()
+        return func(*args, **kwargs)
+
+    wrapper.__name__ = getattr(func, "__name__", str(func))
+    wrapper.__doc__ = getattr(func, "__doc__", None)
+    wrapper.__wrapped__ = func
+    return wrapper
+
+
+for _fn_name in [
+    "get_mdc_gid",
+    "mdc_gid_to_superlayer",
+    "mdc_gid_to_layer",
+    "mdc_gid_to_wire",
+    "mdc_gid_to_stereo",
+    "mdc_layer_to_is_stereo",
+    "mdc_gid_to_is_stereo",
+    "mdc_gid_to_west_x",
+    "mdc_gid_to_west_y",
+    "mdc_gid_to_west_z",
+    "mdc_gid_to_east_x",
+    "mdc_gid_to_east_y",
+    "mdc_gid_to_east_z",
+    "mdc_gid_z_to_x",
+    "mdc_gid_z_to_y",
+]:
+    globals()[_fn_name] = _make_lazy(globals()[_fn_name])
+del _fn_name

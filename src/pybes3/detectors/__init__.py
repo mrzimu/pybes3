@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, Union
+from typing import Any, Literal
 
 import awkward as ak
 import numpy as np
@@ -59,7 +59,7 @@ from .geometry import (
 ###############################################################################
 #                                     MDC                                     #
 ###############################################################################
-def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> Union[IntLike, dict[str, IntLike]]:
+def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, Any]:
     """
     Parse the gid of MDC wires. "gid" is the global ID of the wire, ranges from 0 to 6795.
     When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
@@ -126,7 +126,7 @@ def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> Union[IntLike, dict[st
 def parse_mdc_digi_id(
     mdc_digi_id: IntLike,
     with_pos: bool = False,
-) -> Union[IntLike, dict[str, IntLike]]:
+) -> ak.Array | dict[str, Any]:
     """
     Parse MDC digi ID.
 
@@ -238,7 +238,7 @@ def parse_tof_digi_id(
     tof_digi_id: IntLike,
     flat: bool = False,
     library: Literal["ak", "np"] = "ak",
-) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.int_]]:
+) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
     """
     Parse TOF digi ID.
     If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
@@ -288,7 +288,7 @@ def parse_tof_digi_id(
 ###############################################################################
 #                                     EMC                                     #
 ###############################################################################
-def parse_emc_gid(gid: IntLike, with_pos: bool = True) -> Union[IntLike, dict[str, IntLike]]:
+def parse_emc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, Any]:
     """
     Parse the gid of EMC crystals. "gid" is the global ID of the crystal, ranges from 0 to 6239.
     When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
@@ -344,7 +344,7 @@ def parse_emc_gid(gid: IntLike, with_pos: bool = True) -> Union[IntLike, dict[st
 def parse_emc_digi_id(
     emc_digi_id: IntLike,
     with_pos: bool = False,
-) -> Union[IntLike, dict[str, IntLike]]:
+) -> ak.Array | dict[str, Any]:
     """
     Parse EMC digi ID.
 
@@ -451,7 +451,7 @@ def parse_muc_digi_id(
     muc_digi_id: IntLike,
     flat: bool = False,
     library: Literal["ak", "np"] = "ak",
-) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.int_]]:
+) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
     """
     Parse MUC digi ID.
 
@@ -507,7 +507,7 @@ def parse_cgem_digi_id(
     cgem_digi_id: IntLike,
     flat: bool = False,
     library: Literal["ak", "np"] = "ak",
-) -> Union[ak.Record, dict[str, np.ndarray], dict[str, np.int_]]:
+) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
     """
     Parse CGEM digi ID.
 

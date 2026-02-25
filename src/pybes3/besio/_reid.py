@@ -221,6 +221,7 @@ def build_mdc_re2te() -> np.ndarray:
             if reid < 16384:
                 re2te[reid] = teid
 
+    re2te.flags.writeable = False
     return re2te
 
 
@@ -271,6 +272,7 @@ def build_tof_re2te() -> np.ndarray:
                         if reid < 16384:
                             re2te[reid] = teid
 
+    re2te.flags.writeable = False
     return re2te
 
 
@@ -326,6 +328,7 @@ def build_emc_re2te() -> np.ndarray:
                 if reid < 8192:
                     re2te[reid] = teid
 
+    re2te.flags.writeable = False
     return re2te
 
 
@@ -527,6 +530,7 @@ def build_muc_re2te() -> np.ndarray:
         if fec < 2048:
             re2te[fec] = teid
 
+    re2te.flags.writeable = False
     return re2te
 
 
@@ -535,7 +539,7 @@ def build_muc_re2te() -> np.ndarray:
 # ============================================================================
 
 
-def convert_reid_to_teid(raw_dict: dict) -> dict:
+def convert_reid_to_teid(raw_dict: dict[str, object]) -> dict[str, object]:
     """
     Convert REID (raw electronics ID) to TEID (digi_id) in-place for all
     sub-detectors present in ``raw_dict``.

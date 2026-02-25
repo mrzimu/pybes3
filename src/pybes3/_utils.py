@@ -5,7 +5,7 @@ import awkward.contents
 import numpy as np
 
 
-def _extract_index(layout) -> list:
+def _extract_index(layout: ak.contents.Content) -> list:
     if isinstance(layout, awkward.contents.ListOffsetArray):
         offsets = layout.offsets.data
         return [offsets[1:] - offsets[:-1]] + _extract_index(layout.content)
@@ -19,16 +19,32 @@ def _extract_index(layout) -> list:
     if isinstance(layout, awkward.contents.RecordArray):
         return []
 
+    if isinstance(layout, awkward.contents.IndexedArray):
+        return _extract_index(layout.content)
 
-def _flat_to_numpy(array) -> np.ndarray:
+    if isinstance(layout, (awkward.contents.ByteMaskedArray, awkward.contents.BitMaskedArray)):
+        return _extract_index(layout.content)
+
+    if isinstance(layout, awkward.contents.UnmaskedArray):
+        return _extract_index(layout.content)
+
+    if isinstance(layout, awkward.contents.UnionArray):
+        return _extract_index(layout.contents[0])
+
+    raise TypeError(
+        f"Unsupported awkward layout type in _extract_index: {type(layout).__name__}"
+    )
+
+
+def _flat_to_numpy(array: ak.Array | ak.Record | np.ndarray | float) -> np.ndarray:
     """
     Converts a flat awkward array to a numpy array.
 
     Args:
-        array (ak.Array): The input awkward array.
+        array: The input awkward array, numpy array, or scalar.
 
     Returns:
-        np.ndarray: The converted numpy array.
+        The converted numpy array.
     """
     if isinstance(array, (ak.Array, ak.Record)):
         return ak.flatten(array, axis=None).to_numpy()
@@ -36,16 +52,16 @@ def _flat_to_numpy(array) -> np.ndarray:
         return array
 
 
-def _recover_shape(array, index) -> ak.Array:
+def _recover_shape(array: np.ndarray | ak.Array, index: list) -> ak.Array:
     """
     Recovers the shape of a numpy array based on the provided index.
 
     Args:
-        array (np.ndarray | ak.Array): The input numpy array.
-        index (list): The index list that defines the shape.
+        array: The input numpy array or awkward array.
+        index: The index list that defines the shape.
 
     Returns:
-        ak.Array: The reshaped awkward array.
+        The reshaped awkward array.
     """
     res = ak.Array(array)
     for i in index:
