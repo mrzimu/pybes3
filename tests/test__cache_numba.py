@@ -5,7 +5,7 @@ import pybes3 as p3
 
 
 def test_detector_geometry_mdc(capsys, monkeypatch, geom_dir):
-    monkeypatch.setenv("PYBES3_NUMBA_CACHE_SILENT", "1")
+    monkeypatch.setenv("PYBES3_NUMBA_CACHE_MSG", "1")
 
     # Change mdc_geom.npz mtime
     mdc_geom_path = geom_dir / "mdc_geom.npz"
@@ -20,7 +20,7 @@ def test_detector_geometry_mdc(capsys, monkeypatch, geom_dir):
 
 
 def test_detector_geometry_emc(capsys, monkeypatch, geom_dir):
-    monkeypatch.setenv("PYBES3_NUMBA_CACHE_SILENT", "1")
+    monkeypatch.setenv("PYBES3_NUMBA_CACHE_MSG", "1")
 
     # Change emc_geom.npz mtime
     emc_geom_path = geom_dir / "emc_geom.npz"

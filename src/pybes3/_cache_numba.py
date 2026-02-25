@@ -3,7 +3,6 @@ from __future__ import annotations
 import os
 from glob import glob
 from pathlib import Path
-from typing import Union
 
 cur_dir = Path(__file__).parent
 geom_dir = cur_dir / "detectors/geometry"
@@ -15,8 +14,8 @@ src_cache_list = [
 
 
 def cache_auto_clear(
-    sources: Union[Union[Path, str], list[Union[Path, str]]],
-    caches: Union[Union[Path, str], list[Union[Path, str]]],
+    sources: Path | str | list[Path | str],
+    caches: Path | str | list[Path | str],
     silent: bool = True,
     force: bool = False,
 ) -> list[str]:
@@ -49,13 +48,13 @@ def cache_auto_clear(
     sources: list[str] = (
         glob(str(sources))
         if isinstance(sources, (Path, str))
-        else sum([glob(str(s)) for s in sources], [])
+        else [item for s in sources for item in glob(str(s))]
     )
 
     caches: list[str] = (
         glob(str(caches))
         if isinstance(caches, (Path, str))
-        else sum([glob(str(c)) for c in caches], [])
+        else [item for c in caches for item in glob(str(c))]
     )
 
     # Check if sources and caches are empty
@@ -107,10 +106,10 @@ def check_numba_cache():
     Check the cache files and remove them if the source files are newer.
     This function should be called when the module is imported.
 
-    When environment variable `PYBES3_NUMBA_CACHE_SILENT` is set to 1,
+    When environment variable `PYBES3_NUMBA_CACHE_MSG` is set to 1,
     the function will print out removal messages.
     """
-    silent = os.getenv("PYBES3_NUMBA_CACHE_SILENT", "0") == "0"
+    silent = os.getenv("PYBES3_NUMBA_CACHE_MSG", "0") == "0"
     for src, cache in src_cache_list:
         cache_auto_clear(
             sources=src,
@@ -124,10 +123,10 @@ def clear_numba_cache():
     """
     Clear the cache files regardless of the source files.
 
-    When environment variable `PYBES3_NUMBA_CACHE_SILENT` is set to 1,
+    When environment variable `PYBES3_NUMBA_CACHE_MSG` is set to 1,
     the function will print out removal messages.
     """
-    silent = os.getenv("PYBES3_NUMBA_CACHE_SILENT", "0") == "0"
+    silent = os.getenv("PYBES3_NUMBA_CACHE_MSG", "0") == "0"
     for src, cache in src_cache_list:
         cache_auto_clear(
             sources=src,

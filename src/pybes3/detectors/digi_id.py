@@ -1,7 +1,5 @@
 from __future__ import annotations
 
-from typing import Optional
-
 import numba as nb
 import numpy as np
 
@@ -206,7 +204,7 @@ def tof_id_to_end(tof_digi_id: IntLike) -> IntLike:
     Returns:
         The readout end number.
     """
-    return np.uint8(tof_digi_id % 2)
+    return np.uint8((tof_digi_id & DIGI_TOF_END_MASK) >> DIGI_TOF_END_OFFSET)
 
 
 @nb.vectorize(cache=True)
@@ -254,7 +252,7 @@ def _tof_id_to_layer_or_module_2(tof_digi_id: IntLike, part: IntLike) -> IntLike
 
 def tof_id_to_layer_or_module(
     tof_digi_id: IntLike,
-    part: Optional[IntLike] = None,
+    part: IntLike | None = None,
 ) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator layer or MRPC module number.
@@ -319,7 +317,7 @@ def _tof_id_to_phi_or_strip_2(tof_digi_id: IntLike, part: IntLike) -> IntLike:
 
 def tof_id_to_phi_or_strip(
     tof_digi_id: IntLike,
-    part: Optional[IntLike] = None,
+    part: IntLike | None = None,
 ) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator phi or MRPC strip number, based on the part number.
