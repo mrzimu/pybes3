@@ -3,7 +3,7 @@ from __future__ import annotations
 import math
 import warnings
 from operator import xor
-from typing import Literal, overload
+from typing import Literal, Union, overload
 
 import awkward as ak
 import numba as nb
@@ -16,9 +16,9 @@ vector.register_awkward()
 from pybes3._utils import _extract_index, _flat_to_numpy
 from pybes3.typing import FloatLike, IntLike
 
-TypeObjPosition = vector.VectorObject3D | tuple[float, float, float]
-TypeObjMomentum = vector.MomentumObject3D | tuple[float, float, float]
-TypeAwkPosition = ak.Array | vector.VectorObject3D | tuple[float, float, float]
+TypeObjPosition = Union[vector.VectorObject3D, tuple[float, float, float]]
+TypeObjMomentum = Union[vector.MomentumObject3D, tuple[float, float, float]]
+TypeAwkPosition = Union[ak.Array, vector.VectorObject3D, tuple[float, float, float]]
 
 
 def _regularize_obj_position(

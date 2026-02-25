@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+from typing import Union
+
 import awkward as ak
 import numpy as np
 
-IntLike = ak.Array | np.ndarray | int
-FloatLike = ak.Array | np.ndarray | float
-BoolLike = ak.Array | np.ndarray | bool
+IntLike = Union[ak.Array, np.ndarray, int]
+FloatLike = Union[ak.Array, np.ndarray, float]
+BoolLike = Union[ak.Array, np.ndarray, bool]
