@@ -1,12 +1,15 @@
 # Geometry
 
-`pybes3` provides a set of methods to retrieve theoretical geometry information of detectors.
+`pybes3` provides methods to retrieve theoretical geometry information of detectors.
 
-**The unit of length is `cm`.**
+!!! note
+    All length values are in **cm**.
 
 ## MDC
 
 ### GID conversion
+
+Convert between GID and layer/wire numbers:
 
 ```python
 import numpy as np
@@ -37,7 +40,7 @@ gid = p3.get_mdc_gid(layer, wire)
 
 ### Wires position
 
-To get west/east x, y, z of wires:
+Get the west/east endpoint coordinates of wires:
 
 ```python
 # get west x, y, z
@@ -53,7 +56,7 @@ east_z = p3.mdc_gid_to_east_z(gid)
 
 ---
 
-To get x, y of wires at a specific z:
+Get the x, y coordinates of a wire at a specific z position:
 
 ```python
 # get x, y of wire 0 at z = -1, 0, 1 cm
@@ -68,7 +71,7 @@ y_z10 = p3.mdc_gid_z_to_y(gid, 10)
 
 ---
 
-You can get the whole wires position table of MDC:
+Retrieve the full wire position table:
 
 ```python
 # get table in `dict[str, np.ndarray]`
@@ -84,6 +87,8 @@ wire_position_pd = p3.get_mdc_wire_position(library="pd")
 ## EMC
 
 ### GID conversion
+
+Convert between GID and part/theta/phi numbers:
 
 ```python
 import numpy as np
@@ -103,7 +108,7 @@ gid = p3.get_emc_gid(part, theta, phi)
 
 ### Crystals position
 
-To get front center, center x, y, z of crystals:
+Get front center and center coordinates of crystals:
 
 ```python
 # get front center x, y, z
@@ -119,7 +124,7 @@ center_z = p3.emc_gid_to_center_z(gid)
 
 ---
 
-There are total 8 points on a crystal, you can get x, y, z of these points:
+Each crystal has 8 corner points. You can retrieve their coordinates:
 
 ```python
 # get x, y, z of point-0 of crystals
@@ -141,7 +146,7 @@ z = p3.emc_gid_to_point_z(0, point_id)
 
 ---
 
-You can get the whole crystals position table of EMC:
+Retrieve the full crystal position table:
 
 ```python
 # get table in `dict[str, np.ndarray]`
@@ -156,7 +161,7 @@ crystal_position_pd = p3.get_emc_crystal_position(library="pd")
 
 ### Barrel geometry
 
-Some geometry constants of EMC barrel can be obtained:
+Some geometry constants of the EMC barrel are available:
 
 ```python
 p3.emc_barrel_h1

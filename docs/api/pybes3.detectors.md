@@ -1,3 +1,5 @@
+# pybes3.detectors
+
 ## Parsing methods
 ::: pybes3.detectors.parse_mdc_gid
 ---

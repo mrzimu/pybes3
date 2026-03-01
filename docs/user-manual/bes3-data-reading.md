@@ -1,8 +1,8 @@
 # BES3 Data Reading
 
-## Read ROOT file (rtraw, dst, rec)
+## Read ROOT files (rtraw, dst, rec)
 
-To make `uproot` know about BES3 ROOT files,  import `pybes3` before opening any file:
+To enable `uproot` to read BES3 ROOT files, import `pybes3` before opening any file:
 
 ```python
 >>> import pybes3
@@ -16,7 +16,7 @@ Then, open file using `uproot`:
 >>> evt = f["Event"]
 ```
 
-Print information about this "event" tree:
+Print information about this event tree:
 
 ```python
 >>> evt.show(name_width=30)
@@ -43,7 +43,9 @@ TDigiEvent/m_mdcDigiCol        | TMdcDigi                 | AsBes3(TObjArray[TMd
 
 ---
 
-To read `TMcEvent` (Note: use `arrays()` instead of `array()` here):
+### Reading sub-trees
+
+To read `TMcEvent` (note: use `arrays()` instead of `array()` here):
 
 ```python
 >>> mc_evt = evt["TMcEvent"].arrays()
@@ -62,29 +64,30 @@ Now go to event 0:
 <Array [3.1, 1.55, 1.55, 3.1, ..., 1.23, 0.178, 1.28] type='12 * float64'>
 ```
 
-This indicates that in event 0, there are 12 MC particles. Their PDGIDs are `23, 4, -3, ...` and initial energies are `3.1, 1.55, 1.55, ... (GeV)`.
+This indicates that event 0 contains 12 MC particles. Their PDGIDs are `23, 4, -3, ...` and initial energies are `3.1, 1.55, 1.55, ... (GeV)`.
 
----
+### Reading specific branches
 
-**It is recommended that only read the branches you need.**
+!!! tip
+    It is recommended to read only the branches you need for better performance.
 
-To read a specific branch (Note: use `array()` instead of `arrays()` here):
+To read a specific branch (note: use `array()` instead of `arrays()` here):
 
 ```python
 >>> pdgid_arr = evt["TMcEvent/m_mcParticleCol/m_particleID"].array()
 >>> e_init_arr = evt["TMcEvent/m_mcParticleCol/m_eInitialMomentum"].array()
 ```
 
-or you can retrieve branches from `mc_evt`:
+or retrieve branches from `mc_evt`:
 
 ```python
 >>> pdgid_arr = mc_evt["m_mcParticleCol/m_particleID"].array()
 >>> e_init_arr = mc_evt["m_mcParticleCol/m_eInitialMomentum"].array()
 ```
 
-## Read raw data file
+## Read raw data files
 
-BES3 raw data files contain only digits information. To read a raw data file, use `pybes3.open_raw`:
+BES3 raw data files contain only digit information. To read a raw data file, use `pybes3.open_raw`:
 
 ```python
 >>> import pybes3 as p3
@@ -97,7 +100,7 @@ BesRawReader
 - File Size: 2010 MB
 ```
 
-To read all data out:
+To read all data:
 
 ```python
 >>> all_digi = reader.arrays()
@@ -109,7 +112,7 @@ To read all data out:
 ['id', 'adc', 'tdc', 'overflow']
 ```
 
-To only read some sub-detectors:
+To read only specific sub-detectors:
 
 ```python
 >>> mdc_tof_digi = reader.arrays(sub_detectors=['mdc', 'tof']) # 'emc', 'muc' are also available
@@ -117,7 +120,7 @@ To only read some sub-detectors:
 ['evt_header', 'mdc', 'tof']
 ```
 
-To read part of file:
+To read a portion of the file:
 
 ```python
 >>> some_digi = reader.arrays(n_blocks=1000)
@@ -126,7 +129,7 @@ To read part of file:
 ```
 
 !!! info
-    `n_blocks` instead of `n_entries` is used here because only data blocks are continuous in memory. Most of the time, there is one event in a data block.
+    `n_blocks` is used instead of `n_entries` because only data blocks are contiguous in memory. In most cases, there is one event per data block.
 
 !!! warning
-    By so far, `besio` can only read original raw digi data without any T-Q matching or post-processing.
+    Currently, `besio` can only read original raw digi data without any T-Q matching or post-processing.

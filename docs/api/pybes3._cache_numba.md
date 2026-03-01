@@ -1,5 +1,7 @@
-!!! warning "Rare Help for Users"
-    There is **rare help** for users in this page. `pybes3._cache_numba.md` defines internal functions and never exposed to users.
+# pybes3._cache_numba
+
+!!! note "Internal API"
+    This module contains internal functions for managing numba caches. These are not part of the public API.
 
 ---
 ::: pybes3._cache_numba.cache_auto_clear
