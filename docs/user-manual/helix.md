@@ -37,7 +37,7 @@ import pybes3 as p3
 
 helix = p3.helix_obj(
     params=(dr, phi0, kappa, dz, tanl), # helix parameters
-    error=error,                        # error matrix (optional
+    error=error,                        # error matrix (optional)
     pivot=(x0, y0, z0),                 # initial pivot point (optional)
 )
 ```
