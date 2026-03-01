@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#users-on-lxlogin-server" class="md-skip">
+        <a href="#installation" class="md-skip">
           Skip to content
         </a>
       
@@ -307,6 +307,8 @@
       <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
       
       
+        
+      
       
         <label class="md-nav__link md-nav__link--active" for="__toc">
           
@@ -349,6 +351,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -357,10 +361,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#users-on-lxlogin-server" class="md-nav__link">
+  <a href="#install-pybes3-using-pip" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Users on lxlogin server
+        Install pybes3 using pip
       
     </span>
   </a>
@@ -368,10 +372,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#install-pybes3-using-pip" class="md-nav__link">
+  <a href="#users-on-lxlogin-server" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Install pybes3 using pip
+        Users on lxlogin server
       
     </span>
   </a>
@@ -407,15 +411,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -509,6 +518,8 @@
     
     
     
+    
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -656,15 +667,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -857,6 +873,8 @@
   
   
   
+    
+  
   
     <label class="md-nav__title" for="__toc">
       <span class="md-nav__icon md-icon"></span>
@@ -865,10 +883,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#users-on-lxlogin-server" class="md-nav__link">
+  <a href="#install-pybes3-using-pip" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Users on lxlogin server
+        Install pybes3 using pip
       
     </span>
   </a>
@@ -876,10 +894,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#install-pybes3-using-pip" class="md-nav__link">
+  <a href="#users-on-lxlogin-server" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Install pybes3 using pip
+        Users on lxlogin server
       
     </span>
   </a>
@@ -917,40 +935,39 @@
   
 
 
-  <h1>Installation</h1>
-
+<h1 id="installation">Installation</h1>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
 <p><code>pybes3</code> requires Python 3.9 or higher.</p>
 </div>
+<h2 id="install-pybes3-using-pip">Install <code>pybes3</code> using pip</h2>
+<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>pybes3
+</code></pre></div>
 <h2 id="users-on-lxlogin-server">Users on lxlogin server</h2>
-<p>"lxlogin server" means the login server of computation clusters of IHEP. If you are not using lxlogin server, please skip to <a href="#install-pybes3-using-pip">Install <code>pybes3</code> using pip</a>.</p>
-<p>Since there is a quota limitation on user's home directory (<code>~/</code>), you need to create symbolinks for <code>~/.local</code> and <code>~/.cache</code>, which contains pip packages and caches that installed in "user mode":</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># Check whether a `.local` directory and `.cache` already exists.</span>
-<span class="c1"># If so, move it to somewhere else.</span>
+<p>"lxlogin server" refers to the login server of IHEP computation clusters. If you are not using the lxlogin server, you can skip this section.</p>
+<p>Since there is a quota limitation on the user's home directory (<code>~/</code>), you need to create symbolic links for <code>~/.local</code> and <code>~/.cache</code>, which contain pip packages and caches installed in "user mode":</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># Check whether `.local` and `.cache` directories already exist.</span>
+<span class="c1"># If so, move them to somewhere outside ~/</span>
 ls<span class="w"> </span>-a<span class="w"> </span>~
 mv<span class="w"> </span>~/.local<span class="w"> </span>/path/to/somewhere/
-mv<span class="w"> </span>~/.cache<span class="w"> </span>/path/to/somewhere
+mv<span class="w"> </span>~/.cache<span class="w"> </span>/path/to/somewhere/
 
 <span class="c1"># If no `.local` or `.cache` exists, create them</span>
 mkdir<span class="w"> </span>/path/to/somewhere/.local
 mkdir<span class="w"> </span>/path/to/somewhere/.cache
 
-<span class="c1"># After moving or creating them, link them back to `~`</span>
+<span class="c1"># After moving or creating them, link them back to ~</span>
 ln<span class="w"> </span>-s<span class="w"> </span>/path/to/somewhere/.local<span class="w"> </span>~/.local
 ln<span class="w"> </span>-s<span class="w"> </span>/path/to/somewhere/.cache<span class="w"> </span>~/.cache
 </code></pre></div>
-<h2 id="install-pybes3-using-pip">Install <code>pybes3</code> using pip</h2>
-<div class="highlight"><pre><span></span><code>pip<span class="w"> </span>install<span class="w"> </span>pybes3
-</code></pre></div>
 <h2 id="using-pybes3-under-boss8-environment">Using <code>pybes3</code> under <code>BOSS8</code> environment</h2>
-<p>If you are using <code>pybes3</code> under <code>BOSS8</code> environment, you MUST run following commands after setting up <code>BOSS8</code> environment:</p>
+<p>If you are using <code>pybes3</code> under a <code>BOSS8</code> environment, you <strong>must</strong> run the following commands after setting up the <code>BOSS8</code> environment:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">export</span><span class="w"> </span><span class="nv">PYTHONPATH</span><span class="o">=</span><span class="sb">`</span>python<span class="w"> </span>-m<span class="w"> </span>site<span class="w"> </span>--user-site<span class="sb">`</span>:<span class="nv">$PYTHONPATH</span>
 <span class="nb">export</span><span class="w"> </span><span class="nv">PATH</span><span class="o">=</span><span class="sb">`</span>python<span class="w"> </span>-m<span class="w"> </span>site<span class="w"> </span>--user-base<span class="sb">`</span>/bin:<span class="nv">$PATH</span>
 </code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>DO NOT add these commands to your shell configuration file (e.g. <code>~/.bashrc</code>), since they will conflict with the default python environment (without <code>BOSS8</code>).</p>
+<p>Do <strong>not</strong> add these commands to your shell configuration file (e.g., <code>~/.bashrc</code>), since they will conflict with the default Python environment (without <code>BOSS8</code>).</p>
 </div>
 
 
@@ -969,8 +986,16 @@ ln<span class="w"> </span>-s<span class="w"> </span>/path/to/somewhere/.cache<sp
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -1001,7 +1026,7 @@ ln<span class="w"> </span>-s<span class="w"> </span>/path/to/somewhere/.cache<sp
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["toc", "search", "search.suggest", "footer", "content.code.copy"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["toc", "search", "search.suggest", "footer", "content.code.copy", "content.tabs.link", "navigation.top", "navigation.sections"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>

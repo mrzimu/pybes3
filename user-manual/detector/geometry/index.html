@@ -333,15 +333,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -437,6 +442,8 @@
     
     
     
+    
+      
     
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
@@ -720,15 +727,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -1040,10 +1052,14 @@
 
 
 <h1 id="geometry">Geometry</h1>
-<p><code>pybes3</code> provides a set of methods to retrieve theoretical geometry information of detectors.</p>
-<p><strong>The unit of length is <code>cm</code>.</strong></p>
+<p><code>pybes3</code> provides methods to retrieve theoretical geometry information of detectors.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>All length values are in <strong>cm</strong>.</p>
+</div>
 <h2 id="mdc">MDC</h2>
 <h3 id="gid-conversion">GID conversion</h3>
+<p>Convert between GID and layer/wire numbers:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
 
@@ -1071,7 +1087,7 @@
 <p><code>mdc_gid_to_stereo</code> returns the stereo type of the wire, which can be <code>0</code> (axial), <code>-1</code> for <code>west_phi &lt; east_phi</code> and <code>1</code> for <code>west_phi &gt; east_phi</code>.</p>
 </div>
 <h3 id="wires-position">Wires position</h3>
-<p>To get west/east x, y, z of wires:</p>
+<p>Get the west/east endpoint coordinates of wires:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># get west x, y, z</span>
 <span class="n">west_x</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_to_west_x</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
 <span class="n">west_y</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_to_west_y</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
@@ -1083,7 +1099,7 @@
 <span class="n">east_z</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_to_east_z</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<p>To get x, y of wires at a specific z:</p>
+<p>Get the x, y coordinates of a wire at a specific z position:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># get x, y of wire 0 at z = -1, 0, 1 cm</span>
 <span class="n">z</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
 <span class="n">x</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_z_to_x</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">z</span><span class="p">)</span>
@@ -1094,7 +1110,7 @@
 <span class="n">y_z10</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">mdc_gid_z_to_y</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<p>You can get the whole wires position table of MDC:</p>
+<p>Retrieve the full wire position table:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># get table in `dict[str, np.ndarray]`</span>
 <span class="n">wire_position_np</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_mdc_wire_position</span><span class="p">()</span>
 
@@ -1106,6 +1122,7 @@
 </code></pre></div>
 <h2 id="emc">EMC</h2>
 <h3 id="gid-conversion_1">GID conversion</h3>
+<p>Convert between GID and part/theta/phi numbers:</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
 
@@ -1121,7 +1138,7 @@
 <span class="n">gid</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_emc_gid</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">theta</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="crystals-position">Crystals position</h3>
-<p>To get front center, center x, y, z of crystals:</p>
+<p>Get front center and center coordinates of crystals:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># get front center x, y, z</span>
 <span class="n">front_center_x</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_front_center_x</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
 <span class="n">front_center_y</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_front_center_y</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
@@ -1133,7 +1150,7 @@
 <span class="n">center_z</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_center_z</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<p>There are total 8 points on a crystal, you can get x, y, z of these points:</p>
+<p>Each crystal has 8 corner points. You can retrieve their coordinates:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># get x, y, z of point-0 of crystals</span>
 <span class="n">x0</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_point_x</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="n">y0</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_point_y</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -1151,7 +1168,7 @@
 <span class="n">z</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">emc_gid_to_point_z</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">point_id</span><span class="p">)</span>
 </code></pre></div>
 <hr />
-<p>You can get the whole crystals position table of EMC:</p>
+<p>Retrieve the full crystal position table:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># get table in `dict[str, np.ndarray]`</span>
 <span class="n">crystal_position_np</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_emc_crystal_position</span><span class="p">()</span>
 
@@ -1162,7 +1179,7 @@
 <span class="n">crystal_position_pd</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_emc_crystal_position</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="s2">&quot;pd&quot;</span><span class="p">)</span>
 </code></pre></div>
 <h3 id="barrel-geometry">Barrel geometry</h3>
-<p>Some geometry constants of EMC barrel can be obtained:</p>
+<p>Some geometry constants of the EMC barrel are available:</p>
 <div class="highlight"><pre><span></span><code><span class="n">p3</span><span class="o">.</span><span class="n">emc_barrel_h1</span>
 <span class="n">p3</span><span class="o">.</span><span class="n">emc_barrel_h2</span>
 <span class="n">p3</span><span class="o">.</span><span class="n">emc_barrel_h3</span>
@@ -1189,8 +1206,16 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -1221,7 +1246,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["toc", "search", "search.suggest", "footer", "content.code.copy"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["toc", "search", "search.suggest", "footer", "content.code.copy", "content.tabs.link", "navigation.top", "navigation.sections"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>

@@ -333,15 +333,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
@@ -487,10 +492,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#convert-digi-id-to-specific-field" class="md-nav__link">
+  <a href="#convert-digi-id-to-a-specific-field" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Convert digi ID to specific field
+        Convert digi ID to a specific field
       
     </span>
   </a>
@@ -526,6 +531,8 @@
     
     
     
+    
+      
     
     
     <li class="md-nav__item md-nav__item--nested">
@@ -673,15 +680,20 @@
     
     
     
+      
+        
+        
+      
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
         <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
             
   
   
@@ -906,10 +918,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#convert-digi-id-to-specific-field" class="md-nav__link">
+  <a href="#convert-digi-id-to-a-specific-field" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Convert digi ID to specific field
+        Convert digi ID to a specific field
       
     </span>
   </a>
@@ -948,11 +960,11 @@
 
 
 <h1 id="digi-identifier">Digi Identifier</h1>
-<p>When reading <code>TDigiEvent</code>, the <code>m_intId</code> field in <code>mdc</code>, <code>tof</code>, <code>emc</code>, <code>muc</code>, <code>cgem</code> branches are the electronics readout id (TEID), also known as <code>Identifier</code> in <code>BOSS</code>. <code>pybes3</code> provides methods to parse and calculate the digi ID for each detector.</p>
+<p>When reading <code>TDigiEvent</code>, the <code>m_intId</code> field in <code>mdc</code>, <code>tof</code>, <code>emc</code>, <code>muc</code>, and <code>cgem</code> branches represents the electronics readout ID (TEID), also known as <code>Identifier</code> in <code>BOSS</code>. <code>pybes3</code> provides methods to parse and calculate the digi ID for each detector.</p>
 <h2 id="digi-array-parsing">Digi array parsing</h2>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>By so far, only MDC and EMC digi parsing is supported. Whole digi parsing for other detectors is still under development. If you need to parse digi ID for other detectors, use the <a href="#standalone-digi-id-parsing">standalone digi ID parsing methods</a>.</p>
+<p>Currently, only MDC and EMC full digi parsing is supported. Support for other detectors is under development. For unsupported detectors, use the <a href="#standalone-digi-id-parsing">standalone digi ID parsing methods</a>.</p>
 </div>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">uproot</span>
@@ -964,7 +976,7 @@
 <span class="n">mdc_digi</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">parse_mdc_digi</span><span class="p">(</span><span class="n">mdc_digi</span><span class="p">)</span>
 </code></pre></div>
 <h2 id="standalone-digi-id-parsing">Standalone digi-ID parsing</h2>
-<p>When parsing whole digi array is not necesarry/supported, use <code>parse_xxx_digi_id</code> methods where <code>xxx</code> is the detector name (<code>cgem</code>, <code>mdc</code>, <code>tof</code>, <code>emc</code>, <code>muc</code>) to parse only the digi ID:</p>
+<p>When full digi array parsing is not necessary or not yet supported, use <code>parse_xxx_digi_id</code> methods (where <code>xxx</code> is the detector name: <code>cgem</code>, <code>mdc</code>, <code>tof</code>, <code>emc</code>, <code>muc</code>) to parse only the digi ID:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># read raw digi array</span>
 <span class="n">tof_digi</span> <span class="o">=</span> <span class="n">uproot</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;test.rtraw&quot;</span><span class="p">)[</span><span class="s2">&quot;Event/TDigiEvent/m_tofDigiCol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">array</span><span class="p">()</span>
 <span class="n">emc_digi</span> <span class="o">=</span> <span class="n">uproot</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="s2">&quot;test.rtraw&quot;</span><span class="p">)[</span><span class="s2">&quot;Event/TDigiEvent/m_emcDigiCol&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">array</span><span class="p">()</span>
@@ -975,9 +987,9 @@
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p>As the development of <code>pybes3.detectors.geometry</code>, the <code>parse_xxx_digi_id</code> methods will be updated to return more fields.</p>
+<p>As <code>pybes3.detectors.geometry</code> continues to develop, the <code>parse_xxx_digi_id</code> methods will be updated to return additional fields.</p>
 </div>
-<h2 id="convert-digi-id-to-specific-field">Convert digi ID to specific field</h2>
+<h2 id="convert-digi-id-to-a-specific-field">Convert digi ID to a specific field</h2>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pybes3.detectors.digi_id</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">digi_id</span>
 
 <span class="c1"># get TOF part number</span>
@@ -986,9 +998,9 @@
 <span class="c1"># get EMC theta number</span>
 <span class="n">emc_theta</span> <span class="o">=</span> <span class="n">digi_id</span><span class="o">.</span><span class="n">emc_id_to_theta</span><span class="p">(</span><span class="n">emc_digi</span><span class="p">[</span><span class="s2">&quot;m_intId&quot;</span><span class="p">])</span>
 </code></pre></div>
-<p>See <a href="../../api/pybes3.detectors/#digi-identifier">Digi Identify API</a> for all available methods.</p>
+<p>See the <a href="../../api/pybes3.detectors/#digi-identifier">Digi Identifier API</a> for all available methods.</p>
 <h2 id="digi-id-calculation">Digi-ID calculation</h2>
-<p>To calculate <code>m_intId</code> of digis, use <code>get_xxx_digi_id</code> methods where <code>xxx</code> is the detector name (<code>cgem</code>, <code>mdc</code>, <code>tof</code>, <code>emc</code>, <code>muc</code>):</p>
+<p>To compute <code>m_intId</code> from geometry numbers, use <code>get_xxx_digi_id</code> methods (where <code>xxx</code> is the detector name: <code>cgem</code>, <code>mdc</code>, <code>tof</code>, <code>emc</code>, <code>muc</code>):</p>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pybes3.detectors</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3det</span>
 
 <span class="c1"># get TOF digi geometry numbers</span>
@@ -1002,12 +1014,12 @@
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p><code>pybes3</code> uses different convention for TOF <code>part</code> number:</p>
+<p><code>pybes3</code> uses a different convention for the TOF <code>part</code> number:</p>
 <ul>
-<li><code>0,1,2</code> for scintillator endcap0, barrel, endcap1</li>
-<li><code>3,4</code> for MRPC endcap0, endcap1.</li>
+<li><code>0</code>, <code>1</code>, <code>2</code> for scintillator endcap 0, barrel, and endcap 1</li>
+<li><code>3</code>, <code>4</code> for MRPC endcap 0 and endcap 1</li>
 </ul>
-<p>In this case, TOF ID information can be decoded to 4 fields: <code>part</code>, <code>layer_or_module</code>, <code>phi_or_strip</code>, <code>end</code>.</p>
+<p>With this convention, TOF ID information can be decoded into 4 fields: <code>part</code>, <code>layer_or_module</code>, <code>phi_or_strip</code>, and <code>end</code>.</p>
 </div>
 
 
@@ -1026,8 +1038,16 @@
             </div>
           
           
+  <script>var tabs=__md_get("__tabs");if(Array.isArray(tabs))e:for(var set of document.querySelectorAll(".tabbed-set")){var labels=set.querySelector(".tabbed-labels");for(var tab of tabs)for(var label of labels.getElementsByTagName("label"))if(label.innerText.trim()===tab){var input=document.getElementById(label.htmlFor);input.checked=!0;continue e}}</script>
+
 <script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
         </div>
+        
+          <button type="button" class="md-top md-icon" data-md-component="top" hidden>
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M13 20h-2V8l-5.5 5.5-1.42-1.42L12 4.16l7.92 7.92-1.42 1.42L13 8z"/></svg>
+  Back to top
+</button>
         
       </main>
       
@@ -1058,7 +1078,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["toc", "search", "search.suggest", "footer", "content.code.copy"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["toc", "search", "search.suggest", "footer", "content.code.copy", "content.tabs.link", "navigation.top", "navigation.sections"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
