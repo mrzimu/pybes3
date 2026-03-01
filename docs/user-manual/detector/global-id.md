@@ -1,11 +1,11 @@
 # Global ID (gid)
 
 !!! info
-    This page only illustrates the gid of each detector element. To convert gid to other information, please refer to [Geometry](geometry.md).
+    This page only describes the gid numbering scheme. To convert gid to geometry information, see [Geometry](geometry.md).
 
-To better locate each detector element, a global ID (gid) is defined. GID always starts from 0 and increases along the detector elements. The increasing order is described by a tuple-like structure.
+To uniquely locate each detector element, `pybes3` defines a global ID (gid). GID always starts from 0 and increases sequentially along the detector elements. The increasing order is described by a tuple-like structure.
 
-For example, MDC gid can be described as `(layer, wire)`, which means it increases first along the `wire` and then along the `layer`, as shown below:
+For example, MDC gid follows the order `(layer, wire)`, meaning it increases first along `wire`, then along `layer`:
 
 | layer | wire | gid |
 | :---: | :--: | :-: |
@@ -73,8 +73,8 @@ The concrete relationship between gid and `(theta, phi)` for EMC endcap 1 is:
 
 ## MUC
 
-Under development
+!!! note "Under development"
 
 ## CGEM
 
-Under development
+!!! note "Under development"

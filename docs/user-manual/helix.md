@@ -1,12 +1,12 @@
-# Helix operations
+# Helix Operations
 
-In BES3, helix is represented by 5 parameters: `dr`, `phi0`, `kappa`, `dz`, `tanl`. `pybes3` provides a convenient way to parse these parameters, and do pivot transformation with parameters and error matrix.
+In BES3, a helix is represented by 5 parameters: `dr`, `phi0`, `kappa`, `dz`, `tanl`. `pybes3` provides a convenient way to parse these parameters and perform pivot transformations with parameters and error matrices.
 
-The implementation of helix depends on [`vector`](https://vector.readthedocs.io/en/latest/). It is recommended to take a look at [Vector objects](https://vector.readthedocs.io/en/latest/src/object.html) and [Awkward Arrays of vectors](https://vector.readthedocs.io/en/latest/src/awkward.html) before using helix objects, as they are used to represent helix position, momentum and pivot point.
+The implementation depends on [`vector`](https://vector.readthedocs.io/en/latest/). It is recommended to review [Vector objects](https://vector.readthedocs.io/en/latest/src/object.html) and [Awkward Arrays of vectors](https://vector.readthedocs.io/en/latest/src/awkward.html) before using helix objects, as they are used to represent helix position, momentum, and pivot point.
 
 ## Transformation rules
 
-The implementation follows formulas below:
+The implementation follows these formulas:
 
 - Position $[\mathrm{cm}]$:
     - $x = x_0 + dr \times \cos \varphi_0$
@@ -24,13 +24,13 @@ The implementation follows formulas below:
     - $\mathrm{charge} = \mathrm{sign}(\kappa)$
     - $r_{\mathrm{trk}} \ [\mathrm{cm}] = \frac{1000}{2.99792458} \times p_t \ [\mathrm{GeV}/c]$
 
-The magnetic field in BES3 is assumed to be `1T`.
+The magnetic field in BES3 is assumed to be 1 T.
 
 ## Create helix
 
-### Create helix object
+### From helix parameters (single track)
 
-If you are working with a single track, you can use `pybes3.helix_obj` to create a helix object:
+For a single track, use `pybes3.helix_obj`:
 
 ```python
 import pybes3 as p3
@@ -53,45 +53,35 @@ When `error` is not provided, it defaults to `None`. When `pivot` is not provide
 
         You can specify the helix parameters in two ways:
 
-        === "Directly specify each parameter"
-
-            ```python
-            p3.helix_obj(dr, phi0, kappa, dz, tanl, ...)
-            # or
-            p3.helix_obj(dr=dr, phi0=phi0, kappa=kappa, dz=dz, tanl=tanl, ...)
-            ```
-
-        === "As a tuple"
-
-            ```python
-            p3.helix_obj(params=(dr, phi0, kappa, dz, tanl), ...)
-            ```
+        ```python
+        p3.helix_obj(dr, phi0, kappa, dz, tanl, ...)
+        # or
+        p3.helix_obj(dr=dr, phi0=phi0, kappa=kappa, dz=dz, tanl=tanl, ...)
+        # or
+        p3.helix_obj(params=(dr, phi0, kappa, dz, tanl), ...)
+        ```
 
     === "Pivot point"
 
         You can specify the initial pivot point in different ways:
 
-        === "As a tuple"
+        ```python
+        # As a tuple
+        p3.helix_obj(..., pivot=(x0, y0, z0))
 
-            ```python
-            p3.helix_obj(..., pivot=(x0, y0, z0))
-            ```
+        # As a Vector3D object
+        pivot = p3.vector.obj(x=x0, y=y0, z=z0)
+        p3.helix_obj(..., pivot=pivot)
+        ```
 
-        === "As a Vector3D object"
-
-            ```python
-            pivot = p3.vector.obj(x=x0, y=y0, z=z0)
-            p3.helix_obj(..., pivot=pivot)
-            ```
-
-### Create helix array
+### From helix parameters (array)
 
 !!! warning
-    You must import `pybes3` before creating a helix array, even though the creation may not involve any `pybes3` functions.
+    You must import `pybes3` before creating a helix array, even if the creation does not directly use any `pybes3` functions.
 
-The helix array is implemented with awkward ["behavior" machanism](https://awkward-array.org/doc/main/reference/ak.behavior.html). One can create a helix array via `pybes3.helix_awk`, or directly create an awkward array with the `Bes3Helix` behavior.
+The helix array is implemented with awkward's ["behavior" mechanism](https://awkward-array.org/doc/main/reference/ak.behavior.html). You can create a helix array via `pybes3.helix_awk`, or directly create an awkward array with the `Bes3Helix` behavior.
 
-A very common case is to read helix parameters from a BES3 file, and create a helix array:
+A common use case is reading helix parameters from a BES3 file:
 
 ```python
 import pybes3 as p3
@@ -121,7 +111,7 @@ helix = p3.helix_awk(raw_helix, raw_helix_err)
     tanl = raw_helix[..., 4]
     ```
 
-If you want to specify the helix parameters directly, just pass them as keyword arguments:
+If you want to specify the helix parameters directly, pass them as keyword arguments:
 
 ```python
 # Prepare helix parameters arrays
@@ -166,9 +156,9 @@ helix = p3.helix_awk(
 
     The `pivot` can be specified in different ways when using `helix_awk`:
 
-    === "As a tuple or `Vector3D` object"
+    - As a tuple or `Vector3D` object
 
-        This will set all tracks to have such pivot point:
+        If all tracks share the same pivot point, you can specify it as a tuple or a `Vector3D` object:
 
         ```python
         # As a tuple
@@ -179,7 +169,7 @@ helix = p3.helix_awk(
         helix = p3.helix_awk(..., pivot=pivot)
         ```
 
-    === "As an awkward array"
+    - As an awkward array
 
         If you have different pivot points for each track, you can provide a `Vector3D` awkward array:
 
@@ -253,7 +243,7 @@ helix = p3.helix_awk(
 
 ### Create helix from physics parameters
 
-Sometimes you may need to create a helix from position, momentum and charge. You can pass these parameters to `pybes3.helix_obj` or `pybes3.helix_awk` to create a helix object or array. `pybes3` will automatically calculate the helix parameters for you.
+You can also create a helix from position, momentum, and charge. Pass these parameters to `pybes3.helix_obj` or `pybes3.helix_awk`, and `pybes3` will automatically calculate the helix parameters.
 
 === "Object"
 
@@ -301,45 +291,45 @@ Sometimes you may need to create a helix from position, momentum and charge. You
 
     where `charge` should be array of `1` or `-1`, and the `pivot` defaults to `(0, 0, 0)` if not provided.
 
-!!! tip "Create helix from MC truth"
+### Create helix from MC truth
 
-    If you are creating helix from MC truth, you should let `pivot` be the same as the MC truth position, then change the pivot point to `(0, 0, 0)` later with `change_pivot` method:
+When creating a helix from MC truth, set `pivot` to the MC truth position, then change it to `(0, 0, 0)` using the `change_pivot` method:
 
-    ```python
-    truth_helix = p3.helix_obj(
-        position=(x, y, z),
-        momentum=(px, py, pz),
-        charge=charge,
-        pivot=(x, y, z)  # use the MC truth position as pivot
-    ).change_pivot(0, 0, 0)  # change pivot to (0, 0, 0)
-    ```
+```python
+truth_helix = p3.helix_obj(
+    position=(x, y, z),
+    momentum=(px, py, pz),
+    charge=charge,
+    pivot=(x, y, z)  # use the MC truth position as pivot
+).change_pivot(0, 0, 0)  # change pivot to (0, 0, 0)
+```
 
-    or, for awkward array:
+or, for awkward array:
 
-    ```python
-    truth_helix = p3.helix_awk(
-        position=position,
-        momentum=momentum,
-        charge=charge,
-        pivot=position  # use the MC truth position as pivot
-    ).change_pivot(0, 0, 0)  # change pivot to (0, 0, 0)
-    ```
+```python
+truth_helix = p3.helix_awk(
+    position=position,
+    momentum=momentum,
+    charge=charge,
+    pivot=position  # use the MC truth position as pivot
+).change_pivot(0, 0, 0)  # change pivot to (0, 0, 0)
+```
 
-    Then you can retrieve helix parameters of truth via `dr`, `phi0`, `kappa`, `dz`, `tanl` properties of the helix.
+Then you can retrieve the helix parameters via the `dr`, `phi0`, `kappa`, `dz`, `tanl` properties.
 
 ## Physics information
 
-Once you have an object or an awkward array of helix, you can retrieve the physical parameters such as position, momentum, charge and circular radius of the track.
+Once you have a helix object or awkward array, you can retrieve physical parameters such as position, momentum, charge, and circular radius.
 
 ### Position
 
-The position is defined as the closest point to the pivot point on the helix. You can retrieve the position with:
+The position is defined as the closest point on the helix to the pivot point:
 
 ```python
 position = helix.position
 ```
 
-This will return a `Vector3D` object with the position of the track. You can access the `x`, `y`, and `z` coordinates with:
+This returns a `Vector3D` object. You can access individual coordinates with:
 
 ```python
 x = position.x
@@ -352,13 +342,13 @@ z = position.z
 
 ### Momentum
 
-The momentum is defined as the momentum at the closest point to the pivot point on the helix. You can retrieve the momentum with:
+The momentum is defined at the closest point on the helix to the pivot point:
 
 ```python
 momentum = helix.momentum
 ```
 
-This will return a `Momentum3D` object with the momentum of the track. You can access the many components of the momentum with:
+This returns a `Momentum3D` object with many accessible components:
 
 ```python
 px = momentum.px
@@ -374,42 +364,42 @@ phi = momentum.phi  # azimuthal angle
 !!! tip "See Also"
     See [Interface for 3D momentum](https://vector.readthedocs.io/en/latest/src/momentum3d.html) for more properties.
 
-!!! warning "Momentum changes with pivot point"
-    When changing pivot point, the momentum will also change. This is because the momentum is defined at the closest point to the pivot point on the helix.
+!!! warning "Momentum depends on the pivot point"
+    When changing the pivot point, the momentum also changes, because it is evaluated at the closest point to the pivot.
 
 ### Pivot point
 
-You can retrieve the pivot point of the helix with:
+Retrieve the pivot point of the helix:
 
 ```python
 pivot = helix.pivot
 ```
 
-Similar to the position, this will return a `Vector3D` object with the pivot point of the track.
+Similar to position, this returns a `Vector3D` object.
 
 ### Charge
 
-The charge of the track can be retrieved with:
+Retrieve the charge of the track:
 
 ```python
 charge = helix.charge
 ```
 
-This will return `1` or `-1`, or an awkward array of these values if the helix is an awkward array.
+Returns `1` or `-1`, or an awkward array of these values for helix arrays.
 
 ### Circular radius
 
-The circular radius is defined as the radius of the 2D circle in the XY plane that the track follows. You can retrieve the circular radius with:
+The circular radius is the radius of the 2D circle in the XY plane that the track follows:
 
 ```python
 r = helix.radius
 ```
 
-This will return a scalar value or an awkward array of values, depending on whether the helix is an object or an awkward array.
+Returns a scalar value or an awkward array, depending on the helix type.
 
 ## Pivot transformation
 
-To change pivot point of helix, use `change_pivot` method. This will transform the helix parameters and error matrix to the new pivot point:
+Use `change_pivot` to transform the helix parameters and error matrix to a new pivot point:
 
 === "Object"
 
@@ -450,11 +440,11 @@ To change pivot point of helix, use `change_pivot` method. This will transform t
     ```
 
 !!! warning
-    `change_pivot` will not modify the original helix object or array, but return a new one with the pivot point changed.
+    `change_pivot` returns a **new** helix object/array; it does not modify the original.
 
 ## Helix comparison
 
-You can compare two helix objects or awkward arrays of helix using `isclose` method. If two helix objects have different pivot points, the second helix will be transformed to the first helix's pivot point before comparison.
+Compare two helix objects or arrays using the `isclose` method. If they have different pivot points, the second helix is automatically transformed to the first helix's pivot point before comparison.
 
 === "Object"
 
@@ -476,7 +466,7 @@ You can compare two helix objects or awkward arrays of helix using `isclose` met
     is_close = helix1.isclose(helix2)
     ```
 
-The comparison uses `numpy.isclose` to check if the helix parameters and error matrix are close enough. You can specify the `rtol`, `atol` and `equal_nan` parameters to control the comparison behavior:
+The comparison uses `numpy.isclose` to check whether the helix parameters and error matrix are close enough. You can customize the tolerance:
 
 ```python
 is_close = helix1.isclose(helix2, rtol=1e-5, atol=1e-8, equal_nan=False)
