@@ -63,10 +63,10 @@ bes3_branch2types = {
     "/Event:TEvtRecObject/m_evtRecEtaToGGCol": "TEvtRecEtaToGG",
     "/Event:TEvtRecObject/m_evtRecDTagCol": "TEvtRecDTag",
     "/Event:THltEvent/m_hltRawCol": "THltRaw",
-    "/Event:EventNavigator/m_mcMdcMcHits": "map<int,int>",
-    "/Event:EventNavigator/m_mcMdcTracks": "map<int,int>",
-    "/Event:EventNavigator/m_mcEmcMcHits": "map<int,int>",
-    "/Event:EventNavigator/m_mcEmcRecShowers": "map<int,int>",
+    "/Event:EventNavigator/m_mcMdcMcHits": None,
+    "/Event:EventNavigator/m_mcMdcTracks": None,
+    "/Event:EventNavigator/m_mcEmcMcHits": None,
+    "/Event:EventNavigator/m_mcEmcRecShowers": None,
 }
 
 
@@ -379,6 +379,10 @@ class Bes3Interpretation(AsCustom):
     def __init__(self, branch, context, simplify):
         super().__init__(branch, context, simplify)
         self._typename = bes3_branch2types[regularize_object_path(branch.object_path)]
+        self.is_bes3 = self._typename is not None
+
+        if self.is_bes3:
+            self._typename = f"TObjArray<{self._typename}>"
 
     def final_array(
         self,
@@ -404,18 +408,13 @@ class Bes3Interpretation(AsCustom):
         full_branch_path = regularize_object_path(branch.object_path)
         return preprocess_subbranch(full_branch_path, arr)
 
-    @property
-    def typename(self) -> str:
-        """
-        The typename of the interpretation.
-        """
-        return self._typename
-
     def __repr__(self) -> str:
         """
         The string representation of the interpretation.
         """
-        return f"AsBes3(TObjArray[{self.typename}])"
+        if self.is_bes3:
+            return f"AsBes3({self._typename})"
+        return super().__repr__()
 
 
 uproot.register_interpretation(Bes3Interpretation)
