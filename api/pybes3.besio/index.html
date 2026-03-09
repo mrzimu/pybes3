@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.2">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.3">
     
     
       
@@ -811,17 +811,6 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#pybes3.besio.root_io.Bes3Interpretation.typename" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        typename
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#pybes3.besio.root_io.Bes3Interpretation.__repr__" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1119,17 +1108,6 @@
   
     <nav class="md-nav" aria-label="Bes3Interpretation">
       <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#pybes3.besio.root_io.Bes3Interpretation.typename" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        typename
-      
-    </span>
-  </a>
-  
-</li>
         
           <li class="md-nav__item">
   <a href="#pybes3.besio.root_io.Bes3Interpretation.__repr__" class="md-nav__link">
@@ -1924,8 +1902,7 @@ Use <code>uproot.concatenate</code> instread.</p>
 <span class="normal">414</span>
 <span class="normal">415</span>
 <span class="normal">416</span>
-<span class="normal">417</span>
-<span class="normal">418</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Bes3Interpretation</span><span class="p">(</span><span class="n">AsCustom</span><span class="p">):</span>
+<span class="normal">417</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Bes3Interpretation</span><span class="p">(</span><span class="n">AsCustom</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Custom interpretation for Bes3 data.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1935,6 +1912,10 @@ Use <code>uproot.concatenate</code> instread.</p>
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">branch</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">simplify</span><span class="p">):</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">branch</span><span class="p">,</span> <span class="n">context</span><span class="p">,</span> <span class="n">simplify</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_typename</span> <span class="o">=</span> <span class="n">bes3_branch2types</span><span class="p">[</span><span class="n">regularize_object_path</span><span class="p">(</span><span class="n">branch</span><span class="o">.</span><span class="n">object_path</span><span class="p">)]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">is_bes3</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_typename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_bes3</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_typename</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;TObjArray&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_typename</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">final_array</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -1960,18 +1941,13 @@ Use <code>uproot.concatenate</code> instread.</p>
         <span class="n">full_branch_path</span> <span class="o">=</span> <span class="n">regularize_object_path</span><span class="p">(</span><span class="n">branch</span><span class="o">.</span><span class="n">object_path</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">preprocess_subbranch</span><span class="p">(</span><span class="n">full_branch_path</span><span class="p">,</span> <span class="n">arr</span><span class="p">)</span>
 
-    <span class="nd">@property</span>
-    <span class="k">def</span><span class="w"> </span><span class="nf">typename</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        The typename of the interpretation.</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_typename</span>
-
     <span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        The string representation of the interpretation.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;AsBes3(TObjArray[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">typename</span><span class="si">}</span><span class="s2">])&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_bes3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;AsBes3(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_typename</span><span class="si">}</span><span class="s2">)&quot;</span>
+        <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
@@ -1984,28 +1960,6 @@ Use <code>uproot.concatenate</code> instread.</p>
 
 
 
-
-<div class="doc doc-object doc-attribute">
-
-
-
-<h5 id="pybes3.besio.root_io.Bes3Interpretation.typename" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">typename</span></code>
-
-  <span class="doc doc-labels">
-      <small class="doc doc-label doc-label-property"><code>property</code></small>
-  </span>
-
-</h5>
-
-
-    <div class="doc doc-contents ">
-
-        <p>The typename of the interpretation.</p>
-
-    </div>
-
-</div>
 
 
 
@@ -2026,15 +1980,19 @@ Use <code>uproot.concatenate</code> instread.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/besio/root_io.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">414</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">411</span>
+<span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span>
 <span class="normal">415</span>
 <span class="normal">416</span>
-<span class="normal">417</span>
-<span class="normal">418</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">417</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    The string representation of the interpretation.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;AsBes3(TObjArray[</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">typename</span><span class="si">}</span><span class="s2">])&quot;</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">is_bes3</span><span class="p">:</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;AsBes3(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_typename</span><span class="si">}</span><span class="s2">)&quot;</span>
+    <span class="k">return</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
