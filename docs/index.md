@@ -1,6 +1,6 @@
 # Documentation for pybes3
 
-`pybes3` is an **unofficial** Python module that aims to make it easier for BES3 users to work with Python.
+`pybes3` is a Python module that aims to make it easier for BES3 users to work with Python.
 
 !!! abstract "Help us improve `pybes3`!"
     If you have any suggestions, questions, or issues, please feel free to open an [issue](https://github.com/mrzimu/pybes3/issues/new/choose).

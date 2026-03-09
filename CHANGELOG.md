@@ -1,3 +1,28 @@
+## v0.3.15
+
+* feat: Implement REID to TEID conversion for raw binary data by @mrzimu in https://github.com/mrzimu/pybes3/pull/46
+* fix: Mkdocs2 warning breaks the test by @mrzimu in https://github.com/mrzimu/pybes3/pull/45
+* ci: Remove pre-commit action by @mrzimu in https://github.com/mrzimu/pybes3/pull/42
+* chore: auto-update pre-commit hooks and uv lock by @github-actions[bot] in https://github.com/mrzimu/pybes3/pull/43
+* chore: auto-update pre-commit hooks and uv lock by @github-actions[bot] in https://github.com/mrzimu/pybes3/pull/44
+* chore: Improve project with AI's review by @mrzimu in https://github.com/mrzimu/pybes3/pull/47
+* chore: Remove unused git hooks by @mrzimu in https://github.com/mrzimu/pybes3/pull/48
+* chore: Add changelog config by @mrzimu in https://github.com/mrzimu/pybes3/pull/49
+* chore: Adopt to uproot-custom 2.2 by @mrzimu in https://github.com/mrzimu/pybes3/pull/50
+
+## v0.3.14
+
+* docs: Remove documentation of `wrap_uproot` method by @mrzimu in https://github.com/mrzimu/pybes3/pull/32
+* chore: Fix readthedocs config by @mrzimu in https://github.com/mrzimu/pybes3/pull/33
+* chore: add pre-commit, remove old helix functions by @mrzimu in https://github.com/mrzimu/pybes3/pull/34
+* chore: Fix pre-commit actions by @mrzimu in https://github.com/mrzimu/pybes3/pull/35
+* chore: Fix auto-update actions by @mrzimu in https://github.com/mrzimu/pybes3/pull/36
+* chore: auto-update pre-commit hooks and uv lock by @github-actions[bot] in https://github.com/mrzimu/pybes3/pull/37
+* chore: Use github-cli to auto-merge PR by @mrzimu in https://github.com/mrzimu/pybes3/pull/38
+* chore: Fix ci pre-commit by @mrzimu in https://github.com/mrzimu/pybes3/pull/39
+* fix: Adopt to uproot-custom 2.1.1 by @mrzimu in https://github.com/mrzimu/pybes3/pull/40
+* feat: Implement `make_ak_form` for IO factories by @mrzimu in https://github.com/mrzimu/pybes3/pull/41
+
 ## v0.3.13
 
 * Add docs to help users avoid conflicts to `BOSS8` env by @mrzimu in https://github.com/mrzimu/pybes3/pull/25
