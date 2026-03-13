@@ -33,4 +33,5 @@ jobs:
 
       - name: Run tests
         run: |
-          uv run pytest
+          uv run pytest --version
+          uv run pytest -v tests/
