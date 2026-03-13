@@ -30,9 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv lock --upgrade
-          uv sync --all-groups
-          uv run test
+          uv pip install --system . --group dev --group docs
 
       - name: Run tests
         run: |
