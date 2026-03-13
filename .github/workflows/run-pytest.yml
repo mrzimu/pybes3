@@ -30,10 +30,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pwd
-          ls
-          uv sync
+          uv pip install --system . --all-extras
 
       - name: Run tests
         run: |
-          uv run test
+          pytest ./tests
