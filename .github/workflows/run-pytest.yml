@@ -32,6 +32,7 @@ jobs:
         run: |
           uv lock --upgrade
           uv sync --all-groups
+          uv run test
 
       - name: Run tests
         run: |
