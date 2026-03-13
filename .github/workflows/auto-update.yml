@@ -30,6 +30,7 @@ jobs:
         run: |
           uv lock --upgrade
           uv sync --all-groups
+          uv run pre-commit run --all
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8
