@@ -14,9 +14,9 @@ jobs:
   auto-update:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
 
-      - uses: astral-sh/setup-uv@v5
+      - uses: astral-sh/setup-uv@v7
         with:
           python-version: '3.13'
 
@@ -24,15 +24,16 @@ jobs:
         run: uv pip install pre-commit
 
       - name: Update pre-commit hooks
-        run: pre-commit autoupdate
+        run: uv run pre-commit autoupdate
 
       - name: Update uv lock
         run: |
           uv lock --upgrade
           uv sync --all-groups
+          uv run pre-commit run --all
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v7
+        uses: peter-evans/create-pull-request@v8
         id: cpr
         with:
           title: 'chore: auto-update pre-commit hooks and uv lock'
