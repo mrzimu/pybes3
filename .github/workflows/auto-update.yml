@@ -29,7 +29,6 @@ jobs:
       - name: Update uv lock
         run: |
           uv lock --upgrade
-          uv sync --all-groups
           uv run pre-commit run --all
 
       - name: Create Pull Request
