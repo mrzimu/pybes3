@@ -10,6 +10,9 @@ on:
   workflow_dispatch:
   workflow_call:
 
+env:
+  UV_SYSTEM_PYTHON: 1
+
 jobs:
   test-package:
     name: Test for ${{ matrix.os }}-${{ matrix.python-version }}
