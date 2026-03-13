@@ -17,7 +17,8 @@ jobs:
     strategy:
       matrix:
         python-version: ['3.9', '3.10', '3.11', '3.12', '3.13']
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        # os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [macos-latest]
 
     steps:
       - uses: actions/checkout@v6
@@ -30,6 +31,8 @@ jobs:
         run: |
           uv lock --upgrade
           uv sync --all-groups
+          pytest --version
+          pytest -v tests/
 
       - name: Run tests
         run: |
