@@ -31,10 +31,9 @@ jobs:
       - name: Install dependencies
         run: |
           pwd
-          tree -L 2
-          uv pip install --system . --all-extras
+          ls
+          uv sync
 
       - name: Run tests
         run: |
-          python -m pytest --version
-          python -m pytest -v tests/
+          uv run test
