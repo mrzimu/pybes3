@@ -24,7 +24,7 @@ jobs:
         run: uv pip install pre-commit
 
       - name: Update pre-commit hooks
-        run: pre-commit autoupdate
+        run: uv run pre-commit autoupdate
 
       - name: Update uv lock
         run: |
