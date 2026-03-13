@@ -24,14 +24,16 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      - uses: astral-sh/setup-uv@v7
+      - uses: astral-sh/setup-uv@v6
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Install dependencies
         run: |
-          uv pip install --system . --all-extras
+          uv lock --upgrade
+          uv sync --all-groups
 
       - name: Run tests
         run: |
-          pytest ./tests
+          pytest --version
+          pytest -v tests/
