@@ -30,6 +30,8 @@ jobs:
 
       - name: Install dependencies
         run: |
+          pwd
+          tree -L 2
           uv pip install --system . --all-extras
 
       - name: Run tests
