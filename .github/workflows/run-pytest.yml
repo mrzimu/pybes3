@@ -10,9 +10,6 @@ on:
   workflow_dispatch:
   workflow_call:
 
-env:
-  UV_SYSTEM_PYTHON: 1
-
 jobs:
   test-package:
     name: Test for ${{ matrix.os }}-${{ matrix.python-version }}
@@ -33,11 +30,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv lock --upgrade
-          uv sync --all-groups
-          pip list
-          uv pip list
-          uv run test
+          uv pip install --system . --all-extras
 
       - name: Run tests
         run: |
