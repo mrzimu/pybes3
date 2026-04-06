@@ -271,7 +271,7 @@ class Bes3SymMatrixArrayFactory(Factory):
 
         fArrayDim = cur_streamer_info["fArrayDim"]
         fMaxIndex = cur_streamer_info["fMaxIndex"]
-        ctype = PrimitiveFactory.typenames[top_type_name]
+        dtype = PrimitiveFactory.typename2dtype[top_type_name]
 
         flat_size = np.prod(fMaxIndex[:fArrayDim])
         assert flat_size > 0, f"flatten_size should be greater than 0, but got {flat_size}"
@@ -280,15 +280,15 @@ class Bes3SymMatrixArrayFactory(Factory):
 
         return cls(
             name=cur_streamer_info["fName"],
-            ctype=ctype,
+            dtype=dtype,
             flat_size=flat_size,
             full_dim=full_dim,
         )
 
-    def __init__(self, name: str, ctype: str, flat_size: int, full_dim: int):
+    def __init__(self, name: str, dtype: str, flat_size: int, full_dim: int):
         super().__init__(name)
-        assert ctype == "d", "Only double precision symmetric matrix is supported."
-        self.ctype = ctype
+        assert dtype == "float64", "Only float64 symmetric matrix is supported."
+        self.dtype = dtype
         self.flat_size = flat_size
         self.full_dim = full_dim
 
@@ -296,16 +296,10 @@ class Bes3SymMatrixArrayFactory(Factory):
         return bcpp.Bes3SymMatrixArrayReader(self.name, self.flat_size, self.full_dim)
 
     def make_awkward_content(self, raw_data: np.ndarray):
-        return awkward.contents.NumpyArray(
-            raw_data.reshape(
-                -1,
-                self.full_dim,
-                self.full_dim,
-            )
-        )
+        return awkward.contents.NumpyArray(raw_data.reshape(-1, self.full_dim, self.full_dim))
 
     def make_awkward_form(self):
-        return awkward.forms.NumpyForm("float64", inner_shape=[self.full_dim, self.full_dim])
+        return awkward.forms.NumpyForm(self.dtype, inner_shape=[self.full_dim, self.full_dim])
 
 
 uproot_custom.registered_factories |= {

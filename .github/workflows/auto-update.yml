@@ -19,9 +19,7 @@ jobs:
       - uses: astral-sh/setup-uv@v7
         with:
           python-version: '3.13'
-
-      - name: Install pre-commit
-        run: uv pip install pre-commit
+          activate-environment: true
 
       - name: Update pre-commit hooks
         run: uv run pre-commit autoupdate
