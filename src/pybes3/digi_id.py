@@ -3,7 +3,7 @@ from __future__ import annotations
 import numba as nb
 import numpy as np
 
-from ..typing import BoolLike, IntLike
+from pybes3.typing import BoolLike, IntLike
 
 DIGI_MDC_FLAG = np.uint32(0x10)
 DIGI_TOF_FLAG = np.uint32(0x20)
@@ -359,7 +359,10 @@ def get_tof_digi_id(
     if part < 3:
         return np.uint32(
             ((part << DIGI_TOF_PART_OFFSET) & DIGI_TOF_PART_MASK)
-            | ((layer_or_module << DIGI_TOF_SCINT_LAYER_OFFSET) & DIGI_TOF_SCINT_LAYER_MASK)
+            | (
+                (layer_or_module << DIGI_TOF_SCINT_LAYER_OFFSET)
+                & DIGI_TOF_SCINT_LAYER_MASK
+            )
             | ((phi_or_strip << DIGI_TOF_SCINT_PHI_OFFSET) & DIGI_TOF_SCINT_PHI_MASK)
             | ((end << DIGI_TOF_END_OFFSET) & DIGI_TOF_END_MASK)
             | (DIGI_TOF_FLAG << DIGI_FLAG_OFFSET)
@@ -368,7 +371,10 @@ def get_tof_digi_id(
         return np.uint32(
             ((3 << DIGI_TOF_PART_OFFSET) & DIGI_TOF_PART_MASK)
             | (((part - 3) << DIGI_TOF_MRPC_ENDCAP_OFFSET) & DIGI_TOF_MRPC_ENDCAP_MASK)
-            | ((layer_or_module << DIGI_TOF_MRPC_MODULE_OFFSET) & DIGI_TOF_MRPC_MODULE_MASK)
+            | (
+                (layer_or_module << DIGI_TOF_MRPC_MODULE_OFFSET)
+                & DIGI_TOF_MRPC_MODULE_MASK
+            )
             | ((phi_or_strip << DIGI_TOF_MRPC_STRIP_OFFSET) & DIGI_TOF_MRPC_STRIP_MASK)
             | ((end << DIGI_TOF_END_OFFSET) & DIGI_TOF_END_MASK)
             | (DIGI_TOF_FLAG << DIGI_FLAG_OFFSET)

@@ -5,11 +5,12 @@ from glob import glob
 from pathlib import Path
 
 cur_dir = Path(__file__).parent
-geom_dir = cur_dir / "detectors/geometry"
+data_dir = cur_dir / "data"
+det_dir = cur_dir / "detectors"
 
 src_cache_list = [
-    (geom_dir / "mdc_geom.npz", geom_dir / "__pycache__/mdc.*.nb[ci]"),
-    (geom_dir / "emc_geom.npz", geom_dir / "__pycache__/emc.*.nb[ci]"),
+    (data_dir / "mdc_geom.npz", det_dir / "__pycache__/mdc.*.nb[ci]"),
+    (data_dir / "emc_geom.npz", det_dir / "__pycache__/emc.*.nb[ci]"),
 ]
 
 
@@ -69,7 +70,9 @@ def cache_auto_clear(
     failed_removed_caches = []
 
     src_latest_mtime = max([os.path.getmtime(s) for s in sources if os.path.isfile(s)])
-    cache_earliest_mtime = min([os.path.getmtime(c) for c in caches if os.path.isfile(c)])
+    cache_earliest_mtime = min(
+        [os.path.getmtime(c) for c in caches if os.path.isfile(c)]
+    )
 
     if src_latest_mtime > cache_earliest_mtime or force:
         # Remove the cache files

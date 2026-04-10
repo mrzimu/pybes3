@@ -4,7 +4,7 @@ requires = ["scikit-build-core", "pybind11==3.0.*", "uproot-custom==2.3.*"]
 
 [dependency-groups]
 dev = [
-  "black",
+  "ruff",
   "pytest",
   "pyarrow",
   "pandas",
@@ -47,11 +47,6 @@ name = "pybes3"
 readme = "README.md"
 requires-python = ">=3.9, <3.14"
 urls = {"Homepage" = "https://github.com/mrzimu/pybes3", "Documentation" = "https://pybes3.readthedocs.io/en/stable/"}
-
-[tool.black]
-exclude = "/(build|dist|env|.git|.tox|.eggs|.venv)/"
-line-length = 95
-target-version = ['py39', 'py310', 'py311', 'py312', 'py313']
 
 [tool.cibuildwheel]
 build = ["cp*-manylinux_x86_64", "cp*-macosx_arm64", "cp*-win_amd64"]

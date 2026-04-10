@@ -48,7 +48,7 @@ tof_part = digi_id.tof_id_to_part(tof_digi["m_intId"])
 emc_theta = digi_id.emc_id_to_theta(emc_digi["m_intId"])
 ```
 
-See the [Digi Identifier API](../api/pybes3.detectors.md#digi-identifier) for all available methods.
+See the [Digi Identifier API](../api/pybes3.digi_id.md) for all available methods.
 
 ## Digi-ID calculation
 

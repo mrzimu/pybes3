@@ -4,6 +4,7 @@ import uproot
 
 import pybes3 as p3
 import pybes3.detectors as det
+from pybes3 import digi_id
 
 
 def test_mdc_parse_gid():
@@ -30,7 +31,14 @@ def test_mdc_parse_gid():
     assert ak_res1.fields == mdc_fields
 
     ak_res2 = p3.parse_mdc_gid(ak_gid, with_pos=False)
-    assert ak_res2.fields == ["gid", "layer", "wire", "stereo", "is_stereo", "superlayer"]
+    assert ak_res2.fields == [
+        "gid",
+        "layer",
+        "wire",
+        "stereo",
+        "is_stereo",
+        "superlayer",
+    ]
 
     np_res1 = p3.parse_mdc_gid(np_gid, with_pos=True)
     assert list(np_res1.keys()) == mdc_fields
@@ -65,9 +73,9 @@ def test_parse_mdc_digi_id(rtraw_event):
         "east_z",
     ]
 
-    wire_ak = det.digi_id.mdc_id_to_wire(mdc_id_ak)
-    layer_ak = det.digi_id.mdc_id_to_layer(mdc_id_ak)
-    is_stereo_ak = det.digi_id.mdc_id_to_is_stereo(mdc_id_ak)
+    wire_ak = digi_id.mdc_id_to_wire(mdc_id_ak)
+    layer_ak = digi_id.mdc_id_to_layer(mdc_id_ak)
+    is_stereo_ak = digi_id.mdc_id_to_is_stereo(mdc_id_ak)
 
     # Test awkward, default option: with_pos=True
     ak_res1 = p3.parse_mdc_digi_id(mdc_id_ak, with_pos=True)
@@ -98,7 +106,14 @@ def test_parse_mdc_digi_id(rtraw_event):
 
     # Test awkward, with_pos=False
     ak_res2 = p3.parse_mdc_digi_id(mdc_id_ak, with_pos=False)
-    assert ak_res2.fields == ["gid", "layer", "wire", "stereo", "is_stereo", "superlayer"]
+    assert ak_res2.fields == [
+        "gid",
+        "layer",
+        "wire",
+        "stereo",
+        "is_stereo",
+        "superlayer",
+    ]
     assert len(ak_res2.positional_axis) == 2
     assert ak.all(ak_res2["wire"] == wire_ak)
     assert ak.all(ak_res2["layer"] == layer_ak)
@@ -185,9 +200,9 @@ def test_parse_emc_digi_id(rtraw_event):
         "center_z",
     ]
 
-    module_ak = det.digi_id.emc_id_to_module(emc_id_ak)
-    theta_ak = det.digi_id.emc_id_to_theta(emc_id_ak)
-    phi_ak = det.digi_id.emc_id_to_phi(emc_id_ak)
+    module_ak = digi_id.emc_id_to_module(emc_id_ak)
+    theta_ak = digi_id.emc_id_to_theta(emc_id_ak)
+    phi_ak = digi_id.emc_id_to_phi(emc_id_ak)
 
     # Test awkward, with_pos=True
     ak_res1 = p3.parse_emc_digi_id(emc_id_ak, with_pos=True)
@@ -262,10 +277,10 @@ def test_parse_tof_digi_id(data_dir):
         "Event/TDigiEvent/m_tofDigiCol"
     ].array()["m_intId"]
 
-    part_ak = det.digi_id.tof_id_to_part(tof_id_ak)
-    layer_or_module_ak = det.digi_id.tof_id_to_layer_or_module(tof_id_ak)
-    phi_or_strip_ak = det.digi_id.tof_id_to_phi_or_strip(tof_id_ak)
-    end_ak = det.digi_id.tof_id_to_end(tof_id_ak)
+    part_ak = digi_id.tof_id_to_part(tof_id_ak)
+    layer_or_module_ak = digi_id.tof_id_to_layer_or_module(tof_id_ak)
+    phi_or_strip_ak = digi_id.tof_id_to_phi_or_strip(tof_id_ak)
+    end_ak = digi_id.tof_id_to_end(tof_id_ak)
 
     # Test awkward, flat=False, library='ak'
     ak_res1 = p3.parse_tof_digi_id(tof_id_ak, flat=False, library="ak")
@@ -322,12 +337,12 @@ def test_parse_muc_digi_id(data_dir):
         "Event/TDigiEvent/m_mucDigiCol"
     ].array()["m_intId"]
 
-    part_ak = det.digi_id.muc_id_to_part(muc_id_ak)
-    segment_ak = det.digi_id.muc_id_to_segment(muc_id_ak)
-    layer_ak = det.digi_id.muc_id_to_layer(muc_id_ak)
-    channel_ak = det.digi_id.muc_id_to_channel(muc_id_ak)
-    gap_ak = det.digi_id.muc_id_to_gap(muc_id_ak)
-    strip_ak = det.digi_id.muc_id_to_strip(muc_id_ak)
+    part_ak = digi_id.muc_id_to_part(muc_id_ak)
+    segment_ak = digi_id.muc_id_to_segment(muc_id_ak)
+    layer_ak = digi_id.muc_id_to_layer(muc_id_ak)
+    channel_ak = digi_id.muc_id_to_channel(muc_id_ak)
+    gap_ak = digi_id.muc_id_to_gap(muc_id_ak)
+    strip_ak = digi_id.muc_id_to_strip(muc_id_ak)
 
     # Test awkward, flat=False, library='ak'
     ak_res1 = p3.parse_muc_digi_id(muc_id_ak, flat=False, library="ak")
@@ -396,10 +411,10 @@ def test_parse_cgem_digi_id(data_dir):
         "Event/TDigiEvent/m_cgemDigiCol"
     ].array()["m_intId"]
 
-    layer_ak = det.digi_id.cgem_id_to_layer(cgem_id_ak)
-    sheet_ak = det.digi_id.cgem_id_to_sheet(cgem_id_ak)
-    strip_ak = det.digi_id.cgem_id_to_strip(cgem_id_ak)
-    is_x_strip_ak = det.digi_id.cgem_id_to_is_x_strip(cgem_id_ak)
+    layer_ak = digi_id.cgem_id_to_layer(cgem_id_ak)
+    sheet_ak = digi_id.cgem_id_to_sheet(cgem_id_ak)
+    strip_ak = digi_id.cgem_id_to_strip(cgem_id_ak)
+    is_x_strip_ak = digi_id.cgem_id_to_is_x_strip(cgem_id_ak)
 
     # Test awkward, flat=False, library='ak'
     ak_res1 = p3.parse_cgem_digi_id(cgem_id_ak, flat=False, library="ak")

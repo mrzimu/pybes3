@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 # fmt: off
-from ._cache_numba import check_numba_cache
+from pybes3._cache_numba import check_numba_cache
 
 check_numba_cache()
 # fmt: on
 
-from . import besio, detectors, tracks
-from ._version import __version__, version
-from .besio import concatenate, concatenate_raw, open, open_raw
-from .detectors import (
+from pybes3._version import __version__, version
+from pybes3.besio import concatenate, concatenate_raw, open, open_raw
+from pybes3.detectors import (
     emc_barrel_h1,
     emc_barrel_h2,
     emc_barrel_h3,
@@ -71,9 +70,6 @@ from .tracks import (
 )
 
 __all__ = [
-    "besio",
-    "detectors",
-    "tracks",
     "version",
     "__version__",
     # besio

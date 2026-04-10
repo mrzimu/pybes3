@@ -1,15 +1,16 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 import awkward as ak
 import numba as nb
 import numpy as np
 
-from ...typing import BoolLike, FloatLike, IntLike
+from pybes3 import digi_id
+from pybes3.typing import BoolLike, FloatLike, IntLike
 
-_cur_dir = Path(__file__).resolve().parent
+_geom_data_path = Path(__file__).resolve().parent.parent / "data" / "mdc_geom.npz"
 
 # Constant (not dependent on geometry data)
 superlayer_splits = np.array([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 43])
@@ -46,7 +47,7 @@ def _ensure_loaded():
     global _east_x, _east_y, _east_z, _west_x, _west_y, _west_z
     global _stereo, _is_stereo, layer_start_gid, dx_dz, dy_dz, is_layer_stereo
 
-    _mdc_wire_position = dict(np.load(_cur_dir / "mdc_geom.npz"))
+    _mdc_wire_position = dict(np.load(_geom_data_path))
     _superlayer = _mdc_wire_position["superlayer"]
     _layer = _mdc_wire_position["layer"]
     _wire = _mdc_wire_position["wire"]
@@ -367,3 +368,175 @@ for _fn_name in [
 ]:
     globals()[_fn_name] = _make_lazy(globals()[_fn_name])
 del _fn_name
+
+
+def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, Any]:
+    """
+    Parse the gid of MDC wires. "gid" is the global ID of the wire, ranges from 0 to 6795.
+    When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
+
+    Keys of the output:
+
+    - `gid`: Global ID of the wire.
+    - `layer`: Layer number.
+    - `wire`: Local wire number.
+    - `stereo`: Stereo type. 0 for axial, -1 for `phi_west < phi_east`, 1 for `phi_west > phi_east`.
+    - `is_stereo`: Whether the wire is a stereo wire.
+    - `superlayer`: Superlayer number.
+
+    Optional keys of the output when `with_pos` is `True`:
+
+    - `mid_x`: x position of the wire at `z=0`.
+    - `mid_y`: y position of the wire at `z=0`.
+    - `west_x`: x position of the west end of the wire.
+    - `west_y`: y position of the west end of the wire.
+    - `west_z`: z position of the west end of the wire.
+    - `east_x`: x position of the east end of the wire.
+    - `east_y`: y position of the east end of the wire.
+    - `east_z`: z position of the east end of the wire.
+
+    Parameters:
+        gid: The gid of the wire.
+        with_pos: Whether to include the position information.
+
+    Returns:
+        The parsed result.
+    """
+    layer = mdc_gid_to_layer(gid)
+    wire = mdc_gid_to_wire(gid)
+
+    res = {
+        "gid": gid,
+        "layer": layer,
+        "wire": wire,
+        "stereo": mdc_gid_to_stereo(gid),
+        "is_stereo": mdc_gid_to_is_stereo(gid),
+        "superlayer": mdc_gid_to_superlayer(gid),
+    }
+
+    if with_pos:
+        west_x = mdc_gid_to_west_x(gid)
+        west_y = mdc_gid_to_west_y(gid)
+        east_x = mdc_gid_to_east_x(gid)
+        east_y = mdc_gid_to_east_y(gid)
+        res["mid_x"] = (west_x + east_x) / 2
+        res["mid_y"] = (west_y + east_y) / 2
+        res["west_x"] = west_x
+        res["west_y"] = west_y
+        res["west_z"] = mdc_gid_to_west_z(gid)
+        res["east_x"] = east_x
+        res["east_y"] = east_y
+        res["east_z"] = mdc_gid_to_east_z(gid)
+
+    if isinstance(gid, ak.Array):
+        return ak.zip(res)
+    else:
+        return res
+
+
+def parse_mdc_digi_id(
+    mdc_digi_id: IntLike,
+    with_pos: bool = False,
+) -> ak.Array | dict[str, Any]:
+    """
+    Parse MDC digi ID.
+
+    When `mdc_digi_id` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
+
+    Keys of the output:
+
+    - `gid`: Global ID of the wire.
+    - `wire`: Local wire number.
+    - `layer`: Layer number.
+    - `stereo`: Stereo type. 0 for axial, -1 for `phi_west < phi_east`, 1 for `phi_west > phi_east`.
+    - `is_stereo`: Whether the wire is a stereo wire.
+    - `superlayer`: Superlayer number.
+
+    Optional keys of the output when `with_pos` is `True`:
+
+    - `mid_x`: x position of the wire at `z=0`.
+    - `mid_y`: y position of the wire at `z=0`.
+    - `west_x`: x position of the west end of the wire.
+    - `west_y`: y position of the west end of the wire.
+    - `west_z`: z position of the west end of the wire.
+    - `east_x`: x position of the east end of the wire.
+    - `east_y`: y position of the east end of the wire.
+    - `east_z`: z position of the east end of the wire.
+
+    Parameters:
+        mdc_digi_id: The MDC digi ID.
+        with_pos: Whether to include the position information.
+
+    Returns:
+        The parsed result.
+    """
+    wire = digi_id.mdc_id_to_wire(mdc_digi_id)
+    layer = digi_id.mdc_id_to_layer(mdc_digi_id)
+    gid = get_mdc_gid(layer, wire)
+    return parse_mdc_gid(gid, with_pos)
+
+
+def parse_mdc_digi(mdc_digi: ak.Record, with_pos: bool = False) -> ak.Record:
+    """
+    Parse MDC raw digi array. The raw digi array should contain [`m_intId`,
+    `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_overflow`] fields.
+
+    Fields of the output:
+
+    - `gid`: Global ID of the wire.
+    - `wire`: Local wire number.
+    - `layer`: Layer number.
+    - `stereo`: Stereo type. 0 for axial, -1 for `phi_west < phi_east`, 1 for `phi_west > phi_east`.
+    - `is_stereo`: Whether the wire is a stereo wire.
+    - `superlayer`: Superlayer number.
+    - `charge_channel`: Charge channel.
+    - `time_channel`: Time channel.
+    - `track_index`: Track index.
+    - `overflow`: Overflow flag.
+    - `digi_id`: Raw digi ID.
+
+    Optional fields of the output when `with_pos` is `True`:
+
+    - `mid_x`: x position of the wire at `z=0`.
+    - `mid_y`: y position of the wire at `z=0`.
+    - `west_x`: x position of the west end of the wire.
+    - `west_y`: y position of the west end of the wire.
+    - `west_z`: z position of the west end of the wire.
+    - `east_x`: x position of the east end of the wire.
+    - `east_y`: y position of the east end of the wire.
+    - `east_z`: z position of the east end of the wire.
+
+    Parameters:
+        mdc_digi: The MDC raw digi array.
+        with_pos: Whether to include the position information.
+
+    Returns:
+        The parsed MDC digi array.
+    """
+    gid = parse_mdc_digi_id(mdc_digi["m_intId"], with_pos=with_pos)
+
+    res = {
+        "gid": gid["gid"],
+        "wire": gid["wire"],
+        "layer": gid["layer"],
+        "stereo": gid["stereo"],
+        "is_stereo": gid["is_stereo"],
+        "superlayer": gid["superlayer"],
+        "charge_channel": mdc_digi["m_chargeChannel"],
+        "time_channel": mdc_digi["m_timeChannel"],
+        "track_index": mdc_digi["m_trackIndex"],
+        "overflow": mdc_digi["m_overflow"],
+        "digi_id": mdc_digi["m_intId"],
+    }
+
+    if with_pos:
+        res["mid_x"] = gid["mid_x"]
+        res["mid_y"] = gid["mid_y"]
+        res["west_x"] = gid["west_x"]
+        res["west_y"] = gid["west_y"]
+        res["west_z"] = gid["west_z"]
+        res["east_x"] = gid["east_x"]
+        res["east_y"] = gid["east_y"]
+        res["east_z"] = gid["east_z"]
+
+    return ak.zip(res)

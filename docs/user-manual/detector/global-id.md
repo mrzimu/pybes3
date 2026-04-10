@@ -31,7 +31,7 @@ For example, MDC gid follows the order `(layer, wire)`, meaning it increases fir
 
 |   Range   |   Increasing Order   |      Part      |
 | :-------: | :------------------: | :------------: |
-|   0~95    |     (strip, end)     | Scint Endcap 0 |
+|   0~95    |      (phi, end)      | Scint Endcap 0 |
 |  96~447   |  (layer, phi, end)   |  Scint Barrel  |
 |  448~543  |      (phi, end)      | Scint Endcap 1 |
 | 544~1407  | (module, strip, end) | MRPC Endcap 0  |

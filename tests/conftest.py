@@ -12,4 +12,4 @@ def data_dir():
 
 @pytest.fixture(scope="session")
 def geom_dir():
-    yield Path(pybes3.detectors.geometry.__file__).parent
+    yield Path(pybes3.__file__).parent / "data"
