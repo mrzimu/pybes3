@@ -20,7 +20,7 @@ from uproot_custom import (
     regularize_object_path,
 )
 
-from . import besio_cpp as bcpp
+from pybes3.besio import besio_cpp as bcpp
 
 bes3_branch2types = {
     "/Event:TMcEvent/m_mdcMcHitCol": "TMdcMc",
@@ -276,9 +276,9 @@ class Bes3SymMatrixArrayFactory(Factory):
         dtype = PrimitiveFactory.typename2dtype[top_type_name]
 
         flat_size = np.prod(fMaxIndex[:fArrayDim])
-        assert (
-            flat_size > 0
-        ), f"flatten_size should be greater than 0, but got {flat_size}"
+        assert flat_size > 0, (
+            f"flatten_size should be greater than 0, but got {flat_size}"
+        )
 
         full_dim = int((np.sqrt(1 + 8 * flat_size) - 1) / 2)
 

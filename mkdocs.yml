@@ -90,5 +90,4 @@ nav:
       - pybes3.besio: api/pybes3.besio.md
       - pybes3.digi_id: api/pybes3.digi_id.md
       - pybes3.detectors: api/pybes3.detectors.md
-      - pybes3.tracks: api/pybes3.tracks.md
-      - pybes3._cache_numba: api/pybes3._cache_numba.md
+      - pybes3.helix: api/pybes3.helix.md

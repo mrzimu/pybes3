@@ -10,8 +10,8 @@ import awkward.contents
 import awkward.index
 import numpy as np
 
-from ._reid import convert_reid_to_teid
-from .besio_cpp import read_bes_raw
+from pybes3.besio._reid import convert_reid_to_teid
+from pybes3.besio.besio_cpp import read_bes_raw
 
 
 class BesFlag(enum.IntEnum):
@@ -270,7 +270,7 @@ class RawBinaryReader:
             f"- File: {self.file}\n"
             f"- Run Number: {self.run_number}\n"
             f"- Entries: {self.entries}\n"
-            f"- File Size: {self.file_size//1024//1024} MB\n"
+            f"- File Size: {self.file_size // 1024 // 1024} MB\n"
         )
 
 
@@ -315,7 +315,7 @@ def concatenate(
     res = []
     for i, f in enumerate(files):
         if verbose:
-            print(f"\rreading file {i+1}/{len(files)} ...", end="")
+            print(f"\rreading file {i + 1}/{len(files)} ...", end="")
 
         with RawBinaryReader(f) as reader:
             res.append(
