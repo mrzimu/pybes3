@@ -4,8 +4,8 @@ import uproot
 
 
 @pytest.fixture(scope="session")
-def mdc_trk(data_dir):
-    yield uproot.open(data_dir / "test_full_mc_evt_1.dst")[
+def mdc_trk(test_data_dir):
+    yield uproot.open(test_data_dir / "test_full_mc_evt_1.dst")[
         "Event/TDstEvent/m_mdcTrackCol"
     ].array()
 

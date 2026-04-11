@@ -252,7 +252,9 @@ class RawBinaryReader:
         pos_end = self._file.tell()
 
         self._file.seek(pos_start, 0)
-        batch_data = np.frombuffer(self._file.read(pos_end - pos_start), dtype=np.uint32)
+        batch_data = np.frombuffer(
+            self._file.read(pos_end - pos_start), dtype=np.uint32
+        )
 
         return batch_data, block_counter
 
@@ -317,7 +319,9 @@ def concatenate(
 
         with RawBinaryReader(f) as reader:
             res.append(
-                reader.arrays(-1, n_block_per_batch, sub_detectors, max_workers, decode_reid)
+                reader.arrays(
+                    -1, n_block_per_batch, sub_detectors, max_workers, decode_reid
+                )
             )
 
     if verbose:

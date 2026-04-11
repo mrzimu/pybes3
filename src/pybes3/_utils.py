@@ -22,7 +22,9 @@ def _extract_index(layout: ak.contents.Content) -> list:
     if isinstance(layout, awkward.contents.IndexedArray):
         return _extract_index(layout.content)
 
-    if isinstance(layout, (awkward.contents.ByteMaskedArray, awkward.contents.BitMaskedArray)):
+    if isinstance(
+        layout, (awkward.contents.ByteMaskedArray, awkward.contents.BitMaskedArray)
+    ):
         return _extract_index(layout.content)
 
     if isinstance(layout, awkward.contents.UnmaskedArray):

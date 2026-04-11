@@ -1,15 +1,14 @@
 from __future__ import annotations
 
 # fmt: off
-from ._cache_numba import check_numba_cache
+from pybes3._cache_numba import check_numba_cache
 
 check_numba_cache()
 # fmt: on
 
-from . import besio, detectors, tracks
-from ._version import __version__, version
-from .besio import concatenate, concatenate_raw, open, open_raw
-from .detectors import (
+from pybes3._version import __version__, version
+from pybes3.besio import concatenate, concatenate_raw, open, open_raw
+from pybes3.detectors import (
     emc_barrel_h1,
     emc_barrel_h2,
     emc_barrel_h3,
@@ -48,13 +47,16 @@ from .detectors import (
     mdc_gid_z_to_y,
     mdc_layer_to_is_stereo,
     mdc_layer_to_superlayer,
+    parse_emc_gid,
+    parse_mdc_gid,
+)
+
+from .digi_id import (
     parse_cgem_digi_id,
     parse_emc_digi,
     parse_emc_digi_id,
-    parse_emc_gid,
     parse_mdc_digi,
     parse_mdc_digi_id,
-    parse_mdc_gid,
     parse_muc_digi_id,
     parse_tof_digi_id,
 )
@@ -71,9 +73,6 @@ from .tracks import (
 )
 
 __all__ = [
-    "besio",
-    "detectors",
-    "tracks",
     "version",
     "__version__",
     # besio
@@ -103,6 +102,7 @@ __all__ = [
     "emc_gid_to_theta",
     "get_emc_crystal_position",
     "get_emc_gid",
+    "parse_emc_gid",
     "get_mdc_gid",
     "get_mdc_wire_position",
     "mdc_gid_to_east_x",
@@ -120,13 +120,13 @@ __all__ = [
     "mdc_gid_z_to_y",
     "mdc_layer_to_is_stereo",
     "mdc_layer_to_superlayer",
+    "parse_mdc_gid",
+    # digi_id
     "parse_cgem_digi_id",
     "parse_emc_digi",
     "parse_emc_digi_id",
-    "parse_emc_gid",
     "parse_mdc_digi",
     "parse_mdc_digi_id",
-    "parse_mdc_gid",
     "parse_muc_digi_id",
     "parse_tof_digi_id",
     # tracks

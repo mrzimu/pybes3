@@ -1,15 +1,15 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import Literal
+from typing import Any, Literal
 
 import awkward as ak
 import numba as nb
 import numpy as np
 
-from ...typing import FloatLike, IntLike
+from pybes3.typing import FloatLike, IntLike
 
-_cur_dir = Path(__file__).resolve().parent
+_geom_data_path = Path(__file__).resolve().parent.parent / "data" / "emc_geom.npz"
 
 ENDCAP_PHI_01 = 64
 ENDCAP_PHI_23 = 80
@@ -49,7 +49,7 @@ def _ensure_loaded():
     global _center_x, _center_y, _center_z
     global _front_center_x, _front_center_y, _front_center_z
 
-    _emc_geom = dict(np.load(_cur_dir / "emc_geom.npz"))
+    _emc_geom = dict(np.load(_geom_data_path))
     _part = _emc_geom["part"]
     _theta = _emc_geom["theta"]
     _phi = _emc_geom["phi"]
@@ -356,6 +356,59 @@ def emc_gid_to_front_center_z(gid: IntLike) -> FloatLike:
         The z coordinate of the crystal's front center.
     """
     return _front_center_z[gid]
+
+
+def parse_emc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, Any]:
+    """
+    Parse the gid of EMC crystals. "gid" is the global ID of the crystal, ranges from 0 to 6239.
+    When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
+
+    Keys of the output:
+
+    - `gid`: Global ID of the crystal.
+    - `part`: Part number, 0 for endcap0, 1 for barrel, 2 for endcap1.
+    - `theta`: Theta number.
+    - `phi`: Phi number.
+
+    Optional keys of the output when `with_pos` is `True`:
+
+    - `front_center_x`: x position of the front center of the crystal.
+    - `front_center_y`: y position of the front center of the crystal.
+    - `front_center_z`: z position of the front center of the crystal.
+    - `center_x`: x position of the center of the crystal.
+    - `center_y`: y position of the center of the crystal.
+    - `center_z`: z position of the center of the crystal.
+
+    !!! info
+        The 8 points of the crystal will not be returned here.
+        If you need the 8 points of the crystal, use `emc_gid_to_point_x`, `emc_gid_to_point_y`
+        and `emc_gid_to_point_z`.
+
+    Parameters:
+        gid: The gid of the crystal.
+        with_pos: Whether to include the position information.
+
+    Returns:
+        The parsed result.
+    """
+    part = emc_gid_to_part(gid)
+    theta = emc_gid_to_theta(gid)
+    phi = emc_gid_to_phi(gid)
+
+    res = {"gid": gid, "part": part, "theta": theta, "phi": phi}
+
+    if with_pos:
+        res["front_center_x"] = emc_gid_to_front_center_x(gid)
+        res["front_center_y"] = emc_gid_to_front_center_y(gid)
+        res["front_center_z"] = emc_gid_to_front_center_z(gid)
+        res["center_x"] = emc_gid_to_center_x(gid)
+        res["center_y"] = emc_gid_to_center_y(gid)
+        res["center_z"] = emc_gid_to_center_z(gid)
+
+    if isinstance(gid, ak.Array):
+        return ak.zip(res)
+    else:
+        return res
 
 
 # ---------------------------------------------------------------------------
