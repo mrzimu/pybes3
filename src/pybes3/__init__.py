@@ -51,7 +51,7 @@ from pybes3.detectors import (
     parse_mdc_gid,
 )
 
-from .digi_id import (
+from pybes3.digi_id import (
     parse_cgem_digi_id,
     parse_emc_digi,
     parse_emc_digi_id,
@@ -60,7 +60,7 @@ from .digi_id import (
     parse_muc_digi_id,
     parse_tof_digi_id,
 )
-from .tracks import (
+from pybes3.helix import (
     HelixObject,
     dr_phi0_to_x,
     dr_phi0_to_y,
