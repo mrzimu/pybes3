@@ -3,12 +3,13 @@ changelog:
     - title: New Features
       labels:
         - feature
-    - title: Bug Fixes
+    - title: Bug Fixes and Performance Improvements
       labels:
         - bug
-    - title: Performance Improvements
-      labels:
         - performance
+    - title: Refactorings
+      labels:
+        - refactor
     - title: Other Changes
       labels:
         - '*'
