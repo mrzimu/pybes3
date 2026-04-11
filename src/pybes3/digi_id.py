@@ -500,7 +500,7 @@ def parse_tof_digi_id(
 ) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
     """
     Parse TOF digi ID.
-    If `library` is `ak`, return `ak.Record`. If `library` is `np`, return `dict[str, np.ndarray]`.
+    If `library` is `ak`, return `ak.Array`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
 
