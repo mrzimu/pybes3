@@ -29,7 +29,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv sync --all-groups
+          uv pip install -e . --group dev --group docs
 
       - name: Run tests
         run: |
