@@ -2,14 +2,14 @@ from pathlib import Path
 
 import pytest
 
-import pybes3
+import pybes3.data
 
 
 @pytest.fixture(scope="session")
-def data_dir():
+def test_data_dir():
     yield Path(__file__).parent / "data"
 
 
 @pytest.fixture(scope="session")
 def geom_dir():
-    yield Path(pybes3.__file__).parent / "data"
+    yield pybes3.data.DATA_DIR

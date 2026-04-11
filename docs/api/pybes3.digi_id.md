@@ -6,6 +6,12 @@ These methods parse the given ID and return the corresponding components. They a
 
 ::: pybes3.digi_id.parse_mdc_digi
 ---
+::: pybes3.digi_id.parse_emc_digi
+---
+::: pybes3.digi_id.parse_mdc_digi_id
+---
+::: pybes3.digi_id.parse_emc_digi_id
+---
 ::: pybes3.digi_id.parse_tof_digi_id
 ---
 ::: pybes3.digi_id.parse_muc_digi_id
@@ -24,12 +30,6 @@ These methods parse the given ID and return the corresponding components. They a
 ---
 ::: pybes3.digi_id.get_mdc_digi_id
 ---
-::: pybes3.digi_id.parse_mdc_digi_id
----
-::: pybes3.digi_id.parse_emc_digi_id
----
-::: pybes3.digi_id.parse_emc_digi
----
 
 ## TOF
 ::: pybes3.digi_id.check_tof_id
@@ -38,15 +38,7 @@ These methods parse the given ID and return the corresponding components. They a
 ---
 ::: pybes3.digi_id.tof_id_to_end
 ---
-::: pybes3.digi_id._tof_id_to_layer_or_module_1
----
-::: pybes3.digi_id._tof_id_to_layer_or_module_2
----
 ::: pybes3.digi_id.tof_id_to_layer_or_module
----
-::: pybes3.digi_id._tof_id_to_phi_or_strip_1
----
-::: pybes3.digi_id._tof_id_to_phi_or_strip_2
 ---
 ::: pybes3.digi_id.tof_id_to_phi_or_strip
 ---

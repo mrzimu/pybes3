@@ -253,8 +253,8 @@ def test_muc_digi_id(rtraw_event):
     assert digi_id.check_muc_id(tmp_id)
 
 
-def test_cgem_digi_id(data_dir):
-    cgem_id_ak: ak.Array = uproot.open(data_dir / "test_cgem.rtraw")[
+def test_cgem_digi_id(test_data_dir):
+    cgem_id_ak: ak.Array = uproot.open(test_data_dir / "test_cgem.rtraw")[
         "Event/TDigiEvent/m_cgemDigiCol"
     ].array()["m_intId"]
 

@@ -272,8 +272,8 @@ def test_parse_emc_digi(rtraw_event):
     assert len(ak_res2.positional_axis) == 2
 
 
-def test_parse_tof_digi_id(data_dir):
-    tof_id_ak: ak.Array = uproot.open(data_dir / "test_mrpc.rtraw")[
+def test_parse_tof_digi_id(test_data_dir):
+    tof_id_ak: ak.Array = uproot.open(test_data_dir / "test_mrpc.rtraw")[
         "Event/TDigiEvent/m_tofDigiCol"
     ].array()["m_intId"]
 
@@ -332,8 +332,8 @@ def test_parse_tof_digi_id(data_dir):
     assert int_res2["end"] == end_np[0]
 
 
-def test_parse_muc_digi_id(data_dir):
-    muc_id_ak: ak.Array = uproot.open(data_dir / "test_full_mc_evt_1.rtraw")[
+def test_parse_muc_digi_id(test_data_dir):
+    muc_id_ak: ak.Array = uproot.open(test_data_dir / "test_full_mc_evt_1.rtraw")[
         "Event/TDigiEvent/m_mucDigiCol"
     ].array()["m_intId"]
 
@@ -406,8 +406,8 @@ def test_parse_muc_digi_id(data_dir):
     assert np.all(np_res1["strip"] == strip_np)
 
 
-def test_parse_cgem_digi_id(data_dir):
-    cgem_id_ak: ak.Array = uproot.open(data_dir / "test_cgem.rtraw")[
+def test_parse_cgem_digi_id(test_data_dir):
+    cgem_id_ak: ak.Array = uproot.open(test_data_dir / "test_cgem.rtraw")[
         "Event/TDigiEvent/m_cgemDigiCol"
     ].array()["m_intId"]
 
