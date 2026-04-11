@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from pybes3.detectors.cgem import parse_cgem_digi_id
 from pybes3.detectors.emc import (
     emc_barrel_h1,
     emc_barrel_h2,
@@ -23,8 +22,6 @@ from pybes3.detectors.emc import (
     emc_gid_to_theta,
     get_emc_crystal_position,
     get_emc_gid,
-    parse_emc_digi,
-    parse_emc_digi_id,
     parse_emc_gid,
 )
 from pybes3.detectors.mdc import (
@@ -45,12 +42,8 @@ from pybes3.detectors.mdc import (
     mdc_gid_z_to_y,
     mdc_layer_to_is_stereo,
     mdc_layer_to_superlayer,
-    parse_mdc_digi,
-    parse_mdc_digi_id,
     parse_mdc_gid,
 )
-from pybes3.detectors.muc import parse_muc_digi_id
-from pybes3.detectors.tof import parse_tof_digi_id
 
 __all__ = [
     # mdc
@@ -71,6 +64,7 @@ __all__ = [
     "mdc_gid_z_to_y",
     "mdc_layer_to_is_stereo",
     "mdc_layer_to_superlayer",
+    "parse_mdc_gid",
     # emc
     "emc_barrel_h1",
     "emc_barrel_h2",
@@ -93,14 +87,5 @@ __all__ = [
     "emc_gid_to_theta",
     "get_emc_crystal_position",
     "get_emc_gid",
-    # parser
-    "parse_mdc_gid",
-    "parse_mdc_digi",
-    "parse_mdc_digi_id",
-    "parse_tof_digi_id",
-    "parse_emc_digi_id",
     "parse_emc_gid",
-    "parse_emc_digi",
-    "parse_muc_digi_id",
-    "parse_cgem_digi_id",
 ]

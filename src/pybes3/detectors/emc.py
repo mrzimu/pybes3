@@ -7,7 +7,6 @@ import awkward as ak
 import numba as nb
 import numpy as np
 
-from pybes3 import digi_id
 from pybes3.typing import FloatLike, IntLike
 
 _geom_data_path = Path(__file__).resolve().parent.parent / "data" / "emc_geom.npz"
@@ -359,38 +358,6 @@ def emc_gid_to_front_center_z(gid: IntLike) -> FloatLike:
     return _front_center_z[gid]
 
 
-# ---------------------------------------------------------------------------
-# Apply lazy-loading wrappers to all functions that access geometry data.
-# ---------------------------------------------------------------------------
-def _make_lazy(func):
-    def wrapper(*args, **kwargs):
-        _ensure_loaded()
-        return func(*args, **kwargs)
-
-    wrapper.__name__ = getattr(func, "__name__", str(func))
-    wrapper.__doc__ = getattr(func, "__doc__", None)
-    wrapper.__wrapped__ = func
-    return wrapper
-
-
-for _fn_name in [
-    "emc_gid_to_part",
-    "emc_gid_to_theta",
-    "emc_gid_to_phi",
-    "emc_gid_to_point_x",
-    "emc_gid_to_point_y",
-    "emc_gid_to_point_z",
-    "emc_gid_to_center_x",
-    "emc_gid_to_center_y",
-    "emc_gid_to_center_z",
-    "emc_gid_to_front_center_x",
-    "emc_gid_to_front_center_y",
-    "emc_gid_to_front_center_z",
-]:
-    globals()[_fn_name] = _make_lazy(globals()[_fn_name])
-del _fn_name
-
-
 def parse_emc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, Any]:
     """
     Parse the gid of EMC crystals. "gid" is the global ID of the crystal, ranges from 0 to 6239.
@@ -444,104 +411,33 @@ def parse_emc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, A
         return res
 
 
-def parse_emc_digi_id(
-    emc_digi_id: IntLike,
-    with_pos: bool = False,
-) -> ak.Array | dict[str, Any]:
-    """
-    Parse EMC digi ID.
+# ---------------------------------------------------------------------------
+# Apply lazy-loading wrappers to all functions that access geometry data.
+# ---------------------------------------------------------------------------
+def _make_lazy(func):
+    def wrapper(*args, **kwargs):
+        _ensure_loaded()
+        return func(*args, **kwargs)
 
-    When `emc_digi_id` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
-
-    Keys of the output:
-
-    - `gid`: Global ID of the crystal.
-    - `part`: Part number, 0 for endcap0, 1 for barrel, 2 for endcap1.
-    - `theta`: Theta number.
-    - `phi`: Phi number.
-
-    Optional keys of the output when `with_pos` is `True`:
-
-    - `front_center_x`: x position of the front center of the crystal.
-    - `front_center_y`: y position of the front center of the crystal.
-    - `front_center_z`: z position of the front center of the crystal.
-    - `center_x`: x position of the center of the crystal.
-    - `center_y`: y position of the center of the crystal.
-    - `center_z`: z position of the center of the crystal.
-
-    !!! info
-        The 8 points of the crystal will not be returned here.
-        If you need the 8 points of the crystal, use `emc_gid_to_point_x`, `emc_gid_to_point_y`
-        and `emc_gid_to_point_z`.
-
-    Parameters:
-        emc_digi_id: The EMC digi ID.
-        with_pos: Whether to include the position information.
-
-    Returns:
-        The parsed EMC digi ID.
-
-    """
-    part = digi_id.emc_id_to_module(emc_digi_id)
-    theta = digi_id.emc_id_to_theta(emc_digi_id)
-    phi = digi_id.emc_id_to_phi(emc_digi_id)
-    gid = get_emc_gid(part, theta, phi)
-    return parse_emc_gid(gid, with_pos)
+    wrapper.__name__ = getattr(func, "__name__", str(func))
+    wrapper.__doc__ = getattr(func, "__doc__", None)
+    wrapper.__wrapped__ = func
+    return wrapper
 
 
-def parse_emc_digi(emc_digi: ak.Record, with_pos: bool = False) -> ak.Record:
-    """
-    Parse EMC raw digi array. The raw digi array should contain [`m_intId`,
-    `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_measure`] fields.
-
-    Fields of the output:
-
-    - `gid`: Global ID of the crystal.
-    - `part`: Part number, 0 for endcap0, 1 for barrel, 2 for endcap1.
-    - `theta`: Theta number.
-    - `phi`: Phi number.
-    - `charge_channel`: Charge channel.
-    - `time_channel`: Time channel.
-    - `track_index`: Track index.
-    - `measure`: Measure value.
-    - `digi_id`: Raw digi ID.
-
-    Optional fields of the output when `with_pos` is `True`:
-
-    - `front_center_x`: x position of the front center of the crystal.
-    - `front_center_y`: y position of the front center of the crystal.
-    - `front_center_z`: z position of the front center of the crystal.
-    - `center_x`: x position of the center of the crystal.
-    - `center_y`: y position of the center of the crystal.
-    - `center_z`: z position of the center of the crystal.
-
-    Parameters:
-        emc_digi: The EMC raw digi array.
-        with_pos: Whether to include the position information.
-
-    Returns:
-        The parsed EMC digi array.
-    """
-    gid = parse_emc_digi_id(emc_digi["m_intId"], with_pos=with_pos)
-
-    res = {
-        "gid": gid["gid"],
-        "part": gid["part"],
-        "theta": gid["theta"],
-        "phi": gid["phi"],
-        "charge_channel": emc_digi["m_chargeChannel"],
-        "time_channel": emc_digi["m_timeChannel"],
-        "track_index": emc_digi["m_trackIndex"],
-        "measure": emc_digi["m_measure"],
-        "digi_id": emc_digi["m_intId"],
-    }
-
-    if with_pos:
-        res["front_center_x"] = gid["front_center_x"]
-        res["front_center_y"] = gid["front_center_y"]
-        res["front_center_z"] = gid["front_center_z"]
-        res["center_x"] = gid["center_x"]
-        res["center_y"] = gid["center_y"]
-        res["center_z"] = gid["center_z"]
-
-    return ak.zip(res)
+for _fn_name in [
+    "emc_gid_to_part",
+    "emc_gid_to_theta",
+    "emc_gid_to_phi",
+    "emc_gid_to_point_x",
+    "emc_gid_to_point_y",
+    "emc_gid_to_point_z",
+    "emc_gid_to_center_x",
+    "emc_gid_to_center_y",
+    "emc_gid_to_center_z",
+    "emc_gid_to_front_center_x",
+    "emc_gid_to_front_center_y",
+    "emc_gid_to_front_center_z",
+]:
+    globals()[_fn_name] = _make_lazy(globals()[_fn_name])
+del _fn_name
