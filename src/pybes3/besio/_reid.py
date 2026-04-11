@@ -113,7 +113,9 @@ def _mdc_wire_type(layer: int) -> int:
     if layer < _MDC_INNER_STEREO_LAYER_MAX + _MDC_INNER_AXIAL_LAYER_MAX:
         return 0  # inner axial: 8-19
     if layer < (
-        _MDC_INNER_STEREO_LAYER_MAX + _MDC_INNER_AXIAL_LAYER_MAX + _MDC_OUTER_STEREO_LAYER_MAX
+        _MDC_INNER_STEREO_LAYER_MAX
+        + _MDC_INNER_AXIAL_LAYER_MAX
+        + _MDC_OUTER_STEREO_LAYER_MAX
     ):
         return 1  # outer stereo: 20-35
     return 0  # outer axial: 36-42

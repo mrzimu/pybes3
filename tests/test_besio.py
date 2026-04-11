@@ -13,10 +13,14 @@ class CompareResult(NamedTuple):
     item: str
     is_same: bool
     arr_dtype: Optional[str] = None
-    diff_type: Optional[Literal["type mismatch", "length mismatch", "value unequal"]] = None
+    diff_type: Optional[
+        Literal["type mismatch", "length mismatch", "value unequal"]
+    ] = None
 
 
-def compare_ak(arr1: ak.Array, arr2: ak.Array, item_path: str = "") -> list[CompareResult]:
+def compare_ak(
+    arr1: ak.Array, arr2: ak.Array, item_path: str = ""
+) -> list[CompareResult]:
     """
     Compare two awkward arrays and return a list of CompareResult.
 
@@ -42,7 +46,9 @@ def compare_ak(arr1: ak.Array, arr2: ak.Array, item_path: str = "") -> list[Comp
     if arr1.fields:
         res = []
         for field in arr1.fields:
-            tmp_res = compare_ak(arr1[field], arr2[field], item_path=f"{item_path}/{field}")
+            tmp_res = compare_ak(
+                arr1[field], arr2[field], item_path=f"{item_path}/{field}"
+            )
 
             if (
                 len(tmp_res) == 1
@@ -233,7 +239,9 @@ def test_symetric_matrix_expansion(data_dir):
 
 
 def test_bes3_tobjarray_factory_dask(data_dir):
-    dask_arr = uproot.dask({data_dir / "test_full_mc_evt_1.rtraw": "Event/m_mdcDigiCol"})
+    dask_arr = uproot.dask(
+        {data_dir / "test_full_mc_evt_1.rtraw": "Event/m_mdcDigiCol"}
+    )
 
     dask_arr.compute()
 
