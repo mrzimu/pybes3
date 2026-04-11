@@ -29,6 +29,7 @@ repos:
       - id: ruff-check
         args: [--fix, --show-fixes]
       - id: ruff-format
+        types_or: [python, pyi]
 
   - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
     rev: v2.16.0
