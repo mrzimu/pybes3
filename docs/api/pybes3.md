@@ -87,21 +87,47 @@
 ---
 ::: pybes3.mdc_layer_to_superlayer
 ---
+::: pybes3.parse_emc_gid
+---
+::: pybes3.parse_mdc_gid
+---
+::: pybes3.cgem_gid_to_is_vstrip
+---
+::: pybes3.cgem_gid_to_is_xstrip
+---
+::: pybes3.cgem_gid_to_layer
+---
+::: pybes3.cgem_gid_to_sheet
+---
+::: pybes3.cgem_gid_to_strip
+---
+::: pybes3.cgem_gid_to_strip_type
+---
+::: pybes3.get_cgem_gid
+---
+::: pybes3.parse_cgem_gid
+---
+::: pybes3.get_tof_gid
+---
+::: pybes3.parse_tof_gid
+---
+::: pybes3.tof_gid_to_layer_or_module
+---
+::: pybes3.tof_gid_to_part
+---
+::: pybes3.tof_gid_to_phi_or_strip
+---
 
 ## digi_id
-::: pybes3.parse_cgem_digi_id
+::: pybes3.parse_mdc_digi
 ---
 ::: pybes3.parse_emc_digi
 ---
+::: pybes3.parse_cgem_digi_id
+---
 ::: pybes3.parse_emc_digi_id
 ---
-::: pybes3.parse_emc_gid
----
-::: pybes3.parse_mdc_digi
----
 ::: pybes3.parse_mdc_digi_id
----
-::: pybes3.parse_mdc_gid
 ---
 ::: pybes3.parse_muc_digi_id
 ---
