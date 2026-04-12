@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import Any
+
 import awkward as ak
 import numba as nb
 import numpy as np
@@ -87,7 +89,7 @@ def tof_gid_to_phi_or_strip(gid: IntLike) -> IntLike:
     return _phi_or_strip[gid]
 
 
-def parse_tof_gid(gid: IntLike) -> dict[str, IntLike | BoolLike | ak.Array]:
+def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
     """
     Parse TOF gid into part, layer_or_module and phi_or_strip.
 
