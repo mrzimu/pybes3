@@ -146,7 +146,6 @@ def cgem_gid_to_strip(gid: IntLike) -> IntLike:
     return _strip[gid]
 
 
-@nb.vectorize(cache=True)
 def cgem_gid_to_is_xstrip(gid: IntLike) -> BoolLike:
     """
     Check whether a CGEM gid corresponds to an x-strip.
@@ -160,7 +159,6 @@ def cgem_gid_to_is_xstrip(gid: IntLike) -> BoolLike:
     return cgem_gid_to_strip_type(gid) == X_STRIP_TYPE
 
 
-@nb.vectorize(cache=True)
 def cgem_gid_to_is_vstrip(gid: IntLike) -> BoolLike:
     """
     Check whether a CGEM gid corresponds to a v-strip.

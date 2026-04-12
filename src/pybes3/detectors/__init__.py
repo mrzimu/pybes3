@@ -1,5 +1,15 @@
 from __future__ import annotations
 
+from pybes3.detectors.cgem import (
+    cgem_gid_to_is_vstrip,
+    cgem_gid_to_is_xstrip,
+    cgem_gid_to_layer,
+    cgem_gid_to_sheet,
+    cgem_gid_to_strip,
+    cgem_gid_to_strip_type,
+    get_cgem_gid,
+    parse_cgem_gid,
+)
 from pybes3.detectors.emc import (
     emc_barrel_h1,
     emc_barrel_h2,
@@ -44,8 +54,24 @@ from pybes3.detectors.mdc import (
     mdc_layer_to_superlayer,
     parse_mdc_gid,
 )
+from pybes3.detectors.tof import (
+    get_tof_gid,
+    parse_tof_gid,
+    tof_gid_to_layer_or_module,
+    tof_gid_to_part,
+    tof_gid_to_phi_or_strip,
+)
 
 __all__ = [
+    # cgem
+    "cgem_gid_to_is_vstrip",
+    "cgem_gid_to_is_xstrip",
+    "cgem_gid_to_layer",
+    "cgem_gid_to_sheet",
+    "cgem_gid_to_strip",
+    "cgem_gid_to_strip_type",
+    "get_cgem_gid",
+    "parse_cgem_gid",
     # mdc
     "get_mdc_gid",
     "get_mdc_wire_position",
@@ -65,6 +91,12 @@ __all__ = [
     "mdc_layer_to_is_stereo",
     "mdc_layer_to_superlayer",
     "parse_mdc_gid",
+    # tof
+    "get_tof_gid",
+    "parse_tof_gid",
+    "tof_gid_to_layer_or_module",
+    "tof_gid_to_part",
+    "tof_gid_to_phi_or_strip",
     # emc
     "emc_barrel_h1",
     "emc_barrel_h2",
