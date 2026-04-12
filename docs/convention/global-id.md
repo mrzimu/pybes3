@@ -1,8 +1,5 @@
 # Global ID (gid)
 
-!!! note
-    This section only describes the numbering scheme of global ID (gid) for each detector. For how to parse and calculate gid, see [Detector](../user-manual/detector.md) page and the [Detector API](../api/pybes3.detectors.md).
-
 To uniquely locate each detector element, `pybes3` defines a global ID (gid). GID always starts from 0 and increases sequentially along the detector elements. The increasing order is described by a tuple-like structure.
 
 For example, MDC gid follows the order `(layer, wire)`, meaning it increases first along `wire`, then along `layer`:
@@ -16,6 +13,9 @@ For example, MDC gid follows the order `(layer, wire)`, meaning it increases fir
 (layer=1, wire=1) => gid=41
 ...
 ```
+
+!!! note
+    This section only describes the numbering scheme of global ID (gid) for each detector. For how to parse and calculate gid, see [Detector](../user-manual/detector.md) page and the [Detector API](../api/pybes3.detectors.md).
 
 ## MDC
 
