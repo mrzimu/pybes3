@@ -6,6 +6,7 @@ import awkward as ak
 import numba as nb
 import numpy as np
 
+from pybes3._utils import _make_lazy
 from pybes3.data import EMC_GEOM
 from pybes3.typing import FloatLike, IntLike
 
@@ -412,17 +413,6 @@ def parse_emc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, A
 # ---------------------------------------------------------------------------
 # Apply lazy-loading wrappers to all functions that access geometry data.
 # ---------------------------------------------------------------------------
-def _make_lazy(func):
-    def wrapper(*args, **kwargs):
-        _ensure_loaded()
-        return func(*args, **kwargs)
-
-    wrapper.__name__ = getattr(func, "__name__", str(func))
-    wrapper.__doc__ = getattr(func, "__doc__", None)
-    wrapper.__wrapped__ = func
-    return wrapper
-
-
 for _fn_name in [
     "emc_gid_to_part",
     "emc_gid_to_theta",
@@ -437,5 +427,5 @@ for _fn_name in [
     "emc_gid_to_front_center_y",
     "emc_gid_to_front_center_z",
 ]:
-    globals()[_fn_name] = _make_lazy(globals()[_fn_name])
+    globals()[_fn_name] = _make_lazy(globals()[_fn_name], _ensure_loaded)
 del _fn_name
