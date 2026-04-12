@@ -174,7 +174,7 @@ def cgem_gid_to_is_vstrip(gid: IntLike) -> BoolLike:
     return cgem_gid_to_strip_type(gid) == V_STRIP_TYPE
 
 
-def parse_cgem_gid(gid: IntLike) -> IntLike:
+def parse_cgem_gid(gid: IntLike) -> ak.Array | dict[str, IntLike | BoolLike]:
     """
     Parse CGEM gid into layer, sheet, strip type and strip number.
 
@@ -182,8 +182,10 @@ def parse_cgem_gid(gid: IntLike) -> IntLike:
         gid: The gid of the strip.
 
     Returns:
-        If gid is a ak.Array, returns an ak.Array with fields "layer", "sheet", "strip_type" and "strip".
-        Otherwise, returns a dictionary with keys "layer", "sheet", "strip_type" and "strip".
+        If gid is a ak.Array, returns an ak.Array with fields "layer", "sheet", "strip_type",
+        "strip", "is_xstrip" and "is_vstrip".
+        Otherwise, returns a dictionary with keys "layer", "sheet", "strip_type", "strip",
+        "is_xstrip" and "is_vstrip".
     """
     layer = cgem_gid_to_layer(gid)
     sheet = cgem_gid_to_sheet(gid)
