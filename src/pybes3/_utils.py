@@ -69,3 +69,25 @@ def _recover_shape(array: np.ndarray | ak.Array, index: list) -> ak.Array:
     for i in index:
         res = ak.unflatten(res, i)
     return res
+
+
+def _make_lazy(func, load_func):
+    """
+    Creates a lazy-loading wrapper for a function.
+
+    Args:
+        func: The function to wrap.
+        load_func: The function to call to load the data before calling func.
+
+    Returns:
+        The lazy-loading wrapper function.
+    """
+
+    def wrapper(*args, **kwargs):
+        load_func()
+        return func(*args, **kwargs)
+
+    wrapper.__name__ = getattr(func, "__name__", str(func))
+    wrapper.__doc__ = getattr(func, "__doc__", None)
+    wrapper.__wrapped__ = func
+    return wrapper

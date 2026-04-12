@@ -1,15 +1,10 @@
-# Geometry
-
-`pybes3` provides methods to retrieve theoretical geometry information of detectors.
-
-!!! note
-    All length values are in **cm**.
+# Detector
 
 ## MDC
 
-### GID conversion
+### GID Conversion
 
-Convert between GID and layer/wire numbers:
+Convert between gid and superlayer/layer/wire/stereo/is_stereo numbers:
 
 ```python
 import numpy as np
@@ -84,11 +79,41 @@ wire_position_ak = p3.get_mdc_wire_position(library="ak")
 wire_position_pd = p3.get_mdc_wire_position(library="pd")
 ```
 
+## TOF
+
+### GID Conversion
+
+Convert between gid and part/layer_or_module/phi_or_strip numbers:
+
+```python
+import numpy as np
+import pybes3 as p3
+
+# generate random gid
+gid = np.random.randint(0, 1136, 100)
+
+# get part, layer_or_module, phi_or_strip
+part = p3.tof_gid_to_part(gid)
+layer_or_module = p3.tof_gid_to_layer_or_module(gid)
+phi_or_strip = p3.tof_gid_to_phi_or_strip(gid)
+
+# get gid
+gid = p3.get_tof_gid(part, layer_or_module, phi_or_strip)
+```
+
+!!! note
+    The convention of `part` field is different from BOSS:
+
+    - 0, 1, 2: scintillator endcap 0, barrel, endcap 1
+    - 3, 4: MRPC endcap 0, endcap 1
+
+    The scintillator `layer` and MRPC `module` share the same axis, and the `phi` and `strip` fields also share the same axis.
+
 ## EMC
 
-### GID conversion
+### GID Conversion
 
-Convert between GID and part/theta/phi numbers:
+Convert between gid and part/theta/phi numbers:
 
 ```python
 import numpy as np
@@ -174,3 +199,33 @@ p3.emc_barrel_offset_2
 ```
 
 These constants are exported from `EmcRecGeoSvc` in `BOSS`.
+
+## MUC
+
+!!! note "Under development"
+
+## CGEM
+
+### GID Conversion
+
+Convert between gid and layer/sheet/strip_type/strip numbers:
+
+```python
+import numpy as np
+import pybes3 as p3
+
+# generate random gid
+gid = np.random.randint(0, 9897, 100)
+
+# get layer, sheet, strip_type, strip
+layer = p3.cgem_gid_to_layer(gid)
+sheet = p3.cgem_gid_to_sheet(gid)
+strip_type = p3.cgem_gid_to_strip_type(gid)
+strip = p3.cgem_gid_to_strip(gid)
+
+# get gid
+gid = p3.get_cgem_gid(layer, sheet, strip_type, strip)
+```
+
+!!! info
+    `strip_type=0` for x-strips and `strip_type=1` for v-strips.

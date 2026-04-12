@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any, Literal
 
 import awkward as ak
 import numba as nb
 import numpy as np
 
+from pybes3.data import MDC_GEOM
 from pybes3.typing import BoolLike, FloatLike, IntLike
-
-_geom_data_path = Path(__file__).resolve().parent.parent / "data" / "mdc_geom.npz"
 
 # Constant (not dependent on geometry data)
 superlayer_splits = np.array([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 43])
@@ -46,7 +44,7 @@ def _ensure_loaded():
     global _east_x, _east_y, _east_z, _west_x, _west_y, _west_z
     global _stereo, _is_stereo, layer_start_gid, dx_dz, dy_dz, is_layer_stereo
 
-    _mdc_wire_position = dict(np.load(_geom_data_path))
+    _mdc_wire_position = dict(np.load(MDC_GEOM))
     _superlayer = _mdc_wire_position["superlayer"]
     _layer = _mdc_wire_position["layer"]
     _wire = _mdc_wire_position["wire"]

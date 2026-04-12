@@ -1,15 +1,13 @@
 from __future__ import annotations
 
-from pathlib import Path
 from typing import Any, Literal
 
 import awkward as ak
 import numba as nb
 import numpy as np
 
+from pybes3.data import EMC_GEOM
 from pybes3.typing import FloatLike, IntLike
-
-_geom_data_path = Path(__file__).resolve().parent.parent / "data" / "emc_geom.npz"
 
 ENDCAP_PHI_01 = 64
 ENDCAP_PHI_23 = 80
@@ -49,7 +47,7 @@ def _ensure_loaded():
     global _center_x, _center_y, _center_z
     global _front_center_x, _front_center_y, _front_center_z
 
-    _emc_geom = dict(np.load(_geom_data_path))
+    _emc_geom = dict(np.load(EMC_GEOM))
     _part = _emc_geom["part"]
     _theta = _emc_geom["theta"]
     _phi = _emc_geom["phi"]
