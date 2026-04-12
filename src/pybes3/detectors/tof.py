@@ -7,7 +7,7 @@ import numba as nb
 import numpy as np
 
 from pybes3._utils import _make_lazy
-from pybes3.typing import IntLike, BoolLike
+from pybes3.typing import IntLike
 
 N_PARTS = 5
 N_LAYER_OR_MODULE = np.array([1, 2, 1, 36, 36])
