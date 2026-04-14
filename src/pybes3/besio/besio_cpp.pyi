@@ -1,6 +1,7 @@
 from __future__ import annotations
 
-from typing import Any, Optional
+from typing import Any
+
 import numpy as np
 from numpy.typing import NDArray
 from uproot_custom.cpp import IReader
@@ -33,5 +34,6 @@ def read_data(
 ) -> Any: ...
 def read_bes_raw(
     data: NDArray[np.uint32],
-    sub_detectors: Optional[list[str]] = None,
+    sub_detectors: list[str],
+    info_tables: dict[NDArray],
 ) -> dict: ...

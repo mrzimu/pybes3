@@ -10,8 +10,11 @@ import awkward.contents
 import awkward.index
 import numpy as np
 
-from pybes3.besio._reid import convert_reid_to_teid
+import pybes3.besio._reid as _reid
 from pybes3.besio.besio_cpp import read_bes_raw
+from pybes3.data import CGEM_ELEC_TABLE
+
+_info_tables: dict[str, np.ndarray] = None
 
 
 class BesFlag(enum.IntEnum):
@@ -39,7 +42,7 @@ def _raw_dict_to_ak(raw_dict: dict[str, object]) -> ak.Array:
                 list(org_data.keys()),
             )
 
-        elif field_name in {"mdc", "tof", "emc", "muc"}:
+        elif field_name in {"mdc", "tof", "emc", "muc", "cgem", "trigGTD"}:
             offsets, data_dict = org_data
             contents[field_name] = awkward.contents.ListOffsetArray(
                 awkward.index.Index(offsets),
@@ -63,6 +66,21 @@ class RawBinaryReader:
         self,
         file: str,
     ):
+        # load cgem-elec-table
+        global _info_tables
+        if _info_tables is None:
+            _info_tables = {}
+
+            cgem_elec_table = dict(np.load(CGEM_ELEC_TABLE))
+            for k, v in cgem_elec_table.items():
+                _info_tables[f"cgem_{k}"] = v
+
+            _info_tables["mdc_re2te"] = _reid.build_mdc_re2te()
+            _info_tables["tof_re2te"] = _reid.build_tof_re2te()
+            _info_tables["emc_re2te"] = _reid.build_emc_re2te()
+            _info_tables["muc_re2te"] = _reid.build_muc_re2te()
+            _info_tables["muc_strsqc"] = _reid.build_muc_strsqc()
+
         self.file = str(Path(file).resolve())
         self._file = open(file, "rb")
 
@@ -127,7 +145,7 @@ class RawBinaryReader:
         self._reset_cursor()
 
         if sub_detectors is None:
-            sub_detectors = []
+            sub_detectors = ["cgem", "mdc", "tof", "emc", "muc", "trigGTD"]
 
         with ThreadPoolExecutor(max_workers=max_workers) as executor:
             n_total_blocks_read = 0
@@ -143,14 +161,19 @@ class RawBinaryReader:
                 )
 
                 batch_data, n_read = self._read_batch(n_block_to_read)
-                futures.append(executor.submit(read_bes_raw, batch_data, sub_detectors))
+                futures.append(
+                    executor.submit(
+                        read_bes_raw,
+                        batch_data,
+                        sub_detectors,
+                        _info_tables,
+                    )
+                )
                 n_total_blocks_read += n_read
 
             res = []
             for future in futures:
                 org_dict = future.result()
-                if decode_reid:
-                    convert_reid_to_teid(org_dict)
                 res.append(_raw_dict_to_ak(org_dict))
 
         return ak.concatenate(res)
@@ -252,9 +275,7 @@ class RawBinaryReader:
         pos_end = self._file.tell()
 
         self._file.seek(pos_start, 0)
-        batch_data = np.frombuffer(
-            self._file.read(pos_end - pos_start), dtype=np.uint32
-        )
+        batch_data = np.frombuffer(self._file.read(pos_end - pos_start), dtype=np.uint32)
 
         return batch_data, block_counter
 
@@ -319,9 +340,7 @@ def concatenate(
 
         with RawBinaryReader(f) as reader:
             res.append(
-                reader.arrays(
-                    -1, n_block_per_batch, sub_detectors, max_workers, decode_reid
-                )
+                reader.arrays(-1, n_block_per_batch, sub_detectors, max_workers, decode_reid)
             )
 
     if verbose:

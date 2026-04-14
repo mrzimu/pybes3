@@ -471,10 +471,7 @@ def get_tof_digi_id(
     if part < 3:
         return np.uint32(
             ((part << DIGI_TOF_PART_OFFSET) & DIGI_TOF_PART_MASK)
-            | (
-                (layer_or_module << DIGI_TOF_SCINT_LAYER_OFFSET)
-                & DIGI_TOF_SCINT_LAYER_MASK
-            )
+            | ((layer_or_module << DIGI_TOF_SCINT_LAYER_OFFSET) & DIGI_TOF_SCINT_LAYER_MASK)
             | ((phi_or_strip << DIGI_TOF_SCINT_PHI_OFFSET) & DIGI_TOF_SCINT_PHI_MASK)
             | ((end << DIGI_TOF_END_OFFSET) & DIGI_TOF_END_MASK)
             | (DIGI_TOF_FLAG << DIGI_FLAG_OFFSET)
@@ -483,10 +480,7 @@ def get_tof_digi_id(
         return np.uint32(
             ((3 << DIGI_TOF_PART_OFFSET) & DIGI_TOF_PART_MASK)
             | (((part - 3) << DIGI_TOF_MRPC_ENDCAP_OFFSET) & DIGI_TOF_MRPC_ENDCAP_MASK)
-            | (
-                (layer_or_module << DIGI_TOF_MRPC_MODULE_OFFSET)
-                & DIGI_TOF_MRPC_MODULE_MASK
-            )
+            | ((layer_or_module << DIGI_TOF_MRPC_MODULE_OFFSET) & DIGI_TOF_MRPC_MODULE_MASK)
             | ((phi_or_strip << DIGI_TOF_MRPC_STRIP_OFFSET) & DIGI_TOF_MRPC_STRIP_MASK)
             | ((end << DIGI_TOF_END_OFFSET) & DIGI_TOF_END_MASK)
             | (DIGI_TOF_FLAG << DIGI_FLAG_OFFSET)
@@ -957,6 +951,20 @@ def cgem_id_to_sheet(cgem_digi_id: IntLike) -> IntLike:
 
 
 @nb.vectorize(cache=True)
+def cgem_id_to_strip_type(cgem_digi_id: IntLike) -> IntLike:
+    """
+    Convert the CGEM digi ID to the strip type. 0 for X-strip, 1 for V-strip.
+
+    Parameters:
+        cgem_digi_id: The CGEM digi ID array or value.
+
+    Returns:
+        The strip type. 0 for X-strip, 1 for V-strip.
+    """
+    return np.uint8((cgem_digi_id & DIGI_CGEM_STRIPTYPE_MASK) >> DIGI_CGEM_STRIPTYPE_OFFSET)
+
+
+@nb.vectorize(cache=True)
 def cgem_id_to_strip(cgem_digi_id: IntLike) -> IntLike:
     """
     Convert CGEM digi ID to strip number
@@ -971,27 +979,11 @@ def cgem_id_to_strip(cgem_digi_id: IntLike) -> IntLike:
 
 
 @nb.vectorize(cache=True)
-def cgem_id_to_is_x_strip(cgem_digi_id: IntLike) -> BoolLike:
-    """
-    Convert the CGEM digi ID to whether it is an X-strip.
-
-    Parameters:
-        cgem_digi_id: The CGEM digi ID array or value.
-
-    Returns:
-        Whether the strip is an X-strip
-    """
-    return (
-        (cgem_digi_id & DIGI_CGEM_STRIPTYPE_MASK) >> DIGI_CGEM_STRIPTYPE_OFFSET
-    ) == DIGI_CGEM_XSTRIP
-
-
-@nb.vectorize(cache=True)
 def get_cgem_digi_id(
     layer: IntLike,
     sheet: IntLike,
+    strip_type: IntLike,
     strip: IntLike,
-    is_x_strip: BoolLike,
 ) -> IntLike:
     """
     Generate CGEM digi ID based on the strip number, strip type, sheet number, and layer number.
@@ -999,18 +991,18 @@ def get_cgem_digi_id(
     Parameters:
         layer: The layer number.
         sheet: The sheet number.
+        strip_type: The strip type. 0 for X-strip, 1 for V-strip.
         strip: The strip number.
-        is_x_strip: Whether the strip is an X-strip.
 
     Returns:
         The CGEM digi ID.
     """
     return np.uint32(
         ((strip << DIGI_CGEM_STRIP_OFFSET) & DIGI_CGEM_STRIP_MASK)
-        | ((~is_x_strip << DIGI_CGEM_STRIPTYPE_OFFSET) & DIGI_CGEM_STRIPTYPE_MASK)
+        | ((strip_type << DIGI_CGEM_STRIPTYPE_OFFSET) & DIGI_CGEM_STRIPTYPE_MASK)
         | ((sheet << DIGI_CGEM_SHEET_OFFSET) & DIGI_CGEM_SHEET_MASK)
         | ((layer << DIGI_CGEM_LAYER_OFFSET) & DIGI_CGEM_LAYER_MASK)
-        | (DIGI_CGEM_FLAG << DIGI_FLAG_OFFSET)
+        | ((DIGI_CGEM_FLAG << DIGI_FLAG_OFFSET) & 0xFF000000)
     )
 
 
@@ -1048,8 +1040,8 @@ def parse_cgem_digi_id(
     res = {
         "layer": cgem_id_to_layer(cgem_digi_id),
         "sheet": cgem_id_to_sheet(cgem_digi_id),
+        "strip_type": cgem_id_to_strip_type(cgem_digi_id),
         "strip": cgem_id_to_strip(cgem_digi_id),
-        "is_x_strip": cgem_id_to_is_x_strip(cgem_digi_id),
     }
 
     if library == "ak":

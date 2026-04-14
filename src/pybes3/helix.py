@@ -541,9 +541,7 @@ def kappa_to_charge(kappa: FloatLike) -> IntLike:
     Returns:
         charge of the helix.
     """
-    return (
-        np.int8(1) if kappa > 1e-10 else np.int8(-1) if kappa < -1e-10 else np.int8(0)
-    )
+    return np.int8(1) if kappa > 1e-10 else np.int8(-1) if kappa < -1e-10 else np.int8(0)
 
 
 @nb.vectorize(cache=True)
@@ -948,16 +946,12 @@ def helix_awk(*args, **kwargs) -> HelixAwkwardArray:
         if len(args) > 1:
             error = args[1]
             if "error" in kwargs:
-                raise ValueError(
-                    "Cannot pass both helix and error as positional arguments."
-                )
+                raise ValueError("Cannot pass both helix and error as positional arguments.")
 
         if len(args) > 2:
             pivot = args[2]
             if "pivot" in kwargs:
-                raise ValueError(
-                    "Cannot pass both helix and pivot as positional arguments."
-                )
+                raise ValueError("Cannot pass both helix and pivot as positional arguments.")
 
         dr = helix[..., 0]
         phi0 = helix[..., 1]

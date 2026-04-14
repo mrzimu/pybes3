@@ -15,7 +15,8 @@ PYBIND11_MODULE( besio_cpp, m ) {
     m.doc() = "Binary Event Structure I/O";
 
     m.def( "read_bes_raw", &py_read_bes_raw, "Read BES raw data", py::arg( "data" ),
-           py::arg( "sub_detectors" ) = std::vector<std::string>() );
+           py::arg( "sub_detectors" ) = std::vector<std::string>(),
+           py::arg( "info_tables" )   = std::map<std::string, py::array>() );
 
     // BES3 reader
     declare_reader<Bes3TObjArrayReader, std::string, SharedReader>( m, "Bes3TObjArrayReader" );

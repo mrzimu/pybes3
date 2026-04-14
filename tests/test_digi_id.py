@@ -335,9 +335,7 @@ def test_tof_digi_id(rtraw_event):
     assert tmp_phi_or_strip == np_phi_or_strip[0]
     assert tmp_end == np_end[0]
     assert (
-        digi_id.get_tof_digi_id(
-            tmp_part, tmp_layer_or_module, tmp_phi_or_strip, tmp_end
-        )
+        digi_id.get_tof_digi_id(tmp_part, tmp_layer_or_module, tmp_phi_or_strip, tmp_end)
         == tmp_id
     )
     assert digi_id.check_tof_id(tmp_id)
@@ -355,9 +353,7 @@ def test_tof_digi_id(rtraw_event):
     assert tmp_phi_or_strip == np_phi_or_strip[0]
     assert tmp_end == np_end[0]
     assert (
-        digi_id.get_tof_digi_id(
-            tmp_part, tmp_layer_or_module, tmp_phi_or_strip, tmp_end
-        )
+        digi_id.get_tof_digi_id(tmp_part, tmp_layer_or_module, tmp_phi_or_strip, tmp_end)
         == tmp_id
     )
     assert digi_id.check_tof_id(tmp_id)
@@ -475,9 +471,7 @@ def test_muc_digi_id(rtraw_event):
     assert tmp_channel == np_channel[0]
     assert tmp_gap == np_gap[0]
     assert tmp_strip == np_strip[0]
-    assert (
-        digi_id.get_muc_digi_id(tmp_part, tmp_segment, tmp_layer, tmp_channel) == tmp_id
-    )
+    assert digi_id.get_muc_digi_id(tmp_part, tmp_segment, tmp_layer, tmp_channel) == tmp_id
     assert digi_id.check_muc_id(tmp_id)
 
     # Test python int
@@ -496,9 +490,7 @@ def test_muc_digi_id(rtraw_event):
     assert tmp_channel == np_channel[0]
     assert tmp_gap == np_gap[0]
     assert tmp_strip == np_strip[0]
-    assert (
-        digi_id.get_muc_digi_id(tmp_part, tmp_segment, tmp_layer, tmp_channel) == tmp_id
-    )
+    assert digi_id.get_muc_digi_id(tmp_part, tmp_segment, tmp_layer, tmp_channel) == tmp_id
     assert digi_id.check_muc_id(tmp_id)
 
 
@@ -589,8 +581,7 @@ def test_cgem_digi_id(test_data_dir):
         digi_id.cgem_id_to_is_x_strip(cgem_id_ak),
     )
     assert ak.all(
-        digi_id.get_cgem_digi_id(ak_layer, ak_sheet, ak_strip, ak_is_x_strip)
-        == cgem_id_ak
+        digi_id.get_cgem_digi_id(ak_layer, ak_sheet, ak_strip, ak_is_x_strip) == cgem_id_ak
     )
     assert ak.all(digi_id.check_cgem_id(cgem_id_ak))
 
@@ -603,8 +594,7 @@ def test_cgem_digi_id(test_data_dir):
         digi_id.cgem_id_to_is_x_strip(cgem_id_np),
     )
     assert np.all(
-        digi_id.get_cgem_digi_id(np_layer, np_sheet, np_strip, np_is_x_strip)
-        == cgem_id_np
+        digi_id.get_cgem_digi_id(np_layer, np_sheet, np_strip, np_is_x_strip) == cgem_id_np
     )
     assert np.all(digi_id.check_cgem_id(cgem_id_np))
 
@@ -620,10 +610,7 @@ def test_cgem_digi_id(test_data_dir):
     assert tmp_sheet == np_sheet[0]
     assert tmp_strip == np_strip[0]
     assert tmp_is_x_strip == np_is_x_strip[0]
-    assert (
-        digi_id.get_cgem_digi_id(tmp_layer, tmp_sheet, tmp_strip, tmp_is_x_strip)
-        == tmp_id
-    )
+    assert digi_id.get_cgem_digi_id(tmp_layer, tmp_sheet, tmp_strip, tmp_is_x_strip) == tmp_id
     assert digi_id.check_cgem_id(tmp_id)
 
     # Test python int
@@ -638,10 +625,7 @@ def test_cgem_digi_id(test_data_dir):
     assert tmp_sheet == np_sheet[0]
     assert tmp_strip == np_strip[0]
     assert tmp_is_x_strip == np_is_x_strip[0]
-    assert (
-        digi_id.get_cgem_digi_id(tmp_layer, tmp_sheet, tmp_strip, tmp_is_x_strip)
-        == tmp_id
-    )
+    assert digi_id.get_cgem_digi_id(tmp_layer, tmp_sheet, tmp_strip, tmp_is_x_strip) == tmp_id
     assert digi_id.check_cgem_id(tmp_id)
 
 

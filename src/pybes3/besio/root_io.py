@@ -164,9 +164,7 @@ class Bes3BaseObjectFactory(GroupFactory):
 
         fName = cls_streamer_info["fName"]
         sub_streamers: list[dict] = all_streamer_info[fName]
-        sub_factories = [
-            build_factory(s, all_streamer_info, item_path) for s in sub_streamers
-        ]
+        sub_factories = [build_factory(s, all_streamer_info, item_path) for s in sub_streamers]
 
         return cls(name=fName, sub_factories=sub_factories)
 
@@ -276,9 +274,7 @@ class Bes3SymMatrixArrayFactory(Factory):
         dtype = PrimitiveFactory.typename2dtype[top_type_name]
 
         flat_size = np.prod(fMaxIndex[:fArrayDim])
-        assert flat_size > 0, (
-            f"flatten_size should be greater than 0, but got {flat_size}"
-        )
+        assert flat_size > 0, f"flatten_size should be greater than 0, but got {flat_size}"
 
         full_dim = int((np.sqrt(1 + 8 * flat_size) - 1) / 2)
 
@@ -300,14 +296,10 @@ class Bes3SymMatrixArrayFactory(Factory):
         return bcpp.Bes3SymMatrixArrayReader(self.name, self.flat_size, self.full_dim)
 
     def make_awkward_content(self, raw_data: np.ndarray):
-        return awkward.contents.NumpyArray(
-            raw_data.reshape(-1, self.full_dim, self.full_dim)
-        )
+        return awkward.contents.NumpyArray(raw_data.reshape(-1, self.full_dim, self.full_dim))
 
     def make_awkward_form(self):
-        return awkward.forms.NumpyForm(
-            self.dtype, inner_shape=[self.full_dim, self.full_dim]
-        )
+        return awkward.forms.NumpyForm(self.dtype, inner_shape=[self.full_dim, self.full_dim])
 
 
 uproot_custom.registered_factories |= {

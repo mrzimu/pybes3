@@ -12,3 +12,17 @@ gaudi_add_executable(ExportGid
         ROOT::Tree
         Identifier
 )
+
+gaudi_add_module(TestPybes3
+    SOURCES
+        src/ExportTestRawDataAlg.cc
+    LINK
+        Gaudi::GaudiKernel
+        EventModel
+        EmcRawEvent
+        MdcRawEvent
+        CgemRawEvent
+        MucRawEvent
+        TofRawEvent
+        TrigEvent
+)
