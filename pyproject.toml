@@ -6,6 +6,7 @@ requires = ["scikit-build-core", "pybind11==3.0.*", "uproot-custom==2.3.*"]
 dev = [
   "ruff",
   "pytest",
+  "pytest-subtests",
   "pyarrow",
   "pandas",
   "build",
