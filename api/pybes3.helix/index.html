@@ -2678,9 +2678,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="normal">541</span>
 <span class="normal">542</span>
 <span class="normal">543</span>
-<span class="normal">544</span>
-<span class="normal">545</span>
-<span class="normal">546</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">544</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">kappa_to_charge</span><span class="p">(</span><span class="n">kappa</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert helix parameter to charge.</span>
@@ -2691,9 +2689,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="sd">    Returns:</span>
 <span class="sd">        charge of the helix.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">kappa</span> <span class="o">&gt;</span> <span class="mf">1e-10</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">kappa</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1e-10</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">kappa</span> <span class="o">&gt;</span> <span class="mf">1e-10</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">kappa</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1e-10</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -2771,7 +2767,9 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/helix.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">549</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">547</span>
+<span class="normal">548</span>
+<span class="normal">549</span>
 <span class="normal">550</span>
 <span class="normal">551</span>
 <span class="normal">552</span>
@@ -2780,9 +2778,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="normal">555</span>
 <span class="normal">556</span>
 <span class="normal">557</span>
-<span class="normal">558</span>
-<span class="normal">559</span>
-<span class="normal">560</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">558</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">kappa_to_radius</span><span class="p">(</span><span class="n">kappa</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert helix parameter kappa to circular radius.</span>
@@ -2827,7 +2823,9 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>src/pybes3/helix.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">723</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">721</span>
+<span class="normal">722</span>
+<span class="normal">723</span>
 <span class="normal">724</span>
 <span class="normal">725</span>
 <span class="normal">726</span>
@@ -2898,9 +2896,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="normal">791</span>
 <span class="normal">792</span>
 <span class="normal">793</span>
-<span class="normal">794</span>
-<span class="normal">795</span>
-<span class="normal">796</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">HelixAwkwardRecord</span><span class="p">(</span><span class="n">ak</span><span class="o">.</span><span class="n">Record</span><span class="p">):</span>
+<span class="normal">794</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">HelixAwkwardRecord</span><span class="p">(</span><span class="n">ak</span><span class="o">.</span><span class="n">Record</span><span class="p">):</span>
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">momentum</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">vector</span><span class="o">.</span><span class="n">MomentumObject3D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3240,7 +3236,9 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/helix.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">774</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">772</span>
+<span class="normal">773</span>
+<span class="normal">774</span>
 <span class="normal">775</span>
 <span class="normal">776</span>
 <span class="normal">777</span>
@@ -3260,9 +3258,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="normal">791</span>
 <span class="normal">792</span>
 <span class="normal">793</span>
-<span class="normal">794</span>
-<span class="normal">795</span>
-<span class="normal">796</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">isclose</span><span class="p">(</span>
+<span class="normal">794</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">isclose</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;HelixAwkwardRecord&quot;</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -3326,7 +3322,9 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>src/pybes3/helix.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">805</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">803</span>
+<span class="normal">804</span>
+<span class="normal">805</span>
 <span class="normal">806</span>
 <span class="normal">807</span>
 <span class="normal">808</span>
@@ -3395,9 +3393,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="normal">871</span>
 <span class="normal">872</span>
 <span class="normal">873</span>
-<span class="normal">874</span>
-<span class="normal">875</span>
-<span class="normal">876</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">HelixAwkwardArray</span><span class="p">(</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+<span class="normal">874</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">HelixAwkwardArray</span><span class="p">(</span><span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">momentum</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">vec_ak</span><span class="o">.</span><span class="n">MomentumAwkward3D</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -3681,15 +3677,15 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/helix.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">848</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">846</span>
+<span class="normal">847</span>
+<span class="normal">848</span>
 <span class="normal">849</span>
 <span class="normal">850</span>
 <span class="normal">851</span>
 <span class="normal">852</span>
 <span class="normal">853</span>
-<span class="normal">854</span>
-<span class="normal">855</span>
-<span class="normal">856</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">change_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;HelixAwkwardArray&quot;</span><span class="p">:</span>
+<span class="normal">854</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">change_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;HelixAwkwardArray&quot;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Changes the pivot point of the helix.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -3774,7 +3770,9 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/helix.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">858</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">856</span>
+<span class="normal">857</span>
+<span class="normal">858</span>
 <span class="normal">859</span>
 <span class="normal">860</span>
 <span class="normal">861</span>
@@ -3790,9 +3788,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="normal">871</span>
 <span class="normal">872</span>
 <span class="normal">873</span>
-<span class="normal">874</span>
-<span class="normal">875</span>
-<span class="normal">876</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">isclose</span><span class="p">(</span>
+<span class="normal">874</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">isclose</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;HelixAwkwardRecord&quot;</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
@@ -3865,7 +3861,9 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/helix.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 940</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 938</span>
+<span class="normal"> 939</span>
+<span class="normal"> 940</span>
 <span class="normal"> 941</span>
 <span class="normal"> 942</span>
 <span class="normal"> 943</span>
@@ -3951,13 +3949,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="normal">1023</span>
 <span class="normal">1024</span>
 <span class="normal">1025</span>
-<span class="normal">1026</span>
-<span class="normal">1027</span>
-<span class="normal">1028</span>
-<span class="normal">1029</span>
-<span class="normal">1030</span>
-<span class="normal">1031</span>
-<span class="normal">1032</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">helix_awk</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HelixAwkwardArray</span><span class="p">:</span>
+<span class="normal">1026</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">helix_awk</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HelixAwkwardArray</span><span class="p">:</span>
     <span class="c1"># Use a sentinel to distinguish &quot;not provided&quot; from an explicit None</span>
     <span class="n">error</span> <span class="o">=</span> <span class="n">_SENTINEL</span>
     <span class="n">pivot</span> <span class="o">=</span> <span class="n">_SENTINEL</span>
@@ -3968,16 +3960,12 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">error</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Cannot pass both helix and error as positional arguments.&quot;</span>
-                <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot pass both helix and error as positional arguments.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">pivot</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
             <span class="k">if</span> <span class="s2">&quot;pivot&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Cannot pass both helix and pivot as positional arguments.&quot;</span>
-                <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot pass both helix and pivot as positional arguments.&quot;</span><span class="p">)</span>
 
         <span class="n">dr</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
         <span class="n">phi0</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>

@@ -1255,10 +1255,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#pybes3.digi_id.cgem_id_to_strip" class="md-nav__link">
+  <a href="#pybes3.digi_id.cgem_id_to_strip_type" class="md-nav__link">
     <span class="md-ellipsis">
       
-        cgem_id_to_strip
+        cgem_id_to_strip_type
       
     </span>
   </a>
@@ -1266,10 +1266,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#pybes3.digi_id.cgem_id_to_is_x_strip" class="md-nav__link">
+  <a href="#pybes3.digi_id.cgem_id_to_strip" class="md-nav__link">
     <span class="md-ellipsis">
       
-        cgem_id_to_is_x_strip
+        cgem_id_to_strip
       
     </span>
   </a>
@@ -1862,10 +1862,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#pybes3.digi_id.cgem_id_to_strip" class="md-nav__link">
+  <a href="#pybes3.digi_id.cgem_id_to_strip_type" class="md-nav__link">
     <span class="md-ellipsis">
       
-        cgem_id_to_strip
+        cgem_id_to_strip_type
       
     </span>
   </a>
@@ -1873,10 +1873,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#pybes3.digi_id.cgem_id_to_is_x_strip" class="md-nav__link">
+  <a href="#pybes3.digi_id.cgem_id_to_strip" class="md-nav__link">
     <span class="md-ellipsis">
       
-        cgem_id_to_is_x_strip
+        cgem_id_to_strip
       
     </span>
   </a>
@@ -2278,7 +2278,13 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">676</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">670</span>
+<span class="normal">671</span>
+<span class="normal">672</span>
+<span class="normal">673</span>
+<span class="normal">674</span>
+<span class="normal">675</span>
+<span class="normal">676</span>
 <span class="normal">677</span>
 <span class="normal">678</span>
 <span class="normal">679</span>
@@ -2327,13 +2333,7 @@
 <span class="normal">722</span>
 <span class="normal">723</span>
 <span class="normal">724</span>
-<span class="normal">725</span>
-<span class="normal">726</span>
-<span class="normal">727</span>
-<span class="normal">728</span>
-<span class="normal">729</span>
-<span class="normal">730</span>
-<span class="normal">731</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_emc_digi</span><span class="p">(</span><span class="n">emc_digi</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Record</span><span class="p">,</span> <span class="n">with_pos</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ak</span><span class="o">.</span><span class="n">Record</span><span class="p">:</span>
+<span class="normal">725</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_emc_digi</span><span class="p">(</span><span class="n">emc_digi</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Record</span><span class="p">,</span> <span class="n">with_pos</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ak</span><span class="o">.</span><span class="n">Record</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse EMC raw digi array. The raw digi array should contain [`m_intId`,</span>
 <span class="sd">    `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_measure`] fields.</span>
@@ -2698,7 +2698,13 @@ and <code>emc_gid_to_point_z</code>.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">631</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">625</span>
+<span class="normal">626</span>
+<span class="normal">627</span>
+<span class="normal">628</span>
+<span class="normal">629</span>
+<span class="normal">630</span>
+<span class="normal">631</span>
 <span class="normal">632</span>
 <span class="normal">633</span>
 <span class="normal">634</span>
@@ -2734,13 +2740,7 @@ and <code>emc_gid_to_point_z</code>.</p>
 <span class="normal">664</span>
 <span class="normal">665</span>
 <span class="normal">666</span>
-<span class="normal">667</span>
-<span class="normal">668</span>
-<span class="normal">669</span>
-<span class="normal">670</span>
-<span class="normal">671</span>
-<span class="normal">672</span>
-<span class="normal">673</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_emc_digi_id</span><span class="p">(</span>
+<span class="normal">667</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_emc_digi_id</span><span class="p">(</span>
     <span class="n">emc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
     <span class="n">with_pos</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
@@ -2903,7 +2903,13 @@ If <code>library</code> is <code>ak</code>, return <code>ak.Array</code>. If <co
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">496</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">490</span>
+<span class="normal">491</span>
+<span class="normal">492</span>
+<span class="normal">493</span>
+<span class="normal">494</span>
+<span class="normal">495</span>
+<span class="normal">496</span>
 <span class="normal">497</span>
 <span class="normal">498</span>
 <span class="normal">499</span>
@@ -2945,13 +2951,7 @@ If <code>library</code> is <code>ak</code>, return <code>ak.Array</code>. If <co
 <span class="normal">535</span>
 <span class="normal">536</span>
 <span class="normal">537</span>
-<span class="normal">538</span>
-<span class="normal">539</span>
-<span class="normal">540</span>
-<span class="normal">541</span>
-<span class="normal">542</span>
-<span class="normal">543</span>
-<span class="normal">544</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_tof_digi_id</span><span class="p">(</span>
+<span class="normal">538</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_tof_digi_id</span><span class="p">(</span>
     <span class="n">tof_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
     <span class="n">flat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">library</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ak&quot;</span><span class="p">,</span> <span class="s2">&quot;np&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ak&quot;</span><span class="p">,</span>
@@ -3119,7 +3119,13 @@ If <code>library</code> is <code>ak</code>, return <code>ak.Array</code>. If <co
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">861</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">855</span>
+<span class="normal">856</span>
+<span class="normal">857</span>
+<span class="normal">858</span>
+<span class="normal">859</span>
+<span class="normal">860</span>
+<span class="normal">861</span>
 <span class="normal">862</span>
 <span class="normal">863</span>
 <span class="normal">864</span>
@@ -3163,13 +3169,7 @@ If <code>library</code> is <code>ak</code>, return <code>ak.Array</code>. If <co
 <span class="normal">902</span>
 <span class="normal">903</span>
 <span class="normal">904</span>
-<span class="normal">905</span>
-<span class="normal">906</span>
-<span class="normal">907</span>
-<span class="normal">908</span>
-<span class="normal">909</span>
-<span class="normal">910</span>
-<span class="normal">911</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_muc_digi_id</span><span class="p">(</span>
+<span class="normal">905</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_muc_digi_id</span><span class="p">(</span>
     <span class="n">muc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
     <span class="n">flat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">library</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ak&quot;</span><span class="p">,</span> <span class="s2">&quot;np&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ak&quot;</span><span class="p">,</span>
@@ -3244,8 +3244,8 @@ If <code>library</code> is <code>ak</code>, return <code>ak.Array</code>. If <co
 <ul>
 <li><code>layer</code>: The layer number.</li>
 <li><code>sheet</code>: The sheet ID.</li>
+<li><code>strip_type</code>: The strip type. 0 for X-strip, 1 for V-strip.</li>
 <li><code>strip</code>: The strip ID.</li>
-<li><code>is_x_strip</code>: Whether the strip is an X-strip.</li>
 </ul>
 
 
@@ -3337,7 +3337,15 @@ If <code>library</code> is <code>ak</code>, return <code>ak.Array</code>. If <co
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1017</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1009</span>
+<span class="normal">1010</span>
+<span class="normal">1011</span>
+<span class="normal">1012</span>
+<span class="normal">1013</span>
+<span class="normal">1014</span>
+<span class="normal">1015</span>
+<span class="normal">1016</span>
+<span class="normal">1017</span>
 <span class="normal">1018</span>
 <span class="normal">1019</span>
 <span class="normal">1020</span>
@@ -3370,15 +3378,7 @@ If <code>library</code> is <code>ak</code>, return <code>ak.Array</code>. If <co
 <span class="normal">1047</span>
 <span class="normal">1048</span>
 <span class="normal">1049</span>
-<span class="normal">1050</span>
-<span class="normal">1051</span>
-<span class="normal">1052</span>
-<span class="normal">1053</span>
-<span class="normal">1054</span>
-<span class="normal">1055</span>
-<span class="normal">1056</span>
-<span class="normal">1057</span>
-<span class="normal">1058</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_cgem_digi_id</span><span class="p">(</span>
+<span class="normal">1050</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_cgem_digi_id</span><span class="p">(</span>
     <span class="n">cgem_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
     <span class="n">flat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">library</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ak&quot;</span><span class="p">,</span> <span class="s2">&quot;np&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ak&quot;</span><span class="p">,</span>
@@ -3392,8 +3392,8 @@ If <code>library</code> is <code>ak</code>, return <code>ak.Array</code>. If <co
 
 <span class="sd">    - `layer`: The layer number.</span>
 <span class="sd">    - `sheet`: The sheet ID.</span>
+<span class="sd">    - `strip_type`: The strip type. 0 for X-strip, 1 for V-strip.</span>
 <span class="sd">    - `strip`: The strip ID.</span>
-<span class="sd">    - `is_x_strip`: Whether the strip is an X-strip.</span>
 
 <span class="sd">    Parameters:</span>
 <span class="sd">        cgem_digi_id: The CGEM digi ID.</span>
@@ -3412,8 +3412,8 @@ If <code>library</code> is <code>ak</code>, return <code>ak.Array</code>. If <co
     <span class="n">res</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="n">cgem_id_to_layer</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">),</span>
         <span class="s2">&quot;sheet&quot;</span><span class="p">:</span> <span class="n">cgem_id_to_sheet</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">),</span>
+        <span class="s2">&quot;strip_type&quot;</span><span class="p">:</span> <span class="n">cgem_id_to_strip_type</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">),</span>
         <span class="s2">&quot;strip&quot;</span><span class="p">:</span> <span class="n">cgem_id_to_strip</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">),</span>
-        <span class="s2">&quot;is_x_strip&quot;</span><span class="p">:</span> <span class="n">cgem_id_to_is_x_strip</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">),</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">library</span> <span class="o">==</span> <span class="s2">&quot;ak&quot;</span><span class="p">:</span>
@@ -4717,13 +4717,7 @@ MRPC and the return value is strip number.</p>
 <span class="normal">484</span>
 <span class="normal">485</span>
 <span class="normal">486</span>
-<span class="normal">487</span>
-<span class="normal">488</span>
-<span class="normal">489</span>
-<span class="normal">490</span>
-<span class="normal">491</span>
-<span class="normal">492</span>
-<span class="normal">493</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">487</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_tof_digi_id</span><span class="p">(</span>
     <span class="n">part</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
     <span class="n">layer_or_module</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
@@ -4745,10 +4739,7 @@ MRPC and the return value is strip number.</p>
     <span class="k">if</span> <span class="n">part</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">(</span>
             <span class="p">((</span><span class="n">part</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_TOF_PART_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">DIGI_TOF_PART_MASK</span><span class="p">)</span>
-            <span class="o">|</span> <span class="p">(</span>
-                <span class="p">(</span><span class="n">layer_or_module</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_TOF_SCINT_LAYER_OFFSET</span><span class="p">)</span>
-                <span class="o">&amp;</span> <span class="n">DIGI_TOF_SCINT_LAYER_MASK</span>
-            <span class="p">)</span>
+            <span class="o">|</span> <span class="p">((</span><span class="n">layer_or_module</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_TOF_SCINT_LAYER_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">DIGI_TOF_SCINT_LAYER_MASK</span><span class="p">)</span>
             <span class="o">|</span> <span class="p">((</span><span class="n">phi_or_strip</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_TOF_SCINT_PHI_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">DIGI_TOF_SCINT_PHI_MASK</span><span class="p">)</span>
             <span class="o">|</span> <span class="p">((</span><span class="n">end</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_TOF_END_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">DIGI_TOF_END_MASK</span><span class="p">)</span>
             <span class="o">|</span> <span class="p">(</span><span class="n">DIGI_TOF_FLAG</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_FLAG_OFFSET</span><span class="p">)</span>
@@ -4757,10 +4748,7 @@ MRPC and the return value is strip number.</p>
         <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">(</span>
             <span class="p">((</span><span class="mi">3</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_TOF_PART_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">DIGI_TOF_PART_MASK</span><span class="p">)</span>
             <span class="o">|</span> <span class="p">(((</span><span class="n">part</span> <span class="o">-</span> <span class="mi">3</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_TOF_MRPC_ENDCAP_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">DIGI_TOF_MRPC_ENDCAP_MASK</span><span class="p">)</span>
-            <span class="o">|</span> <span class="p">(</span>
-                <span class="p">(</span><span class="n">layer_or_module</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_TOF_MRPC_MODULE_OFFSET</span><span class="p">)</span>
-                <span class="o">&amp;</span> <span class="n">DIGI_TOF_MRPC_MODULE_MASK</span>
-            <span class="p">)</span>
+            <span class="o">|</span> <span class="p">((</span><span class="n">layer_or_module</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_TOF_MRPC_MODULE_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">DIGI_TOF_MRPC_MODULE_MASK</span><span class="p">)</span>
             <span class="o">|</span> <span class="p">((</span><span class="n">phi_or_strip</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_TOF_MRPC_STRIP_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">DIGI_TOF_MRPC_STRIP_MASK</span><span class="p">)</span>
             <span class="o">|</span> <span class="p">((</span><span class="n">end</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_TOF_END_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">DIGI_TOF_END_MASK</span><span class="p">)</span>
             <span class="o">|</span> <span class="p">(</span><span class="n">DIGI_TOF_FLAG</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_FLAG_OFFSET</span><span class="p">)</span>
@@ -4843,18 +4831,18 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">550</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">544</span>
+<span class="normal">545</span>
+<span class="normal">546</span>
+<span class="normal">547</span>
+<span class="normal">548</span>
+<span class="normal">549</span>
+<span class="normal">550</span>
 <span class="normal">551</span>
 <span class="normal">552</span>
 <span class="normal">553</span>
 <span class="normal">554</span>
-<span class="normal">555</span>
-<span class="normal">556</span>
-<span class="normal">557</span>
-<span class="normal">558</span>
-<span class="normal">559</span>
-<span class="normal">560</span>
-<span class="normal">561</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">555</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">check_emc_id</span><span class="p">(</span><span class="n">emc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BoolLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check if the EMC digi ID is valid.</span>
@@ -4943,18 +4931,18 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">564</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">558</span>
+<span class="normal">559</span>
+<span class="normal">560</span>
+<span class="normal">561</span>
+<span class="normal">562</span>
+<span class="normal">563</span>
+<span class="normal">564</span>
 <span class="normal">565</span>
 <span class="normal">566</span>
 <span class="normal">567</span>
 <span class="normal">568</span>
-<span class="normal">569</span>
-<span class="normal">570</span>
-<span class="normal">571</span>
-<span class="normal">572</span>
-<span class="normal">573</span>
-<span class="normal">574</span>
-<span class="normal">575</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">569</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_id_to_module</span><span class="p">(</span><span class="n">emc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert EMC digi ID to module number</span>
@@ -5043,18 +5031,18 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">578</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">572</span>
+<span class="normal">573</span>
+<span class="normal">574</span>
+<span class="normal">575</span>
+<span class="normal">576</span>
+<span class="normal">577</span>
+<span class="normal">578</span>
 <span class="normal">579</span>
 <span class="normal">580</span>
 <span class="normal">581</span>
 <span class="normal">582</span>
-<span class="normal">583</span>
-<span class="normal">584</span>
-<span class="normal">585</span>
-<span class="normal">586</span>
-<span class="normal">587</span>
-<span class="normal">588</span>
-<span class="normal">589</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">583</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_id_to_theta</span><span class="p">(</span><span class="n">emc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert the EMC digi ID to the theta number.</span>
@@ -5143,18 +5131,18 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">592</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">586</span>
+<span class="normal">587</span>
+<span class="normal">588</span>
+<span class="normal">589</span>
+<span class="normal">590</span>
+<span class="normal">591</span>
+<span class="normal">592</span>
 <span class="normal">593</span>
 <span class="normal">594</span>
 <span class="normal">595</span>
 <span class="normal">596</span>
-<span class="normal">597</span>
-<span class="normal">598</span>
-<span class="normal">599</span>
-<span class="normal">600</span>
-<span class="normal">601</span>
-<span class="normal">602</span>
-<span class="normal">603</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">597</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_id_to_phi</span><span class="p">(</span><span class="n">emc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert the EMC digi ID to the phi number.</span>
@@ -5275,7 +5263,13 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">606</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">600</span>
+<span class="normal">601</span>
+<span class="normal">602</span>
+<span class="normal">603</span>
+<span class="normal">604</span>
+<span class="normal">605</span>
+<span class="normal">606</span>
 <span class="normal">607</span>
 <span class="normal">608</span>
 <span class="normal">609</span>
@@ -5291,13 +5285,7 @@ MRPC and the return value is strip number.</p>
 <span class="normal">619</span>
 <span class="normal">620</span>
 <span class="normal">621</span>
-<span class="normal">622</span>
-<span class="normal">623</span>
-<span class="normal">624</span>
-<span class="normal">625</span>
-<span class="normal">626</span>
-<span class="normal">627</span>
-<span class="normal">628</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">622</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_emc_digi_id</span><span class="p">(</span>
     <span class="n">module</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
     <span class="n">theta</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
@@ -5398,18 +5386,18 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">737</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">731</span>
+<span class="normal">732</span>
+<span class="normal">733</span>
+<span class="normal">734</span>
+<span class="normal">735</span>
+<span class="normal">736</span>
+<span class="normal">737</span>
 <span class="normal">738</span>
 <span class="normal">739</span>
 <span class="normal">740</span>
 <span class="normal">741</span>
-<span class="normal">742</span>
-<span class="normal">743</span>
-<span class="normal">744</span>
-<span class="normal">745</span>
-<span class="normal">746</span>
-<span class="normal">747</span>
-<span class="normal">748</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">742</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">check_muc_id</span><span class="p">(</span><span class="n">muc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BoolLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check if the MUC digi ID is valid.</span>
@@ -5498,18 +5486,18 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">751</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">745</span>
+<span class="normal">746</span>
+<span class="normal">747</span>
+<span class="normal">748</span>
+<span class="normal">749</span>
+<span class="normal">750</span>
+<span class="normal">751</span>
 <span class="normal">752</span>
 <span class="normal">753</span>
 <span class="normal">754</span>
 <span class="normal">755</span>
-<span class="normal">756</span>
-<span class="normal">757</span>
-<span class="normal">758</span>
-<span class="normal">759</span>
-<span class="normal">760</span>
-<span class="normal">761</span>
-<span class="normal">762</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">756</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">muc_id_to_part</span><span class="p">(</span><span class="n">muc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert MUC digi ID to part number</span>
@@ -5598,18 +5586,18 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">765</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">759</span>
+<span class="normal">760</span>
+<span class="normal">761</span>
+<span class="normal">762</span>
+<span class="normal">763</span>
+<span class="normal">764</span>
+<span class="normal">765</span>
 <span class="normal">766</span>
 <span class="normal">767</span>
 <span class="normal">768</span>
 <span class="normal">769</span>
-<span class="normal">770</span>
-<span class="normal">771</span>
-<span class="normal">772</span>
-<span class="normal">773</span>
-<span class="normal">774</span>
-<span class="normal">775</span>
-<span class="normal">776</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">770</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">muc_id_to_segment</span><span class="p">(</span><span class="n">muc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert the MUC digi ID to the segment number.</span>
@@ -5698,18 +5686,18 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">779</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">773</span>
+<span class="normal">774</span>
+<span class="normal">775</span>
+<span class="normal">776</span>
+<span class="normal">777</span>
+<span class="normal">778</span>
+<span class="normal">779</span>
 <span class="normal">780</span>
 <span class="normal">781</span>
 <span class="normal">782</span>
 <span class="normal">783</span>
-<span class="normal">784</span>
-<span class="normal">785</span>
-<span class="normal">786</span>
-<span class="normal">787</span>
-<span class="normal">788</span>
-<span class="normal">789</span>
-<span class="normal">790</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">784</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">muc_id_to_layer</span><span class="p">(</span><span class="n">muc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert the MUC digi ID to the layer number.</span>
@@ -5798,18 +5786,18 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">793</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">787</span>
+<span class="normal">788</span>
+<span class="normal">789</span>
+<span class="normal">790</span>
+<span class="normal">791</span>
+<span class="normal">792</span>
+<span class="normal">793</span>
 <span class="normal">794</span>
 <span class="normal">795</span>
 <span class="normal">796</span>
 <span class="normal">797</span>
-<span class="normal">798</span>
-<span class="normal">799</span>
-<span class="normal">800</span>
-<span class="normal">801</span>
-<span class="normal">802</span>
-<span class="normal">803</span>
-<span class="normal">804</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">798</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">muc_id_to_channel</span><span class="p">(</span><span class="n">muc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert the MUC digi ID to the channel number.</span>
@@ -5946,7 +5934,13 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">807</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">801</span>
+<span class="normal">802</span>
+<span class="normal">803</span>
+<span class="normal">804</span>
+<span class="normal">805</span>
+<span class="normal">806</span>
+<span class="normal">807</span>
 <span class="normal">808</span>
 <span class="normal">809</span>
 <span class="normal">810</span>
@@ -5965,13 +5959,7 @@ MRPC and the return value is strip number.</p>
 <span class="normal">823</span>
 <span class="normal">824</span>
 <span class="normal">825</span>
-<span class="normal">826</span>
-<span class="normal">827</span>
-<span class="normal">828</span>
-<span class="normal">829</span>
-<span class="normal">830</span>
-<span class="normal">831</span>
-<span class="normal">832</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">826</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_muc_digi_id</span><span class="p">(</span>
     <span class="n">part</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
     <span class="n">segment</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
@@ -6074,17 +6062,17 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">835</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">829</span>
+<span class="normal">830</span>
+<span class="normal">831</span>
+<span class="normal">832</span>
+<span class="normal">833</span>
+<span class="normal">834</span>
+<span class="normal">835</span>
 <span class="normal">836</span>
 <span class="normal">837</span>
 <span class="normal">838</span>
-<span class="normal">839</span>
-<span class="normal">840</span>
-<span class="normal">841</span>
-<span class="normal">842</span>
-<span class="normal">843</span>
-<span class="normal">844</span>
-<span class="normal">845</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">muc_id_to_gap</span><span class="p">(</span><span class="n">muc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
+<span class="normal">839</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">muc_id_to_gap</span><span class="p">(</span><span class="n">muc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert the MUC digi ID to the gap ID, which is equivalent to layer number.</span>
 
@@ -6172,17 +6160,17 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">848</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">842</span>
+<span class="normal">843</span>
+<span class="normal">844</span>
+<span class="normal">845</span>
+<span class="normal">846</span>
+<span class="normal">847</span>
+<span class="normal">848</span>
 <span class="normal">849</span>
 <span class="normal">850</span>
 <span class="normal">851</span>
-<span class="normal">852</span>
-<span class="normal">853</span>
-<span class="normal">854</span>
-<span class="normal">855</span>
-<span class="normal">856</span>
-<span class="normal">857</span>
-<span class="normal">858</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">muc_id_to_strip</span><span class="p">(</span><span class="n">muc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
+<span class="normal">852</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">muc_id_to_strip</span><span class="p">(</span><span class="n">muc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert the MUC digi ID to the strip number, which is equivalent to channel number.</span>
 
@@ -6271,18 +6259,18 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">917</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">911</span>
+<span class="normal">912</span>
+<span class="normal">913</span>
+<span class="normal">914</span>
+<span class="normal">915</span>
+<span class="normal">916</span>
+<span class="normal">917</span>
 <span class="normal">918</span>
 <span class="normal">919</span>
 <span class="normal">920</span>
 <span class="normal">921</span>
-<span class="normal">922</span>
-<span class="normal">923</span>
-<span class="normal">924</span>
-<span class="normal">925</span>
-<span class="normal">926</span>
-<span class="normal">927</span>
-<span class="normal">928</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">922</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">check_cgem_id</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BoolLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Check if the CGEM digi ID is valid.</span>
@@ -6371,18 +6359,18 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">931</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">925</span>
+<span class="normal">926</span>
+<span class="normal">927</span>
+<span class="normal">928</span>
+<span class="normal">929</span>
+<span class="normal">930</span>
+<span class="normal">931</span>
 <span class="normal">932</span>
 <span class="normal">933</span>
 <span class="normal">934</span>
 <span class="normal">935</span>
-<span class="normal">936</span>
-<span class="normal">937</span>
-<span class="normal">938</span>
-<span class="normal">939</span>
-<span class="normal">940</span>
-<span class="normal">941</span>
-<span class="normal">942</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">936</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">cgem_id_to_layer</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert the CGEM digi ID to the layer number.</span>
@@ -6471,18 +6459,18 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">945</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">939</span>
+<span class="normal">940</span>
+<span class="normal">941</span>
+<span class="normal">942</span>
+<span class="normal">943</span>
+<span class="normal">944</span>
+<span class="normal">945</span>
 <span class="normal">946</span>
 <span class="normal">947</span>
 <span class="normal">948</span>
 <span class="normal">949</span>
-<span class="normal">950</span>
-<span class="normal">951</span>
-<span class="normal">952</span>
-<span class="normal">953</span>
-<span class="normal">954</span>
-<span class="normal">955</span>
-<span class="normal">956</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">950</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">cgem_id_to_sheet</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert the CGEM digi ID to the sheet number.</span>
@@ -6494,6 +6482,106 @@ MRPC and the return value is strip number.</p>
 <span class="sd">        The sheet number.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">((</span><span class="n">cgem_digi_id</span> <span class="o">&amp;</span> <span class="n">DIGI_CGEM_SHEET_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">DIGI_CGEM_SHEET_OFFSET</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-function">
+
+
+<h3 id="pybes3.digi_id.cgem_id_to_strip_type" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">cgem_id_to_strip_type</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">)</span></code>
+
+</h3>
+
+
+    <div class="doc doc-contents first">
+
+        <p>Convert the CGEM digi ID to the strip type. 0 for X-strip, 1 for V-strip.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>cgem_digi_id</code>
+            </td>
+            <td>
+                  <code><span title="pybes3.typing.IntLike">IntLike</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The CGEM digi ID array or value.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="pybes3.typing.IntLike">IntLike</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The strip type. 0 for X-strip, 1 for V-strip.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">953</span>
+<span class="normal">954</span>
+<span class="normal">955</span>
+<span class="normal">956</span>
+<span class="normal">957</span>
+<span class="normal">958</span>
+<span class="normal">959</span>
+<span class="normal">960</span>
+<span class="normal">961</span>
+<span class="normal">962</span>
+<span class="normal">963</span>
+<span class="normal">964</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">cgem_id_to_strip_type</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Convert the CGEM digi ID to the strip type. 0 for X-strip, 1 for V-strip.</span>
+
+<span class="sd">    Parameters:</span>
+<span class="sd">        cgem_digi_id: The CGEM digi ID array or value.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        The strip type. 0 for X-strip, 1 for V-strip.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">((</span><span class="n">cgem_digi_id</span> <span class="o">&amp;</span> <span class="n">DIGI_CGEM_STRIPTYPE_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">DIGI_CGEM_STRIPTYPE_OFFSET</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -6571,18 +6659,18 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">959</span>
-<span class="normal">960</span>
-<span class="normal">961</span>
-<span class="normal">962</span>
-<span class="normal">963</span>
-<span class="normal">964</span>
-<span class="normal">965</span>
-<span class="normal">966</span>
-<span class="normal">967</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">967</span>
 <span class="normal">968</span>
 <span class="normal">969</span>
-<span class="normal">970</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">970</span>
+<span class="normal">971</span>
+<span class="normal">972</span>
+<span class="normal">973</span>
+<span class="normal">974</span>
+<span class="normal">975</span>
+<span class="normal">976</span>
+<span class="normal">977</span>
+<span class="normal">978</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">cgem_id_to_strip</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert CGEM digi ID to strip number</span>
@@ -6604,112 +6692,8 @@ MRPC and the return value is strip number.</p>
 <div class="doc doc-object doc-function">
 
 
-<h3 id="pybes3.digi_id.cgem_id_to_is_x_strip" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">cgem_id_to_is_x_strip</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">)</span></code>
-
-</h3>
-
-
-    <div class="doc doc-contents first">
-
-        <p>Convert the CGEM digi ID to whether it is an X-strip.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>cgem_digi_id</code>
-            </td>
-            <td>
-                  <code><span title="pybes3.typing.IntLike">IntLike</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The CGEM digi ID array or value.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><span title="pybes3.typing.BoolLike">BoolLike</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Whether the strip is an X-strip</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-            <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">973</span>
-<span class="normal">974</span>
-<span class="normal">975</span>
-<span class="normal">976</span>
-<span class="normal">977</span>
-<span class="normal">978</span>
-<span class="normal">979</span>
-<span class="normal">980</span>
-<span class="normal">981</span>
-<span class="normal">982</span>
-<span class="normal">983</span>
-<span class="normal">984</span>
-<span class="normal">985</span>
-<span class="normal">986</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="k">def</span><span class="w"> </span><span class="nf">cgem_id_to_is_x_strip</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BoolLike</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Convert the CGEM digi ID to whether it is an X-strip.</span>
-
-<span class="sd">    Parameters:</span>
-<span class="sd">        cgem_digi_id: The CGEM digi ID array or value.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        Whether the strip is an X-strip</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="p">(</span><span class="n">cgem_digi_id</span> <span class="o">&amp;</span> <span class="n">DIGI_CGEM_STRIPTYPE_MASK</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="n">DIGI_CGEM_STRIPTYPE_OFFSET</span>
-    <span class="p">)</span> <span class="o">==</span> <span class="n">DIGI_CGEM_XSTRIP</span>
-</code></pre></div></td></tr></table></div>
-            </details>
-    </div>
-
-</div><hr />
-
-
-<div class="doc doc-object doc-function">
-
-
 <h3 id="pybes3.digi_id.get_cgem_digi_id" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">get_cgem_digi_id</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">sheet</span><span class="p">,</span> <span class="n">strip</span><span class="p">,</span> <span class="n">is_x_strip</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">get_cgem_digi_id</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">sheet</span><span class="p">,</span> <span class="n">strip_type</span><span class="p">,</span> <span class="n">strip</span><span class="p">)</span></code>
 
 </h3>
 
@@ -6764,14 +6748,14 @@ MRPC and the return value is strip number.</p>
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>strip</code>
+                <code>strip_type</code>
             </td>
             <td>
                   <code><span title="pybes3.typing.IntLike">IntLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The strip number.</p>
+                <p>The strip type. 0 for X-strip, 1 for V-strip.</p>
               </div>
             </td>
             <td>
@@ -6780,14 +6764,14 @@ MRPC and the return value is strip number.</p>
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>is_x_strip</code>
+                <code>strip</code>
             </td>
             <td>
-                  <code><span title="pybes3.typing.BoolLike">BoolLike</span></code>
+                  <code><span title="pybes3.typing.IntLike">IntLike</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether the strip is an X-strip.</p>
+                <p>The strip number.</p>
               </div>
             </td>
             <td>
@@ -6823,7 +6807,15 @@ MRPC and the return value is strip number.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 989</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 981</span>
+<span class="normal"> 982</span>
+<span class="normal"> 983</span>
+<span class="normal"> 984</span>
+<span class="normal"> 985</span>
+<span class="normal"> 986</span>
+<span class="normal"> 987</span>
+<span class="normal"> 988</span>
+<span class="normal"> 989</span>
 <span class="normal"> 990</span>
 <span class="normal"> 991</span>
 <span class="normal"> 992</span>
@@ -6840,20 +6832,12 @@ MRPC and the return value is strip number.</p>
 <span class="normal">1003</span>
 <span class="normal">1004</span>
 <span class="normal">1005</span>
-<span class="normal">1006</span>
-<span class="normal">1007</span>
-<span class="normal">1008</span>
-<span class="normal">1009</span>
-<span class="normal">1010</span>
-<span class="normal">1011</span>
-<span class="normal">1012</span>
-<span class="normal">1013</span>
-<span class="normal">1014</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">1006</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_cgem_digi_id</span><span class="p">(</span>
     <span class="n">layer</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
     <span class="n">sheet</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
+    <span class="n">strip_type</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
     <span class="n">strip</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
-    <span class="n">is_x_strip</span><span class="p">:</span> <span class="n">BoolLike</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Generate CGEM digi ID based on the strip number, strip type, sheet number, and layer number.</span>
@@ -6861,18 +6845,18 @@ MRPC and the return value is strip number.</p>
 <span class="sd">    Parameters:</span>
 <span class="sd">        layer: The layer number.</span>
 <span class="sd">        sheet: The sheet number.</span>
+<span class="sd">        strip_type: The strip type. 0 for X-strip, 1 for V-strip.</span>
 <span class="sd">        strip: The strip number.</span>
-<span class="sd">        is_x_strip: Whether the strip is an X-strip.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The CGEM digi ID.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">uint32</span><span class="p">(</span>
         <span class="p">((</span><span class="n">strip</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_CGEM_STRIP_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">DIGI_CGEM_STRIP_MASK</span><span class="p">)</span>
-        <span class="o">|</span> <span class="p">((</span><span class="o">~</span><span class="n">is_x_strip</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_CGEM_STRIPTYPE_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">DIGI_CGEM_STRIPTYPE_MASK</span><span class="p">)</span>
+        <span class="o">|</span> <span class="p">((</span><span class="n">strip_type</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_CGEM_STRIPTYPE_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">DIGI_CGEM_STRIPTYPE_MASK</span><span class="p">)</span>
         <span class="o">|</span> <span class="p">((</span><span class="n">sheet</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_CGEM_SHEET_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">DIGI_CGEM_SHEET_MASK</span><span class="p">)</span>
         <span class="o">|</span> <span class="p">((</span><span class="n">layer</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_CGEM_LAYER_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">DIGI_CGEM_LAYER_MASK</span><span class="p">)</span>
-        <span class="o">|</span> <span class="p">(</span><span class="n">DIGI_CGEM_FLAG</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_FLAG_OFFSET</span><span class="p">)</span>
+        <span class="o">|</span> <span class="p">((</span><span class="n">DIGI_CGEM_FLAG</span> <span class="o">&lt;&lt;</span> <span class="n">DIGI_FLAG_OFFSET</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF000000</span><span class="p">)</span>
     <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>

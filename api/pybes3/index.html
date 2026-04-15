@@ -3037,7 +3037,7 @@ Use <code>uproot.concatenate</code> instread.</p>
 
 
 <h3 id="pybes3.concatenate_raw" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">concatenate_raw</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">n_block_per_batch</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">sub_detectors</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">max_workers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">decode_reid</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">concatenate_raw</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">entry_start</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">entry_stop</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">filter_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span></code>
 
 </h3>
 
@@ -3076,46 +3076,46 @@ Use <code>uproot.concatenate</code> instread.</p>
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>n_block_per_batch</code>
+                <code>entry_start</code>
             </td>
             <td>
                   <code><span title="int">int</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The number of blocks to read per batch. Defaults to 1000.</p>
+                <p>The starting entry to read. Defaults to 0.</p>
               </div>
             </td>
             <td>
-                  <code>10000</code>
+                  <code>0</code>
             </td>
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>sub_detectors</code>
+                <code>entry_stop</code>
             </td>
             <td>
-                  <code><span title="list">list</span>[<span title="str">str</span>] | None</code>
+                  <code><span title="int">int</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List of sub-detectors to read. Defaults to <code>None</code>, which means read all sub-detectors.</p>
+                <p>The stopping entry to read. Defaults to -1, which means read until the end.</p>
               </div>
             </td>
             <td>
-                  <code>None</code>
+                  <code>-1</code>
             </td>
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>max_workers</code>
+                <code>filter_name</code>
             </td>
             <td>
-                  <code><span title="int">int</span> | None</code>
+                  <code><span title="typing.Union">Union</span>[<span title="str">str</span>, <span title="list">list</span>, None]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The maximum number of worker threads to use for reading the data. Defaults to <code>None</code>, which means use the default number of worker threads.</p>
+                <p>A filter to select specific fields to read. Defaults to <code>None</code>, which means read all fields.</p>
               </div>
             </td>
             <td>
@@ -3131,29 +3131,11 @@ Use <code>uproot.concatenate</code> instread.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Show reading process.</p>
+                <p>Show reading process. Defaults to <code>False</code>.</p>
               </div>
             </td>
             <td>
                   <code>False</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>decode_reid</code>
-            </td>
-            <td>
-                  <code><span title="bool">bool</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>If True (default), convert raw electronics IDs
-(REID) to standard detector geometry IDs (digi_id / TEID).
-Set to False to keep the original REID values.</p>
-              </div>
-            </td>
-            <td>
-                  <code>True</code>
             </td>
           </tr>
       </tbody>
@@ -3185,101 +3167,193 @@ Set to False to keep the original REID values.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/besio/raw_io.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">282</span>
-<span class="normal">283</span>
-<span class="normal">284</span>
-<span class="normal">285</span>
-<span class="normal">286</span>
-<span class="normal">287</span>
-<span class="normal">288</span>
-<span class="normal">289</span>
-<span class="normal">290</span>
-<span class="normal">291</span>
-<span class="normal">292</span>
-<span class="normal">293</span>
-<span class="normal">294</span>
-<span class="normal">295</span>
-<span class="normal">296</span>
-<span class="normal">297</span>
-<span class="normal">298</span>
-<span class="normal">299</span>
-<span class="normal">300</span>
-<span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span>
-<span class="normal">304</span>
-<span class="normal">305</span>
-<span class="normal">306</span>
-<span class="normal">307</span>
-<span class="normal">308</span>
-<span class="normal">309</span>
-<span class="normal">310</span>
-<span class="normal">311</span>
-<span class="normal">312</span>
-<span class="normal">313</span>
-<span class="normal">314</span>
-<span class="normal">315</span>
-<span class="normal">316</span>
-<span class="normal">317</span>
-<span class="normal">318</span>
-<span class="normal">319</span>
-<span class="normal">320</span>
-<span class="normal">321</span>
-<span class="normal">322</span>
-<span class="normal">323</span>
-<span class="normal">324</span>
-<span class="normal">325</span>
-<span class="normal">326</span>
-<span class="normal">327</span>
-<span class="normal">328</span>
-<span class="normal">329</span>
-<span class="normal">330</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">concatenate</span><span class="p">(</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span>
+<span class="normal">368</span>
+<span class="normal">369</span>
+<span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
+<span class="normal">379</span>
+<span class="normal">380</span>
+<span class="normal">381</span>
+<span class="normal">382</span>
+<span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span>
+<span class="normal">397</span>
+<span class="normal">398</span>
+<span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span>
+<span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
+<span class="normal">409</span>
+<span class="normal">410</span>
+<span class="normal">411</span>
+<span class="normal">412</span>
+<span class="normal">413</span>
+<span class="normal">414</span>
+<span class="normal">415</span>
+<span class="normal">416</span>
+<span class="normal">417</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span>
+<span class="normal">435</span>
+<span class="normal">436</span>
+<span class="normal">437</span>
+<span class="normal">438</span>
+<span class="normal">439</span>
+<span class="normal">440</span>
+<span class="normal">441</span>
+<span class="normal">442</span>
+<span class="normal">443</span>
+<span class="normal">444</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">concatenate</span><span class="p">(</span>
     <span class="n">files</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="n">Path</span><span class="p">],</span>
-    <span class="n">n_block_per_batch</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10000</span><span class="p">,</span>
-    <span class="n">sub_detectors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">max_workers</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">entry_start</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">entry_stop</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">filter_name</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
-    <span class="n">decode_reid</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Concatenate multiple raw binary files into `ak.Array`</span>
 
 <span class="sd">    Parameters:</span>
 <span class="sd">        files (str | Path | list[str | Path]): files to be read.</span>
-<span class="sd">        n_block_per_batch (int, optional): The number of blocks to read per batch. Defaults to 1000.</span>
-<span class="sd">        sub_detectors (list[str] | None): List of sub-detectors to read. Defaults to `None`, which means read all sub-detectors.</span>
-<span class="sd">        max_workers (int | None): The maximum number of worker threads to use for reading the data. Defaults to `None`, which means use the default number of worker threads.</span>
-<span class="sd">        verbose (bool): Show reading process.</span>
-<span class="sd">        decode_reid (bool, optional): If True (default), convert raw electronics IDs</span>
-<span class="sd">            (REID) to standard detector geometry IDs (digi_id / TEID).</span>
-<span class="sd">            Set to False to keep the original REID values.</span>
+<span class="sd">        entry_start (int, optional): The starting entry to read. Defaults to 0.</span>
+<span class="sd">        entry_stop (int, optional): The stopping entry to read. Defaults to -1, which means read until the end.</span>
+<span class="sd">        filter_name (Union[str, list, None], optional): A filter to select specific fields to read. Defaults to `None`, which means read all fields.</span>
+<span class="sd">        verbose (bool, optional): Show reading process. Defaults to `False`.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Concatenated raw data array.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-        <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+        <span class="n">files</span> <span class="o">=</span> <span class="n">glob</span><span class="o">.</span><span class="n">glob</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">recursive</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">files</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">())</span> <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span> <span class="k">if</span> <span class="n">_is_raw</span><span class="p">(</span><span class="n">file</span><span class="p">)]</span>
 
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;No valid raw files found&quot;</span><span class="p">)</span>
 
-    <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">f</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\r</span><span class="s2">reading file </span><span class="si">{</span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span><span class="si">}</span><span class="s2"> ...&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="n">n_cum_entries</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">readers_with_entry_range</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">RawBinaryReader</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
+        <span class="n">reader</span> <span class="o">=</span> <span class="n">RawBinaryReader</span><span class="p">(</span><span class="n">file</span><span class="p">)</span>
 
-        <span class="k">with</span> <span class="n">RawBinaryReader</span><span class="p">(</span><span class="n">f</span><span class="p">)</span> <span class="k">as</span> <span class="n">reader</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">n_cum_entries</span> <span class="o">+</span> <span class="n">reader</span><span class="o">.</span><span class="n">entries</span> <span class="o">&lt;</span> <span class="n">entry_start</span><span class="p">:</span>
+            <span class="n">n_cum_entries</span> <span class="o">+=</span> <span class="n">reader</span><span class="o">.</span><span class="n">entries</span>
+            <span class="k">continue</span>
+
+        <span class="n">entry_start_for_reader</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">entry_stop_for_reader</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># entry_start for this reader</span>
+        <span class="k">if</span> <span class="n">n_cum_entries</span> <span class="o">&lt;</span> <span class="n">entry_start</span> <span class="ow">and</span> <span class="n">n_cum_entries</span> <span class="o">+</span> <span class="n">reader</span><span class="o">.</span><span class="n">entries</span> <span class="o">&gt;=</span> <span class="n">entry_start</span><span class="p">:</span>
+            <span class="n">entry_start_for_reader</span> <span class="o">=</span> <span class="n">entry_start</span> <span class="o">-</span> <span class="n">n_cum_entries</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">entry_start_for_reader</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># entry_stop for this reader</span>
+        <span class="k">if</span> <span class="n">entry_stop</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">entry_stop_for_reader</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="k">elif</span> <span class="n">n_cum_entries</span> <span class="o">&lt;=</span> <span class="n">entry_stop</span> <span class="ow">and</span> <span class="n">n_cum_entries</span> <span class="o">+</span> <span class="n">reader</span><span class="o">.</span><span class="n">entries</span> <span class="o">&gt;</span> <span class="n">entry_stop</span><span class="p">:</span>
+            <span class="n">entry_stop_for_reader</span> <span class="o">=</span> <span class="n">entry_stop</span> <span class="o">-</span> <span class="n">n_cum_entries</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">entry_stop_for_reader</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="n">readers_with_entry_range</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="p">(</span><span class="n">reader</span><span class="p">,</span> <span class="n">entry_start_for_reader</span><span class="p">,</span> <span class="n">entry_stop_for_reader</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="n">n_cum_entries</span> <span class="o">+=</span> <span class="n">reader</span><span class="o">.</span><span class="n">entries</span>
+        <span class="k">if</span> <span class="n">entry_stop</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">n_cum_entries</span> <span class="o">&gt;=</span> <span class="n">entry_stop</span><span class="p">:</span>
+            <span class="k">break</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">n_cum_read</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">reader</span><span class="p">,</span> <span class="n">entry_start_for_reader</span><span class="p">,</span> <span class="n">entry_stop_for_reader</span> <span class="ow">in</span> <span class="n">readers_with_entry_range</span><span class="p">:</span>
+            <span class="n">n_read</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">entry_stop_for_reader</span> <span class="o">-</span> <span class="n">entry_start_for_reader</span>
+                <span class="k">if</span> <span class="n">entry_stop_for_reader</span> <span class="o">&gt;=</span> <span class="mi">0</span>
+                <span class="k">else</span> <span class="n">reader</span><span class="o">.</span><span class="n">entries</span> <span class="o">-</span> <span class="n">entry_start_for_reader</span>
+            <span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Reading file </span><span class="si">{</span><span class="n">reader</span><span class="o">.</span><span class="n">path</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">n_cum_read</span><span class="si">}</span><span class="s2"> -&gt; </span><span class="si">{</span><span class="n">n_cum_read</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">n_read</span><span class="si">}</span><span class="s2"> entries ...&quot;</span><span class="p">,</span>
+                <span class="p">)</span>
+
             <span class="n">res</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
                 <span class="n">reader</span><span class="o">.</span><span class="n">arrays</span><span class="p">(</span>
-                    <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">n_block_per_batch</span><span class="p">,</span> <span class="n">sub_detectors</span><span class="p">,</span> <span class="n">max_workers</span><span class="p">,</span> <span class="n">decode_reid</span>
+                    <span class="n">entry_start</span><span class="o">=</span><span class="n">entry_start_for_reader</span><span class="p">,</span>
+                    <span class="n">entry_stop</span><span class="o">=</span><span class="n">entry_stop_for_reader</span><span class="p">,</span>
+                    <span class="n">filter_name</span><span class="o">=</span><span class="n">filter_name</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">()</span>
+            <span class="n">n_cum_read</span> <span class="o">+=</span> <span class="n">n_read</span>
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">reader</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="n">readers_with_entry_range</span><span class="p">:</span>
+            <span class="n">reader</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">([])</span>
 
     <span class="k">return</span> <span class="n">ak</span><span class="o">.</span><span class="n">concatenate</span><span class="p">(</span><span class="n">res</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -9096,7 +9170,13 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">676</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">670</span>
+<span class="normal">671</span>
+<span class="normal">672</span>
+<span class="normal">673</span>
+<span class="normal">674</span>
+<span class="normal">675</span>
+<span class="normal">676</span>
 <span class="normal">677</span>
 <span class="normal">678</span>
 <span class="normal">679</span>
@@ -9145,13 +9225,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">722</span>
 <span class="normal">723</span>
 <span class="normal">724</span>
-<span class="normal">725</span>
-<span class="normal">726</span>
-<span class="normal">727</span>
-<span class="normal">728</span>
-<span class="normal">729</span>
-<span class="normal">730</span>
-<span class="normal">731</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_emc_digi</span><span class="p">(</span><span class="n">emc_digi</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Record</span><span class="p">,</span> <span class="n">with_pos</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ak</span><span class="o">.</span><span class="n">Record</span><span class="p">:</span>
+<span class="normal">725</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_emc_digi</span><span class="p">(</span><span class="n">emc_digi</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Record</span><span class="p">,</span> <span class="n">with_pos</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ak</span><span class="o">.</span><span class="n">Record</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse EMC raw digi array. The raw digi array should contain [`m_intId`,</span>
 <span class="sd">    `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_measure`] fields.</span>
@@ -9231,8 +9305,8 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <ul>
 <li><code>layer</code>: The layer number.</li>
 <li><code>sheet</code>: The sheet ID.</li>
+<li><code>strip_type</code>: The strip type. 0 for X-strip, 1 for V-strip.</li>
 <li><code>strip</code>: The strip ID.</li>
-<li><code>is_x_strip</code>: Whether the strip is an X-strip.</li>
 </ul>
 
 
@@ -9324,7 +9398,15 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1017</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1009</span>
+<span class="normal">1010</span>
+<span class="normal">1011</span>
+<span class="normal">1012</span>
+<span class="normal">1013</span>
+<span class="normal">1014</span>
+<span class="normal">1015</span>
+<span class="normal">1016</span>
+<span class="normal">1017</span>
 <span class="normal">1018</span>
 <span class="normal">1019</span>
 <span class="normal">1020</span>
@@ -9357,15 +9439,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">1047</span>
 <span class="normal">1048</span>
 <span class="normal">1049</span>
-<span class="normal">1050</span>
-<span class="normal">1051</span>
-<span class="normal">1052</span>
-<span class="normal">1053</span>
-<span class="normal">1054</span>
-<span class="normal">1055</span>
-<span class="normal">1056</span>
-<span class="normal">1057</span>
-<span class="normal">1058</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_cgem_digi_id</span><span class="p">(</span>
+<span class="normal">1050</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_cgem_digi_id</span><span class="p">(</span>
     <span class="n">cgem_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
     <span class="n">flat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">library</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ak&quot;</span><span class="p">,</span> <span class="s2">&quot;np&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ak&quot;</span><span class="p">,</span>
@@ -9379,8 +9453,8 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
 <span class="sd">    - `layer`: The layer number.</span>
 <span class="sd">    - `sheet`: The sheet ID.</span>
+<span class="sd">    - `strip_type`: The strip type. 0 for X-strip, 1 for V-strip.</span>
 <span class="sd">    - `strip`: The strip ID.</span>
-<span class="sd">    - `is_x_strip`: Whether the strip is an X-strip.</span>
 
 <span class="sd">    Parameters:</span>
 <span class="sd">        cgem_digi_id: The CGEM digi ID.</span>
@@ -9399,8 +9473,8 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
     <span class="n">res</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;layer&quot;</span><span class="p">:</span> <span class="n">cgem_id_to_layer</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">),</span>
         <span class="s2">&quot;sheet&quot;</span><span class="p">:</span> <span class="n">cgem_id_to_sheet</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">),</span>
+        <span class="s2">&quot;strip_type&quot;</span><span class="p">:</span> <span class="n">cgem_id_to_strip_type</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">),</span>
         <span class="s2">&quot;strip&quot;</span><span class="p">:</span> <span class="n">cgem_id_to_strip</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">),</span>
-        <span class="s2">&quot;is_x_strip&quot;</span><span class="p">:</span> <span class="n">cgem_id_to_is_x_strip</span><span class="p">(</span><span class="n">cgem_digi_id</span><span class="p">),</span>
     <span class="p">}</span>
 
     <span class="k">if</span> <span class="n">library</span> <span class="o">==</span> <span class="s2">&quot;ak&quot;</span><span class="p">:</span>
@@ -9523,7 +9597,13 @@ and <code>emc_gid_to_point_z</code>.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">631</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">625</span>
+<span class="normal">626</span>
+<span class="normal">627</span>
+<span class="normal">628</span>
+<span class="normal">629</span>
+<span class="normal">630</span>
+<span class="normal">631</span>
 <span class="normal">632</span>
 <span class="normal">633</span>
 <span class="normal">634</span>
@@ -9559,13 +9639,7 @@ and <code>emc_gid_to_point_z</code>.</p>
 <span class="normal">664</span>
 <span class="normal">665</span>
 <span class="normal">666</span>
-<span class="normal">667</span>
-<span class="normal">668</span>
-<span class="normal">669</span>
-<span class="normal">670</span>
-<span class="normal">671</span>
-<span class="normal">672</span>
-<span class="normal">673</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_emc_digi_id</span><span class="p">(</span>
+<span class="normal">667</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_emc_digi_id</span><span class="p">(</span>
     <span class="n">emc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
     <span class="n">with_pos</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
@@ -9920,7 +9994,13 @@ and <code>emc_gid_to_point_z</code>.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">861</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">855</span>
+<span class="normal">856</span>
+<span class="normal">857</span>
+<span class="normal">858</span>
+<span class="normal">859</span>
+<span class="normal">860</span>
+<span class="normal">861</span>
 <span class="normal">862</span>
 <span class="normal">863</span>
 <span class="normal">864</span>
@@ -9964,13 +10044,7 @@ and <code>emc_gid_to_point_z</code>.</p>
 <span class="normal">902</span>
 <span class="normal">903</span>
 <span class="normal">904</span>
-<span class="normal">905</span>
-<span class="normal">906</span>
-<span class="normal">907</span>
-<span class="normal">908</span>
-<span class="normal">909</span>
-<span class="normal">910</span>
-<span class="normal">911</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_muc_digi_id</span><span class="p">(</span>
+<span class="normal">905</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_muc_digi_id</span><span class="p">(</span>
     <span class="n">muc_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
     <span class="n">flat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">library</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ak&quot;</span><span class="p">,</span> <span class="s2">&quot;np&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ak&quot;</span><span class="p">,</span>
@@ -10141,7 +10215,13 @@ If <code>library</code> is <code>ak</code>, return <code>ak.Array</code>. If <co
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/digi_id.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">496</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">490</span>
+<span class="normal">491</span>
+<span class="normal">492</span>
+<span class="normal">493</span>
+<span class="normal">494</span>
+<span class="normal">495</span>
+<span class="normal">496</span>
 <span class="normal">497</span>
 <span class="normal">498</span>
 <span class="normal">499</span>
@@ -10183,13 +10263,7 @@ If <code>library</code> is <code>ak</code>, return <code>ak.Array</code>. If <co
 <span class="normal">535</span>
 <span class="normal">536</span>
 <span class="normal">537</span>
-<span class="normal">538</span>
-<span class="normal">539</span>
-<span class="normal">540</span>
-<span class="normal">541</span>
-<span class="normal">542</span>
-<span class="normal">543</span>
-<span class="normal">544</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_tof_digi_id</span><span class="p">(</span>
+<span class="normal">538</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_tof_digi_id</span><span class="p">(</span>
     <span class="n">tof_digi_id</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span>
     <span class="n">flat</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">library</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;ak&quot;</span><span class="p">,</span> <span class="s2">&quot;np&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;ak&quot;</span><span class="p">,</span>
@@ -10965,7 +11039,9 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/helix.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 940</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 938</span>
+<span class="normal"> 939</span>
+<span class="normal"> 940</span>
 <span class="normal"> 941</span>
 <span class="normal"> 942</span>
 <span class="normal"> 943</span>
@@ -11051,13 +11127,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="normal">1023</span>
 <span class="normal">1024</span>
 <span class="normal">1025</span>
-<span class="normal">1026</span>
-<span class="normal">1027</span>
-<span class="normal">1028</span>
-<span class="normal">1029</span>
-<span class="normal">1030</span>
-<span class="normal">1031</span>
-<span class="normal">1032</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">helix_awk</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HelixAwkwardArray</span><span class="p">:</span>
+<span class="normal">1026</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">helix_awk</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HelixAwkwardArray</span><span class="p">:</span>
     <span class="c1"># Use a sentinel to distinguish &quot;not provided&quot; from an explicit None</span>
     <span class="n">error</span> <span class="o">=</span> <span class="n">_SENTINEL</span>
     <span class="n">pivot</span> <span class="o">=</span> <span class="n">_SENTINEL</span>
@@ -11068,16 +11138,12 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="n">error</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Cannot pass both helix and error as positional arguments.&quot;</span>
-                <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot pass both helix and error as positional arguments.&quot;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">pivot</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
             <span class="k">if</span> <span class="s2">&quot;pivot&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                    <span class="s2">&quot;Cannot pass both helix and pivot as positional arguments.&quot;</span>
-                <span class="p">)</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot pass both helix and pivot as positional arguments.&quot;</span><span class="p">)</span>
 
         <span class="n">dr</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
         <span class="n">phi0</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
@@ -11410,9 +11476,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="normal">541</span>
 <span class="normal">542</span>
 <span class="normal">543</span>
-<span class="normal">544</span>
-<span class="normal">545</span>
-<span class="normal">546</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">544</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">kappa_to_charge</span><span class="p">(</span><span class="n">kappa</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert helix parameter to charge.</span>
@@ -11423,9 +11487,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="sd">    Returns:</span>
 <span class="sd">        charge of the helix.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="p">(</span>
-        <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">kappa</span> <span class="o">&gt;</span> <span class="mf">1e-10</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">kappa</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1e-10</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">kappa</span> <span class="o">&gt;</span> <span class="mf">1e-10</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">kappa</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1e-10</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -11603,7 +11665,9 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/helix.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">549</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">547</span>
+<span class="normal">548</span>
+<span class="normal">549</span>
 <span class="normal">550</span>
 <span class="normal">551</span>
 <span class="normal">552</span>
@@ -11612,9 +11676,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="normal">555</span>
 <span class="normal">556</span>
 <span class="normal">557</span>
-<span class="normal">558</span>
-<span class="normal">559</span>
-<span class="normal">560</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">558</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">kappa_to_radius</span><span class="p">(</span><span class="n">kappa</span><span class="p">:</span> <span class="n">FloatLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert helix parameter kappa to circular radius.</span>

@@ -604,6 +604,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Read raw data files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read-a-single-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read a single file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concatenate-multiple-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concatenate multiple files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -979,6 +1007,34 @@
     </span>
   </a>
   
+    <nav class="md-nav" aria-label="Read raw data files">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#read-a-single-file" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Read a single file
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#concatenate-multiple-files" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concatenate multiple files
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
     </ul>
@@ -1063,43 +1119,83 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="n">e_init_arr</span> <span class="o">=</span> <span class="n">mc_evt</span><span class="p">[</span><span class="s2">&quot;m_mcParticleCol/m_eInitialMomentum&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">array</span><span class="p">()</span>
 </code></pre></div>
 <h2 id="read-raw-data-files">Read raw data files</h2>
-<p>BES3 raw data files contain only digit information. To read a raw data file, use <code>pybes3.open_raw</code>:</p>
+<h3 id="read-a-single-file">Read a single file</h3>
+<p>To read a raw data file, use <code>pybes3.open_raw</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">reader</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">open_raw</span><span class="p">(</span><span class="s2">&quot;/bes3fs/offline/data/raw/round17/231117/run_0079017_All_file001_SFO-1.raw&quot;</span><span class="p">)</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">reader</span>
-<span class="n">BesRawReader</span>
-<span class="o">-</span> <span class="n">File</span><span class="p">:</span> <span class="o">/</span><span class="n">bes3fs</span><span class="o">/</span><span class="n">offline</span><span class="o">/</span><span class="n">data</span><span class="o">/</span><span class="n">raw</span><span class="o">/</span><span class="n">round17</span><span class="o">/</span><span class="mi">231117</span><span class="o">/</span><span class="n">run_0079017_All_file001_SFO</span><span class="o">-</span><span class="mf">1.</span><span class="n">raw</span>
-<span class="o">-</span> <span class="n">Run</span> <span class="n">Number</span><span class="p">:</span> <span class="mi">79017</span>
-<span class="o">-</span> <span class="n">Entries</span><span class="p">:</span> <span class="mi">100112</span>
-<span class="o">-</span> <span class="n">File</span> <span class="n">Size</span><span class="p">:</span> <span class="mi">2010</span> <span class="n">MB</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">file_path</span> <span class="o">=</span> <span class="s2">&quot;/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file001_SFO-1.raw&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">raw_file</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">open_raw</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">raw_file</span>
+<span class="o">&lt;</span><span class="n">RawData</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;run_0087397_All_merge0_file001_SFO-1.raw&#39;</span> <span class="n">Entries</span><span class="o">=</span><span class="mi">180322</span> <span class="n">Size</span><span class="o">=</span><span class="s1">&#39;2368 MB&#39;</span><span class="o">&gt;</span>
+</code></pre></div>
+<p>Get meta information:</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">raw_file</span><span class="o">.</span><span class="n">entries</span> <span class="c1"># Number of events</span>
+<span class="mi">180322</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">raw_file</span><span class="o">.</span><span class="n">run_number</span>
+<span class="mi">87397</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">raw_file</span><span class="o">.</span><span class="n">path</span>
+<span class="s1">&#39;/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file001_SFO-1.raw&#39;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">raw_file</span><span class="o">.</span><span class="n">size</span>
+<span class="mi">2483177188</span> <span class="c1"># Size in bytes</span>
 </code></pre></div>
 <p>To read all data:</p>
-<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">all_digi</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">arrays</span><span class="p">()</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">all_digi</span>
-<span class="o">&lt;</span><span class="n">Array</span> <span class="p">[{</span><span class="n">evt_header</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span> <span class="o">...</span><span class="p">},</span> <span class="o">...</span><span class="p">,</span> <span class="p">{</span><span class="o">...</span><span class="p">}]</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;100112 * {evt_header: {...&#39;</span><span class="o">&gt;</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">all_digi</span><span class="o">.</span><span class="n">fields</span>
-<span class="p">[</span><span class="s1">&#39;evt_header&#39;</span><span class="p">,</span> <span class="s1">&#39;mdc&#39;</span><span class="p">,</span> <span class="s1">&#39;tof&#39;</span><span class="p">,</span> <span class="s1">&#39;emc&#39;</span><span class="p">,</span> <span class="s1">&#39;muc&#39;</span><span class="p">]</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">all_digi</span><span class="o">.</span><span class="n">mdc</span><span class="o">.</span><span class="n">fields</span>
-<span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;adc&#39;</span><span class="p">,</span> <span class="s1">&#39;tdc&#39;</span><span class="p">,</span> <span class="s1">&#39;overflow&#39;</span><span class="p">]</span>
-</code></pre></div>
-<p>To read only specific sub-detectors:</p>
-<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">mdc_tof_digi</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">arrays</span><span class="p">(</span><span class="n">sub_detectors</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;mdc&#39;</span><span class="p">,</span> <span class="s1">&#39;tof&#39;</span><span class="p">])</span> <span class="c1"># &#39;emc&#39;, &#39;muc&#39; are also available</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">mdc_tof_digi</span><span class="o">.</span><span class="n">fields</span>
-<span class="p">[</span><span class="s1">&#39;evt_header&#39;</span><span class="p">,</span> <span class="s1">&#39;mdc&#39;</span><span class="p">,</span> <span class="s1">&#39;tof&#39;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">raw_data</span> <span class="o">=</span> <span class="n">raw_file</span><span class="o">.</span><span class="n">arrays</span><span class="p">()</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">raw_data</span>
+<span class="o">&lt;</span><span class="n">Array</span> <span class="p">[{</span><span class="n">evt_header</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span> <span class="o">...</span><span class="p">},</span> <span class="o">...</span><span class="p">,</span> <span class="p">{</span><span class="o">...</span><span class="p">}]</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;180322 * {evt_header: {...&#39;</span><span class="o">&gt;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">fields</span>
+<span class="p">[</span><span class="s1">&#39;evt_header&#39;</span><span class="p">,</span> <span class="s1">&#39;cgem&#39;</span><span class="p">,</span> <span class="s1">&#39;mdc&#39;</span><span class="p">,</span> <span class="s1">&#39;tof&#39;</span><span class="p">,</span> <span class="s1">&#39;emc&#39;</span><span class="p">,</span> <span class="s1">&#39;muc&#39;</span><span class="p">,</span> <span class="s1">&#39;trigGTD&#39;</span><span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">cgem</span><span class="o">.</span><span class="n">fields</span>
+<span class="p">[</span><span class="s1">&#39;id&#39;</span><span class="p">,</span> <span class="s1">&#39;adc&#39;</span><span class="p">,</span> <span class="s1">&#39;tdc&#39;</span><span class="p">,</span> <span class="s1">&#39;time&#39;</span><span class="p">,</span> <span class="s1">&#39;charge&#39;</span><span class="p">]</span>
 </code></pre></div>
 <p>To read a portion of the file:</p>
-<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">some_digi</span> <span class="o">=</span> <span class="n">reader</span><span class="o">.</span><span class="n">arrays</span><span class="p">(</span><span class="n">n_blocks</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">some_digi</span> <span class="o">=</span> <span class="n">raw_file</span><span class="o">.</span><span class="n">arrays</span><span class="p">(</span><span class="n">entry_start</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">entry_stop</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">some_digi</span>
-<span class="o">&lt;</span><span class="n">Array</span> <span class="p">[{</span><span class="n">evt_header</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span> <span class="o">...</span><span class="p">},</span> <span class="o">...</span><span class="p">,</span> <span class="p">{</span><span class="o">...</span><span class="p">}]</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;1000 * {evt_header: {ev...&#39;</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="n">Array</span> <span class="p">[{</span><span class="n">evt_header</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span> <span class="o">...</span><span class="p">},</span> <span class="o">...</span><span class="p">,</span> <span class="p">{</span><span class="o">...</span><span class="p">}]</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;50 * {evt_header: {evt_...&#39;</span><span class="o">&gt;</span>
+</code></pre></div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Explicitly specifying <code>entry_start</code> and <code>entry_stop</code> will slow down the reading speed (<span class="arithmatex">\(\sim 0.33 \times\)</span>), as the reader needs to skip entries one by one until it reaches <code>entry_stop</code>.</p>
+</div>
+<p>To read only specific fields:</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">cgem_mdc_digi</span> <span class="o">=</span> <span class="n">raw_file</span><span class="o">.</span><span class="n">arrays</span><span class="p">(</span><span class="n">filter_name</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cgem&#39;</span><span class="p">,</span> <span class="s1">&#39;mdc&#39;</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">cgem_mdc_digi</span><span class="o">.</span><span class="n">fields</span>
+<span class="p">[</span><span class="s1">&#39;evt_header&#39;</span><span class="p">,</span> <span class="s1">&#39;cgem&#39;</span><span class="p">,</span> <span class="s1">&#39;mdc&#39;</span><span class="p">]</span>
 </code></pre></div>
 <div class="admonition info">
 <p class="admonition-title">Info</p>
-<p><code>n_blocks</code> is used instead of <code>n_entries</code> because only data blocks are contiguous in memory. In most cases, there is one event per data block.</p>
+<p>Available fields are: <code>cgem</code>, <code>mdc</code>, <code>tof</code>, <code>emc</code>, <code>muc</code>, <code>trigGTD</code>.</p>
+<p><code>evt_header</code> is always read and cannot be filtered out.</p>
 </div>
+<p>Close the file when done:</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">raw_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+</code></pre></div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Currently, <code>besio</code> can only read original raw digi data without any T-Q matching or post-processing.</p>
+<p>Always close the file after reading to free up system resources.</p>
 </div>
+<p>Open the file using a context manager to automatically close it after reading:</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="k">with</span> <span class="n">p3</span><span class="o">.</span><span class="n">open_raw</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+<span class="o">...</span>     <span class="n">raw_data</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">arrays</span><span class="p">()</span>
+</code></pre></div>
+<h3 id="concatenate-multiple-files">Concatenate multiple files</h3>
+<p>To read multiple files and concatenate them into a single array, use <code>pybes3.concatenate_raw</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">file_path</span><span class="p">,</span>
+        <span class="s2">&quot;/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file002_SFO-1.raw&quot;</span><span class="p">,</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="p">]</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">raw_data</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">concatenate_raw</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">raw_data</span>
+<span class="o">&lt;</span><span class="n">Array</span> <span class="p">[{</span><span class="n">evt_header</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span> <span class="o">...</span><span class="p">},</span> <span class="o">...</span><span class="p">,</span> <span class="p">{</span><span class="o">...</span><span class="p">}]</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;363492 * {evt_header: {...&#39;</span><span class="o">&gt;</span>
+</code></pre></div>
+<p>Set <code>verbose=True</code> to print progress:</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">raw_data</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">concatenate_raw</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">Reading</span> <span class="n">file</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">f</span><span class="o">/</span><span class="n">pybes3</span><span class="o">/</span><span class="n">run_0087397_All_merge0_file001_SFO</span><span class="o">-</span><span class="mf">1.</span><span class="n">raw</span><span class="p">:</span> <span class="mi">0</span> <span class="o">-&gt;</span> <span class="mi">180322</span> <span class="n">entries</span> <span class="o">...</span>
+<span class="n">Reading</span> <span class="n">file</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">f</span><span class="o">/</span><span class="n">pybes3</span><span class="o">/</span><span class="n">run_0087397_All_merge0_file001_SFO</span><span class="o">-</span><span class="mf">1.</span><span class="n">raw</span><span class="p">:</span> <span class="mi">180322</span> <span class="o">-&gt;</span> <span class="mi">363492</span> <span class="n">entries</span> <span class="o">...</span>
+</code></pre></div>
+<p><code>entry_start</code>, <code>entry_stop</code> and <code>filter_name</code> can also be used in <code>concatenate_raw</code> to read only a portion of the files or specific fields:</p>
+<div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">raw_data</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">concatenate_raw</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">entry_start</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">entry_stop</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">filter_name</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cgem&#39;</span><span class="p">,</span> <span class="s1">&#39;mdc&#39;</span><span class="p">])</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">raw_data</span>
+<span class="o">&lt;</span><span class="n">Array</span> <span class="p">[{</span><span class="n">evt_header</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span> <span class="o">...</span><span class="p">},</span> <span class="o">...</span><span class="p">,</span> <span class="p">{</span><span class="o">...</span><span class="p">}]</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;100 * {evt_header: {evt...&#39;</span><span class="o">&gt;</span>
+</code></pre></div>
 
 
 
