@@ -574,58 +574,58 @@ def test_cgem_digi_id(test_data_dir):
     ].array()["m_intId"]
 
     # Test awkward
-    ak_layer, ak_sheet, ak_strip, ak_is_x_strip = (
+    ak_layer, ak_sheet, ak_strip, ak_strip_type = (
         digi_id.cgem_id_to_layer(cgem_id_ak),
         digi_id.cgem_id_to_sheet(cgem_id_ak),
         digi_id.cgem_id_to_strip(cgem_id_ak),
-        digi_id.cgem_id_to_is_x_strip(cgem_id_ak),
+        digi_id.cgem_id_to_strip_type(cgem_id_ak),
     )
     assert ak.all(
-        digi_id.get_cgem_digi_id(ak_layer, ak_sheet, ak_strip, ak_is_x_strip) == cgem_id_ak
+        digi_id.get_cgem_digi_id(ak_layer, ak_sheet, ak_strip_type, ak_strip) == cgem_id_ak
     )
     assert ak.all(digi_id.check_cgem_id(cgem_id_ak))
 
     # Test numpy
     cgem_id_np = ak.flatten(cgem_id_ak).to_numpy()
-    np_layer, np_sheet, np_strip, np_is_x_strip = (
+    np_layer, np_sheet, np_strip, np_strip_type = (
         digi_id.cgem_id_to_layer(cgem_id_np),
         digi_id.cgem_id_to_sheet(cgem_id_np),
         digi_id.cgem_id_to_strip(cgem_id_np),
-        digi_id.cgem_id_to_is_x_strip(cgem_id_np),
+        digi_id.cgem_id_to_strip_type(cgem_id_np),
     )
     assert np.all(
-        digi_id.get_cgem_digi_id(np_layer, np_sheet, np_strip, np_is_x_strip) == cgem_id_np
+        digi_id.get_cgem_digi_id(np_layer, np_sheet, np_strip_type, np_strip) == cgem_id_np
     )
     assert np.all(digi_id.check_cgem_id(cgem_id_np))
 
     # Test uint32
     tmp_id = cgem_id_np[0]
-    tmp_layer, tmp_sheet, tmp_strip, tmp_is_x_strip = (
+    tmp_layer, tmp_sheet, tmp_strip, tmp_strip_type = (
         digi_id.cgem_id_to_layer(tmp_id),
         digi_id.cgem_id_to_sheet(tmp_id),
         digi_id.cgem_id_to_strip(tmp_id),
-        digi_id.cgem_id_to_is_x_strip(tmp_id),
+        digi_id.cgem_id_to_strip_type(tmp_id),
     )
     assert tmp_layer == np_layer[0]
     assert tmp_sheet == np_sheet[0]
     assert tmp_strip == np_strip[0]
-    assert tmp_is_x_strip == np_is_x_strip[0]
-    assert digi_id.get_cgem_digi_id(tmp_layer, tmp_sheet, tmp_strip, tmp_is_x_strip) == tmp_id
+    assert tmp_strip_type == np_strip_type[0]
+    assert digi_id.get_cgem_digi_id(tmp_layer, tmp_sheet, tmp_strip_type, tmp_strip) == tmp_id
     assert digi_id.check_cgem_id(tmp_id)
 
     # Test python int
     tmp_id = int(cgem_id_np[0])
-    tmp_layer, tmp_sheet, tmp_strip, tmp_is_x_strip = (
+    tmp_layer, tmp_sheet, tmp_strip, tmp_strip_type = (
         digi_id.cgem_id_to_layer(tmp_id),
         digi_id.cgem_id_to_sheet(tmp_id),
         digi_id.cgem_id_to_strip(tmp_id),
-        digi_id.cgem_id_to_is_x_strip(tmp_id),
+        digi_id.cgem_id_to_strip_type(tmp_id),
     )
     assert tmp_layer == np_layer[0]
     assert tmp_sheet == np_sheet[0]
     assert tmp_strip == np_strip[0]
-    assert tmp_is_x_strip == np_is_x_strip[0]
-    assert digi_id.get_cgem_digi_id(tmp_layer, tmp_sheet, tmp_strip, tmp_is_x_strip) == tmp_id
+    assert tmp_strip_type == np_strip_type[0]
+    assert digi_id.get_cgem_digi_id(tmp_layer, tmp_sheet, tmp_strip_type, tmp_strip) == tmp_id
     assert digi_id.check_cgem_id(tmp_id)
 
 
@@ -637,56 +637,56 @@ def test_parse_cgem_digi_id(test_data_dir):
     layer_ak = digi_id.cgem_id_to_layer(cgem_id_ak)
     sheet_ak = digi_id.cgem_id_to_sheet(cgem_id_ak)
     strip_ak = digi_id.cgem_id_to_strip(cgem_id_ak)
-    is_x_strip_ak = digi_id.cgem_id_to_is_x_strip(cgem_id_ak)
+    strip_type_ak = digi_id.cgem_id_to_strip_type(cgem_id_ak)
 
     # Test awkward, flat=False, library='ak'
     ak_res1 = digi_id.parse_cgem_digi_id(cgem_id_ak, flat=False, library="ak")
-    assert ak_res1.fields == ["layer", "sheet", "strip", "is_x_strip"]
+    assert ak_res1.fields == ["layer", "sheet", "strip_type", "strip"]
     assert len(ak_res1.positional_axis) == 2
     assert ak.all(ak_res1["layer"] == layer_ak)
     assert ak.all(ak_res1["sheet"] == sheet_ak)
     assert ak.all(ak_res1["strip"] == strip_ak)
-    assert ak.all(ak_res1["is_x_strip"] == is_x_strip_ak)
+    assert ak.all(ak_res1["strip_type"] == strip_type_ak)
 
     # Test awkward, flat=True, library='ak'
     ak_res2 = digi_id.parse_cgem_digi_id(cgem_id_ak, flat=True, library="ak")
-    assert ak_res2.fields == ["layer", "sheet", "strip", "is_x_strip"]
+    assert ak_res2.fields == ["layer", "sheet", "strip_type", "strip"]
     assert len(ak_res2.positional_axis) == 1
     assert ak.all(ak_res2["layer"] == ak.flatten(layer_ak))
     assert ak.all(ak_res2["sheet"] == ak.flatten(sheet_ak))
     assert ak.all(ak_res2["strip"] == ak.flatten(strip_ak))
-    assert ak.all(ak_res2["is_x_strip"] == ak.flatten(is_x_strip_ak))
+    assert ak.all(ak_res2["strip_type"] == ak.flatten(strip_type_ak))
 
     cgem_id_np = ak.flatten(cgem_id_ak).to_numpy()
     layer_np = ak.flatten(layer_ak).to_numpy()
     strip_np = ak.flatten(strip_ak).to_numpy()
     sheet_np = ak.flatten(sheet_ak).to_numpy()
-    is_x_strip_np = ak.flatten(is_x_strip_ak).to_numpy()
+    strip_type_np = ak.flatten(strip_type_ak).to_numpy()
 
     # Test numpy, library='np'
     np_res1 = digi_id.parse_cgem_digi_id(cgem_id_np, flat=False, library="np")
-    assert list(np_res1.keys()) == ["layer", "sheet", "strip", "is_x_strip"]
+    assert list(np_res1.keys()) == ["layer", "sheet", "strip_type", "strip"]
     assert np.all(np_res1["layer"] == layer_np)
     assert np.all(np_res1["sheet"] == sheet_np)
     assert np.all(np_res1["strip"] == strip_np)
-    assert np.all(np_res1["is_x_strip"] == is_x_strip_np)
+    assert np.all(np_res1["strip_type"] == strip_type_np)
 
     # Test int, library='ak'
     cgem_id_int = int(cgem_id_np[0])
     int_res1 = digi_id.parse_cgem_digi_id(cgem_id_int, flat=False, library="ak")
-    assert int_res1.fields == ["layer", "sheet", "strip", "is_x_strip"]
+    assert int_res1.fields == ["layer", "sheet", "strip_type", "strip"]
     assert int_res1["layer"] == layer_np[0]
     assert int_res1["sheet"] == sheet_np[0]
     assert int_res1["strip"] == strip_np[0]
-    assert int_res1["is_x_strip"] == is_x_strip_np[0]
+    assert int_res1["strip_type"] == strip_type_np[0]
 
     # Test int, library='np'
     int_res2 = digi_id.parse_cgem_digi_id(cgem_id_int, flat=False, library="np")
-    assert list(int_res2.keys()) == ["layer", "sheet", "strip", "is_x_strip"]
+    assert list(int_res2.keys()) == ["layer", "sheet", "strip_type", "strip"]
     assert int_res2["layer"] == layer_np[0]
     assert int_res2["sheet"] == sheet_np[0]
     assert int_res2["strip"] == strip_np[0]
-    assert int_res2["is_x_strip"] == is_x_strip_np[0]
+    assert int_res2["strip_type"] == strip_type_np[0]
 
 
 if __name__ == "__main__":
