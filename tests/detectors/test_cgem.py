@@ -16,24 +16,9 @@ def test_cgem_gid_conversion(cgem_gid_dict):
     assert np.all(p3.cgem_gid_to_sheet(ref_gid) == ref_sheet)
     assert np.all(p3.cgem_gid_to_strip_type(ref_gid) == ref_strip_type)
     assert np.all(p3.cgem_gid_to_strip(ref_gid) == ref_strip)
-
-    assert np.all(
-        p3.cgem_gid_to_is_xstrip(ref_gid) == (ref_strip_type == cgem.X_STRIP_TYPE)
-    )
-
-    assert np.all(
-        p3.cgem_gid_to_is_vstrip(ref_gid) == (ref_strip_type == cgem.V_STRIP_TYPE)
-    )
-
-    assert np.all(
-        p3.get_cgem_gid(
-            ref_layer,
-            ref_sheet,
-            ref_strip_type,
-            ref_strip,
-        )
-        == ref_gid
-    )
+    assert np.all(p3.cgem_gid_to_is_xstrip(ref_gid) == (ref_strip_type == cgem.X_STRIP_TYPE))
+    assert np.all(p3.cgem_gid_to_is_vstrip(ref_gid) == (ref_strip_type == cgem.V_STRIP_TYPE))
+    assert np.all(p3.get_cgem_gid(ref_layer, ref_sheet, ref_strip_type, ref_strip) == ref_gid)
 
 
 def test_cgem_parse_gid(cgem_gid_dict):
@@ -65,14 +50,7 @@ def test_cgem_parse_gid(cgem_gid_dict):
     # awkward
     ak_gid = ak.Array(np_gid)
     ak_res = p3.parse_cgem_gid(ak_gid)
-    assert ak_res.fields == [
-        "layer",
-        "sheet",
-        "strip_type",
-        "strip",
-        "is_xstrip",
-        "is_vstrip",
-    ]
+    assert ak_res.fields == ["layer", "sheet", "strip_type", "strip", "is_xstrip", "is_vstrip"]
     assert ak.all(ak_res["layer"] == ref_layer)
     assert ak.all(ak_res["sheet"] == ref_sheet)
     assert ak.all(ak_res["strip_type"] == ref_strip_type)

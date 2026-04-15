@@ -31,6 +31,15 @@ wheels = [
 ]
 
 [[package]]
+name = "attrs"
+sdist = {url = "https://pypi.tuna.tsinghua.edu.cn/packages/9a/8e/82a0fe20a541c03148528be8cac2408564a6c9a0cc7e9171802bc1d26985/attrs-26.1.0.tar.gz", hash = "sha256:d03ceb89cb322a8fd706d4fb91940737b6642aa36998fe130a9bc96c985eff32", size = 952055}
+source = {registry = "https://pypi.tuna.tsinghua.edu.cn/simple"}
+version = "26.1.0"
+wheels = [
+  {url = "https://pypi.tuna.tsinghua.edu.cn/packages/64/b4/17d4b0b2a2dc85a6df63d1157e028ed19f90d4cd97c36717afef2bc2f395/attrs-26.1.0-py3-none-any.whl", hash = "sha256:c647aa4a12dfbad9333ca4e71fe62ddc36f4e63b2d260a37a8b83d2f043ac309", size = 67548}
+]
+
+[[package]]
 dependencies = [
   {name = "awkward-cpp", version = "51", source = {registry = "https://pypi.tuna.tsinghua.edu.cn/simple"}, marker = "python_full_version < '3.10'"},
   {name = "fsspec", version = "2025.10.0", source = {registry = "https://pypi.tuna.tsinghua.edu.cn/simple"}, marker = "python_full_version < '3.10'"},
@@ -3203,6 +3212,7 @@ dev = [
   {name = "pyarrow", version = "23.0.1", source = {registry = "https://pypi.tuna.tsinghua.edu.cn/simple"}, marker = "python_full_version >= '3.10'"},
   {name = "pytest", version = "8.4.2", source = {registry = "https://pypi.tuna.tsinghua.edu.cn/simple"}, marker = "python_full_version < '3.10'"},
   {name = "pytest", version = "9.0.2", source = {registry = "https://pypi.tuna.tsinghua.edu.cn/simple"}, marker = "python_full_version >= '3.10'"},
+  {name = "pytest-subtests"},
   {name = "ruff"},
   {name = "twine"}
 ]
@@ -3234,6 +3244,7 @@ dev = [
   {name = "pre-commit"},
   {name = "pyarrow"},
   {name = "pytest"},
+  {name = "pytest-subtests"},
   {name = "ruff"},
   {name = "twine"}
 ]
@@ -3352,6 +3363,20 @@ source = {registry = "https://pypi.tuna.tsinghua.edu.cn/simple"}
 version = "9.0.2"
 wheels = [
   {url = "https://pypi.tuna.tsinghua.edu.cn/packages/3b/ab/b3226f0bd7cdcf710fbede2b3548584366da3b19b5021e74f5bde2a8fa3f/pytest-9.0.2-py3-none-any.whl", hash = "sha256:711ffd45bf766d5264d487b917733b453d917afd2b0ad65223959f59089f875b", size = 374801}
+]
+
+[[package]]
+dependencies = [
+  {name = "attrs"},
+  {name = "pytest", version = "8.4.2", source = {registry = "https://pypi.tuna.tsinghua.edu.cn/simple"}, marker = "python_full_version < '3.10'"},
+  {name = "pytest", version = "9.0.2", source = {registry = "https://pypi.tuna.tsinghua.edu.cn/simple"}, marker = "python_full_version >= '3.10'"}
+]
+name = "pytest-subtests"
+sdist = {url = "https://pypi.tuna.tsinghua.edu.cn/packages/bb/d9/20097971a8d315e011e055d512fa120fd6be3bdb8f4b3aa3e3c6bf77bebc/pytest_subtests-0.15.0.tar.gz", hash = "sha256:cb495bde05551b784b8f0b8adfaa27edb4131469a27c339b80fd8d6ba33f887c", size = 18525}
+source = {registry = "https://pypi.tuna.tsinghua.edu.cn/simple"}
+version = "0.15.0"
+wheels = [
+  {url = "https://pypi.tuna.tsinghua.edu.cn/packages/23/64/bba465299b37448b4c1b84c7a04178399ac22d47b3dc5db1874fe55a2bd3/pytest_subtests-0.15.0-py3-none-any.whl", hash = "sha256:da2d0ce348e1f8d831d5a40d81e3aeac439fec50bd5251cbb7791402696a9493", size = 9185}
 ]
 
 [[package]]

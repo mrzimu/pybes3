@@ -20,15 +20,9 @@ def test_emc_geom():
     assert np.allclose(p3.emc_gid_to_center_x(gid), emc._center_x, atol=1e-6)
     assert np.allclose(p3.emc_gid_to_center_y(gid), emc._center_y, atol=1e-6)
     assert np.allclose(p3.emc_gid_to_center_z(gid), emc._center_z, atol=1e-6)
-    assert np.allclose(
-        p3.emc_gid_to_front_center_x(gid), emc._front_center_x, atol=1e-6
-    )
-    assert np.allclose(
-        p3.emc_gid_to_front_center_y(gid), emc._front_center_y, atol=1e-6
-    )
-    assert np.allclose(
-        p3.emc_gid_to_front_center_z(gid), emc._front_center_z, atol=1e-6
-    )
+    assert np.allclose(p3.emc_gid_to_front_center_x(gid), emc._front_center_x, atol=1e-6)
+    assert np.allclose(p3.emc_gid_to_front_center_y(gid), emc._front_center_y, atol=1e-6)
+    assert np.allclose(p3.emc_gid_to_front_center_z(gid), emc._front_center_z, atol=1e-6)
 
 
 def test_parse_emc_gid():

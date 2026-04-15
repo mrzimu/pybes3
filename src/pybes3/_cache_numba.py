@@ -70,9 +70,7 @@ def cache_auto_clear(
     failed_removed_caches = []
 
     src_latest_mtime = max([os.path.getmtime(s) for s in sources if os.path.isfile(s)])
-    cache_earliest_mtime = min(
-        [os.path.getmtime(c) for c in caches if os.path.isfile(c)]
-    )
+    cache_earliest_mtime = min([os.path.getmtime(c) for c in caches if os.path.isfile(c)])
 
     if src_latest_mtime > cache_earliest_mtime or force:
         # Remove the cache files

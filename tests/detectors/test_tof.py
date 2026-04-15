@@ -14,9 +14,7 @@ def test_tof_gid_conversion(tof_gid_dict):
     assert np.all(p3.tof_gid_to_part(ref_gid) == ref_part)
     assert np.all(p3.tof_gid_to_layer_or_module(ref_gid) == ref_layer_or_module)
     assert np.all(p3.tof_gid_to_phi_or_strip(ref_gid) == ref_phi_or_strip)
-    assert np.all(
-        p3.get_tof_gid(ref_part, ref_layer_or_module, ref_phi_or_strip) == ref_gid
-    )
+    assert np.all(p3.get_tof_gid(ref_part, ref_layer_or_module, ref_phi_or_strip) == ref_gid)
 
 
 def test_tof_parse_gid(tof_gid_dict):

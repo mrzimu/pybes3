@@ -87,49 +87,110 @@ or retrieve branches from `mc_evt`:
 
 ## Read raw data files
 
-BES3 raw data files contain only digit information. To read a raw data file, use `pybes3.open_raw`:
+### Read a single file
+
+To read a raw data file, use `pybes3.open_raw`:
 
 ```python
 >>> import pybes3 as p3
->>> reader = p3.open_raw("/bes3fs/offline/data/raw/round17/231117/run_0079017_All_file001_SFO-1.raw")
->>> reader
-BesRawReader
-- File: /bes3fs/offline/data/raw/round17/231117/run_0079017_All_file001_SFO-1.raw
-- Run Number: 79017
-- Entries: 100112
-- File Size: 2010 MB
+>>> file_path = "/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file001_SFO-1.raw"
+>>> raw_file = p3.open_raw(file_path)
+>>> raw_file
+<RawData filename='run_0087397_All_merge0_file001_SFO-1.raw' Entries=180322 Size='2368 MB'>
+```
+
+Get meta information:
+
+```python
+>>> raw_file.entries # Number of events
+180322
+>>> raw_file.run_number
+87397
+>>> raw_file.path
+'/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file001_SFO-1.raw'
+>>> raw_file.size
+2483177188 # Size in bytes
 ```
 
 To read all data:
 
 ```python
->>> all_digi = reader.arrays()
->>> all_digi
-<Array [{evt_header: {...}, ...}, ..., {...}] type='100112 * {evt_header: {...'>
->>> all_digi.fields
-['evt_header', 'mdc', 'tof', 'emc', 'muc']
->>> all_digi.mdc.fields
-['id', 'adc', 'tdc', 'overflow']
-```
-
-To read only specific sub-detectors:
-
-```python
->>> mdc_tof_digi = reader.arrays(sub_detectors=['mdc', 'tof']) # 'emc', 'muc' are also available
->>> mdc_tof_digi.fields
-['evt_header', 'mdc', 'tof']
+>>> raw_data = raw_file.arrays()
+>>> raw_data
+<Array [{evt_header: {...}, ...}, ..., {...}] type='180322 * {evt_header: {...'>
+>>> raw_data.fields
+['evt_header', 'cgem', 'mdc', 'tof', 'emc', 'muc', 'trigGTD']
+>>> raw_data.cgem.fields
+['id', 'adc', 'tdc', 'time', 'charge']
 ```
 
 To read a portion of the file:
 
 ```python
->>> some_digi = reader.arrays(n_blocks=1000)
+>>> some_digi = raw_file.arrays(entry_start=50, entry_stop=100)
 >>> some_digi
-<Array [{evt_header: {...}, ...}, ..., {...}] type='1000 * {evt_header: {ev...'>
+<Array [{evt_header: {...}, ...}, ..., {...}] type='50 * {evt_header: {evt_...'>
+```
+
+!!! warning
+    Explicitly specifying `entry_start` and `entry_stop` will slow down the reading speed ($\sim 0.33 \times$), as the reader needs to skip entries one by one until it reaches `entry_stop`.
+
+To read only specific fields:
+
+```python
+>>> cgem_mdc_digi = raw_file.arrays(filter_name=['cgem', 'mdc'])
+>>> cgem_mdc_digi.fields
+['evt_header', 'cgem', 'mdc']
 ```
 
 !!! info
-    `n_blocks` is used instead of `n_entries` because only data blocks are contiguous in memory. In most cases, there is one event per data block.
+    Available fields are: `cgem`, `mdc`, `tof`, `emc`, `muc`, `trigGTD`.
+
+    `evt_header` is always read and cannot be filtered out.
+
+
+Close the file when done:
+
+```python
+>>> raw_file.close()
+```
 
 !!! warning
-    Currently, `besio` can only read original raw digi data without any T-Q matching or post-processing.
+    Always close the file after reading to free up system resources.
+
+Open the file using a context manager to automatically close it after reading:
+
+```python
+>>> with p3.open_raw(file_path) as f:
+...     raw_data = f.arrays()
+```
+
+### Concatenate multiple files
+
+To read multiple files and concatenate them into a single array, use `pybes3.concatenate_raw`:
+
+```python
+>>> files = [
+        file_path,
+        "/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file002_SFO-1.raw",
+>>> ]
+>>> raw_data = p3.concatenate_raw(files)
+>>> raw_data
+<Array [{evt_header: {...}, ...}, ..., {...}] type='363492 * {evt_header: {...'>
+```
+
+Set `verbose=True` to print progress:
+
+```python
+>>> raw_data = p3.concatenate_raw(files, verbose=True)
+Reading file /mnt/f/pybes3/run_0087397_All_merge0_file001_SFO-1.raw: 0 -> 180322 entries ...
+Reading file /mnt/f/pybes3/run_0087397_All_merge0_file001_SFO-1.raw: 180322 -> 363492 entries ...
+```
+
+`entry_start`, `entry_stop` and `filter_name` can also be used in `concatenate_raw` to read only a portion of the files or specific fields:
+
+```python
+>>> raw_data = p3.concatenate_raw(files, entry_start=100, entry_stop=200, filter_name=['cgem', 'mdc'])
+>>> raw_data
+<Array [{evt_header: {...}, ...}, ..., {...}] type='100 * {evt_header: {evt...'>
+```

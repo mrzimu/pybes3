@@ -6,6 +6,7 @@ requires = ["scikit-build-core", "pybind11==3.0.*", "uproot-custom==2.3.*"]
 dev = [
   "ruff",
   "pytest",
+  "pytest-subtests",
   "pyarrow",
   "pandas",
   "build",
@@ -50,6 +51,11 @@ urls = {"Homepage" = "https://github.com/mrzimu/pybes3", "Documentation" = "http
 
 [tool.cibuildwheel]
 build = ["cp*-manylinux_x86_64", "cp*-macosx_arm64", "cp*-win_amd64"]
+
+[tool.ruff]
+exclude = ["build", "dist", "env", ".git", ".tox", ".eggs", ".venv", ".pytest_cache", "note"]
+line-length = 95
+target-version = "py39"
 
 [tool.ruff.lint]
 ignore = ["E402"]

@@ -258,9 +258,7 @@ def test_helix_awk_1(raw_helix_arr, raw_helix_err_arr):
     )
 
     # changed pivot
-    h4 = p3.helix_awk(helix=raw_helix_arr, error=raw_helix_err_arr).change_pivot(
-        new_pivot
-    )
+    h4 = p3.helix_awk(helix=raw_helix_arr, error=raw_helix_err_arr).change_pivot(new_pivot)
     assert ak.all(h4.isclose(h0))
 
     # different pivot arguments
@@ -347,9 +345,7 @@ def test_helix_awk_3(new_pivot, raw_helix_arr, raw_helix_err_arr):
     helix_rec = helix_arr[0]
 
     # test isclose
-    assert ak.all(
-        helix_rec.change_pivot(*new_pivot).change_pivot(0, 0, 0).isclose(helix_rec)
-    )
+    assert ak.all(helix_rec.change_pivot(*new_pivot).change_pivot(0, 0, 0).isclose(helix_rec))
     assert ak.all(helix_rec.change_pivot(*new_pivot).isclose(helix_rec))
 
     # test attributes

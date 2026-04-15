@@ -1,120 +1,8 @@
-from pathlib import Path
-from typing import Literal, NamedTuple, Optional
-
 import awkward as ak
-import numpy as np
 import pytest
 import uproot
 
-import pybes3
-
-
-class CompareResult(NamedTuple):
-    item: str
-    is_same: bool
-    arr_dtype: Optional[str] = None
-    diff_type: Optional[
-        Literal["type mismatch", "length mismatch", "value unequal"]
-    ] = None
-
-
-def compare_ak(
-    arr1: ak.Array, arr2: ak.Array, item_path: str = ""
-) -> list[CompareResult]:
-    """
-    Compare two awkward arrays and return a list of CompareResult.
-
-    Args:
-        arr1 (ak.Array): First array to compare.
-        arr2 (ak.Array): Second array to compare.
-        item_path (str): Path to the item being compared.
-
-    Returns:
-        list[CompareResult]: List of CompareResult objects containing comparison results.
-    """
-    if arr1.typestr != arr2.typestr:
-        return [
-            CompareResult(
-                item=item_path,
-                is_same=False,
-                arr_dtype=arr1.typestr,
-                diff_type="type mismatch",
-            )
-        ]
-
-    # Record array
-    if arr1.fields:
-        res = []
-        for field in arr1.fields:
-            tmp_res = compare_ak(
-                arr1[field], arr2[field], item_path=f"{item_path}/{field}"
-            )
-
-            if (
-                len(tmp_res) == 1
-                and tmp_res[0].arr_dtype != "ak.Record"
-                and tmp_res[0].diff_type == "length mismatch"
-            ):
-                return [
-                    CompareResult(
-                        item=item_path + "/*",
-                        is_same=False,
-                        arr_dtype="ak.Record",
-                        diff_type="length mismatch",
-                    )
-                ]
-
-            else:
-                res += tmp_res
-        return res
-
-    # Get array dtype
-    arr_dtype = arr1.typestr.split("*")[-1].strip()
-
-    try:
-        if "float" in arr_dtype and ak.all(np.isclose(arr1, arr2, equal_nan=True)):
-            return [
-                CompareResult(
-                    item=item_path,
-                    is_same=True,
-                    arr_dtype=arr_dtype,
-                )
-            ]
-        elif ak.all(arr1 == arr2):
-            return [
-                CompareResult(
-                    item=item_path,
-                    is_same=True,
-                    arr_dtype=arr_dtype,
-                )
-            ]
-
-        # Value non-equal
-        else:
-            return [
-                CompareResult(
-                    item=item_path,
-                    is_same=False,
-                    diff_type="value unequal",
-                    arr_dtype=arr_dtype,
-                )
-            ]
-
-    # Length mismatch
-    except ValueError as e:
-        if ak.any(ak.count(arr1, axis=1) != ak.count(arr2, axis=1)):
-            return [
-                CompareResult(
-                    item=item_path,
-                    is_same=False,
-                    arr_dtype=arr_dtype,
-                    diff_type="length mismatch",
-                )
-            ]
-        else:
-            print(arr1.typestr)
-            print(ak.count(arr1), ak.count(arr2))
-            raise e
+import pybes3 as p3
 
 
 def test_uproot_branches(test_data_dir):
@@ -130,8 +18,7 @@ def test_mc_full(test_data_dir):
     truth_arr = ak.from_parquet(test_data_dir / "test_full_mc_evt_1.rtraw.parquet")
     arr = f_rtraw["Event"].arrays()
     assert len(arr) == 10
-    comp_res = compare_ak(arr, truth_arr)
-    assert all(r.is_same for r in comp_res)
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
 def test_mc_only_particles(test_data_dir):
@@ -139,8 +26,7 @@ def test_mc_only_particles(test_data_dir):
     truth_arr = ak.from_parquet(test_data_dir / "test_only_mc_particles.rtraw.parquet")
     arr = f_rtraw["Event"].arrays()
     assert len(arr) == 10
-    comp_res = compare_ak(arr, truth_arr)
-    assert all(r.is_same for r in comp_res)
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
 def test_dst(test_data_dir):
@@ -148,8 +34,7 @@ def test_dst(test_data_dir):
     truth_arr = ak.from_parquet(test_data_dir / "test_full_mc_evt_1.dst.parquet")
     arr = f_dst["Event"].arrays()
     assert len(arr) == 10
-    comp_res = compare_ak(arr, truth_arr)
-    assert all(r.is_same for r in comp_res)
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
 def test_rec(test_data_dir):
@@ -157,8 +42,7 @@ def test_rec(test_data_dir):
     truth_arr = ak.from_parquet(test_data_dir / "test_full_mc_evt_1.rec.parquet")
     arr = f_rec["Event"].arrays()
     assert len(arr) == 10
-    comp_res = compare_ak(arr, truth_arr)
-    assert all(r.is_same for r in comp_res)
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
 def test_cgem_rtraw(test_data_dir):
@@ -166,8 +50,7 @@ def test_cgem_rtraw(test_data_dir):
     truth_arr = ak.from_parquet(test_data_dir / "test_cgem.rtraw.parquet")
     arr = f_rtraw["Event"].arrays()
     assert len(arr) == 10
-    comp_res = compare_ak(arr, truth_arr)
-    assert all(r.is_same for r in comp_res)
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
 def test_cgem_dst(test_data_dir):
@@ -175,8 +58,7 @@ def test_cgem_dst(test_data_dir):
     truth_arr = ak.from_parquet(test_data_dir / "test_cgem.dst.parquet")
     arr = f_dst["Event"].arrays()
     assert len(arr) == 10
-    comp_res = compare_ak(arr, truth_arr)
-    assert all(r.is_same for r in comp_res)
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
 def test_cgem_rec(test_data_dir):
@@ -184,8 +66,7 @@ def test_cgem_rec(test_data_dir):
     truth_arr = ak.from_parquet(test_data_dir / "test_cgem.rec.parquet")
     arr = f_dst["Event"].arrays()
     assert len(arr) == 10
-    comp_res = compare_ak(arr, truth_arr)
-    assert all(r.is_same for r in comp_res)
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
 def test_uproot_concatenate(test_data_dir):
@@ -199,10 +80,8 @@ def test_uproot_concatenate(test_data_dir):
 
     arr_concat2 = uproot.concatenate(
         {
-            test_data_dir
-            / "test_full_mc_evt_1.rtraw": "Event/TMcEvent/m_mcParticleCol",
-            test_data_dir
-            / "test_full_mc_evt_2.rtraw": "Event/TMcEvent/m_mcParticleCol",
+            test_data_dir / "test_full_mc_evt_1.rtraw": "Event/TMcEvent/m_mcParticleCol",
+            test_data_dir / "test_full_mc_evt_2.rtraw": "Event/TMcEvent/m_mcParticleCol",
         }
     )
     assert len(arr_concat2) == 20
@@ -241,9 +120,7 @@ def test_symetric_matrix_expansion(test_data_dir):
 
 
 def test_bes3_tobjarray_factory_dask(test_data_dir):
-    dask_arr = uproot.dask(
-        {test_data_dir / "test_full_mc_evt_1.rtraw": "Event/m_mdcDigiCol"}
-    )
+    dask_arr = uproot.dask({test_data_dir / "test_full_mc_evt_1.rtraw": "Event/m_mdcDigiCol"})
 
     dask_arr.compute()
 
@@ -266,34 +143,94 @@ def test_digi_expand_TRawData(test_data_dir):
         assert "TRawData" not in arr_digi[field].fields
 
 
-@pytest.mark.skipif(
-    not Path(
-        "/bes3fs/offline/data/raw/round17/231117/run_0079017_All_file001_SFO-1.raw"
-    ).exists(),
-    reason="Test data is not available",
-)
-def test_raw():
-    f_raw: pybes3.besio.RawBinaryReader = pybes3.open_raw(
-        "/bes3fs/offline/data/raw/round17/231117/run_0079017_All_file001_SFO-1.raw"
-    )
+def test_raw_content(test_data_dir, subtests):
+    f_ref = uproot.open(test_data_dir / "ref_raw_data.root")
 
-    n_mdc_digis = ak.Array([1872, 2768, 1641, 2542, 3331, 2672, 2257, 2470, 3635, 3689])
+    test_fields = ["cgem", "mdc", "tof", "emc", "muc", "trigGTD"]
 
-    arr_full = f_raw.arrays(n_blocks=10)
-    assert set(arr_full.fields) == {"evt_header", "mdc", "tof", "emc", "muc"}
-    assert ak.all(ak.count(arr_full.mdc.id, axis=1) == n_mdc_digis)
+    ref_arr_dict = {}
+    for field in test_fields:
+        cur_ref_arr = f_ref[field].arrays()
+        cur_ref_arr = ak.zip({k: cur_ref_arr[k] for k in cur_ref_arr.fields if k != "index"})
+        cur_ref_arr = ak.zip({k: cur_ref_arr[k] for k in cur_ref_arr.fields})
+        ref_arr_dict[field] = cur_ref_arr
 
-    arr_mdc = f_raw.arrays(n_blocks=10, sub_detectors=["mdc"])
-    assert set(arr_mdc.fields) == {"evt_header", "mdc"}
-    assert ak.all(ak.count(arr_mdc.mdc.id, axis=1) == n_mdc_digis)
+    f_raw = p3.open_raw(test_data_dir / "test_raw_data.raw")
+    raw_arr = f_raw.arrays()
 
-    arr_batch = f_raw.arrays(n_blocks=10, n_block_per_batch=5)
-    assert set(arr_batch.fields) == {"evt_header", "mdc", "tof", "emc", "muc"}
-    assert ak.all(ak.count(arr_batch.mdc.id, axis=1) == n_mdc_digis)
+    assert len(raw_arr) == f_raw.entries
 
-    arr_workers = f_raw.arrays(n_blocks=10, max_workers=4)
-    assert set(arr_workers.fields) == {"evt_header", "mdc", "tof", "emc", "muc"}
-    assert ak.all(ak.count(arr_workers.mdc.id, axis=1) == n_mdc_digis)
+    for field in test_fields:
+        with subtests.test(field=field):
+            assert ak.array_equal(raw_arr[field], ref_arr_dict[field], equal_nan=True)
+
+
+def test_RawBinaryParser(test_data_dir):
+    f_test = test_data_dir / "test_raw_data.raw"
+    raw_reader = p3.open_raw(f_test)
+
+    arr = raw_reader.arrays()
+    assert len(arr) == 10
+
+    arr = raw_reader.arrays(entry_start=4)
+    assert len(arr) == 6
+
+    arr = raw_reader.arrays(entry_stop=4)
+    assert len(arr) == 4
+
+    arr = raw_reader.arrays(entry_start=5, entry_stop=10)
+    assert len(arr) == 5
+
+    arr = raw_reader.arrays(entry_start=9)
+    assert len(arr) == 1
+
+    arr = raw_reader.arrays(entry_start=0, entry_stop=0)
+    assert len(arr) == 0
+
+    arr = raw_reader.arrays(entry_start=10)
+    assert len(arr) == 0
+
+    arr = raw_reader.arrays(entry_start=10, entry_stop=5)
+    assert len(arr) == 0
+
+    raw_reader.close()
+
+
+def test_RawBinaryParser_context(test_data_dir):
+    f_test = test_data_dir / "test_raw_data.raw"
+
+    with p3.open_raw(f_test) as f:
+        arr = f.arrays()
+        assert len(arr) == 10
+
+
+def test_concatenate_raw(test_data_dir):
+    f_test = test_data_dir / "test_raw_data.raw"
+    files = [f_test, f_test, f_test]
+
+    arr = p3.concatenate_raw(files)
+    assert len(arr) == 30
+
+    arr = p3.concatenate_raw(files, entry_start=5, entry_stop=23)
+    assert len(arr) == 18
+
+    arr = p3.concatenate_raw(files, entry_start=25)
+    assert len(arr) == 5
+
+    arr = p3.concatenate_raw(files, entry_stop=7)
+    assert len(arr) == 7
+
+    arr = p3.concatenate_raw(files, entry_start=10, entry_stop=21)
+    assert len(arr) == 11
+
+    arr = p3.concatenate_raw(files, entry_start=0, entry_stop=0)
+    assert len(arr) == 0
+
+    arr = p3.concatenate_raw(files, entry_start=15, entry_stop=15)
+    assert len(arr) == 0
+
+    arr = p3.concatenate_raw(files, entry_start=35)
+    assert len(arr) == 0
 
 
 if __name__ == "__main__":

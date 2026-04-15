@@ -10,13 +10,14 @@
 #include <map>
 #include <set>
 #include <string>
-#include <tuple>
 #include <vector>
 
+#include "root_io.hh"
+
 namespace py = pybind11;
+using namespace std;
 
 class RawBinaryParser {
-
     enum RawFlag : const uint32_t {
         FILE_START      = 0x1234AAAA,
         FILE_NAME       = 0x1234AABB,
@@ -32,41 +33,122 @@ class RawBinaryParser {
         ROD          = 0xEE1234EE,
     };
 
-    enum SubDetID : const uint32_t {
-        MDC = 0xA1,
-        TOF = 0xA2,
-        EMC = 0xA3,
-        MUC = 0xA4,
-        TRG = 0xA5,
-        EF  = 0x7C,
+    enum FieldID : const uint32_t {
+        MDC     = 0xA1,
+        TOF     = 0xA2,
+        EMC     = 0xA3,
+        MUC     = 0xA4,
+        TrigGTD = 0xA5,
+        MRPC    = 0xA7,
+        CGEM    = 0xA8,
     };
 
-    const std::set<uint32_t> sub_det_ids = {
-        SubDetID::MDC, SubDetID::TOF, SubDetID::EMC,
-        SubDetID::MUC, SubDetID::TRG, SubDetID::EF,
+    const set<uint32_t> field_ids = {
+        FieldID::MDC,     FieldID::TOF,  FieldID::EMC,  FieldID::MUC,
+        FieldID::TrigGTD, FieldID::MRPC, FieldID::CGEM,
     };
 
-    std::map<std::string, const uint32_t> sub_det_names_to_ids = {
-        { "mdc", SubDetID::MDC }, { "tof", SubDetID::TOF }, { "emc", SubDetID::EMC },
-        { "muc", SubDetID::MUC }, { "trg", SubDetID::TRG }, { "ef", SubDetID::EF },
+    map<string, const uint32_t> field_name_to_id = {
+        { "cgem", FieldID::CGEM }, { "mdc", FieldID::MDC }, { "tof", FieldID::TOF },
+        { "emc", FieldID::EMC },   { "muc", FieldID::MUC }, { "trigGTD", FieldID::TrigGTD },
     };
 
-    const std::vector<std::string> evt_header_item_names = {
-        "evt_time", "evt_no",   "run_no",   "l1_id",
-        "evt_tag1", "evt_tag2", "evt_tag3", "evt_tag4",
-    };
+    // (21 x 8 + 4) x 64 for 21 fully used gemrocs, 8 tigers per gemroc, 64 channels per tiger,
+    // plus 4 extra tigers for partial used gemroc.
+    static constexpr size_t CGEM_N_ELEC_STRIPS = 11008;
 
   public:
-    RawBinaryParser( py::array_t<uint32_t> data )
+    RawBinaryParser( py::array_t<uint32_t> data, vector<string> fields,
+                     map<string, py::array> info_tables )
         : m_data_start( static_cast<uint32_t*>( data.request().ptr ) )
         , m_data_end( static_cast<uint32_t*>( data.request().ptr ) + data.size() )
-        , m_cursor( static_cast<uint32_t*>( data.request().ptr ) ) {}
+        , m_cursor( static_cast<uint32_t*>( data.request().ptr ) ) {
 
-    py::dict arrays( std::vector<std::string> sub_detectors );
+        /* Initialize CGEM table */
+        auto np_layer      = info_tables["cgem_layer"].cast<py::array_t<uint8_t>>();
+        auto np_sheet      = info_tables["cgem_sheet"].cast<py::array_t<uint8_t>>();
+        auto np_strip_type = info_tables["cgem_strip_type"].cast<py::array_t<uint8_t>>();
+        auto np_strip      = info_tables["cgem_strip"].cast<py::array_t<uint16_t>>();
+        auto np_const      = info_tables["cgem_constant"].cast<py::array_t<double>>();
+        auto np_slope      = info_tables["cgem_slope"].cast<py::array_t<double>>();
+        auto np_digi_id    = info_tables["cgem_digi_id"].cast<py::array_t<uint32_t>>();
+
+        // check shape
+        bool check_shape = true;
+
+        check_shape = check_shape && np_layer.size() == CGEM_N_ELEC_STRIPS;
+        check_shape = check_shape && np_sheet.size() == CGEM_N_ELEC_STRIPS;
+        check_shape = check_shape && np_strip_type.size() == CGEM_N_ELEC_STRIPS;
+        check_shape = check_shape && np_strip.size() == CGEM_N_ELEC_STRIPS;
+        check_shape = check_shape && np_const.size() == CGEM_N_ELEC_STRIPS;
+        check_shape = check_shape && np_slope.size() == CGEM_N_ELEC_STRIPS;
+        check_shape = check_shape && np_digi_id.size() == CGEM_N_ELEC_STRIPS;
+        if ( !check_shape )
+        {
+            throw runtime_error(
+                "Invalid CGEM table: expecting arrays of size " +
+                to_string( CGEM_N_ELEC_STRIPS ) + ", get: " + to_string( np_layer.size() ) +
+                ", " + to_string( np_sheet.size() ) + ", " +
+                to_string( np_strip_type.size() ) + ", " + to_string( np_strip.size() ) +
+                ", " + to_string( np_const.size() ) + ", " + to_string( np_slope.size() ) +
+                ", " + to_string( np_digi_id.size() ) );
+        }
+
+        // assign to table
+        m_cgem_table.idx_to_layer      = static_cast<uint8_t*>( np_layer.request().ptr );
+        m_cgem_table.idx_to_sheet      = static_cast<uint8_t*>( np_sheet.request().ptr );
+        m_cgem_table.idx_to_strip_type = static_cast<uint8_t*>( np_strip_type.request().ptr );
+        m_cgem_table.idx_to_strip      = static_cast<uint16_t*>( np_strip.request().ptr );
+        m_cgem_table.idx_to_const      = static_cast<double*>( np_const.request().ptr );
+        m_cgem_table.idx_to_slope      = static_cast<double*>( np_slope.request().ptr );
+        m_cgem_table.idx_to_digi_id    = static_cast<uint32_t*>( np_digi_id.request().ptr );
+
+        /* Initialize REID to TEID tables */
+        auto np_mdc_reid_to_teid = info_tables["mdc_re2te"].cast<py::array_t<uint32_t>>();
+        auto np_tof_reid_to_teid = info_tables["tof_re2te"].cast<py::array_t<uint32_t>>();
+        auto np_emc_reid_to_teid = info_tables["emc_re2te"].cast<py::array_t<uint32_t>>();
+        auto np_muc_reid_to_teid = info_tables["muc_re2te"].cast<py::array_t<uint32_t>>();
+        auto np_muc_strsqc       = info_tables["muc_strsqc"].cast<py::array_t<uint32_t>>();
+
+        // check shape
+        check_shape = true;
+        check_shape = check_shape && np_mdc_reid_to_teid.size() == 16384;
+        check_shape = check_shape && np_tof_reid_to_teid.size() == 16384;
+        check_shape = check_shape && np_emc_reid_to_teid.size() == 8192;
+        check_shape = check_shape && np_muc_reid_to_teid.size() == 1024;
+        check_shape = check_shape && np_muc_strsqc.size() == 1024;
+        if ( !check_shape )
+        {
+            throw runtime_error(
+                "Invalid REID to TEID table: expecting arrays of size 16384, get: " +
+                to_string( np_mdc_reid_to_teid.size() ) );
+        }
+
+        // assign to table
+        m_re2te.mdc  = static_cast<uint32_t*>( np_mdc_reid_to_teid.request().ptr );
+        m_re2te.tof  = static_cast<uint32_t*>( np_tof_reid_to_teid.request().ptr );
+        m_re2te.emc  = static_cast<uint32_t*>( np_emc_reid_to_teid.request().ptr );
+        m_re2te.muc  = static_cast<uint32_t*>( np_muc_reid_to_teid.request().ptr );
+        m_muc_strsqc = static_cast<uint32_t*>( np_muc_strsqc.request().ptr );
+
+        /* set target fields */
+        for ( auto& field_name : fields )
+        {
+            if ( field_name_to_id.find( field_name ) == field_name_to_id.end() )
+                throw runtime_error( "Invalid field name: " + field_name );
+
+            auto field_id = field_name_to_id[field_name];
+            m_active_field_ids.insert( field_id );
+
+            if ( field_id == FieldID::TOF ) m_active_field_ids.insert( FieldID::MRPC );
+        }
+    }
+
+    py::dict arrays();
 
   private:
     uint32_t read();
-    std::vector<uint32_t> read( size_t n );
+    vector<uint32_t> read( size_t n );
     void read( size_t n, uint32_t* data );
 
     void skip();
@@ -80,13 +162,19 @@ class RawBinaryParser {
     void read_event();
     void fill_offsets();
 
-    uint32_t read_sub_detector();
-    std::vector<uint32_t>& get_sub_detector_data( const uint32_t sub_det_id );
+    uint32_t read_field();
+    vector<uint32_t>& get_field_data( const uint32_t field_id );
 
-    uint32_t read_ROS( const uint32_t sub_det_id );
-    uint32_t read_ROB( const uint32_t sub_det_id );
+    uint32_t read_ROS( const uint32_t field_id );
+    uint32_t read_ROB( const uint32_t field_id );
 
-    void fill_digi( const std::vector<uint32_t>& tmp_data, const uint32_t sub_det_id );
+    void read_data_from_buffers();
+    void read_mdc_buffer();
+    void read_tof_buffer();
+    void read_emc_buffer();
+    void read_muc_buffer();
+    void read_trg_buffer();
+    void read_cgem_buffer();
 
     // binary data
     const uint32_t* m_data_start;
@@ -94,36 +182,149 @@ class RawBinaryParser {
     uint32_t* m_cursor;
 
     // parsed data
-    std::set<uint32_t> m_activated_sub_det_ids;
+    set<uint32_t> m_active_field_ids;
 
-    std::vector<uint32_t> m_mdc_offsets;
-    std::tuple<std::vector<uint16_t>, std::vector<uint16_t>, std::vector<uint16_t>,
-               std::vector<uint8_t>>
-        m_mdc_data; // id, t, q, overflow
+    // reid to teid tables
+    struct {
+        uint32_t* mdc{ nullptr };
+        uint32_t* tof{ nullptr };
+        uint32_t* emc{ nullptr };
+        uint32_t* muc{ nullptr };
+    } m_re2te;
 
-    std::vector<uint32_t> m_tof_offsets;
-    std::tuple<std::vector<uint16_t>, std::vector<uint16_t>, std::vector<uint16_t>,
-               std::vector<uint8_t>>
-        m_tof_data; // id, t, q, overflow
+    // buffers for current event
+    struct {
+        vector<uint32_t> mdc{};
+        vector<uint32_t> tof{};
+        vector<uint32_t> emc{};
+        vector<uint32_t> muc{};
+        vector<vector<uint32_t>> trg{};
+        vector<uint32_t> mrpc{};
+        vector<uint32_t> cgem{};
 
-    std::vector<uint32_t> m_emc_offsets;
-    std::tuple<std::vector<uint16_t>, std::vector<uint16_t>, std::vector<uint16_t>,
-               std::vector<uint8_t>>
-        m_emc_data; // id, t, q, measure
+        void clear() {
+            mdc.clear();
+            tof.clear();
+            emc.clear();
+            muc.clear();
+            trg.clear();
+            mrpc.clear();
+            cgem.clear();
+        }
+    } m_buffers;
 
-    std::vector<uint32_t> m_muc_offsets;
-    std::tuple<std::vector<uint16_t>, std::vector<uint16_t>> m_muc_data; // id, FEC (?)
+    /* Event Header*/
+    struct {
+        SharedVector<uint32_t> evt_time{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> evt_no{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> run_no{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> l1_id{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> evt_tag1{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> evt_tag2{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> evt_tag3{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> evt_tag4{ make_shared_vector<uint32_t>() };
+    } m_evt_header_data;
 
-    std::vector<uint32_t> m_trg_offsets;
-    std::vector<uint32_t> m_trg_data;
+    /* MDC */
+    SharedVector<uint32_t> m_mdc_offsets{ make_shared_vector<uint32_t>() };
+    array<array<uint32_t, 4>, 16384> m_mdc_tags{};
 
-    std::vector<uint32_t> m_ef_offsets;
-    std::vector<uint32_t> m_ef_data;
+    struct {
+        SharedVector<uint32_t> id{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> tdc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> adc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> overflow{ make_shared_vector<uint32_t>() };
+        size_t size() const { return id->size(); }
+    } m_mdc_data;
 
-    std::array<std::vector<uint32_t>, 8> m_evt_header_data;
+    inline void mdc_reverse_id( uint32_t& teid, array<uint32_t, 4>& tag, const uint32_t val1,
+                                const uint32_t val2 ) {
+        const uint32_t mask = 65528;
+        if ( ( teid & mask ) == val1 )
+        {
+            teid = ( teid & ~mask ) | val2;
+            tag[3] |= 0x10;
+        }
+        else if ( ( teid & mask ) == val2 )
+        {
+            teid = ( teid & ~mask ) | val1;
+            tag[3] |= 0x10;
+        }
+    }
 
-    // reading status
+    /* TOF */
+    SharedVector<uint32_t> m_tof_offsets{ make_shared_vector<uint32_t>() };
+    struct {
+        SharedVector<uint32_t> id{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> tdc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> adc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> overflow{ make_shared_vector<uint32_t>() };
+        size_t size() const { return id->size(); }
+    } m_tof_data;
+
+    /* EMC */
+    SharedVector<uint32_t> m_emc_offsets{ make_shared_vector<uint32_t>() };
+    struct {
+        SharedVector<uint32_t> id{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> tdc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> adc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> measure{ make_shared_vector<uint32_t>() };
+        size_t size() const { return id->size(); }
+    } m_emc_data;
+
+    /* MUC */
+    uint32_t* m_muc_strsqc{ nullptr };
+    SharedVector<uint32_t> m_muc_offsets{ make_shared_vector<uint32_t>() };
+    struct {
+        SharedVector<uint32_t> id{ make_shared_vector<uint32_t>() };
+        size_t size() const { return id->size(); }
+    } m_muc_data;
+
+    /* TrigGTD */
+    SharedVector<uint32_t> m_trg_offsets{ make_shared_vector<uint32_t>() };
+    struct {
+        SharedVector<uint32_t> id{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> data_size{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> time_window{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> data_type{ make_shared_vector<uint32_t>() };
+        size_t size() const { return id->size(); }
+    } m_trg_data;
+
+    /* LUMI */
+    SharedVector<uint32_t> m_lumi_offsets{ make_shared_vector<uint32_t>() };
+    struct {
+        SharedVector<uint32_t> id{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> tdc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> adc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> overflow{ make_shared_vector<uint32_t>() };
+        size_t size() const { return id->size(); }
+    } m_lumi_data;
+
+    /* CGEM */
+    struct {
+        uint8_t* idx_to_layer{ nullptr };
+        uint8_t* idx_to_sheet{ nullptr };
+        uint8_t* idx_to_strip_type{ nullptr };
+        uint16_t* idx_to_strip{ nullptr };
+        double* idx_to_const{ nullptr };
+        double* idx_to_slope{ nullptr };
+        uint32_t* idx_to_digi_id{ nullptr };
+    } m_cgem_table;
+
+    SharedVector<uint32_t> m_cgem_offsets{ make_shared_vector<uint32_t>() };
+
+    struct {
+        SharedVector<uint32_t> id{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> adc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> tdc{ make_shared_vector<uint32_t>() };
+        SharedVector<double> charge{ make_shared_vector<double>() };
+        SharedVector<double> time{ make_shared_vector<double>() };
+        size_t size() const { return id->size(); }
+    } m_cgem_data;
+
+    /* reading status */
     int64_t m_current_entry = -1;
 };
 
-py::dict py_read_bes_raw( py::array_t<uint32_t> data, std::vector<std::string> sub_detectors );
+py::dict py_read_bes_raw( py::array_t<uint32_t> data, vector<string> fields,
+                          map<string, py::array> into_tables );
