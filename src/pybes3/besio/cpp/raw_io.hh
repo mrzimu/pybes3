@@ -12,6 +12,8 @@
 #include <string>
 #include <vector>
 
+#include "root_io.hh"
+
 namespace py = pybind11;
 using namespace std;
 
@@ -214,26 +216,26 @@ class RawBinaryParser {
 
     /* Event Header*/
     struct {
-        vector<uint32_t> evt_time;
-        vector<uint32_t> evt_no;
-        vector<uint32_t> run_no;
-        vector<uint32_t> l1_id;
-        vector<uint32_t> evt_tag1;
-        vector<uint32_t> evt_tag2;
-        vector<uint32_t> evt_tag3;
-        vector<uint32_t> evt_tag4;
+        SharedVector<uint32_t> evt_time{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> evt_no{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> run_no{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> l1_id{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> evt_tag1{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> evt_tag2{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> evt_tag3{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> evt_tag4{ make_shared_vector<uint32_t>() };
     } m_evt_header_data;
 
     /* MDC */
-    vector<uint32_t> m_mdc_offsets;
+    SharedVector<uint32_t> m_mdc_offsets{ make_shared_vector<uint32_t>() };
     array<array<uint32_t, 4>, 16384> m_mdc_tags{};
 
     struct {
-        vector<uint32_t> id;
-        vector<uint32_t> tdc;
-        vector<uint32_t> adc;
-        vector<uint32_t> overflow;
-        size_t size() const { return id.size(); }
+        SharedVector<uint32_t> id{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> tdc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> adc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> overflow{ make_shared_vector<uint32_t>() };
+        size_t size() const { return id->size(); }
     } m_mdc_data;
 
     inline void mdc_reverse_id( uint32_t& teid, array<uint32_t, 4>& tag, const uint32_t val1,
@@ -252,51 +254,51 @@ class RawBinaryParser {
     }
 
     /* TOF */
-    vector<uint32_t> m_tof_offsets;
+    SharedVector<uint32_t> m_tof_offsets{ make_shared_vector<uint32_t>() };
     struct {
-        vector<uint32_t> id;
-        vector<uint32_t> tdc;
-        vector<uint32_t> adc;
-        vector<uint32_t> overflow;
-        size_t size() const { return id.size(); }
+        SharedVector<uint32_t> id{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> tdc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> adc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> overflow{ make_shared_vector<uint32_t>() };
+        size_t size() const { return id->size(); }
     } m_tof_data;
 
     /* EMC */
-    vector<uint32_t> m_emc_offsets;
+    SharedVector<uint32_t> m_emc_offsets{ make_shared_vector<uint32_t>() };
     struct {
-        vector<uint32_t> id;
-        vector<uint32_t> tdc;
-        vector<uint32_t> adc;
-        vector<uint32_t> measure;
-        size_t size() const { return id.size(); }
+        SharedVector<uint32_t> id{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> tdc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> adc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> measure{ make_shared_vector<uint32_t>() };
+        size_t size() const { return id->size(); }
     } m_emc_data;
 
     /* MUC */
     uint32_t* m_muc_strsqc{ nullptr };
-    vector<uint32_t> m_muc_offsets;
+    SharedVector<uint32_t> m_muc_offsets{ make_shared_vector<uint32_t>() };
     struct {
-        vector<uint32_t> id;
-        size_t size() const { return id.size(); }
+        SharedVector<uint32_t> id{ make_shared_vector<uint32_t>() };
+        size_t size() const { return id->size(); }
     } m_muc_data;
 
     /* TrigGTD */
-    vector<uint32_t> m_trg_offsets;
+    SharedVector<uint32_t> m_trg_offsets{ make_shared_vector<uint32_t>() };
     struct {
-        vector<uint32_t> id;
-        vector<uint32_t> data_size;
-        vector<uint32_t> time_window;
-        vector<uint32_t> data_type;
-        size_t size() const { return id.size(); }
+        SharedVector<uint32_t> id{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> data_size{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> time_window{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> data_type{ make_shared_vector<uint32_t>() };
+        size_t size() const { return id->size(); }
     } m_trg_data;
 
     /* LUMI */
-    vector<uint32_t> m_lumi_offsets;
+    SharedVector<uint32_t> m_lumi_offsets{ make_shared_vector<uint32_t>() };
     struct {
-        vector<uint32_t> id;
-        vector<uint32_t> tdc;
-        vector<uint32_t> adc;
-        vector<uint32_t> overflow;
-        size_t size() const { return id.size(); }
+        SharedVector<uint32_t> id{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> tdc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> adc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> overflow{ make_shared_vector<uint32_t>() };
+        size_t size() const { return id->size(); }
     } m_lumi_data;
 
     /* CGEM */
@@ -310,15 +312,15 @@ class RawBinaryParser {
         uint32_t* idx_to_digi_id{ nullptr };
     } m_cgem_table;
 
-    vector<uint32_t> m_cgem_offsets;
+    SharedVector<uint32_t> m_cgem_offsets{ make_shared_vector<uint32_t>() };
 
     struct {
-        vector<uint32_t> id;
-        vector<uint32_t> adc;
-        vector<uint32_t> tdc;
-        vector<double> charge;
-        vector<double> time;
-        size_t size() const { return id.size(); }
+        SharedVector<uint32_t> id{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> adc{ make_shared_vector<uint32_t>() };
+        SharedVector<uint32_t> tdc{ make_shared_vector<uint32_t>() };
+        SharedVector<double> charge{ make_shared_vector<double>() };
+        SharedVector<double> time{ make_shared_vector<double>() };
+        size_t size() const { return id->size(); }
     } m_cgem_data;
 
     /* reading status */

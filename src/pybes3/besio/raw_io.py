@@ -123,7 +123,6 @@ class RawBinaryReader:
         n_block_per_batch: int = 1000,
         sub_detectors: list[str] | None = None,
         max_workers: int | None = None,
-        decode_reid: bool = True,
     ) -> ak.Array:
         """
         Read and return arrays of data from the BES raw file.
@@ -133,15 +132,10 @@ class RawBinaryReader:
             n_block_per_batch (int, optional): The number of blocks to read per batch. Defaults to 1000.
             sub_detectors (list[str] | None): List of sub-detectors to read. Defaults to `None`, which means read all sub-detectors.
             max_workers (int | None): The maximum number of worker threads to use for reading the data. Defaults to `None`, which means use the default number of worker threads.
-            decode_reid (bool, optional): If True (default), convert raw electronics IDs
-                (REID) to standard detector geometry IDs (digi_id / TEID) so that
-                functions in :mod:`pybes3.detectors.digi_id` can be used directly
-                on the ``id`` field.  Set to False to keep the original REID values.
 
         Returns:
             An Awkward Array containing the read data.
         """
-
         self._reset_cursor()
 
         if sub_detectors is None:

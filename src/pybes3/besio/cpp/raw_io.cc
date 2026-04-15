@@ -17,6 +17,8 @@
 
 #include "raw_io.hh"
 
+using uproot::make_array;
+
 uint32_t RawBinaryParser::read() { return *( m_cursor++ ); }
 
 vector<uint32_t> RawBinaryParser::read( size_t n ) {
@@ -91,15 +93,15 @@ void RawBinaryParser::read_event() {
     }
 
     // read event header
-    m_evt_header_data.evt_time.push_back( read() );
-    m_evt_header_data.evt_no.push_back( read() );
-    m_evt_header_data.run_no.push_back( read() );
-    m_evt_header_data.l1_id.push_back( read() );
+    m_evt_header_data.evt_time->push_back( read() );
+    m_evt_header_data.evt_no->push_back( read() );
+    m_evt_header_data.run_no->push_back( read() );
+    m_evt_header_data.l1_id->push_back( read() );
     skip( 2 );
-    m_evt_header_data.evt_tag1.push_back( read() );
-    m_evt_header_data.evt_tag2.push_back( read() );
-    m_evt_header_data.evt_tag3.push_back( read() );
-    m_evt_header_data.evt_tag4.push_back( read() );
+    m_evt_header_data.evt_tag1->push_back( read() );
+    m_evt_header_data.evt_tag2->push_back( read() );
+    m_evt_header_data.evt_tag3->push_back( read() );
+    m_evt_header_data.evt_tag4->push_back( read() );
 
     // - read sub-detector
     auto n_left = total_size - header_size;
@@ -132,12 +134,12 @@ void RawBinaryParser::fill_offsets() {
     {
         switch ( sub_det_id )
         {
-        case SubDetID::MDC: m_mdc_offsets.push_back( m_mdc_data.size() ); break;
-        case SubDetID::TOF: m_tof_offsets.push_back( m_tof_data.size() ); break;
-        case SubDetID::EMC: m_emc_offsets.push_back( m_emc_data.size() ); break;
-        case SubDetID::MUC: m_muc_offsets.push_back( m_muc_data.size() ); break;
-        case SubDetID::TrigGTD: m_trg_offsets.push_back( m_trg_data.size() ); break;
-        case SubDetID::CGEM: m_cgem_offsets.push_back( m_cgem_data.size() ); break;
+        case SubDetID::MDC: m_mdc_offsets->push_back( m_mdc_data.size() ); break;
+        case SubDetID::TOF: m_tof_offsets->push_back( m_tof_data.size() ); break;
+        case SubDetID::EMC: m_emc_offsets->push_back( m_emc_data.size() ); break;
+        case SubDetID::MUC: m_muc_offsets->push_back( m_muc_data.size() ); break;
+        case SubDetID::TrigGTD: m_trg_offsets->push_back( m_trg_data.size() ); break;
+        case SubDetID::CGEM: m_cgem_offsets->push_back( m_cgem_data.size() ); break;
         case SubDetID::MRPC: break; // filled in TOF
         default: throw runtime_error( "Invalid sub-detector id: " + to_string( sub_det_id ) );
         }
@@ -312,7 +314,7 @@ void RawBinaryParser::read_mdc_buffer() {
             // Fix 2: exchange layer[40]wire[200-207] <=> layer[40]wire[208-215]
             mdc_reverse_id( teid, tag, 20680, 20688 );
 
-            auto cur_run_no = m_evt_header_data.run_no.back();
+            auto cur_run_no = m_evt_header_data.run_no->back();
             if ( cur_run_no >= 66719 && cur_run_no <= 69292 )
             {
                 // Fix 3: exchange layer[26]wire[8-15] <=> layer[28]wire[40-47]
@@ -364,19 +366,19 @@ void RawBinaryParser::read_mdc_buffer() {
     for ( auto& [reid, data] : vm_tdc )
     {
         auto& tag = m_mdc_tags[reid];
-        m_mdc_data.id.push_back( tag[0] >> 2 );
-        m_mdc_data.tdc.push_back( data & 0x7FFFFFFF );
-        m_mdc_data.adc.push_back( tag[2] );
-        m_mdc_data.overflow.push_back( ( tag[3] & 0x16 ) | ( data >> 31 ) );
+        m_mdc_data.id->push_back( tag[0] >> 2 );
+        m_mdc_data.tdc->push_back( data & 0x7FFFFFFF );
+        m_mdc_data.adc->push_back( tag[2] );
+        m_mdc_data.overflow->push_back( ( tag[3] & 0x16 ) | ( data >> 31 ) );
     }
 
     for ( auto& reid : hits )
     {
         auto& tag = m_mdc_tags[reid];
-        m_mdc_data.id.push_back( tag[0] >> 2 );
-        m_mdc_data.tdc.push_back( tag[1] );
-        m_mdc_data.adc.push_back( tag[2] );
-        m_mdc_data.overflow.push_back( tag[3] );
+        m_mdc_data.id->push_back( tag[0] >> 2 );
+        m_mdc_data.tdc->push_back( tag[1] );
+        m_mdc_data.adc->push_back( tag[2] );
+        m_mdc_data.overflow->push_back( tag[3] );
         tag[0] = 0;
     }
 }
@@ -437,10 +439,10 @@ void RawBinaryParser::read_tof_buffer() {
         {
             if ( ( buf_val >> 25 ) == 0x7F )
             {
-                m_tof_data.id.push_back( 0xFFFFFFFF );
-                m_tof_data.tdc.push_back( 0x7FFFFFFF );
-                m_tof_data.adc.push_back( 0x7FFFFFFF );
-                m_tof_data.overflow.push_back( buf_val );
+                m_tof_data.id->push_back( 0xFFFFFFFF );
+                m_tof_data.tdc->push_back( 0x7FFFFFFF );
+                m_tof_data.adc->push_back( 0x7FFFFFFF );
+                m_tof_data.overflow->push_back( buf_val );
             }
             continue;
         }
@@ -530,17 +532,17 @@ void RawBinaryParser::read_tof_buffer() {
     {
         if ( ( teid & 0xFFFF7FFF ) != 0x20000060 )
         {
-            m_tof_data.id.push_back( digi->id );
-            m_tof_data.tdc.push_back( digi->tdc );
-            m_tof_data.adc.push_back( digi->adc );
-            m_tof_data.overflow.push_back( digi->overflow );
+            m_tof_data.id->push_back( digi->id );
+            m_tof_data.tdc->push_back( digi->tdc );
+            m_tof_data.adc->push_back( digi->adc );
+            m_tof_data.overflow->push_back( digi->overflow );
         }
         else
         {
-            m_lumi_data.id.push_back( digi->id );
-            m_lumi_data.tdc.push_back( digi->tdc );
-            m_lumi_data.adc.push_back( digi->adc );
-            m_lumi_data.overflow.push_back( digi->overflow );
+            m_lumi_data.id->push_back( digi->id );
+            m_lumi_data.tdc->push_back( digi->tdc );
+            m_lumi_data.adc->push_back( digi->adc );
+            m_lumi_data.overflow->push_back( digi->overflow );
         }
 
         delete digi;
@@ -561,10 +563,10 @@ void RawBinaryParser::read_emc_buffer() {
         uint32_t measure = ( digi & 0x1800 ) >> 11;
         uint32_t tdc     = ( digi & 0x7E000 ) >> 13;
 
-        m_emc_data.id.push_back( teid );
-        m_emc_data.adc.push_back( adc );
-        m_emc_data.tdc.push_back( tdc );
-        m_emc_data.measure.push_back( measure );
+        m_emc_data.id->push_back( teid );
+        m_emc_data.adc->push_back( adc );
+        m_emc_data.tdc->push_back( tdc );
+        m_emc_data.measure->push_back( measure );
     }
 }
 
@@ -589,7 +591,7 @@ void RawBinaryParser::read_muc_buffer() {
             if ( ( fec_data & 1 ) == 0 ) continue;
             if ( strsqc == 0 ) new_teid = teid_base + 15 - k;
             else new_teid = teid_base + k;
-            m_muc_data.id.push_back( new_teid );
+            m_muc_data.id->push_back( new_teid );
         }
     }
 }
@@ -611,10 +613,10 @@ void RawBinaryParser::read_trg_buffer() {
             if ( ( id > 0xD1 && id < 0xD8 && id != 0xD5 ) || id == 0xDA ||
                  ( id > 0xE1 && id < 0xED ) )
             {
-                m_trg_data.id.push_back( id );
-                m_trg_data.data_size.push_back( block_size - 1 );
-                m_trg_data.time_window.push_back( ( word >> 8 ) & 0x3F );
-                m_trg_data.data_type.push_back( ( word >> 3 ) & 0x1F );
+                m_trg_data.id->push_back( id );
+                m_trg_data.data_size->push_back( block_size - 1 );
+                m_trg_data.time_window->push_back( ( word >> 8 ) & 0x3F );
+                m_trg_data.data_type->push_back( ( word >> 3 ) & 0x1F );
             }
 
             cursor += block_size;
@@ -735,26 +737,26 @@ void RawBinaryParser::read_cgem_buffer() {
             auto constant = m_cgem_table.idx_to_const[idx];
             auto slope    = m_cgem_table.idx_to_slope[idx];
 
-            m_cgem_data.id.push_back( digi_id );
-            m_cgem_data.adc.push_back( digi.e_fine );
-            m_cgem_data.tdc.push_back( digi.t_fine );
+            m_cgem_data.id->push_back( digi_id );
+            m_cgem_data.adc->push_back( digi.e_fine );
+            m_cgem_data.tdc->push_back( digi.t_fine );
 
             // calculate time
             double t_l1 = local_l1_timestamp;
             if ( local_l1_timestamp < digi.t_coarse ) t_l1 += 65536;
             double time = ( t_l1 - digi.t_coarse ) * ( -1000. ) / 4. / 41.65;
-            m_cgem_data.time.push_back( time );
+            m_cgem_data.time->push_back( time );
 
             // calculate charge
             double e_fine_new = digi.e_fine;
 
             if ( ( ( constant == 0.0 ) && ( slope == 0.0 ) ) ||
                  ( ( constant == 1.0 ) && ( slope == 1.0 ) ) )
-                m_cgem_data.charge.push_back( 9999. ); // invalid charge
+                m_cgem_data.charge->push_back( 9999. ); // invalid charge
             else
             {
                 if ( digi.e_fine > 1007 ) e_fine_new -= 1024.;
-                m_cgem_data.charge.push_back( ( e_fine_new - constant ) / slope );
+                m_cgem_data.charge->push_back( ( e_fine_new - constant ) / slope );
             }
         }
 
@@ -774,23 +776,16 @@ py::dict RawBinaryParser::arrays() {
 
     // event header
     py::dict evt_header;
-    evt_header["evt_time"] = py::array_t<uint32_t>( m_evt_header_data.evt_time.size(),
-                                                    m_evt_header_data.evt_time.data() );
-    evt_header["evt_no"]   = py::array_t<uint32_t>( m_evt_header_data.evt_no.size(),
-                                                    m_evt_header_data.evt_no.data() );
-    evt_header["run_no"]   = py::array_t<uint32_t>( m_evt_header_data.run_no.size(),
-                                                    m_evt_header_data.run_no.data() );
-    evt_header["l1_id"]    = py::array_t<uint32_t>( m_evt_header_data.l1_id.size(),
-                                                    m_evt_header_data.l1_id.data() );
-    evt_header["evt_tag1"] = py::array_t<uint32_t>( m_evt_header_data.evt_tag1.size(),
-                                                    m_evt_header_data.evt_tag1.data() );
-    evt_header["evt_tag2"] = py::array_t<uint32_t>( m_evt_header_data.evt_tag2.size(),
-                                                    m_evt_header_data.evt_tag2.data() );
-    evt_header["evt_tag3"] = py::array_t<uint32_t>( m_evt_header_data.evt_tag3.size(),
-                                                    m_evt_header_data.evt_tag3.data() );
-    evt_header["evt_tag4"] = py::array_t<uint32_t>( m_evt_header_data.evt_tag4.size(),
-                                                    m_evt_header_data.evt_tag4.data() );
-    res["evt_header"]      = evt_header;
+    evt_header["evt_time"] = make_array( m_evt_header_data.evt_time );
+    evt_header["evt_no"]   = make_array( m_evt_header_data.evt_no );
+    evt_header["run_no"]   = make_array( m_evt_header_data.run_no );
+    evt_header["l1_id"]    = make_array( m_evt_header_data.l1_id );
+    evt_header["evt_tag1"] = make_array( m_evt_header_data.evt_tag1 );
+    evt_header["evt_tag2"] = make_array( m_evt_header_data.evt_tag2 );
+    evt_header["evt_tag3"] = make_array( m_evt_header_data.evt_tag3 );
+    evt_header["evt_tag4"] = make_array( m_evt_header_data.evt_tag4 );
+
+    res["evt_header"] = evt_header;
 
     // sub-detectors
     for ( auto& sub_det_id : m_activated_sub_det_ids )
@@ -801,13 +796,12 @@ py::dict RawBinaryParser::arrays() {
             auto& [data_id, data_t, data_q, data_overflow] = m_mdc_data;
 
             py::dict mdc_data;
-            mdc_data["id"]  = py::array_t<uint32_t>( data_id.size(), data_id.data() );
-            mdc_data["adc"] = py::array_t<uint32_t>( data_q.size(), data_q.data() );
-            mdc_data["tdc"] = py::array_t<uint32_t>( data_t.size(), data_t.data() );
-            mdc_data["overflow"] =
-                py::array_t<uint32_t>( data_overflow.size(), data_overflow.data() );
+            mdc_data["id"]       = make_array( data_id );
+            mdc_data["adc"]      = make_array( data_q );
+            mdc_data["tdc"]      = make_array( data_t );
+            mdc_data["overflow"] = make_array( data_overflow );
 
-            py::array_t<uint32_t> offsets( m_mdc_offsets.size(), m_mdc_offsets.data() );
+            auto offsets = make_array( m_mdc_offsets );
 
             res["mdc"] = py::make_tuple( offsets, mdc_data );
             break;
@@ -817,13 +811,12 @@ py::dict RawBinaryParser::arrays() {
             auto& [data_id, data_t, data_q, data_overflow] = m_tof_data;
 
             py::dict tof_data;
-            tof_data["id"]  = py::array_t<uint32_t>( data_id.size(), data_id.data() );
-            tof_data["adc"] = py::array_t<uint32_t>( data_q.size(), data_q.data() );
-            tof_data["tdc"] = py::array_t<uint32_t>( data_t.size(), data_t.data() );
-            tof_data["overflow"] =
-                py::array_t<uint32_t>( data_overflow.size(), data_overflow.data() );
+            tof_data["id"]       = make_array( data_id );
+            tof_data["adc"]      = make_array( data_q );
+            tof_data["tdc"]      = make_array( data_t );
+            tof_data["overflow"] = make_array( data_overflow );
 
-            py::array_t<uint32_t> offsets( m_tof_offsets.size(), m_tof_offsets.data() );
+            auto offsets = make_array( m_tof_offsets );
 
             res["tof"] = py::make_tuple( offsets, tof_data );
             break;
@@ -833,13 +826,12 @@ py::dict RawBinaryParser::arrays() {
             auto& [data_id, data_t, data_q, data_measure] = m_emc_data;
 
             py::dict emc_data;
-            emc_data["id"]  = py::array_t<uint32_t>( data_id.size(), data_id.data() );
-            emc_data["adc"] = py::array_t<uint32_t>( data_q.size(), data_q.data() );
-            emc_data["tdc"] = py::array_t<uint32_t>( data_t.size(), data_t.data() );
-            emc_data["measure"] =
-                py::array_t<uint32_t>( data_measure.size(), data_measure.data() );
+            emc_data["id"]      = make_array( data_id );
+            emc_data["adc"]     = make_array( data_q );
+            emc_data["tdc"]     = make_array( data_t );
+            emc_data["measure"] = make_array( data_measure );
 
-            py::array_t<uint32_t> offsets( m_emc_offsets.size(), m_emc_offsets.data() );
+            auto offsets = make_array( m_emc_offsets );
 
             res["emc"] = py::make_tuple( offsets, emc_data );
             break;
@@ -849,9 +841,9 @@ py::dict RawBinaryParser::arrays() {
             auto& [data_id] = m_muc_data;
 
             py::dict muc_data;
-            muc_data["id"] = py::array_t<uint32_t>( data_id.size(), data_id.data() );
+            muc_data["id"] = make_array( data_id );
 
-            py::array_t<uint32_t> offsets( m_muc_offsets.size(), m_muc_offsets.data() );
+            auto offsets = make_array( m_muc_offsets );
 
             res["muc"] = py::make_tuple( offsets, muc_data );
             break;
@@ -861,34 +853,26 @@ py::dict RawBinaryParser::arrays() {
             auto& [id, data_size, time_window, data_type] = m_trg_data;
 
             py::dict trg_data;
-            trg_data["id"] = py::array_t<uint32_t>( id.size(), id.data() );
-            trg_data["data_size"] =
-                py::array_t<uint32_t>( data_size.size(), data_size.data() );
-            trg_data["time_window"] =
-                py::array_t<uint32_t>( time_window.size(), time_window.data() );
-            trg_data["data_type"] =
-                py::array_t<uint32_t>( data_type.size(), data_type.data() );
+            trg_data["id"]          = make_array( id );
+            trg_data["data_size"]   = make_array( data_size );
+            trg_data["time_window"] = make_array( time_window );
+            trg_data["data_type"]   = make_array( data_type );
 
-            py::array_t<uint32_t> trg_offsets( m_trg_offsets.size(), m_trg_offsets.data() );
-            res["trigGTD"] = py::make_tuple( trg_offsets, trg_data );
+            auto trg_offsets = make_array( m_trg_offsets );
+            res["trigGTD"]   = py::make_tuple( trg_offsets, trg_data );
             break;
         }
 
         case SubDetID::CGEM: {
             py::dict cgem_data;
-            cgem_data["id"] =
-                py::array_t<uint32_t>( m_cgem_data.id.size(), m_cgem_data.id.data() );
-            cgem_data["adc"] =
-                py::array_t<uint32_t>( m_cgem_data.adc.size(), m_cgem_data.adc.data() );
-            cgem_data["tdc"] =
-                py::array_t<uint32_t>( m_cgem_data.tdc.size(), m_cgem_data.tdc.data() );
-            cgem_data["time"] =
-                py::array_t<double>( m_cgem_data.time.size(), m_cgem_data.time.data() );
-            cgem_data["charge"] =
-                py::array_t<double>( m_cgem_data.charge.size(), m_cgem_data.charge.data() );
+            cgem_data["id"]     = make_array( m_cgem_data.id );
+            cgem_data["adc"]    = make_array( m_cgem_data.adc );
+            cgem_data["tdc"]    = make_array( m_cgem_data.tdc );
+            cgem_data["time"]   = make_array( m_cgem_data.time );
+            cgem_data["charge"] = make_array( m_cgem_data.charge );
 
-            py::array_t<uint32_t> cgem_offsets( m_cgem_offsets.size(), m_cgem_offsets.data() );
-            res["cgem"] = py::make_tuple( cgem_offsets, cgem_data );
+            auto cgem_offsets = make_array( m_cgem_offsets );
+            res["cgem"]       = py::make_tuple( cgem_offsets, cgem_data );
             break;
         }
         }
