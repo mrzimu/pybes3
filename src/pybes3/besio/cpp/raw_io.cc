@@ -882,8 +882,5 @@ py::dict RawBinaryParser::arrays() {
 
 py::dict py_read_bes_raw( py::array_t<uint32_t> data, vector<string> fields,
                           map<string, py::array> info_tables ) {
-    if ( fields.size() == 0 )
-        throw runtime_error( "At least one field should be activated" );
-
     return RawBinaryParser( data, fields, info_tables ).arrays();
 }
