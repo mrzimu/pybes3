@@ -84,7 +84,9 @@ class RawBinaryReader:
         if _info_tables is None:
             _info_tables = {}
 
-            cgem_elec_table = dict(np.load(CGEM_ELEC_TABLE))
+            with np.load(CGEM_ELEC_TABLE) as f:
+                cgem_elec_table = dict(f)
+
             for k, v in cgem_elec_table.items():
                 _info_tables[f"cgem_{k}"] = v
 
@@ -153,11 +155,11 @@ class RawBinaryReader:
         entry_stop = min(entry_stop, self.entries)
 
         filter_func = regularize_filter(filter_name)
-        fileds = [field for field in _RAW_FIELDS if filter_func(field)]
+        fields = [field for field in _RAW_FIELDS if filter_func(field)]
 
         batch_data = self._read_event(entry_start, entry_stop)
 
-        org_dict = read_bes_raw(batch_data, fileds, _info_tables)
+        org_dict = read_bes_raw(batch_data, fields, _info_tables)
         return _raw_dict_to_ak(org_dict)
 
     def _read(self) -> int:
@@ -408,28 +410,35 @@ def concatenate(
         if entry_stop >= 0 and n_cum_entries >= entry_stop:
             break
 
-    res = []
-    n_cum_read = 0
-    for reader, entry_start_for_reader, entry_stop_for_reader in readers_with_entry_range:
-        n_read = (
-            entry_stop_for_reader - entry_start_for_reader
-            if entry_stop_for_reader >= 0
-            else reader.entries - entry_start_for_reader
-        )
-
-        if verbose:
-            print(
-                f"Reading file {reader.path}: {n_cum_read} -> {n_cum_read + n_read} entries ...",
+    try:
+        res = []
+        n_cum_read = 0
+        for reader, entry_start_for_reader, entry_stop_for_reader in readers_with_entry_range:
+            n_read = (
+                entry_stop_for_reader - entry_start_for_reader
+                if entry_stop_for_reader >= 0
+                else reader.entries - entry_start_for_reader
             )
 
-        res.append(
-            reader.arrays(
-                entry_start=entry_start_for_reader,
-                entry_stop=entry_stop_for_reader,
-                filter_name=filter_name,
-            )
-        )
+            if verbose:
+                print(
+                    f"Reading file {reader.path}: {n_cum_read} -> {n_cum_read + n_read} entries ...",
+                )
 
-        n_cum_read += n_read
+            res.append(
+                reader.arrays(
+                    entry_start=entry_start_for_reader,
+                    entry_stop=entry_stop_for_reader,
+                    filter_name=filter_name,
+                )
+            )
+
+            n_cum_read += n_read
+    finally:
+        for reader, _, _ in readers_with_entry_range:
+            reader.close()
+
+    if len(res) == 0:
+        return ak.Array([])
 
     return ak.concatenate(res)

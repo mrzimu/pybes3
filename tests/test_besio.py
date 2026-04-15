@@ -193,6 +193,16 @@ def test_RawBinaryParser(test_data_dir):
     arr = raw_reader.arrays(entry_start=10, entry_stop=5)
     assert len(arr) == 0
 
+    raw_reader.close()
+
+
+def test_RawBinaryParser_context(test_data_dir):
+    f_test = test_data_dir / "test_raw_data.raw"
+
+    with p3.open_raw(f_test) as f:
+        arr = f.arrays()
+        assert len(arr) == 10
+
 
 def test_concatenate_raw(test_data_dir):
     f_test = test_data_dir / "test_raw_data.raw"
@@ -217,6 +227,9 @@ def test_concatenate_raw(test_data_dir):
     assert len(arr) == 0
 
     arr = p3.concatenate_raw(files, entry_start=15, entry_stop=15)
+    assert len(arr) == 0
+
+    arr = p3.concatenate_raw(files, entry_start=35)
     assert len(arr) == 0
 
 

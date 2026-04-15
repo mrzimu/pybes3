@@ -1020,8 +1020,8 @@ def parse_cgem_digi_id(
 
     - `layer`: The layer number.
     - `sheet`: The sheet ID.
+    - `strip_type`: The strip type. 0 for X-strip, 1 for V-strip.
     - `strip`: The strip ID.
-    - `is_x_strip`: Whether the strip is an X-strip.
 
     Parameters:
         cgem_digi_id: The CGEM digi ID.

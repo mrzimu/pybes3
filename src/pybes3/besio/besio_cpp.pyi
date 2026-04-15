@@ -35,5 +35,5 @@ def read_data(
 def read_bes_raw(
     data: NDArray[np.uint32],
     fields: list[str],
-    info_tables: dict[NDArray],
+    info_tables: dict[str, NDArray],
 ) -> dict: ...

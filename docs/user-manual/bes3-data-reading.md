@@ -93,7 +93,8 @@ To read a raw data file, use `pybes3.open_raw`:
 
 ```python
 >>> import pybes3 as p3
->>> raw_file = p3.open_raw("/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file001_SFO-1.raw")
+>>> file_path = "/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file001_SFO-1.raw"
+>>> raw_file = p3.open_raw(file_path)
 >>> raw_file
 <RawData filename='run_0087397_All_merge0_file001_SFO-1.raw' Entries=180322 Size='2368 MB'>
 ```
@@ -147,13 +148,30 @@ To read only specific fields:
 
     `evt_header` is always read and cannot be filtered out.
 
+
+Close the file when done:
+
+```python
+>>> raw_file.close()
+```
+
+!!! warning
+    Always close the file after reading to free up system resources.
+
+Open the file using a context manager to automatically close it after reading:
+
+```python
+>>> with p3.open_raw(file_path) as f:
+...     raw_data = f.arrays()
+```
+
 ### Concatenate multiple files
 
 To read multiple files and concatenate them into a single array, use `pybes3.concatenate_raw`:
 
 ```python
 >>> files = [
-        "/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file001_SFO-1.raw",
+        file_path,
         "/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file002_SFO-1.raw",
 >>> ]
 >>> raw_data = p3.concatenate_raw(files)
