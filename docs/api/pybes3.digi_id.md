@@ -82,9 +82,9 @@ These methods parse the given ID and return the corresponding components. They a
 ---
 ::: pybes3.digi_id.cgem_id_to_sheet
 ---
-::: pybes3.digi_id.cgem_id_to_strip
+::: pybes3.digi_id.cgem_id_to_strip_type
 ---
-::: pybes3.digi_id.cgem_id_to_is_x_strip
+::: pybes3.digi_id.cgem_id_to_strip
 ---
 ::: pybes3.digi_id.get_cgem_digi_id
 ---

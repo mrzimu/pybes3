@@ -2,7 +2,7 @@ import awkward as ak
 import pytest
 import uproot
 
-import pybes3
+import pybes3 as p3
 
 
 def test_uproot_branches(test_data_dir):
@@ -18,7 +18,7 @@ def test_mc_full(test_data_dir):
     truth_arr = ak.from_parquet(test_data_dir / "test_full_mc_evt_1.rtraw.parquet")
     arr = f_rtraw["Event"].arrays()
     assert len(arr) == 10
-    assert ak.array_equal(arr, truth_arr)
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
 def test_mc_only_particles(test_data_dir):
@@ -26,7 +26,7 @@ def test_mc_only_particles(test_data_dir):
     truth_arr = ak.from_parquet(test_data_dir / "test_only_mc_particles.rtraw.parquet")
     arr = f_rtraw["Event"].arrays()
     assert len(arr) == 10
-    assert ak.array_equal(arr, truth_arr)
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
 def test_dst(test_data_dir):
@@ -34,7 +34,7 @@ def test_dst(test_data_dir):
     truth_arr = ak.from_parquet(test_data_dir / "test_full_mc_evt_1.dst.parquet")
     arr = f_dst["Event"].arrays()
     assert len(arr) == 10
-    assert ak.array_equal(arr, truth_arr)
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
 def test_rec(test_data_dir):
@@ -42,7 +42,7 @@ def test_rec(test_data_dir):
     truth_arr = ak.from_parquet(test_data_dir / "test_full_mc_evt_1.rec.parquet")
     arr = f_rec["Event"].arrays()
     assert len(arr) == 10
-    assert ak.array_equal(arr, truth_arr)
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
 def test_cgem_rtraw(test_data_dir):
@@ -50,7 +50,7 @@ def test_cgem_rtraw(test_data_dir):
     truth_arr = ak.from_parquet(test_data_dir / "test_cgem.rtraw.parquet")
     arr = f_rtraw["Event"].arrays()
     assert len(arr) == 10
-    assert ak.array_equal(arr, truth_arr)
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
 def test_cgem_dst(test_data_dir):
@@ -58,7 +58,7 @@ def test_cgem_dst(test_data_dir):
     truth_arr = ak.from_parquet(test_data_dir / "test_cgem.dst.parquet")
     arr = f_dst["Event"].arrays()
     assert len(arr) == 10
-    assert ak.array_equal(arr, truth_arr)
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
 def test_cgem_rec(test_data_dir):
@@ -66,7 +66,7 @@ def test_cgem_rec(test_data_dir):
     truth_arr = ak.from_parquet(test_data_dir / "test_cgem.rec.parquet")
     arr = f_dst["Event"].arrays()
     assert len(arr) == 10
-    assert ak.array_equal(arr, truth_arr)
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
 def test_uproot_concatenate(test_data_dir):
@@ -143,7 +143,7 @@ def test_digi_expand_TRawData(test_data_dir):
         assert "TRawData" not in arr_digi[field].fields
 
 
-def test_raw(test_data_dir, subtests):
+def test_raw_content(test_data_dir, subtests):
     f_ref = uproot.open(test_data_dir / "ref_raw_data.root")
 
     test_fields = ["cgem", "mdc", "tof", "emc", "muc", "trigGTD"]
@@ -155,14 +155,69 @@ def test_raw(test_data_dir, subtests):
         cur_ref_arr = ak.zip({k: cur_ref_arr[k] for k in cur_ref_arr.fields})
         ref_arr_dict[field] = cur_ref_arr
 
-    f_raw = pybes3.open_raw(test_data_dir / "test_raw_data.raw")
+    f_raw = p3.open_raw(test_data_dir / "test_raw_data.raw")
     raw_arr = f_raw.arrays()
 
     assert len(raw_arr) == f_raw.entries
 
     for field in test_fields:
         with subtests.test(field=field):
-            assert ak.array_equal(raw_arr[field], ref_arr_dict[field])
+            assert ak.array_equal(raw_arr[field], ref_arr_dict[field], equal_nan=True)
+
+
+def test_RawBinaryParser(test_data_dir):
+    f_test = test_data_dir / "test_raw_data.raw"
+    raw_reader = p3.open_raw(f_test)
+
+    arr = raw_reader.arrays()
+    assert len(arr) == 10
+
+    arr = raw_reader.arrays(entry_start=4)
+    assert len(arr) == 6
+
+    arr = raw_reader.arrays(entry_stop=4)
+    assert len(arr) == 4
+
+    arr = raw_reader.arrays(entry_start=5, entry_stop=10)
+    assert len(arr) == 5
+
+    arr = raw_reader.arrays(entry_start=9)
+    assert len(arr) == 1
+
+    arr = raw_reader.arrays(entry_start=0, entry_stop=0)
+    assert len(arr) == 0
+
+    arr = raw_reader.arrays(entry_start=10)
+    assert len(arr) == 0
+
+    arr = raw_reader.arrays(entry_start=10, entry_stop=5)
+    assert len(arr) == 0
+
+
+def test_concatenate_raw(test_data_dir):
+    f_test = test_data_dir / "test_raw_data.raw"
+    files = [f_test, f_test, f_test]
+
+    arr = p3.concatenate_raw(files)
+    assert len(arr) == 30
+
+    arr = p3.concatenate_raw(files, entry_start=5, entry_stop=23)
+    assert len(arr) == 18
+
+    arr = p3.concatenate_raw(files, entry_start=25)
+    assert len(arr) == 5
+
+    arr = p3.concatenate_raw(files, entry_stop=7)
+    assert len(arr) == 7
+
+    arr = p3.concatenate_raw(files, entry_start=10, entry_stop=21)
+    assert len(arr) == 11
+
+    arr = p3.concatenate_raw(files, entry_start=0, entry_stop=0)
+    assert len(arr) == 0
+
+    arr = p3.concatenate_raw(files, entry_start=15, entry_stop=15)
+    assert len(arr) == 0
 
 
 if __name__ == "__main__":

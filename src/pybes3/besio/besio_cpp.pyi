@@ -34,6 +34,6 @@ def read_data(
 ) -> Any: ...
 def read_bes_raw(
     data: NDArray[np.uint32],
-    sub_detectors: list[str],
+    fields: list[str],
     info_tables: dict[NDArray],
 ) -> dict: ...

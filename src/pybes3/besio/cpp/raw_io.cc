@@ -103,9 +103,9 @@ void RawBinaryParser::read_event() {
     m_evt_header_data.evt_tag3->push_back( read() );
     m_evt_header_data.evt_tag4->push_back( read() );
 
-    // - read sub-detector
+    // - read field
     auto n_left = total_size - header_size;
-    while ( n_left > 0 ) { n_left -= read_sub_detector(); }
+    while ( n_left > 0 ) { n_left -= read_field(); }
     if ( n_left != 0 ) throw runtime_error( "Invalid event size" );
 
     read_data_from_buffers();
@@ -115,48 +115,47 @@ void RawBinaryParser::read_event() {
 }
 
 void RawBinaryParser::read_data_from_buffers() {
-    if ( m_activated_sub_det_ids.find( SubDetID::MDC ) != m_activated_sub_det_ids.end() )
+    if ( m_active_field_ids.find( FieldID::MDC ) != m_active_field_ids.end() )
         read_mdc_buffer();
-    if ( m_activated_sub_det_ids.find( SubDetID::TOF ) != m_activated_sub_det_ids.end() )
+    if ( m_active_field_ids.find( FieldID::TOF ) != m_active_field_ids.end() )
         read_tof_buffer();
-    if ( m_activated_sub_det_ids.find( SubDetID::EMC ) != m_activated_sub_det_ids.end() )
+    if ( m_active_field_ids.find( FieldID::EMC ) != m_active_field_ids.end() )
         read_emc_buffer();
-    if ( m_activated_sub_det_ids.find( SubDetID::MUC ) != m_activated_sub_det_ids.end() )
+    if ( m_active_field_ids.find( FieldID::MUC ) != m_active_field_ids.end() )
         read_muc_buffer();
-    if ( m_activated_sub_det_ids.find( SubDetID::TrigGTD ) != m_activated_sub_det_ids.end() )
+    if ( m_active_field_ids.find( FieldID::TrigGTD ) != m_active_field_ids.end() )
         read_trg_buffer();
-    if ( m_activated_sub_det_ids.find( SubDetID::CGEM ) != m_activated_sub_det_ids.end() )
+    if ( m_active_field_ids.find( FieldID::CGEM ) != m_active_field_ids.end() )
         read_cgem_buffer();
 }
 
 void RawBinaryParser::fill_offsets() {
-    for ( auto sub_det_id : m_activated_sub_det_ids )
+    for ( auto field_id : m_active_field_ids )
     {
-        switch ( sub_det_id )
+        switch ( field_id )
         {
-        case SubDetID::MDC: m_mdc_offsets->push_back( m_mdc_data.size() ); break;
-        case SubDetID::TOF: m_tof_offsets->push_back( m_tof_data.size() ); break;
-        case SubDetID::EMC: m_emc_offsets->push_back( m_emc_data.size() ); break;
-        case SubDetID::MUC: m_muc_offsets->push_back( m_muc_data.size() ); break;
-        case SubDetID::TrigGTD: m_trg_offsets->push_back( m_trg_data.size() ); break;
-        case SubDetID::CGEM: m_cgem_offsets->push_back( m_cgem_data.size() ); break;
-        case SubDetID::MRPC: break; // filled in TOF
-        default: throw runtime_error( "Invalid sub-detector id: " + to_string( sub_det_id ) );
+        case FieldID::MDC: m_mdc_offsets->push_back( m_mdc_data.size() ); break;
+        case FieldID::TOF: m_tof_offsets->push_back( m_tof_data.size() ); break;
+        case FieldID::EMC: m_emc_offsets->push_back( m_emc_data.size() ); break;
+        case FieldID::MUC: m_muc_offsets->push_back( m_muc_data.size() ); break;
+        case FieldID::TrigGTD: m_trg_offsets->push_back( m_trg_data.size() ); break;
+        case FieldID::CGEM: m_cgem_offsets->push_back( m_cgem_data.size() ); break;
+        case FieldID::MRPC: break; // filled in TOF
+        default: throw runtime_error( "Invalid field id: " + to_string( field_id ) );
         }
     }
 }
 
-uint32_t RawBinaryParser::read_sub_detector() {
+uint32_t RawBinaryParser::read_field() {
     auto flag = read();
-    if ( flag != RawFlag::SUB_DETECTOR )
-    { throw runtime_error( "Invalid sub-detector flag" ); }
+    if ( flag != RawFlag::SUB_DETECTOR ) { throw runtime_error( "Invalid field flag" ); }
 
     auto total_size        = read();
     auto header_size       = read();
     auto format_version    = read();
     auto source_identifier = read();
 
-    auto sub_det_id = ( source_identifier >> 16 ) & 0xFFFF;
+    auto field_id = ( source_identifier >> 16 ) & 0xFFFF;
 
     auto n_status = read();
     skip( n_status );
@@ -164,8 +163,8 @@ uint32_t RawBinaryParser::read_sub_detector() {
     auto n_spec_units = read();
     skip( n_spec_units );
 
-    // get data according by sub_det_id, if not found, skip this subdetector
-    if ( m_activated_sub_det_ids.find( sub_det_id ) == m_activated_sub_det_ids.end() )
+    // get data according to field_id; if not found, skip this field
+    if ( m_active_field_ids.find( field_id ) == m_active_field_ids.end() )
     {
         skip( total_size - header_size );
         return total_size;
@@ -174,10 +173,10 @@ uint32_t RawBinaryParser::read_sub_detector() {
     auto n_left = total_size - header_size;
     while ( n_left > 0 )
     {
-        auto n_read = read_ROS( sub_det_id );
+        auto n_read = read_ROS( field_id );
         n_left -= n_read;
 #ifdef PRINT_DEBUG_INFO
-        cout << "read_sub_detector(src: " << sub_det_id << ") n_left: " << n_left
+        cout << "read_field(src: " << field_id << ") n_left: " << n_left
              << ", n_read: " << n_read << endl;
 #endif
     }
@@ -185,7 +184,7 @@ uint32_t RawBinaryParser::read_sub_detector() {
     return total_size;
 }
 
-uint32_t RawBinaryParser::read_ROS( const uint32_t sub_det_id ) {
+uint32_t RawBinaryParser::read_ROS( const uint32_t field_id ) {
     auto flag = read();
     if ( flag != RawFlag::ROS ) { throw runtime_error( "Invalid ROS flag" ); }
 
@@ -208,7 +207,7 @@ uint32_t RawBinaryParser::read_ROS( const uint32_t sub_det_id ) {
     auto n_left = total_size - header_size;
     while ( n_left > 0 )
     {
-        auto n_read = read_ROB( sub_det_id );
+        auto n_read = read_ROB( field_id );
         n_left -= n_read;
 #ifdef PRINT_DEBUG_INFO
         cout << "read_ROS(src: " << src_id << ") n_left: " << n_left << ", n_read: " << n_read
@@ -219,7 +218,7 @@ uint32_t RawBinaryParser::read_ROS( const uint32_t sub_det_id ) {
     return total_size;
 }
 
-uint32_t RawBinaryParser::read_ROB( const uint32_t sub_det_id ) {
+uint32_t RawBinaryParser::read_ROB( const uint32_t field_id ) {
     // ROB header
     auto flag = read();
     if ( flag != RawFlag::ROB ) { throw runtime_error( "Invalid ROB flag" ); }
@@ -266,13 +265,13 @@ uint32_t RawBinaryParser::read_ROB( const uint32_t sub_det_id ) {
     }
 
     vector<uint32_t>* target_buffer{ nullptr };
-    if ( sub_det_id == SubDetID::MDC ) target_buffer = &m_buffers.mdc;
-    else if ( sub_det_id == SubDetID::TOF ) target_buffer = &m_buffers.tof;
-    else if ( sub_det_id == SubDetID::EMC ) target_buffer = &m_buffers.emc;
-    else if ( sub_det_id == SubDetID::MUC ) target_buffer = &m_buffers.muc;
-    else if ( sub_det_id == SubDetID::CGEM ) target_buffer = &m_buffers.cgem;
-    else if ( sub_det_id == SubDetID::MRPC ) target_buffer = &m_buffers.mrpc;
-    else if ( sub_det_id == SubDetID::TrigGTD )
+    if ( field_id == FieldID::MDC ) target_buffer = &m_buffers.mdc;
+    else if ( field_id == FieldID::TOF ) target_buffer = &m_buffers.tof;
+    else if ( field_id == FieldID::EMC ) target_buffer = &m_buffers.emc;
+    else if ( field_id == FieldID::MUC ) target_buffer = &m_buffers.muc;
+    else if ( field_id == FieldID::CGEM ) target_buffer = &m_buffers.cgem;
+    else if ( field_id == FieldID::MRPC ) target_buffer = &m_buffers.mrpc;
+    else if ( field_id == FieldID::TrigGTD )
         m_buffers.trg.emplace_back( data_begin, data_end );
 
     if ( target_buffer ) target_buffer->insert( target_buffer->end(), data_begin, data_end );
@@ -787,12 +786,12 @@ py::dict RawBinaryParser::arrays() {
 
     res["evt_header"] = evt_header;
 
-    // sub-detectors
-    for ( auto& sub_det_id : m_activated_sub_det_ids )
+    // fields
+    for ( auto& field_id : m_active_field_ids )
     {
-        switch ( sub_det_id )
+        switch ( field_id )
         {
-        case SubDetID::MDC: {
+        case FieldID::MDC: {
             auto& [data_id, data_t, data_q, data_overflow] = m_mdc_data;
 
             py::dict mdc_data;
@@ -807,7 +806,7 @@ py::dict RawBinaryParser::arrays() {
             break;
         }
 
-        case SubDetID::TOF: {
+        case FieldID::TOF: {
             auto& [data_id, data_t, data_q, data_overflow] = m_tof_data;
 
             py::dict tof_data;
@@ -822,7 +821,7 @@ py::dict RawBinaryParser::arrays() {
             break;
         }
 
-        case SubDetID::EMC: {
+        case FieldID::EMC: {
             auto& [data_id, data_t, data_q, data_measure] = m_emc_data;
 
             py::dict emc_data;
@@ -837,7 +836,7 @@ py::dict RawBinaryParser::arrays() {
             break;
         }
 
-        case SubDetID::MUC: {
+        case FieldID::MUC: {
             auto& [data_id] = m_muc_data;
 
             py::dict muc_data;
@@ -849,7 +848,7 @@ py::dict RawBinaryParser::arrays() {
             break;
         }
 
-        case SubDetID::TrigGTD: {
+        case FieldID::TrigGTD: {
             auto& [id, data_size, time_window, data_type] = m_trg_data;
 
             py::dict trg_data;
@@ -863,7 +862,7 @@ py::dict RawBinaryParser::arrays() {
             break;
         }
 
-        case SubDetID::CGEM: {
+        case FieldID::CGEM: {
             py::dict cgem_data;
             cgem_data["id"]     = make_array( m_cgem_data.id );
             cgem_data["adc"]    = make_array( m_cgem_data.adc );
@@ -881,10 +880,10 @@ py::dict RawBinaryParser::arrays() {
     return res;
 }
 
-py::dict py_read_bes_raw( py::array_t<uint32_t> data, vector<string> sub_detectors,
+py::dict py_read_bes_raw( py::array_t<uint32_t> data, vector<string> fields,
                           map<string, py::array> info_tables ) {
-    if ( sub_detectors.size() == 0 )
-        throw runtime_error( "At least one sub-detector should be activated" );
+    if ( fields.size() == 0 )
+        throw runtime_error( "At least one field should be activated" );
 
-    return RawBinaryParser( data, sub_detectors, info_tables ).arrays();
+    return RawBinaryParser( data, fields, info_tables ).arrays();
 }

@@ -7,7 +7,7 @@ reader = RawBinaryReader(
 )
 
 reader._reset_cursor()
-block_data = reader._read_batch(10)[0]
+block_data = reader._read_block(10)
 
 fin = open(
     "/besfs8/offline/data/merge/raw/round19/260409/run_0091668_All_merge0_file002_SFO-1.raw",
@@ -15,7 +15,7 @@ fin = open(
 )
 fout = open("test_raw_data.raw", "wb")
 
-file_header = fin.read(reader.data_start)
+file_header = fin.read(reader._data_start)
 fout.write(file_header)
 
 fout.write(block_data.tobytes())

@@ -33,7 +33,7 @@ class RawBinaryParser {
         ROD          = 0xEE1234EE,
     };
 
-    enum SubDetID : const uint32_t {
+    enum FieldID : const uint32_t {
         MDC     = 0xA1,
         TOF     = 0xA2,
         EMC     = 0xA3,
@@ -43,14 +43,14 @@ class RawBinaryParser {
         CGEM    = 0xA8,
     };
 
-    const set<uint32_t> sub_det_ids = {
-        SubDetID::MDC,     SubDetID::TOF,  SubDetID::EMC,  SubDetID::MUC,
-        SubDetID::TrigGTD, SubDetID::MRPC, SubDetID::CGEM,
+    const set<uint32_t> field_ids = {
+        FieldID::MDC,     FieldID::TOF,  FieldID::EMC,  FieldID::MUC,
+        FieldID::TrigGTD, FieldID::MRPC, FieldID::CGEM,
     };
 
-    map<string, const uint32_t> sub_det_names_to_ids = {
-        { "mdc", SubDetID::MDC }, { "tof", SubDetID::TOF },         { "emc", SubDetID::EMC },
-        { "muc", SubDetID::MUC }, { "trigGTD", SubDetID::TrigGTD }, { "cgem", SubDetID::CGEM },
+    map<string, const uint32_t> field_name_to_id = {
+        { "cgem", FieldID::CGEM }, { "mdc", FieldID::MDC }, { "tof", FieldID::TOF },
+        { "emc", FieldID::EMC },   { "muc", FieldID::MUC }, { "trigGTD", FieldID::TrigGTD },
     };
 
     // (21 x 8 + 4) x 64 for 21 fully used gemrocs, 8 tigers per gemroc, 64 channels per tiger,
@@ -58,7 +58,7 @@ class RawBinaryParser {
     static constexpr size_t CGEM_N_ELEC_STRIPS = 11008;
 
   public:
-    RawBinaryParser( py::array_t<uint32_t> data, vector<string> sub_detectors,
+    RawBinaryParser( py::array_t<uint32_t> data, vector<string> fields,
                      map<string, py::array> info_tables )
         : m_data_start( static_cast<uint32_t*>( data.request().ptr ) )
         , m_data_end( static_cast<uint32_t*>( data.request().ptr ) + data.size() )
@@ -131,17 +131,16 @@ class RawBinaryParser {
         m_re2te.muc  = static_cast<uint32_t*>( np_muc_reid_to_teid.request().ptr );
         m_muc_strsqc = static_cast<uint32_t*>( np_muc_strsqc.request().ptr );
 
-        /* set target sub_detectors */
-        for ( auto& sub_det_name : sub_detectors )
+        /* set target fields */
+        for ( auto& field_name : fields )
         {
-            if ( sub_det_names_to_ids.find( sub_det_name ) == sub_det_names_to_ids.end() )
-                throw runtime_error( "Invalid sub-detector name: " + sub_det_name );
+            if ( field_name_to_id.find( field_name ) == field_name_to_id.end() )
+                throw runtime_error( "Invalid field name: " + field_name );
 
-            auto sub_det_id = sub_det_names_to_ids[sub_det_name];
-            m_activated_sub_det_ids.insert( sub_det_id );
+            auto field_id = field_name_to_id[field_name];
+            m_active_field_ids.insert( field_id );
 
-            if ( sub_det_id == SubDetID::TOF )
-                m_activated_sub_det_ids.insert( SubDetID::MRPC );
+            if ( field_id == FieldID::TOF ) m_active_field_ids.insert( FieldID::MRPC );
         }
     }
 
@@ -163,11 +162,11 @@ class RawBinaryParser {
     void read_event();
     void fill_offsets();
 
-    uint32_t read_sub_detector();
-    vector<uint32_t>& get_sub_detector_data( const uint32_t sub_det_id );
+    uint32_t read_field();
+    vector<uint32_t>& get_field_data( const uint32_t field_id );
 
-    uint32_t read_ROS( const uint32_t sub_det_id );
-    uint32_t read_ROB( const uint32_t sub_det_id );
+    uint32_t read_ROS( const uint32_t field_id );
+    uint32_t read_ROB( const uint32_t field_id );
 
     void read_data_from_buffers();
     void read_mdc_buffer();
@@ -183,7 +182,7 @@ class RawBinaryParser {
     uint32_t* m_cursor;
 
     // parsed data
-    set<uint32_t> m_activated_sub_det_ids;
+    set<uint32_t> m_active_field_ids;
 
     // reid to teid tables
     struct {
@@ -327,5 +326,5 @@ class RawBinaryParser {
     int64_t m_current_entry = -1;
 };
 
-py::dict py_read_bes_raw( py::array_t<uint32_t> data, vector<string> sub_detectors,
+py::dict py_read_bes_raw( py::array_t<uint32_t> data, vector<string> fields,
                           map<string, py::array> into_tables );
