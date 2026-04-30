@@ -169,7 +169,7 @@ def mdc_id_to_gid(mdc_id: IntLike) -> IntLike:
     return det.get_mdc_gid(mdc_id_to_layer(mdc_id), mdc_id_to_wire(mdc_id))
 
 
-def parse_mdc_id(mdc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
+def parse_mdc_id(mdc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     """
     Parse MDC digi ID.
 
@@ -201,8 +201,8 @@ def parse_mdc_id(mdc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str
 
 
 def parse_mdc_digi(
-    mdc_digi: IntLike,
-) -> ak.Array | dict[str, np.ndarray] | dict[str, int]:
+    mdc_digi: ak.Array | dict[str, np.ndarray | int],
+) -> ak.Array | dict[str, np.ndarray | int]:
     """
     Parse MDC raw digi array. The raw digi array should contain [`m_intId`,
     `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_overflow`] fields.
@@ -394,7 +394,7 @@ def _tof_id_to_phi_or_strip_2(tof_id: IntLike, part: IntLike) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator phi or MRPC strip number.
 
-    This function is used by `tof_id_to_phiOrStrip` when part number is provided.
+    This function is used by `tof_id_to_phi_or_strip` when part number is provided.
 
     Parameters:
         tof_id: The TOF digi ID array or value.
@@ -485,7 +485,7 @@ def tof_id_to_gid(tof_id: IntLike) -> IntLike:
     )
 
 
-def parse_tof_id(tof_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
+def parse_tof_id(tof_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     """
     Parse TOF digi ID.
 
@@ -622,7 +622,7 @@ def emc_id_to_gid(emc_id: IntLike) -> IntLike:
     )
 
 
-def parse_emc_id(emc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, int]:
+def parse_emc_id(emc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     """
     Parse EMC digi ID.
 
@@ -673,8 +673,6 @@ def parse_emc_digi(
     - `track_index`: Track index.
     - `measure`: Measure value.
     - `id`: Raw digi ID.
-
-    If `library` is `ak`, return `ak.Array`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Parameters:
         emc_digi: The EMC raw digi array.
@@ -832,7 +830,7 @@ def muc_id_to_strip(muc_id: IntLike) -> IntLike:
     return muc_id_to_channel(muc_id)
 
 
-def parse_muc_id(muc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, int]:
+def parse_muc_id(muc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     """
     Parse MUC digi ID.
 
@@ -989,7 +987,7 @@ def cgem_id_to_gid(cgem_id: IntLike) -> IntLike:
     )
 
 
-def parse_cgem_id(cgem_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
+def parse_cgem_id(cgem_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     """
     Parse CGEM digi ID.
 
