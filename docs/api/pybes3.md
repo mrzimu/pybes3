@@ -118,22 +118,6 @@
 ::: pybes3.tof_gid_to_phi_or_strip
 ---
 
-## digi_id
-::: pybes3.parse_mdc_digi
----
-::: pybes3.parse_emc_digi
----
-::: pybes3.parse_cgem_digi_id
----
-::: pybes3.parse_emc_digi_id
----
-::: pybes3.parse_mdc_digi_id
----
-::: pybes3.parse_muc_digi_id
----
-::: pybes3.parse_tof_digi_id
----
-
 ## tracks
 ::: pybes3.HelixObject
 ---

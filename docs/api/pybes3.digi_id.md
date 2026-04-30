@@ -1,5 +1,8 @@
 # pybes3.digi_id
 
+!!! warning
+    The `pybes3.digi_id` module is deprecated and will be removed in a future release. Use the `pybes3.identifier` module instead.
+
 ## Parsing methods
 
 These methods parse the given ID and return the corresponding components. They are useful for retrieving the components of an ID when you only have the ID itself.

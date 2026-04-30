@@ -7,7 +7,7 @@ import numba as nb
 import numpy as np
 
 from pybes3._utils import _make_lazy
-from pybes3.typing import ArrayLike
+from pybes3.typing import ArrayLike, IntLike
 
 N_LAYER = 3
 N_STRIPS = 9897
@@ -101,7 +101,9 @@ def get_cgem_gid(
 
 
 @nb.vectorize(cache=True)
-def get_cgem_gid(layer, sheet, strip_type, strip):
+def get_cgem_gid(
+    layer: IntLike, sheet: IntLike, strip_type: IntLike, strip: IntLike
+) -> IntLike:
     """
     Get CGEM gid of given layer, sheet, strip_type and strip.
 
@@ -128,7 +130,7 @@ def cgem_gid_to_layer(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def cgem_gid_to_layer(gid):
+def cgem_gid_to_layer(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to layer.
 
@@ -148,7 +150,7 @@ def cgem_gid_to_sheet(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def cgem_gid_to_sheet(gid):
+def cgem_gid_to_sheet(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to sheet.
 
@@ -168,7 +170,7 @@ def cgem_gid_to_strip_type(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def cgem_gid_to_strip_type(gid):
+def cgem_gid_to_strip_type(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to strip type.
 
@@ -188,7 +190,7 @@ def cgem_gid_to_strip(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def cgem_gid_to_strip(gid):
+def cgem_gid_to_strip(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to strip number.
 
@@ -207,7 +209,7 @@ def cgem_gid_to_is_xstrip(gid: ArrayLike) -> ArrayLike: ...
 def cgem_gid_to_is_xstrip(gid: np.integer) -> np.bool_: ...
 
 
-def cgem_gid_to_is_xstrip(gid) -> np.bool_:
+def cgem_gid_to_is_xstrip(gid: IntLike) -> IntLike:
     """
     Check whether a CGEM gid corresponds to an x-strip.
 
@@ -226,7 +228,7 @@ def cgem_gid_to_is_vstrip(gid: ArrayLike) -> ArrayLike: ...
 def cgem_gid_to_is_vstrip(gid: np.integer) -> np.bool_: ...
 
 
-def cgem_gid_to_is_vstrip(gid) -> np.bool_:
+def cgem_gid_to_is_vstrip(gid: IntLike) -> IntLike:
     """
     Check whether a CGEM gid corresponds to a v-strip.
 
@@ -239,7 +241,7 @@ def cgem_gid_to_is_vstrip(gid) -> np.bool_:
     return cgem_gid_to_strip_type(gid) == V_STRIP_TYPE
 
 
-def parse_cgem_gid(gid) -> ak.Array | dict[str, Any]:
+def parse_cgem_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
     """
     Parse CGEM gid into layer, sheet, strip type and strip number.
 

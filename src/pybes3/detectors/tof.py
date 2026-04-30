@@ -7,7 +7,7 @@ import numba as nb
 import numpy as np
 
 from pybes3._utils import _make_lazy
-from pybes3.typing import ArrayLike
+from pybes3.typing import ArrayLike, IntLike
 
 N_PARTS = 5
 N_LAYER_OR_MODULE = np.array([1, 2, 1, 36, 36])
@@ -73,7 +73,7 @@ def get_tof_gid(
 
 
 @nb.vectorize(cache=True)
-def get_tof_gid(part, layer_or_module, phi_or_strip):
+def get_tof_gid(part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike) -> IntLike:
     """
     Get TOF gid of given part, layer_or_module and phi_or_strip.
 
@@ -98,7 +98,7 @@ def tof_gid_to_part(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def tof_gid_to_part(gid):
+def tof_gid_to_part(gid: IntLike) -> IntLike:
     """Get TOF part from gid."""
     return _part[gid]
 
@@ -110,7 +110,7 @@ def tof_gid_to_layer_or_module(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def tof_gid_to_layer_or_module(gid):
+def tof_gid_to_layer_or_module(gid: IntLike) -> IntLike:
     """Get TOF layer_or_module from gid."""
     return _layer_or_module[gid]
 
@@ -122,12 +122,12 @@ def tof_gid_to_phi_or_strip(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def tof_gid_to_phi_or_strip(gid):
+def tof_gid_to_phi_or_strip(gid: IntLike) -> IntLike:
     """Get TOF phi_or_strip from gid."""
     return _phi_or_strip[gid]
 
 
-def parse_tof_gid(gid) -> ak.Array | dict[str, Any]:
+def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
     """
     Parse TOF gid into part, layer_or_module and phi_or_strip.
 

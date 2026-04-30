@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, Literal, overload
+from typing import Literal, overload
 
 import awkward as ak
 import numba as nb
 import numpy as np
 
 import pybes3.detectors as det
-from pybes3.typing import ArrayLike, IntLike
+from pybes3.typing import ArrayLike, BoolLike, IntLike
 
 DIGI_MDC_FLAG = np.uint32(0x10)
 DIGI_TOF_FLAG = np.uint32(0x20)
@@ -80,101 +80,99 @@ DIGI_CGEM_XSTRIP = np.uint32(0)
 #                                     MDC                                     #
 ###############################################################################
 @overload
-def check_mdc_id(mdc_digi_id: ArrayLike) -> ArrayLike: ...
+def check_mdc_id(mdc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def check_mdc_id(mdc_digi_id: np.integer) -> bool: ...
+def check_mdc_id(mdc_id: np.integer) -> bool: ...
 
 
 @nb.vectorize(cache=True)
-def check_mdc_id(mdc_digi_id):
+def check_mdc_id(mdc_id: IntLike) -> BoolLike:
     """
     Check if the MDC digi ID is valid.
 
     Parameters:
-        mdc_digi_id: The MDC digi ID array or value.
+        mdc_id: The MDC digi ID array or value.
 
     Returns:
         Whether the digi ID is valid.
     """
-    return (mdc_digi_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_MDC_FLAG
+    return (mdc_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_MDC_FLAG
 
 
 @overload
-def mdc_id_to_wire(mdc_digi_id: ArrayLike) -> ArrayLike: ...
+def mdc_id_to_wire(mdc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def mdc_id_to_wire(mdc_digi_id: np.integer) -> np.uint16: ...
+def mdc_id_to_wire(mdc_id: np.integer) -> np.uint16: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_id_to_wire(mdc_digi_id):
+def mdc_id_to_wire(mdc_id: IntLike) -> IntLike:
     """
     Convert MDC digi ID to wire number.
 
     Parameters:
-        mdc_digi_id: MDC digi ID array or value.
+        mdc_id: MDC digi ID array or value.
 
     Returns:
         The wire number.
     """
-    return np.uint16((mdc_digi_id & DIGI_MDC_WIRE_MASK) >> DIGI_MDC_WIRE_OFFSET)
+    return np.uint16((mdc_id & DIGI_MDC_WIRE_MASK) >> DIGI_MDC_WIRE_OFFSET)
 
 
 @overload
-def mdc_id_to_layer(mdc_digi_id: ArrayLike) -> ArrayLike: ...
+def mdc_id_to_layer(mdc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def mdc_id_to_layer(mdc_digi_id: np.integer) -> np.uint8: ...
+def mdc_id_to_layer(mdc_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_id_to_layer(mdc_digi_id):
+def mdc_id_to_layer(mdc_id: IntLike) -> IntLike:
     """
     Convert the MDC digi ID to the layer number.
 
     Parameters:
-        mdc_digi_id: The MDC digi ID array or value.
+        mdc_id: The MDC digi ID array or value.
 
     Returns:
         The layer number.
     """
-    return np.uint8((mdc_digi_id & DIGI_MDC_LAYER_MASK) >> DIGI_MDC_LAYER_OFFSET)
+    return np.uint8((mdc_id & DIGI_MDC_LAYER_MASK) >> DIGI_MDC_LAYER_OFFSET)
 
 
 @overload
-def mdc_id_to_is_stereo(mdc_digi_id: ArrayLike) -> ArrayLike: ...
+def mdc_id_to_is_stereo(mdc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def mdc_id_to_is_stereo(mdc_digi_id: np.integer) -> bool: ...
+def mdc_id_to_is_stereo(mdc_id: np.integer) -> bool: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_id_to_is_stereo(mdc_digi_id):
+def mdc_id_to_is_stereo(mdc_id: IntLike) -> BoolLike:
     """
     Convert the MDC digi ID to whether it is a stereo wire.
 
     Parameters:
-        mdc_digi_id: The MDC digi ID array or value.
+        mdc_id: The MDC digi ID array or value.
 
     Returns:
         Whether the wire is a stereo wire.
     """
     return (
-        mdc_digi_id & DIGI_MDC_WIRETYPE_MASK
+        mdc_id & DIGI_MDC_WIRETYPE_MASK
     ) >> DIGI_MDC_WIRETYPE_OFFSET == DIGI_MDC_STEREO_WIRE
 
 
 @overload
-def get_mdc_digi_id(wire: ArrayLike, layer: IntLike, wire_type: IntLike) -> ArrayLike: ...
+def get_mdc_id(wire: ArrayLike, layer: IntLike, wire_type: IntLike) -> ArrayLike: ...
 @overload
-def get_mdc_digi_id(wire: IntLike, layer: ArrayLike, wire_type: IntLike) -> ArrayLike: ...
+def get_mdc_id(wire: IntLike, layer: ArrayLike, wire_type: IntLike) -> ArrayLike: ...
 @overload
-def get_mdc_digi_id(wire: IntLike, layer: IntLike, wire_type: ArrayLike) -> ArrayLike: ...
+def get_mdc_id(wire: IntLike, layer: IntLike, wire_type: ArrayLike) -> ArrayLike: ...
 @overload
-def get_mdc_digi_id(
-    wire: np.integer, layer: np.integer, wire_type: np.integer
-) -> np.uint32: ...
+def get_mdc_id(wire: np.integer, layer: np.integer, wire_type: np.integer) -> np.uint32: ...
 
 
 @nb.vectorize(cache=True)
-def get_mdc_digi_id(wire, layer, wire_type):
+def get_mdc_id(wire: IntLike, layer: IntLike, wire_type: IntLike) -> IntLike:
     """
     Generate MDC digi ID based on the wire number, layer number, and wire type.
 
@@ -195,67 +193,73 @@ def get_mdc_digi_id(wire, layer, wire_type):
 
 
 @overload
-def mdc_id_to_gid(mdc_digi_id: ArrayLike) -> ArrayLike: ...
+def mdc_id_to_gid(mdc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def mdc_id_to_gid(mdc_digi_id: np.integer) -> np.intp: ...
+def mdc_id_to_gid(mdc_id: np.integer) -> np.intp: ...
 
 
-def mdc_id_to_gid(mdc_digi_id):
+def mdc_id_to_gid(mdc_id: IntLike) -> IntLike:
     """
     Convert MDC digi ID to global wire ID (gid).
 
     Parameters:
-        mdc_digi_id: The MDC digi ID array or value.
+        mdc_id: The MDC digi ID array or value.
 
     Returns:
         The global wire ID.
     """
-    return det.get_mdc_gid(mdc_id_to_layer(mdc_digi_id), mdc_id_to_wire(mdc_digi_id))
+    return det.get_mdc_gid(mdc_id_to_layer(mdc_id), mdc_id_to_wire(mdc_id))
 
 
-def parse_mdc_digi_id(
-    mdc_digi_id,
-    with_pos: bool = False,
-) -> ak.Array | dict[str, Any]:
+def parse_mdc_id(
+    mdc_id: IntLike,
+    flat: bool = False,
+    library: Literal["ak", "np"] = "ak",
+) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
     """
     Parse MDC digi ID.
 
-    When `mdc_digi_id` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
+    If `library` is `ak`, return `ak.Array`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
-    Keys of the output:
+    Available keys of the output:
 
     - `gid`: Global ID of the wire.
-    - `wire`: Local wire number.
     - `layer`: Layer number.
-    - `stereo`: Stereo type. 0 for axial, -1 for `phi_west < phi_east`, 1 for `phi_west > phi_east`.
+    - `wire`: Local wire number.
     - `is_stereo`: Whether the wire is a stereo wire.
-    - `superlayer`: Superlayer number.
-
-    Optional keys of the output when `with_pos` is `True`:
-
-    - `mid_x`: x position of the wire at `z=0`.
-    - `mid_y`: y position of the wire at `z=0`.
-    - `west_x`: x position of the west end of the wire.
-    - `west_y`: y position of the west end of the wire.
-    - `west_z`: z position of the west end of the wire.
-    - `east_x`: x position of the east end of the wire.
-    - `east_y`: y position of the east end of the wire.
-    - `east_z`: z position of the east end of the wire.
 
     Parameters:
-        mdc_digi_id: The MDC digi ID.
-        with_pos: Whether to include the position information.
+        mdc_id: The MDC digi ID.
+        flat: Whether to flatten the output.
+        library: The library to use as output.
 
     Returns:
-        The parsed result.
+        The parsed MDC digi ID.
     """
-    wire = mdc_id_to_wire(mdc_digi_id)
-    layer = mdc_id_to_layer(mdc_digi_id)
-    gid = det.get_mdc_gid(layer, wire)
-    return det.parse_mdc_gid(gid, with_pos)
+    if library not in ["ak", "np"]:
+        raise ValueError(f"Unsupported library: {library}")
+
+    if flat and isinstance(mdc_id, ak.Array):
+        mdc_id = ak.flatten(mdc_id)
+
+    res = {
+        "gid": mdc_id_to_gid(mdc_id),
+        "layer": mdc_id_to_layer(mdc_id),
+        "wire": mdc_id_to_wire(mdc_id),
+        "is_stereo": mdc_id_to_is_stereo(mdc_id),
+    }
+
+    if library == "ak":
+        return ak.zip(res)
+    else:
+        return res
 
 
-def parse_mdc_digi(mdc_digi: ak.Record, with_pos: bool = False) -> ak.Record:
+def parse_mdc_digi(
+    mdc_digi: ak.Array,
+    flat: bool = False,
+    library: Literal["ak", "np"] = "ak",
+) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
     """
     Parse MDC raw digi array. The raw digi array should contain [`m_intId`,
     `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_overflow`] fields.
@@ -265,137 +269,134 @@ def parse_mdc_digi(mdc_digi: ak.Record, with_pos: bool = False) -> ak.Record:
     - `gid`: Global ID of the wire.
     - `wire`: Local wire number.
     - `layer`: Layer number.
-    - `stereo`: Stereo type. 0 for axial, -1 for `phi_west < phi_east`, 1 for `phi_west > phi_east`.
     - `is_stereo`: Whether the wire is a stereo wire.
-    - `superlayer`: Superlayer number.
     - `charge_channel`: Charge channel.
     - `time_channel`: Time channel.
     - `track_index`: Track index.
     - `overflow`: Overflow flag.
-    - `digi_id`: Raw digi ID.
+    - `id`: Raw digi ID.
 
-    Optional fields of the output when `with_pos` is `True`:
-
-    - `mid_x`: x position of the wire at `z=0`.
-    - `mid_y`: y position of the wire at `z=0`.
-    - `west_x`: x position of the west end of the wire.
-    - `west_y`: y position of the west end of the wire.
-    - `west_z`: z position of the west end of the wire.
-    - `east_x`: x position of the east end of the wire.
-    - `east_y`: y position of the east end of the wire.
-    - `east_z`: z position of the east end of the wire.
+    If `library` is `ak`, return `ak.Array`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Parameters:
         mdc_digi: The MDC raw digi array.
-        with_pos: Whether to include the position information.
+        flat: Whether to flatten the output.
+        library: The library to use as output.
 
     Returns:
         The parsed MDC digi array.
     """
-    gid = parse_mdc_digi_id(mdc_digi["m_intId"], with_pos=with_pos)
+    if library not in ["ak", "np"]:
+        raise ValueError(f"Unsupported library: {library}")
+
+    parsed_id = parse_mdc_id(mdc_digi["m_intId"], flat=flat, library=library)
+
+    charge_channel = mdc_digi["m_chargeChannel"]
+    time_channel = mdc_digi["m_timeChannel"]
+    track_index = mdc_digi["m_trackIndex"]
+    overflow = mdc_digi["m_overflow"]
+    int_id = mdc_digi["m_intId"]
+
+    if flat and isinstance(mdc_digi, ak.Array):
+        charge_channel = ak.flatten(charge_channel)
+        time_channel = ak.flatten(time_channel)
+        track_index = ak.flatten(track_index)
+        overflow = ak.flatten(overflow)
+        int_id = ak.flatten(int_id)
 
     res = {
-        "gid": gid["gid"],
-        "wire": gid["wire"],
-        "layer": gid["layer"],
-        "stereo": gid["stereo"],
-        "is_stereo": gid["is_stereo"],
-        "superlayer": gid["superlayer"],
-        "charge_channel": mdc_digi["m_chargeChannel"],
-        "time_channel": mdc_digi["m_timeChannel"],
-        "track_index": mdc_digi["m_trackIndex"],
-        "overflow": mdc_digi["m_overflow"],
-        "digi_id": mdc_digi["m_intId"],
+        "gid": parsed_id["gid"],
+        "wire": parsed_id["wire"],
+        "layer": parsed_id["layer"],
+        "is_stereo": parsed_id["is_stereo"],
+        "charge_channel": charge_channel,
+        "time_channel": time_channel,
+        "track_index": track_index,
+        "overflow": overflow,
+        "id": int_id,
     }
 
-    if with_pos:
-        res["mid_x"] = gid["mid_x"]
-        res["mid_y"] = gid["mid_y"]
-        res["west_x"] = gid["west_x"]
-        res["west_y"] = gid["west_y"]
-        res["west_z"] = gid["west_z"]
-        res["east_x"] = gid["east_x"]
-        res["east_y"] = gid["east_y"]
-        res["east_z"] = gid["east_z"]
-
-    return ak.zip(res)
+    if library == "ak":
+        return ak.zip(res)
+    else:
+        return res
 
 
 ###############################################################################
 #                                     TOF                                     #
 ###############################################################################
 @overload
-def check_tof_id(tof_digi_id: ArrayLike) -> ArrayLike: ...
+def check_tof_id(tof_id: ArrayLike) -> ArrayLike: ...
 @overload
-def check_tof_id(tof_digi_id: np.integer) -> bool: ...
+def check_tof_id(tof_id: np.integer) -> bool: ...
 
 
 @nb.vectorize(cache=True)
-def check_tof_id(tof_digi_id):
+def check_tof_id(tof_id: IntLike) -> BoolLike:
     """
     Check if the TOF digi ID is valid.
 
     Parameters:
-        tof_digi_id: The TOF digi ID array or value.
+        tof_id: The TOF digi ID array or value.
 
     Returns:
         Whether the digi ID is valid.
     """
-    return (tof_digi_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_TOF_FLAG
+    return (tof_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_TOF_FLAG
 
 
 @overload
-def tof_id_to_part(tof_digi_id: ArrayLike) -> ArrayLike: ...
+def tof_id_to_part(tof_id: ArrayLike) -> ArrayLike: ...
 @overload
-def tof_id_to_part(tof_digi_id: np.integer) -> np.uint8: ...
+def tof_id_to_part(tof_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def tof_id_to_part(tof_digi_id):
+def tof_id_to_part(tof_id: IntLike) -> IntLike:
     """
     Convert TOF digi ID to part number. 0, 1, 2 for scintillator endcap0/barrel/endcap1,
     3, 4 for MRPC endcap0/endcap1.
 
     Parameters:
-        tof_digi_id: TOF digi ID array or value.
+        tof_id: TOF digi ID array or value.
 
     Returns:
         The part number.
     """
-    part = (tof_digi_id & DIGI_TOF_PART_MASK) >> DIGI_TOF_PART_OFFSET
+    part = (tof_id & DIGI_TOF_PART_MASK) >> DIGI_TOF_PART_OFFSET
     if part == 3:  # += MRPC endcap number
-        part += (tof_digi_id & DIGI_TOF_MRPC_ENDCAP_MASK) >> DIGI_TOF_MRPC_ENDCAP_OFFSET
+        part += (tof_id & DIGI_TOF_MRPC_ENDCAP_MASK) >> DIGI_TOF_MRPC_ENDCAP_OFFSET
     return np.uint8(part)
 
 
 @overload
-def tof_id_to_end(tof_digi_id: ArrayLike) -> ArrayLike: ...
+def tof_id_to_end(tof_id: ArrayLike) -> ArrayLike: ...
 @overload
-def tof_id_to_end(tof_digi_id: np.integer) -> np.uint8: ...
+def tof_id_to_end(tof_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def tof_id_to_end(tof_digi_id):
+def tof_id_to_end(tof_id: IntLike) -> IntLike:
     """
     Convert the TOF digi ID to the readout end number.
 
     Parameters:
-        tof_digi_id: The TOF digi ID array or value.
+        tof_id: The TOF digi ID array or value.
 
     Returns:
         The readout end number.
     """
-    return np.uint8((tof_digi_id & DIGI_TOF_END_MASK) >> DIGI_TOF_END_OFFSET)
+    return np.uint8((tof_id & DIGI_TOF_END_MASK) >> DIGI_TOF_END_OFFSET)
 
 
 @overload
-def _tof_id_to_layer_or_module_1(tof_digi_id: ArrayLike) -> ArrayLike: ...
+def _tof_id_to_layer_or_module_1(tof_id: ArrayLike) -> ArrayLike: ...
 @overload
-def _tof_id_to_layer_or_module_1(tof_digi_id: np.integer) -> np.uint8: ...
+def _tof_id_to_layer_or_module_1(tof_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def _tof_id_to_layer_or_module_1(tof_digi_id):
+def _tof_id_to_layer_or_module_1(tof_id: IntLike) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator layer or MRPC module number.
     No part number is provided, so it will be calculated based on the TOF digi ID.
@@ -403,85 +404,86 @@ def _tof_id_to_layer_or_module_1(tof_digi_id):
     This function is used by `tof_id_to_layerOrModule` when part number is not provided.
 
     Parameters:
-        tof_digi_id: The TOF digi ID array or value.
+        tof_id: The TOF digi ID array or value.
 
     Returns:
         The scintillator layer or MRPC module number.
     """
-    part = tof_id_to_part(tof_digi_id)
+    part = tof_id_to_part(tof_id)
     if part < 3:
-        res = (tof_digi_id & DIGI_TOF_SCINT_LAYER_MASK) >> DIGI_TOF_SCINT_LAYER_OFFSET
+        res = (tof_id & DIGI_TOF_SCINT_LAYER_MASK) >> DIGI_TOF_SCINT_LAYER_OFFSET
     else:
-        res = (tof_digi_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
+        res = (tof_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
     return np.uint8(res)
 
 
 @overload
-def _tof_id_to_layer_or_module_2(tof_digi_id: ArrayLike, part: IntLike) -> ArrayLike: ...
+def _tof_id_to_layer_or_module_2(tof_id: ArrayLike, part: IntLike) -> ArrayLike: ...
 @overload
-def _tof_id_to_layer_or_module_2(tof_digi_id: IntLike, part: ArrayLike) -> ArrayLike: ...
+def _tof_id_to_layer_or_module_2(tof_id: IntLike, part: ArrayLike) -> ArrayLike: ...
 @overload
-def _tof_id_to_layer_or_module_2(tof_digi_id: np.integer, part: np.integer) -> np.uint8: ...
+def _tof_id_to_layer_or_module_2(tof_id: np.integer, part: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def _tof_id_to_layer_or_module_2(tof_digi_id, part):
+def _tof_id_to_layer_or_module_2(tof_id: IntLike, part: IntLike) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator layer or MRPC module number.
 
     This function is used by `tof_id_to_layerOrModule` when part number is provided.
 
     Parameters:
-        tof_digi_id: The TOF digi ID array or value.
+        tof_id: The TOF digi ID array or value.
         part: The part number.
 
     Returns:
         The scintillator layer or MRPC module number based on the part number.
     """
     if part < 3:
-        res = (tof_digi_id & DIGI_TOF_SCINT_LAYER_MASK) >> DIGI_TOF_SCINT_LAYER_OFFSET
+        res = (tof_id & DIGI_TOF_SCINT_LAYER_MASK) >> DIGI_TOF_SCINT_LAYER_OFFSET
     else:
-        res = (tof_digi_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
+        res = (tof_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
     return np.uint8(res)
 
 
 @overload
-def tof_id_to_layer_or_module(
-    tof_digi_id: ArrayLike, part: IntLike | None = None
-) -> ArrayLike: ...
+def tof_id_to_layer_or_module(tof_id: ArrayLike, part: IntLike | None = None) -> ArrayLike: ...
 @overload
 def tof_id_to_layer_or_module(
-    tof_digi_id: np.integer, part: np.integer | None = None
+    tof_id: np.integer, part: np.integer | None = None
 ) -> np.uint8: ...
 
 
-def tof_id_to_layer_or_module(tof_digi_id, part=None):
+def tof_id_to_layer_or_module(
+    tof_id: IntLike,
+    part: IntLike | None = None,
+) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator layer or MRPC module number.
     If `part < 3`, it is scintillator and the return value is layer number. Otherwise, it is
     MRPC and the return value is module number.
 
     Parameters:
-        tof_digi_id: The TOF digi ID array or value.
+        tof_id: The TOF digi ID array or value.
         part: The part number. If not provided, it will be calculated based on the TOF digi ID.
 
     Returns:
         The scintillator layer or MRPC module number.
     """
     if part is None:
-        return _tof_id_to_layer_or_module_1(tof_digi_id)
+        return _tof_id_to_layer_or_module_1(tof_id)
     else:
-        return _tof_id_to_layer_or_module_2(tof_digi_id, part)
+        return _tof_id_to_layer_or_module_2(tof_id, part)
 
 
 @overload
-def _tof_id_to_phi_or_strip_1(tof_digi_id: ArrayLike) -> ArrayLike: ...
+def _tof_id_to_phi_or_strip_1(tof_id: ArrayLike) -> ArrayLike: ...
 @overload
-def _tof_id_to_phi_or_strip_1(tof_digi_id: np.integer) -> np.uint8: ...
+def _tof_id_to_phi_or_strip_1(tof_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def _tof_id_to_phi_or_strip_1(tof_digi_id):
+def _tof_id_to_phi_or_strip_1(tof_id: IntLike) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator phi or MRPC strip number.
     No part number is provided, so it will be calculated based on the TOF digi ID.
@@ -489,101 +491,102 @@ def _tof_id_to_phi_or_strip_1(tof_digi_id):
     This function is used by `tof_id_to_phiOrStrip` when part number is not provided.
 
     Parameters:
-        tof_digi_id: The TOF digi ID array or value.
+        tof_id: The TOF digi ID array or value.
 
     Returns:
         The scintillator phi or MRPC strip number.
     """
-    part = tof_id_to_part(tof_digi_id)
+    part = tof_id_to_part(tof_id)
     if part < 3:
-        res = (tof_digi_id & DIGI_TOF_SCINT_PHI_MASK) >> DIGI_TOF_SCINT_PHI_OFFSET
+        res = (tof_id & DIGI_TOF_SCINT_PHI_MASK) >> DIGI_TOF_SCINT_PHI_OFFSET
     else:
-        res = (tof_digi_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
+        res = (tof_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
     return np.uint8(res)
 
 
 @overload
-def _tof_id_to_phi_or_strip_2(tof_digi_id: ArrayLike, part: IntLike) -> ArrayLike: ...
+def _tof_id_to_phi_or_strip_2(tof_id: ArrayLike, part: IntLike) -> ArrayLike: ...
 @overload
-def _tof_id_to_phi_or_strip_2(tof_digi_id: IntLike, part: ArrayLike) -> ArrayLike: ...
+def _tof_id_to_phi_or_strip_2(tof_id: IntLike, part: ArrayLike) -> ArrayLike: ...
 @overload
-def _tof_id_to_phi_or_strip_2(tof_digi_id: np.integer, part: np.integer) -> np.uint8: ...
+def _tof_id_to_phi_or_strip_2(tof_id: np.integer, part: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def _tof_id_to_phi_or_strip_2(tof_digi_id, part):
+def _tof_id_to_phi_or_strip_2(tof_id: IntLike, part: IntLike) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator phi or MRPC strip number.
 
     This function is used by `tof_id_to_phiOrStrip` when part number is provided.
 
     Parameters:
-        tof_digi_id: The TOF digi ID array or value.
+        tof_id: The TOF digi ID array or value.
         part: The part number.
 
     Returns:
         The scintillator phi or MRPC strip number based on the part number.
     """
     if part < 3:
-        res = (tof_digi_id & DIGI_TOF_SCINT_PHI_MASK) >> DIGI_TOF_SCINT_PHI_OFFSET
+        res = (tof_id & DIGI_TOF_SCINT_PHI_MASK) >> DIGI_TOF_SCINT_PHI_OFFSET
     else:
-        res = (tof_digi_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
+        res = (tof_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
     return np.uint8(res)
 
 
 @overload
-def tof_id_to_phi_or_strip(
-    tof_digi_id: ArrayLike, part: IntLike | None = None
-) -> ArrayLike: ...
+def tof_id_to_phi_or_strip(tof_id: ArrayLike, part: IntLike | None = None) -> ArrayLike: ...
 @overload
+def tof_id_to_phi_or_strip(tof_id: np.integer, part: np.integer | None = None) -> np.uint8: ...
+
+
 def tof_id_to_phi_or_strip(
-    tof_digi_id: np.integer, part: np.integer | None = None
-) -> np.uint8: ...
-
-
-def tof_id_to_phi_or_strip(tof_digi_id, part=None):
+    tof_id: IntLike,
+    part: IntLike | None = None,
+) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator phi or MRPC strip number, based on the part number.
     If `part < 3`, it is scintillator and the return value is phi number. Otherwise, it is
     MRPC and the return value is strip number.
 
     Parameters:
-        tof_digi_id: The TOF digi ID array or value.
+        tof_id: The TOF digi ID array or value.
         part: The part number. If not provided, it will be calculated based on the TOF digi ID.
 
     Returns:
         The scintillator phi or MRPC strip number.
     """
     if part is None:
-        return _tof_id_to_phi_or_strip_1(tof_digi_id)
+        return _tof_id_to_phi_or_strip_1(tof_id)
     else:
-        return _tof_id_to_phi_or_strip_2(tof_digi_id, part)
+        return _tof_id_to_phi_or_strip_2(tof_id, part)
 
 
 @overload
-def get_tof_digi_id(
+def get_tof_id(
     part: ArrayLike, layer_or_module: IntLike, phi_or_strip: IntLike, end: IntLike
 ) -> ArrayLike: ...
 @overload
-def get_tof_digi_id(
+def get_tof_id(
     part: IntLike, layer_or_module: ArrayLike, phi_or_strip: IntLike, end: IntLike
 ) -> ArrayLike: ...
 @overload
-def get_tof_digi_id(
+def get_tof_id(
     part: IntLike, layer_or_module: IntLike, phi_or_strip: ArrayLike, end: IntLike
 ) -> ArrayLike: ...
 @overload
-def get_tof_digi_id(
+def get_tof_id(
     part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike, end: ArrayLike
 ) -> ArrayLike: ...
 @overload
-def get_tof_digi_id(
+def get_tof_id(
     part: np.integer, layer_or_module: np.integer, phi_or_strip: np.integer, end: np.integer
 ) -> np.uint32: ...
 
 
 @nb.vectorize(cache=True)
-def get_tof_digi_id(part, layer_or_module, phi_or_strip, end):
+def get_tof_id(
+    part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike, end: IntLike
+) -> IntLike:
     """
     Generate TOF scintillator ID based on the part number, layer number, phi number, and readout end number.
 
@@ -616,36 +619,37 @@ def get_tof_digi_id(part, layer_or_module, phi_or_strip, end):
 
 
 @overload
-def tof_id_to_gid(tof_digi_id: ArrayLike) -> ArrayLike: ...
+def tof_id_to_gid(tof_id: ArrayLike) -> ArrayLike: ...
 @overload
-def tof_id_to_gid(tof_digi_id: np.integer) -> np.intp: ...
+def tof_id_to_gid(tof_id: np.integer) -> np.intp: ...
 
 
-def tof_id_to_gid(tof_digi_id):
+def tof_id_to_gid(tof_id: IntLike) -> IntLike:
     """
     Convert TOF digi ID to global strip ID (gid).
 
     Parameters:
-        tof_digi_id: The TOF digi ID array or value.
+        tof_id: The TOF digi ID array or value.
 
     Returns:
         The global strip ID.
     """
-    part = tof_id_to_part(tof_digi_id)
+    part = tof_id_to_part(tof_id)
     return det.get_tof_gid(
         part,
-        tof_id_to_layer_or_module(tof_digi_id, part),
-        tof_id_to_phi_or_strip(tof_digi_id, part),
+        tof_id_to_layer_or_module(tof_id, part),
+        tof_id_to_phi_or_strip(tof_id, part),
     )
 
 
-def parse_tof_digi_id(
-    tof_digi_id,
+def parse_tof_id(
+    tof_id: IntLike,
     flat: bool = False,
     library: Literal["ak", "np"] = "ak",
 ) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
     """
     Parse TOF digi ID.
+
     If `library` is `ak`, return `ak.Array`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
@@ -662,7 +666,7 @@ def parse_tof_digi_id(
     Rows where `part >= 3` are MRPC and `layer_or_module` represents module number, `phi_or_strip` represents strip ID.
 
     Parameters:
-        tof_digi_id: The TOF ID.
+        tof_id: The TOF ID.
         flat: Whether to flatten the output.
         library: The library to use as output.
 
@@ -673,15 +677,15 @@ def parse_tof_digi_id(
     if library not in ["ak", "np"]:
         raise ValueError(f"Unsupported library: {library}")
 
-    if flat and isinstance(tof_digi_id, ak.Array):
-        tof_digi_id = ak.flatten(tof_digi_id)
+    if flat and isinstance(tof_id, ak.Array):
+        tof_id = ak.flatten(tof_id)
 
-    part = tof_id_to_part(tof_digi_id)
+    part = tof_id_to_part(tof_id)
     res = {
         "part": part,
-        "layer_or_module": tof_id_to_layer_or_module(tof_digi_id, part),
-        "phi_or_strip": tof_id_to_phi_or_strip(tof_digi_id, part),
-        "end": tof_id_to_end(tof_digi_id),
+        "layer_or_module": tof_id_to_layer_or_module(tof_id, part),
+        "phi_or_strip": tof_id_to_phi_or_strip(tof_id, part),
+        "end": tof_id_to_end(tof_id),
     }
 
     if library == "ak":
@@ -694,97 +698,97 @@ def parse_tof_digi_id(
 #                                     EMC                                     #
 ###############################################################################
 @overload
-def check_emc_id(emc_digi_id: ArrayLike) -> ArrayLike: ...
+def check_emc_id(emc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def check_emc_id(emc_digi_id: np.integer) -> bool: ...
+def check_emc_id(emc_id: np.integer) -> bool: ...
 
 
 @nb.vectorize(cache=True)
-def check_emc_id(emc_digi_id):
+def check_emc_id(emc_id: IntLike) -> BoolLike:
     """
     Check if the EMC digi ID is valid.
 
     Parameters:
-        emc_digi_id: The EMC digi ID array or value.
+        emc_id: The EMC digi ID array or value.
 
     Returns:
         Whether the digi ID is valid.
     """
-    return (emc_digi_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_EMC_FLAG
+    return (emc_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_EMC_FLAG
 
 
 @overload
-def emc_id_to_module(emc_digi_id: ArrayLike) -> ArrayLike: ...
+def emc_id_to_module(emc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def emc_id_to_module(emc_digi_id: np.integer) -> np.uint8: ...
+def emc_id_to_module(emc_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def emc_id_to_module(emc_digi_id):
+def emc_id_to_module(emc_id: IntLike) -> IntLike:
     """
     Convert EMC digi ID to module number
 
     Parameters:
-        emc_digi_id: EMC digi ID array or value.
+        emc_id: EMC digi ID array or value.
 
     Returns:
         The module number.
     """
-    return np.uint8((emc_digi_id & DIGI_EMC_MODULE_MASK) >> DIGI_EMC_MODULE_OFFSET)
+    return np.uint8((emc_id & DIGI_EMC_MODULE_MASK) >> DIGI_EMC_MODULE_OFFSET)
 
 
 @overload
-def emc_id_to_theta(emc_digi_id: ArrayLike) -> ArrayLike: ...
+def emc_id_to_theta(emc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def emc_id_to_theta(emc_digi_id: np.integer) -> np.uint8: ...
+def emc_id_to_theta(emc_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def emc_id_to_theta(emc_digi_id):
+def emc_id_to_theta(emc_id: IntLike) -> IntLike:
     """
     Convert the EMC digi ID to the theta number.
 
     Parameters:
-        emc_digi_id: The EMC digi ID array or value.
+        emc_id: The EMC digi ID array or value.
 
     Returns:
         The theta number.
     """
-    return np.uint8((emc_digi_id & DIGI_EMC_THETA_MASK) >> DIGI_EMC_THETA_OFFSET)
+    return np.uint8((emc_id & DIGI_EMC_THETA_MASK) >> DIGI_EMC_THETA_OFFSET)
 
 
 @overload
-def emc_id_to_phi(emc_digi_id: ArrayLike) -> ArrayLike: ...
+def emc_id_to_phi(emc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def emc_id_to_phi(emc_digi_id: np.integer) -> np.uint8: ...
+def emc_id_to_phi(emc_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def emc_id_to_phi(emc_digi_id):
+def emc_id_to_phi(emc_id: IntLike) -> IntLike:
     """
     Convert the EMC digi ID to the phi number.
 
     Parameters:
-        emc_digi_id: The EMC digi ID array or value.
+        emc_id: The EMC digi ID array or value.
 
     Returns:
         The phi number.
     """
-    return np.uint8((emc_digi_id & DIGI_EMC_PHI_MASK) >> DIGI_EMC_PHI_OFFSET)
+    return np.uint8((emc_id & DIGI_EMC_PHI_MASK) >> DIGI_EMC_PHI_OFFSET)
 
 
 @overload
-def get_emc_digi_id(module: ArrayLike, theta: IntLike, phi: IntLike) -> ArrayLike: ...
+def get_emc_id(module: ArrayLike, theta: IntLike, phi: IntLike) -> ArrayLike: ...
 @overload
-def get_emc_digi_id(module: IntLike, theta: ArrayLike, phi: IntLike) -> ArrayLike: ...
+def get_emc_id(module: IntLike, theta: ArrayLike, phi: IntLike) -> ArrayLike: ...
 @overload
-def get_emc_digi_id(module: IntLike, theta: IntLike, phi: ArrayLike) -> ArrayLike: ...
+def get_emc_id(module: IntLike, theta: IntLike, phi: ArrayLike) -> ArrayLike: ...
 @overload
-def get_emc_digi_id(module: np.integer, theta: np.integer, phi: np.integer) -> np.uint32: ...
+def get_emc_id(module: np.integer, theta: np.integer, phi: np.integer) -> np.uint32: ...
 
 
 @nb.vectorize(cache=True)
-def get_emc_digi_id(module, theta, phi):
+def get_emc_id(module: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
     """
     Generate EMC digi ID based on the module number, theta number, and phi number.
 
@@ -805,74 +809,80 @@ def get_emc_digi_id(module, theta, phi):
 
 
 @overload
-def emc_id_to_gid(emc_digi_id: ArrayLike) -> ArrayLike: ...
+def emc_id_to_gid(emc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def emc_id_to_gid(emc_digi_id: np.integer) -> np.intp: ...
+def emc_id_to_gid(emc_id: np.integer) -> np.intp: ...
 
 
-def emc_id_to_gid(emc_digi_id):
+def emc_id_to_gid(emc_id: IntLike) -> IntLike:
     """
     Convert EMC digi ID to global crystal ID (gid).
 
     Parameters:
-        emc_digi_id: The EMC digi ID array or value.
+        emc_id: The EMC digi ID array or value.
 
     Returns:
         The global crystal ID.
     """
     return det.get_emc_gid(
-        emc_id_to_module(emc_digi_id),
-        emc_id_to_theta(emc_digi_id),
-        emc_id_to_phi(emc_digi_id),
+        emc_id_to_module(emc_id),
+        emc_id_to_theta(emc_id),
+        emc_id_to_phi(emc_id),
     )
 
 
-def parse_emc_digi_id(
-    emc_digi_id,
-    with_pos: bool = False,
-) -> ak.Array | dict[str, Any]:
+def parse_emc_id(
+    emc_id: IntLike,
+    flat: bool = False,
+    library: Literal["ak", "np"] = "ak",
+) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
     """
     Parse EMC digi ID.
 
-    When `emc_digi_id` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
+    If `library` is `ak`, return `ak.Array`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
-    Keys of the output:
+    Available keys of the output:
 
     - `gid`: Global ID of the crystal.
     - `part`: Part number, 0 for endcap0, 1 for barrel, 2 for endcap1.
     - `theta`: Theta number.
     - `phi`: Phi number.
 
-    Optional keys of the output when `with_pos` is `True`:
-
-    - `front_center_x`: x position of the front center of the crystal.
-    - `front_center_y`: y position of the front center of the crystal.
-    - `front_center_z`: z position of the front center of the crystal.
-    - `center_x`: x position of the center of the crystal.
-    - `center_y`: y position of the center of the crystal.
-    - `center_z`: z position of the center of the crystal.
-
-    !!! info
-        The 8 points of the crystal will not be returned here.
-        If you need the 8 points of the crystal, use `emc_gid_to_point_x`, `emc_gid_to_point_y`
-        and `emc_gid_to_point_z`.
-
     Parameters:
-        emc_digi_id: The EMC digi ID.
-        with_pos: Whether to include the position information.
+        emc_id: The EMC digi ID.
+        flat: Whether to flatten the output.
+        library: The library to use as output.
 
     Returns:
         The parsed EMC digi ID.
-
     """
-    part = emc_id_to_module(emc_digi_id)
-    theta = emc_id_to_theta(emc_digi_id)
-    phi = emc_id_to_phi(emc_digi_id)
-    gid = det.get_emc_gid(part, theta, phi)
-    return det.parse_emc_gid(gid, with_pos)
+    if library not in ["ak", "np"]:
+        raise ValueError(f"Unsupported library: {library}")
+
+    if flat and isinstance(emc_id, ak.Array):
+        emc_id = ak.flatten(emc_id)
+
+    module = emc_id_to_module(emc_id)
+    theta = emc_id_to_theta(emc_id)
+    phi = emc_id_to_phi(emc_id)
+    res = {
+        "gid": det.get_emc_gid(module, theta, phi),
+        "part": module,
+        "theta": theta,
+        "phi": phi,
+    }
+
+    if library == "ak":
+        return ak.zip(res)
+    else:
+        return res
 
 
-def parse_emc_digi(emc_digi: ak.Record, with_pos: bool = False) -> ak.Record:
+def parse_emc_digi(
+    emc_digi: ak.Array,
+    flat: bool = False,
+    library: Literal["ak", "np"] = "ak",
+) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
     """
     Parse EMC raw digi array. The raw digi array should contain [`m_intId`,
     `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_measure`] fields.
@@ -887,176 +897,181 @@ def parse_emc_digi(emc_digi: ak.Record, with_pos: bool = False) -> ak.Record:
     - `time_channel`: Time channel.
     - `track_index`: Track index.
     - `measure`: Measure value.
-    - `digi_id`: Raw digi ID.
+    - `id`: Raw digi ID.
 
-    Optional fields of the output when `with_pos` is `True`:
-
-    - `front_center_x`: x position of the front center of the crystal.
-    - `front_center_y`: y position of the front center of the crystal.
-    - `front_center_z`: z position of the front center of the crystal.
-    - `center_x`: x position of the center of the crystal.
-    - `center_y`: y position of the center of the crystal.
-    - `center_z`: z position of the center of the crystal.
+    If `library` is `ak`, return `ak.Array`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Parameters:
         emc_digi: The EMC raw digi array.
-        with_pos: Whether to include the position information.
+        flat: Whether to flatten the output.
+        library: The library to use as output.
 
     Returns:
         The parsed EMC digi array.
     """
-    gid = parse_emc_digi_id(emc_digi["m_intId"], with_pos=with_pos)
+    if library not in ["ak", "np"]:
+        raise ValueError(f"Unsupported library: {library}")
+
+    parsed_id = parse_emc_id(emc_digi["m_intId"], flat=flat, library=library)
+
+    charge_channel = emc_digi["m_chargeChannel"]
+    time_channel = emc_digi["m_timeChannel"]
+    track_index = emc_digi["m_trackIndex"]
+    measure = emc_digi["m_measure"]
+    int_id = emc_digi["m_intId"]
+
+    if flat and isinstance(emc_digi, ak.Array):
+        charge_channel = ak.flatten(charge_channel)
+        time_channel = ak.flatten(time_channel)
+        track_index = ak.flatten(track_index)
+        measure = ak.flatten(measure)
+        int_id = ak.flatten(int_id)
 
     res = {
-        "gid": gid["gid"],
-        "part": gid["part"],
-        "theta": gid["theta"],
-        "phi": gid["phi"],
-        "charge_channel": emc_digi["m_chargeChannel"],
-        "time_channel": emc_digi["m_timeChannel"],
-        "track_index": emc_digi["m_trackIndex"],
-        "measure": emc_digi["m_measure"],
-        "digi_id": emc_digi["m_intId"],
+        "gid": parsed_id["gid"],
+        "part": parsed_id["part"],
+        "theta": parsed_id["theta"],
+        "phi": parsed_id["phi"],
+        "charge_channel": charge_channel,
+        "time_channel": time_channel,
+        "track_index": track_index,
+        "measure": measure,
+        "id": int_id,
     }
 
-    if with_pos:
-        res["front_center_x"] = gid["front_center_x"]
-        res["front_center_y"] = gid["front_center_y"]
-        res["front_center_z"] = gid["front_center_z"]
-        res["center_x"] = gid["center_x"]
-        res["center_y"] = gid["center_y"]
-        res["center_z"] = gid["center_z"]
-
-    return ak.zip(res)
+    if library == "ak":
+        return ak.zip(res)
+    else:
+        return res
 
 
 ###############################################################################
 #                                     MUC                                     #
 ###############################################################################
 @overload
-def check_muc_id(muc_digi_id: ArrayLike) -> ArrayLike: ...
+def check_muc_id(muc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def check_muc_id(muc_digi_id: np.integer) -> bool: ...
+def check_muc_id(muc_id: np.integer) -> bool: ...
 
 
 @nb.vectorize(cache=True)
-def check_muc_id(muc_digi_id):
+def check_muc_id(muc_id: IntLike) -> BoolLike:
     """
     Check if the MUC digi ID is valid.
 
     Parameters:
-        muc_digi_id: The MUC digi ID array or value.
+        muc_id: The MUC digi ID array or value.
 
     Returns:
         Whether the digi ID is valid.
     """
-    return (muc_digi_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_MUC_FLAG
+    return (muc_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_MUC_FLAG
 
 
 @overload
-def muc_id_to_part(muc_digi_id: ArrayLike) -> ArrayLike: ...
+def muc_id_to_part(muc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def muc_id_to_part(muc_digi_id: np.integer) -> np.uint8: ...
+def muc_id_to_part(muc_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def muc_id_to_part(muc_digi_id):
+def muc_id_to_part(muc_id: IntLike) -> IntLike:
     """
     Convert MUC digi ID to part number
 
     Parameters:
-        muc_digi_id: MUC digi ID array or value.
+        muc_id: MUC digi ID array or value.
 
     Returns:
         The part number.
     """
-    return np.uint8((muc_digi_id & DIGI_MUC_PART_MASK) >> DIGI_MUC_PART_OFFSET)
+    return np.uint8((muc_id & DIGI_MUC_PART_MASK) >> DIGI_MUC_PART_OFFSET)
 
 
 @overload
-def muc_id_to_segment(muc_digi_id: ArrayLike) -> ArrayLike: ...
+def muc_id_to_segment(muc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def muc_id_to_segment(muc_digi_id: np.integer) -> np.uint8: ...
+def muc_id_to_segment(muc_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def muc_id_to_segment(muc_digi_id):
+def muc_id_to_segment(muc_id: IntLike) -> IntLike:
     """
     Convert the MUC digi ID to the segment number.
 
     Parameters:
-        muc_digi_id: The MUC digi ID array or value.
+        muc_id: The MUC digi ID array or value.
 
     Returns:
         The segment number.
     """
-    return np.uint8((muc_digi_id & DIGI_MUC_SEGMENT_MASK) >> DIGI_MUC_SEGMENT_OFFSET)
+    return np.uint8((muc_id & DIGI_MUC_SEGMENT_MASK) >> DIGI_MUC_SEGMENT_OFFSET)
 
 
 @overload
-def muc_id_to_layer(muc_digi_id: ArrayLike) -> ArrayLike: ...
+def muc_id_to_layer(muc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def muc_id_to_layer(muc_digi_id: np.integer) -> np.uint8: ...
+def muc_id_to_layer(muc_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def muc_id_to_layer(muc_digi_id):
+def muc_id_to_layer(muc_id: IntLike) -> IntLike:
     """
     Convert the MUC digi ID to the layer number.
 
     Parameters:
-        muc_digi_id: The MUC digi ID array or value.
+        muc_id: The MUC digi ID array or value.
 
     Returns:
         The layer number.
     """
-    return np.uint8((muc_digi_id & DIGI_MUC_LAYER_MASK) >> DIGI_MUC_LAYER_OFFSET)
+    return np.uint8((muc_id & DIGI_MUC_LAYER_MASK) >> DIGI_MUC_LAYER_OFFSET)
 
 
 @overload
-def muc_id_to_channel(muc_digi_id: ArrayLike) -> ArrayLike: ...
+def muc_id_to_channel(muc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def muc_id_to_channel(muc_digi_id: np.integer) -> np.uint8: ...
+def muc_id_to_channel(muc_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def muc_id_to_channel(muc_digi_id):
+def muc_id_to_channel(muc_id: IntLike) -> IntLike:
     """
     Convert the MUC digi ID to the channel number.
 
     Parameters:
-        muc_digi_id: The MUC digi ID array or value.
+        muc_id: The MUC digi ID array or value.
 
     Returns:
         The channel number.
     """
-    return np.uint8((muc_digi_id & DIGI_MUC_CHANNEL_MASK) >> DIGI_MUC_CHANNEL_OFFSET)
+    return np.uint8((muc_id & DIGI_MUC_CHANNEL_MASK) >> DIGI_MUC_CHANNEL_OFFSET)
 
 
 @overload
-def get_muc_digi_id(
+def get_muc_id(
     part: ArrayLike, segment: IntLike, layer: IntLike, channel: IntLike
 ) -> ArrayLike: ...
 @overload
-def get_muc_digi_id(
+def get_muc_id(
     part: IntLike, segment: ArrayLike, layer: IntLike, channel: IntLike
 ) -> ArrayLike: ...
 @overload
-def get_muc_digi_id(
+def get_muc_id(
     part: IntLike, segment: IntLike, layer: ArrayLike, channel: IntLike
 ) -> ArrayLike: ...
 @overload
-def get_muc_digi_id(
+def get_muc_id(
     part: IntLike, segment: IntLike, layer: IntLike, channel: ArrayLike
 ) -> ArrayLike: ...
 @overload
-def get_muc_digi_id(
+def get_muc_id(
     part: np.integer, segment: np.integer, layer: np.integer, channel: np.integer
 ) -> np.uint32: ...
 
 
 @nb.vectorize(cache=True)
-def get_muc_digi_id(part, segment, layer, channel):
+def get_muc_id(part: IntLike, segment: IntLike, layer: IntLike, channel: IntLike) -> IntLike:
     """
     Generate MUC digi ID based on the part number, segment number, layer number, and channel number.
 
@@ -1079,45 +1094,45 @@ def get_muc_digi_id(part, segment, layer, channel):
 
 
 @overload
-def muc_id_to_gap(muc_digi_id: ArrayLike) -> ArrayLike: ...
+def muc_id_to_gap(muc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def muc_id_to_gap(muc_digi_id: np.integer) -> np.uint8: ...
+def muc_id_to_gap(muc_id: np.integer) -> np.uint8: ...
 
 
-def muc_id_to_gap(muc_digi_id):
+def muc_id_to_gap(muc_id: IntLike) -> IntLike:
     """
     Convert the MUC digi ID to the gap ID, which is equivalent to layer number.
 
     Parameters:
-        muc_digi_id: The MUC digi ID array or value.
+        muc_id: The MUC digi ID array or value.
 
     Returns:
         The gap ID.
     """
-    return muc_id_to_layer(muc_digi_id)
+    return muc_id_to_layer(muc_id)
 
 
 @overload
-def muc_id_to_strip(muc_digi_id: ArrayLike) -> ArrayLike: ...
+def muc_id_to_strip(muc_id: ArrayLike) -> ArrayLike: ...
 @overload
-def muc_id_to_strip(muc_digi_id: np.integer) -> np.uint8: ...
+def muc_id_to_strip(muc_id: np.integer) -> np.uint8: ...
 
 
-def muc_id_to_strip(muc_digi_id):
+def muc_id_to_strip(muc_id: IntLike) -> IntLike:
     """
     Convert the MUC digi ID to the strip number, which is equivalent to channel number.
 
     Parameters:
-        muc_digi_id: The MUC digi ID array or value.
+        muc_id: The MUC digi ID array or value.
 
     Returns:
         The strip number.
     """
-    return muc_id_to_channel(muc_digi_id)
+    return muc_id_to_channel(muc_id)
 
 
-def parse_muc_digi_id(
-    muc_digi_id,
+def parse_muc_id(
+    muc_id: IntLike,
     flat: bool = False,
     library: Literal["ak", "np"] = "ak",
 ) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
@@ -1136,7 +1151,7 @@ def parse_muc_digi_id(
     - `strip`: The strip number, which is equivalent to channel number.
 
     Parameters:
-        muc_digi_id: The MUC digi ID.
+        muc_id: The MUC digi ID.
         flat: Whether to flatten the output.
         library: The library to use as output.
 
@@ -1146,13 +1161,13 @@ def parse_muc_digi_id(
     if library not in ["ak", "np"]:
         raise ValueError(f"Unsupported library: {library}")
 
-    if flat and isinstance(muc_digi_id, ak.Array):
-        muc_digi_id = ak.flatten(muc_digi_id)
+    if flat and isinstance(muc_id, ak.Array):
+        muc_id = ak.flatten(muc_id)
 
-    part = muc_id_to_part(muc_digi_id)
-    segment = muc_id_to_segment(muc_digi_id)
-    layer = muc_id_to_layer(muc_digi_id)
-    channel = muc_id_to_channel(muc_digi_id)
+    part = muc_id_to_part(muc_id)
+    segment = muc_id_to_segment(muc_id)
+    layer = muc_id_to_layer(muc_id)
+    channel = muc_id_to_channel(muc_id)
 
     res = {
         "part": part,
@@ -1173,129 +1188,131 @@ def parse_muc_digi_id(
 #                                    CGEM                                     #
 ###############################################################################
 @overload
-def check_cgem_id(cgem_digi_id: ArrayLike) -> ArrayLike: ...
+def check_cgem_id(cgem_id: ArrayLike) -> ArrayLike: ...
 @overload
-def check_cgem_id(cgem_digi_id: np.integer) -> bool: ...
+def check_cgem_id(cgem_id: np.integer) -> bool: ...
 
 
 @nb.vectorize(cache=True)
-def check_cgem_id(cgem_digi_id):
+def check_cgem_id(cgem_id: IntLike) -> BoolLike:
     """
     Check if the CGEM digi ID is valid.
 
     Parameters:
-        cgem_digi_id: The CGEM digi ID array or value.
+        cgem_id: The CGEM digi ID array or value.
 
     Returns:
         Whether the digi ID is valid.
     """
-    return (cgem_digi_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_CGEM_FLAG
+    return (cgem_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_CGEM_FLAG
 
 
 @overload
-def cgem_id_to_layer(cgem_digi_id: ArrayLike) -> ArrayLike: ...
+def cgem_id_to_layer(cgem_id: ArrayLike) -> ArrayLike: ...
 @overload
-def cgem_id_to_layer(cgem_digi_id: np.integer) -> np.uint8: ...
+def cgem_id_to_layer(cgem_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def cgem_id_to_layer(cgem_digi_id):
+def cgem_id_to_layer(cgem_id: IntLike) -> IntLike:
     """
     Convert the CGEM digi ID to the layer number.
 
     Parameters:
-        cgem_digi_id: The CGEM digi ID array or value.
+        cgem_id: The CGEM digi ID array or value.
 
     Returns:
         The layer number.
     """
-    return np.uint8((cgem_digi_id & DIGI_CGEM_LAYER_MASK) >> DIGI_CGEM_LAYER_OFFSET)
+    return np.uint8((cgem_id & DIGI_CGEM_LAYER_MASK) >> DIGI_CGEM_LAYER_OFFSET)
 
 
 @overload
-def cgem_id_to_sheet(cgem_digi_id: ArrayLike) -> ArrayLike: ...
+def cgem_id_to_sheet(cgem_id: ArrayLike) -> ArrayLike: ...
 @overload
-def cgem_id_to_sheet(cgem_digi_id: np.integer) -> np.uint8: ...
+def cgem_id_to_sheet(cgem_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def cgem_id_to_sheet(cgem_digi_id):
+def cgem_id_to_sheet(cgem_id: IntLike) -> IntLike:
     """
     Convert the CGEM digi ID to the sheet number.
 
     Parameters:
-        cgem_digi_id: The CGEM digi ID array or value.
+        cgem_id: The CGEM digi ID array or value.
 
     Returns:
         The sheet number.
     """
-    return np.uint8((cgem_digi_id & DIGI_CGEM_SHEET_MASK) >> DIGI_CGEM_SHEET_OFFSET)
+    return np.uint8((cgem_id & DIGI_CGEM_SHEET_MASK) >> DIGI_CGEM_SHEET_OFFSET)
 
 
 @overload
-def cgem_id_to_strip_type(cgem_digi_id: ArrayLike) -> ArrayLike: ...
+def cgem_id_to_strip_type(cgem_id: ArrayLike) -> ArrayLike: ...
 @overload
-def cgem_id_to_strip_type(cgem_digi_id: np.integer) -> np.uint8: ...
+def cgem_id_to_strip_type(cgem_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
-def cgem_id_to_strip_type(cgem_digi_id):
+def cgem_id_to_strip_type(cgem_id: IntLike) -> IntLike:
     """
     Convert the CGEM digi ID to the strip type. 0 for X-strip, 1 for V-strip.
 
     Parameters:
-        cgem_digi_id: The CGEM digi ID array or value.
+        cgem_id: The CGEM digi ID array or value.
 
     Returns:
         The strip type. 0 for X-strip, 1 for V-strip.
     """
-    return np.uint8((cgem_digi_id & DIGI_CGEM_STRIPTYPE_MASK) >> DIGI_CGEM_STRIPTYPE_OFFSET)
+    return np.uint8((cgem_id & DIGI_CGEM_STRIPTYPE_MASK) >> DIGI_CGEM_STRIPTYPE_OFFSET)
 
 
 @overload
-def cgem_id_to_strip(cgem_digi_id: ArrayLike) -> ArrayLike: ...
+def cgem_id_to_strip(cgem_id: ArrayLike) -> ArrayLike: ...
 @overload
-def cgem_id_to_strip(cgem_digi_id: np.integer) -> np.uint16: ...
+def cgem_id_to_strip(cgem_id: np.integer) -> np.uint16: ...
 
 
 @nb.vectorize(cache=True)
-def cgem_id_to_strip(cgem_digi_id):
+def cgem_id_to_strip(cgem_id: IntLike) -> IntLike:
     """
     Convert CGEM digi ID to strip number
 
     Parameters:
-        cgem_digi_id: CGEM digi ID array or value.
+        cgem_id: CGEM digi ID array or value.
 
     Returns:
         The strip number.
     """
-    return np.uint16((cgem_digi_id & DIGI_CGEM_STRIP_MASK) >> DIGI_CGEM_STRIP_OFFSET)
+    return np.uint16((cgem_id & DIGI_CGEM_STRIP_MASK) >> DIGI_CGEM_STRIP_OFFSET)
 
 
 @overload
-def get_cgem_digi_id(
+def get_cgem_id(
     layer: ArrayLike, sheet: IntLike, strip_type: IntLike, strip: IntLike
 ) -> ArrayLike: ...
 @overload
-def get_cgem_digi_id(
+def get_cgem_id(
     layer: IntLike, sheet: ArrayLike, strip_type: IntLike, strip: IntLike
 ) -> ArrayLike: ...
 @overload
-def get_cgem_digi_id(
+def get_cgem_id(
     layer: IntLike, sheet: IntLike, strip_type: ArrayLike, strip: IntLike
 ) -> ArrayLike: ...
 @overload
-def get_cgem_digi_id(
+def get_cgem_id(
     layer: IntLike, sheet: IntLike, strip_type: IntLike, strip: ArrayLike
 ) -> ArrayLike: ...
 @overload
-def get_cgem_digi_id(
+def get_cgem_id(
     layer: np.integer, sheet: np.integer, strip_type: np.integer, strip: np.integer
 ) -> np.uint32: ...
 
 
 @nb.vectorize(cache=True)
-def get_cgem_digi_id(layer, sheet, strip_type, strip):
+def get_cgem_id(
+    layer: IntLike, sheet: IntLike, strip_type: IntLike, strip: IntLike
+) -> IntLike:
     """
     Generate CGEM digi ID based on the strip number, strip type, sheet number, and layer number.
 
@@ -1318,31 +1335,31 @@ def get_cgem_digi_id(layer, sheet, strip_type, strip):
 
 
 @overload
-def cgem_id_to_gid(cgem_digi_id: ArrayLike) -> ArrayLike: ...
+def cgem_id_to_gid(cgem_id: ArrayLike) -> ArrayLike: ...
 @overload
-def cgem_id_to_gid(cgem_digi_id: np.integer) -> np.intp: ...
+def cgem_id_to_gid(cgem_id: np.integer) -> np.intp: ...
 
 
-def cgem_id_to_gid(cgem_digi_id):
+def cgem_id_to_gid(cgem_id: IntLike) -> IntLike:
     """
     Convert CGEM digi ID to global strip ID (gid).
 
     Parameters:
-        cgem_digi_id: The CGEM digi ID array or value.
+        cgem_id: The CGEM digi ID array or value.
 
     Returns:
         The global strip ID.
     """
     return det.get_cgem_gid(
-        cgem_id_to_layer(cgem_digi_id),
-        cgem_id_to_sheet(cgem_digi_id),
-        cgem_id_to_strip_type(cgem_digi_id),
-        cgem_id_to_strip(cgem_digi_id),
+        cgem_id_to_layer(cgem_id),
+        cgem_id_to_sheet(cgem_id),
+        cgem_id_to_strip_type(cgem_id),
+        cgem_id_to_strip(cgem_id),
     )
 
 
-def parse_cgem_digi_id(
-    cgem_digi_id,
+def parse_cgem_id(
+    cgem_id: IntLike,
     flat: bool = False,
     library: Literal["ak", "np"] = "ak",
 ) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
@@ -1359,7 +1376,7 @@ def parse_cgem_digi_id(
     - `strip`: The strip ID.
 
     Parameters:
-        cgem_digi_id: The CGEM digi ID.
+        cgem_id: The CGEM digi ID.
         flat: Whether to flatten the output.
         library: The library to use as output.
 
@@ -1369,14 +1386,14 @@ def parse_cgem_digi_id(
     if library not in ["ak", "np"]:
         raise ValueError(f"Unsupported library: {library}")
 
-    if flat and isinstance(cgem_digi_id, ak.Array):
-        cgem_digi_id = ak.flatten(cgem_digi_id)
+    if flat and isinstance(cgem_id, ak.Array):
+        cgem_id = ak.flatten(cgem_id)
 
     res = {
-        "layer": cgem_id_to_layer(cgem_digi_id),
-        "sheet": cgem_id_to_sheet(cgem_digi_id),
-        "strip_type": cgem_id_to_strip_type(cgem_digi_id),
-        "strip": cgem_id_to_strip(cgem_digi_id),
+        "layer": cgem_id_to_layer(cgem_id),
+        "sheet": cgem_id_to_sheet(cgem_id),
+        "strip_type": cgem_id_to_strip_type(cgem_id),
+        "strip": cgem_id_to_strip(cgem_id),
     }
 
     if library == "ak":

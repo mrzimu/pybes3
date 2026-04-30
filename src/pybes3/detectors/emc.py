@@ -8,7 +8,7 @@ import numpy as np
 
 from pybes3._utils import _make_lazy
 from pybes3.data import EMC_GEOM
-from pybes3.typing import ArrayLike
+from pybes3.typing import ArrayLike, FloatLike, IntLike
 
 ENDCAP_PHI_01 = 64
 ENDCAP_PHI_23 = 80
@@ -143,7 +143,7 @@ def get_emc_gid(part: np.integer, theta: np.integer, phi: np.integer) -> np.inte
 
 
 @nb.vectorize(cache=True)
-def get_emc_gid(part, theta, phi):
+def get_emc_gid(part: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
     """
     Get EMC gid of given part, theta, and phi.
 
@@ -211,7 +211,7 @@ def emc_gid_to_part(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def emc_gid_to_part(gid):
+def emc_gid_to_part(gid: IntLike) -> IntLike:
     """
     Convert EMC gid to part.
 
@@ -231,7 +231,7 @@ def emc_gid_to_theta(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def emc_gid_to_theta(gid):
+def emc_gid_to_theta(gid: IntLike) -> IntLike:
     """
     Convert EMC gid to theta.
 
@@ -251,7 +251,7 @@ def emc_gid_to_phi(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def emc_gid_to_phi(gid):
+def emc_gid_to_phi(gid: IntLike) -> IntLike:
     """
     Convert EMC gid to phi.
 
@@ -273,7 +273,7 @@ def emc_gid_to_point_x(gid: np.integer, point: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def emc_gid_to_point_x(gid, point):
+def emc_gid_to_point_x(gid: IntLike, point: IntLike) -> FloatLike:
     """
     Convert EMC gid to x coordinate of the point.
 
@@ -296,7 +296,7 @@ def emc_gid_to_point_y(gid: np.integer, point: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def emc_gid_to_point_y(gid, point):
+def emc_gid_to_point_y(gid: IntLike, point: IntLike) -> FloatLike:
     """
     Convert EMC gid to y coordinate of the point.
 
@@ -319,7 +319,7 @@ def emc_gid_to_point_z(gid: np.integer, point: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def emc_gid_to_point_z(gid, point):
+def emc_gid_to_point_z(gid: IntLike, point: IntLike) -> FloatLike:
     """
     Convert EMC gid to z coordinate of the point.
 
@@ -340,7 +340,7 @@ def emc_gid_to_center_x(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def emc_gid_to_center_x(gid):
+def emc_gid_to_center_x(gid: IntLike) -> FloatLike:
     """
     Convert EMC gid to x coordinate of the crystal's center.
 
@@ -360,7 +360,7 @@ def emc_gid_to_center_y(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def emc_gid_to_center_y(gid):
+def emc_gid_to_center_y(gid: IntLike) -> FloatLike:
     """
     Convert EMC gid to y coordinate of the crystal's center.
 
@@ -380,7 +380,7 @@ def emc_gid_to_center_z(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def emc_gid_to_center_z(gid):
+def emc_gid_to_center_z(gid: IntLike) -> FloatLike:
     """
     Convert EMC gid to z coordinate of the crystal's center.
 
@@ -400,7 +400,7 @@ def emc_gid_to_front_center_x(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def emc_gid_to_front_center_x(gid):
+def emc_gid_to_front_center_x(gid: IntLike) -> FloatLike:
     """
     Convert EMC gid to x coordinate of the crystal's front center.
 
@@ -420,7 +420,7 @@ def emc_gid_to_front_center_y(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def emc_gid_to_front_center_y(gid):
+def emc_gid_to_front_center_y(gid: IntLike) -> FloatLike:
     """
     Convert EMC gid to y coordinate of the crystal's front center.
 
@@ -440,7 +440,7 @@ def emc_gid_to_front_center_z(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def emc_gid_to_front_center_z(gid):
+def emc_gid_to_front_center_z(gid: IntLike) -> FloatLike:
     """
     Convert EMC gid to z coordinate of the crystal's front center.
 
@@ -453,7 +453,7 @@ def emc_gid_to_front_center_z(gid):
     return _front_center_z[gid]
 
 
-def parse_emc_gid(gid, with_pos=True) -> ak.Array | dict[str, Any]:
+def parse_emc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, Any]:
     """
     Parse the gid of EMC crystals. "gid" is the global ID of the crystal, ranges from 0 to 6239.
     When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.

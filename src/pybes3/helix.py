@@ -14,7 +14,7 @@ import vector.backends.awkward as vec_ak
 vector.register_awkward()
 
 from pybes3._utils import _extract_index, _flat_to_numpy
-from pybes3.typing import ArrayLike
+from pybes3.typing import ArrayLike, FloatLike, IntLike
 
 TypeObjPosition = Union[vector.VectorObject3D, tuple[float, float, float]]
 TypeObjMomentum = Union[vector.MomentumObject3D, tuple[float, float, float]]
@@ -481,7 +481,7 @@ def dr_phi0_to_x(dr: np.floating, phi0: np.floating) -> float: ...
 
 
 @nb.vectorize(cache=True)
-def dr_phi0_to_x(dr, phi0):
+def dr_phi0_to_x(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     """
     Convert helix parameters to x location.
 
@@ -504,7 +504,7 @@ def dr_phi0_to_y(dr: np.floating, phi0: np.floating) -> float: ...
 
 
 @nb.vectorize(cache=True)
-def dr_phi0_to_y(dr, phi0):
+def dr_phi0_to_y(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     """
     Convert helix parameters to y location.
 
@@ -525,7 +525,7 @@ def phi0_to_phi(phi0: np.floating) -> float: ...
 
 
 @nb.vectorize(cache=True)
-def phi0_to_phi(phi0):
+def phi0_to_phi(phi0: FloatLike) -> FloatLike:
     """
     Convert helix parameter phi0 to momentum phi.
 
@@ -545,7 +545,7 @@ def kappa_to_pt(kappa: np.floating) -> float: ...
 
 
 @nb.vectorize(cache=True)
-def kappa_to_pt(kappa):
+def kappa_to_pt(kappa: FloatLike) -> FloatLike:
     """
     Convert helix parameter to pt.
 
@@ -565,7 +565,7 @@ def kappa_to_charge(kappa: np.floating) -> np.int8: ...
 
 
 @nb.vectorize(cache=True)
-def kappa_to_charge(kappa):
+def kappa_to_charge(kappa: FloatLike) -> IntLike:
     """
     Convert helix parameter to charge.
 
@@ -585,7 +585,7 @@ def kappa_to_radius(kappa: np.floating) -> float: ...
 
 
 @nb.vectorize(cache=True)
-def kappa_to_radius(kappa):
+def kappa_to_radius(kappa: FloatLike) -> FloatLike:
     """
     Convert helix parameter kappa to circular radius.
 
@@ -971,7 +971,7 @@ def _fix_dr_sign(dr: np.floating, phi0: np.floating, dist_phi: np.floating) -> f
 
 
 @nb.vectorize(cache=True)
-def _fix_dr_sign(dr, phi0, dist_phi):
+def _fix_dr_sign(dr: FloatLike, phi0: FloatLike, dist_phi: FloatLike) -> FloatLike:
     """
     Fix the sign of dr based on the azimuthal angle.
 

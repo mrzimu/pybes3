@@ -8,7 +8,7 @@ import numpy as np
 
 from pybes3._utils import _make_lazy
 from pybes3.data import MDC_GEOM
-from pybes3.typing import ArrayLike
+from pybes3.typing import ArrayLike, BoolLike, FloatLike, IntLike
 
 # Constant (not dependent on geometry data)
 superlayer_splits = np.array([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 43])
@@ -110,7 +110,7 @@ def get_mdc_gid(layer: np.integer, wire: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def get_mdc_gid(layer, wire):
+def get_mdc_gid(layer: IntLike, wire: IntLike) -> IntLike:
     """
     Get MDC gid of given layer and wire.
 
@@ -131,7 +131,7 @@ def mdc_gid_to_superlayer(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_gid_to_superlayer(gid):
+def mdc_gid_to_superlayer(gid: IntLike) -> IntLike:
     """
     Convert gid to superlayer.
 
@@ -151,7 +151,7 @@ def mdc_layer_to_superlayer(layer: np.integer) -> np.digitize: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_layer_to_superlayer(layer):
+def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
     """
     Convert layer to superlayer.
 
@@ -171,7 +171,7 @@ def mdc_gid_to_layer(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_gid_to_layer(gid):
+def mdc_gid_to_layer(gid: IntLike) -> IntLike:
     """
     Convert gid to layer.
 
@@ -191,7 +191,7 @@ def mdc_gid_to_wire(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_gid_to_wire(gid):
+def mdc_gid_to_wire(gid: IntLike) -> IntLike:
     """
     Convert gid to wire.
 
@@ -211,7 +211,7 @@ def mdc_gid_to_stereo(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_gid_to_stereo(gid):
+def mdc_gid_to_stereo(gid: IntLike) -> IntLike:
     """
     Convert gid to stereo.
     `0` for `axial`,
@@ -234,7 +234,7 @@ def mdc_layer_to_is_stereo(layer: np.integer) -> np.bool_: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_layer_to_is_stereo(layer):
+def mdc_layer_to_is_stereo(layer: IntLike) -> BoolLike:
     """
     Convert layer to is_stereo.
 
@@ -254,7 +254,7 @@ def mdc_gid_to_is_stereo(gid: np.integer) -> np.bool_: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_gid_to_is_stereo(gid):
+def mdc_gid_to_is_stereo(gid: IntLike) -> BoolLike:
     """
     Convert gid to is_stereo.
 
@@ -274,7 +274,7 @@ def mdc_gid_to_west_x(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_gid_to_west_x(gid):
+def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_x (cm).
 
@@ -294,7 +294,7 @@ def mdc_gid_to_west_y(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_gid_to_west_y(gid):
+def mdc_gid_to_west_y(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_y (cm).
 
@@ -314,7 +314,7 @@ def mdc_gid_to_west_z(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_gid_to_west_z(gid):
+def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_z (cm).
 
@@ -334,7 +334,7 @@ def mdc_gid_to_east_x(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_gid_to_east_x(gid):
+def mdc_gid_to_east_x(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_x (cm).
 
@@ -354,7 +354,7 @@ def mdc_gid_to_east_y(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_gid_to_east_y(gid):
+def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_y (cm).
 
@@ -374,7 +374,7 @@ def mdc_gid_to_east_z(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_gid_to_east_z(gid):
+def mdc_gid_to_east_z(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_z (cm).
 
@@ -396,7 +396,7 @@ def mdc_gid_z_to_x(gid: np.floating, z: np.floating) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_gid_z_to_x(gid, z):
+def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
     """
     Get the x (cm) position of the wire at z (cm).
 
@@ -419,7 +419,7 @@ def mdc_gid_z_to_y(gid: np.floating, z: np.floating) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
-def mdc_gid_z_to_y(gid, z):
+def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
     """
     Get the y (cm) position of the wire at z (cm).
 
@@ -433,7 +433,7 @@ def mdc_gid_z_to_y(gid, z):
     return _west_y[gid] + dy_dz[gid] * (z - _west_z[gid])
 
 
-def parse_mdc_gid(gid, with_pos=True) -> ak.Array | dict[str, Any]:
+def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, Any]:
     """
     Parse the gid of MDC wires. "gid" is the global ID of the wire, ranges from 0 to 6795.
     When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
