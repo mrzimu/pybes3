@@ -1,8 +1,12 @@
+import warnings
+
 import awkward as ak
 import numpy as np
 import uproot
 
-from pybes3 import digi_id
+with warnings.catch_warnings():
+    warnings.simplefilter("ignore", DeprecationWarning)
+    from pybes3 import digi_id
 
 
 def test_mdc_digi_id(rtraw_event):

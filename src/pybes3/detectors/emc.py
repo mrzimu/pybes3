@@ -18,6 +18,8 @@ ENDCAP_CRYSTALS = 480
 BARREL_PHI = 120
 BARREL_CRYSTALS = 5280
 
+N_CRYSTALS = 6240
+
 # ---------------------------------------------------------------------------
 # Lazy loading: geometry arrays are loaded from disk on first use.
 # ---------------------------------------------------------------------------

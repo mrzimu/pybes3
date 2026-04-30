@@ -1,0 +1,687 @@
+import awkward as ak
+import numpy as np
+import uproot
+
+from pybes3 import identifier
+
+
+def test_mdc_id(rtraw_event):
+    mdc_id_ak: ak.Array = rtraw_event["m_mdcDigiCol"]["m_intId"]
+
+    # Test awkward
+    ak_wire, ak_layer, ak_is_stereo = (
+        identifier.mdc_id_to_wire(mdc_id_ak),
+        identifier.mdc_id_to_layer(mdc_id_ak),
+        identifier.mdc_id_to_is_stereo(mdc_id_ak),
+    )
+    assert ak.all(identifier.get_mdc_id(ak_wire, ak_layer, ak_is_stereo) == mdc_id_ak)
+    assert ak.all(identifier.check_mdc_id(mdc_id_ak))
+
+    # Test numpy
+    mdc_id_np = ak.flatten(mdc_id_ak).to_numpy()
+    np_wire, np_layer, np_is_stereo = (
+        identifier.mdc_id_to_wire(mdc_id_np),
+        identifier.mdc_id_to_layer(mdc_id_np),
+        identifier.mdc_id_to_is_stereo(mdc_id_np),
+    )
+    assert np.all(identifier.get_mdc_id(np_wire, np_layer, np_is_stereo) == mdc_id_np)
+    assert np.all(identifier.check_mdc_id(mdc_id_np))
+
+    # Test uint32
+    tmp_id = mdc_id_np[0]
+    tmp_wire, tmp_layer, tmp_is_stereo = (
+        identifier.mdc_id_to_wire(tmp_id),
+        identifier.mdc_id_to_layer(tmp_id),
+        identifier.mdc_id_to_is_stereo(tmp_id),
+    )
+    assert tmp_wire == np_wire[0]
+    assert tmp_layer == np_layer[0]
+    assert tmp_is_stereo == np_is_stereo[0]
+    assert identifier.get_mdc_id(tmp_wire, tmp_layer, tmp_is_stereo) == tmp_id
+    assert identifier.check_mdc_id(tmp_id)
+
+    # Test python int
+    tmp_id = int(mdc_id_np[0])
+    tmp_wire, tmp_layer, tmp_is_stereo = (
+        identifier.mdc_id_to_wire(tmp_id),
+        identifier.mdc_id_to_layer(tmp_id),
+        identifier.mdc_id_to_is_stereo(tmp_id),
+    )
+    assert tmp_wire == np_wire[0]
+    assert tmp_layer == np_layer[0]
+    assert tmp_is_stereo == np_is_stereo[0]
+    assert identifier.get_mdc_id(tmp_wire, tmp_layer, tmp_is_stereo) == tmp_id
+    assert identifier.check_mdc_id(tmp_id)
+
+
+def test_parse_mdc_id(rtraw_event):
+    mdc_id_ak: ak.Array = rtraw_event["m_mdcDigiCol"]["m_intId"]
+    mdc_fields = ["gid", "layer", "wire", "is_stereo"]
+
+    wire_ak = identifier.mdc_id_to_wire(mdc_id_ak)
+    layer_ak = identifier.mdc_id_to_layer(mdc_id_ak)
+    is_stereo_ak = identifier.mdc_id_to_is_stereo(mdc_id_ak)
+
+    # Test awkward
+    ak_res1 = identifier.parse_mdc_id(mdc_id_ak)
+    assert ak_res1.fields == mdc_fields
+    assert len(ak_res1.positional_axis) == 2
+    assert ak.all(ak_res1["wire"] == wire_ak)
+    assert ak.all(ak_res1["layer"] == layer_ak)
+    assert ak.all(ak_res1["is_stereo"] == is_stereo_ak)
+
+    mdc_id_np = ak.flatten(mdc_id_ak).to_numpy()
+    wire_np = ak.flatten(wire_ak).to_numpy()
+    layer_np = ak.flatten(layer_ak).to_numpy()
+    is_stereo_np = ak.flatten(is_stereo_ak).to_numpy()
+
+    # Test numpy
+    np_res = identifier.parse_mdc_id(mdc_id_np)
+    assert list(np_res.keys()) == mdc_fields
+    assert np.all(np_res["wire"] == wire_np)
+    assert np.all(np_res["layer"] == layer_np)
+    assert np.all(np_res["is_stereo"] == is_stereo_np)
+
+    # Test int output
+    mdc_id_int = int(mdc_id_np[0])
+    int_res = identifier.parse_mdc_id(mdc_id_int)
+    assert int_res["wire"] == wire_np[0]
+    assert int_res["layer"] == layer_np[0]
+    assert int_res["is_stereo"] == is_stereo_np[0]
+
+
+def test_parse_mdc_digi(rtraw_event):
+    mdc_digi_ak: ak.Array = rtraw_event["m_mdcDigiCol"]
+    fields = [
+        "gid",
+        "wire",
+        "layer",
+        "is_stereo",
+        "charge_channel",
+        "time_channel",
+        "track_index",
+        "overflow",
+        "id",
+    ]
+
+    ak_res1 = identifier.parse_mdc_digi(mdc_digi_ak)
+    assert ak_res1.fields == fields
+    assert len(ak_res1.positional_axis) == 2
+
+    flat_mdc_digi_ak = ak.flatten(mdc_digi_ak)
+    mdc_digi_np = {k: flat_mdc_digi_ak[k].to_numpy() for k in flat_mdc_digi_ak.fields}
+
+    np_res = identifier.parse_mdc_digi(mdc_digi_np)
+    assert list(np_res.keys()) == fields
+    for field in fields:
+        assert np.asarray(np_res[field]).ndim == 1
+
+
+def test_emc_id(rtraw_event):
+    emc_id_ak: ak.Array = rtraw_event["m_emcDigiCol"]["m_intId"]
+
+    # Test awkward
+    ak_module, ak_theta, ak_phi = (
+        identifier.emc_id_to_module(emc_id_ak),
+        identifier.emc_id_to_theta(emc_id_ak),
+        identifier.emc_id_to_phi(emc_id_ak),
+    )
+    assert ak.all(identifier.get_emc_id(ak_module, ak_theta, ak_phi) == emc_id_ak)
+    assert ak.all(identifier.check_emc_id(emc_id_ak))
+
+    # Test numpy
+    emc_id_np = ak.flatten(emc_id_ak).to_numpy()
+    np_module, np_theta, np_phi = (
+        identifier.emc_id_to_module(emc_id_np),
+        identifier.emc_id_to_theta(emc_id_np),
+        identifier.emc_id_to_phi(emc_id_np),
+    )
+    assert np.all(identifier.get_emc_id(np_module, np_theta, np_phi) == emc_id_np)
+    assert np.all(identifier.check_emc_id(emc_id_np))
+
+    # Test uint32
+    tmp_id = emc_id_np[0]
+    tmp_module, tmp_theta, tmp_phi = (
+        identifier.emc_id_to_module(tmp_id),
+        identifier.emc_id_to_theta(tmp_id),
+        identifier.emc_id_to_phi(tmp_id),
+    )
+    assert tmp_module == np_module[0]
+    assert tmp_theta == np_theta[0]
+    assert tmp_phi == np_phi[0]
+    assert identifier.get_emc_id(tmp_module, tmp_theta, tmp_phi) == tmp_id
+    assert identifier.check_emc_id(tmp_id)
+
+    # Test python int
+    tmp_id = int(emc_id_np[0])
+    tmp_module, tmp_theta, tmp_phi = (
+        identifier.emc_id_to_module(tmp_id),
+        identifier.emc_id_to_theta(tmp_id),
+        identifier.emc_id_to_phi(tmp_id),
+    )
+    assert tmp_module == np_module[0]
+    assert tmp_theta == np_theta[0]
+    assert tmp_phi == np_phi[0]
+    assert identifier.get_emc_id(tmp_module, tmp_theta, tmp_phi) == tmp_id
+    assert identifier.check_emc_id(tmp_id)
+
+
+def test_parse_emc_id(rtraw_event):
+    emc_id_ak: ak.Array = rtraw_event["m_emcDigiCol"]["m_intId"]
+    emc_fields = ["gid", "part", "theta", "phi"]
+
+    module_ak = identifier.emc_id_to_module(emc_id_ak)
+    theta_ak = identifier.emc_id_to_theta(emc_id_ak)
+    phi_ak = identifier.emc_id_to_phi(emc_id_ak)
+
+    # Test awkward
+    ak_res1 = identifier.parse_emc_id(emc_id_ak)
+    assert ak_res1.fields == emc_fields
+    assert len(ak_res1.positional_axis) == 2
+    assert ak.all(ak_res1["part"] == module_ak)
+    assert ak.all(ak_res1["theta"] == theta_ak)
+    assert ak.all(ak_res1["phi"] == phi_ak)
+
+    emc_id_np = ak.flatten(emc_id_ak).to_numpy()
+    module_np = ak.flatten(module_ak).to_numpy()
+    theta_np = ak.flatten(theta_ak).to_numpy()
+    phi_np = ak.flatten(phi_ak).to_numpy()
+
+    # Test numpy
+    np_res = identifier.parse_emc_id(emc_id_np)
+    assert list(np_res.keys()) == emc_fields
+    assert np.all(np_res["part"] == module_np)
+    assert np.all(np_res["theta"] == theta_np)
+    assert np.all(np_res["phi"] == phi_np)
+
+    # Test int output
+    emc_id_int = int(emc_id_np[0])
+    int_res = identifier.parse_emc_id(emc_id_int)
+    assert int_res["part"] == module_np[0]
+    assert int_res["theta"] == theta_np[0]
+    assert int_res["phi"] == phi_np[0]
+
+
+def test_parse_emc_digi(rtraw_event):
+    emc_digi_ak: ak.Array = rtraw_event["m_emcDigiCol"]
+    fields = [
+        "gid",
+        "part",
+        "theta",
+        "phi",
+        "charge_channel",
+        "time_channel",
+        "track_index",
+        "measure",
+        "id",
+    ]
+
+    ak_res1 = identifier.parse_emc_digi(emc_digi_ak)
+    assert ak_res1.fields == fields
+    assert len(ak_res1.positional_axis) == 2
+
+    flat_emc_digi_ak = ak.flatten(emc_digi_ak)
+    emc_digi_np = {k: flat_emc_digi_ak[k].to_numpy() for k in flat_emc_digi_ak.fields}
+    np_res = identifier.parse_emc_digi(emc_digi_np)
+    assert list(np_res.keys()) == fields
+    for field in fields:
+        assert np.asarray(np_res[field]).ndim == 1
+
+
+def test_tof_id(rtraw_event):
+    tof_id_ak: ak.Array = rtraw_event["m_tofDigiCol"]["m_intId"]
+
+    # Test awkward
+    ak_part, ak_layer_or_module, ak_phi_or_strip, ak_end = (
+        identifier.tof_id_to_part(tof_id_ak),
+        identifier.tof_id_to_layer_or_module(tof_id_ak),
+        identifier.tof_id_to_phi_or_strip(tof_id_ak),
+        identifier.tof_id_to_end(tof_id_ak),
+    )
+    assert ak.all(
+        identifier.get_tof_id(ak_part, ak_layer_or_module, ak_phi_or_strip, ak_end)
+        == tof_id_ak
+    )
+    assert ak.all(identifier.check_tof_id(tof_id_ak))
+
+    # Test numpy
+    tof_id_np = ak.flatten(tof_id_ak).to_numpy()
+    np_part, np_layer_or_module, np_phi_or_strip, np_end = (
+        identifier.tof_id_to_part(tof_id_np),
+        identifier.tof_id_to_layer_or_module(tof_id_np),
+        identifier.tof_id_to_phi_or_strip(tof_id_np),
+        identifier.tof_id_to_end(tof_id_np),
+    )
+    assert np.all(
+        identifier.get_tof_id(np_part, np_layer_or_module, np_phi_or_strip, np_end)
+        == tof_id_np
+    )
+    assert np.all(identifier.check_tof_id(tof_id_np))
+
+    # Test uint32
+    tmp_id = tof_id_np[0]
+    tmp_part, tmp_layer_or_module, tmp_phi_or_strip, tmp_end = (
+        identifier.tof_id_to_part(tmp_id),
+        identifier.tof_id_to_layer_or_module(tmp_id),
+        identifier.tof_id_to_phi_or_strip(tmp_id),
+        identifier.tof_id_to_end(tmp_id),
+    )
+    assert tmp_part == np_part[0]
+    assert tmp_layer_or_module == np_layer_or_module[0]
+    assert tmp_phi_or_strip == np_phi_or_strip[0]
+    assert tmp_end == np_end[0]
+    assert (
+        identifier.get_tof_id(tmp_part, tmp_layer_or_module, tmp_phi_or_strip, tmp_end)
+        == tmp_id
+    )
+    assert identifier.check_tof_id(tmp_id)
+
+    # Test python int
+    tmp_id = int(tof_id_np[0])
+    tmp_part, tmp_layer_or_module, tmp_phi_or_strip, tmp_end = (
+        identifier.tof_id_to_part(tmp_id),
+        identifier.tof_id_to_layer_or_module(tmp_id),
+        identifier.tof_id_to_phi_or_strip(tmp_id),
+        identifier.tof_id_to_end(tmp_id),
+    )
+    assert tmp_part == np_part[0]
+    assert tmp_layer_or_module == np_layer_or_module[0]
+    assert tmp_phi_or_strip == np_phi_or_strip[0]
+    assert tmp_end == np_end[0]
+    assert (
+        identifier.get_tof_id(tmp_part, tmp_layer_or_module, tmp_phi_or_strip, tmp_end)
+        == tmp_id
+    )
+    assert identifier.check_tof_id(tmp_id)
+
+
+def test_parse_tof_id(test_data_dir):
+    tof_id_ak: ak.Array = uproot.open(test_data_dir / "test_mrpc.rtraw")[
+        "Event/TDigiEvent/m_tofDigiCol"
+    ].array()["m_intId"]
+
+    part_ak = identifier.tof_id_to_part(tof_id_ak)
+    layer_or_module_ak = identifier.tof_id_to_layer_or_module(tof_id_ak)
+    phi_or_strip_ak = identifier.tof_id_to_phi_or_strip(tof_id_ak)
+    end_ak = identifier.tof_id_to_end(tof_id_ak)
+
+    # Test awkward
+    ak_res1 = identifier.parse_tof_id(tof_id_ak)
+    assert ak_res1.fields == ["part", "layer_or_module", "phi_or_strip", "end"]
+    assert len(ak_res1.positional_axis) == 2
+    assert ak.all(ak_res1["part"] == part_ak)
+    assert ak.all(ak_res1["layer_or_module"] == layer_or_module_ak)
+    assert ak.all(ak_res1["phi_or_strip"] == phi_or_strip_ak)
+    assert ak.all(ak_res1["end"] == end_ak)
+
+    tof_id_np = ak.flatten(tof_id_ak).to_numpy()
+    part_np = ak.flatten(part_ak).to_numpy()
+    layer_or_module_np = ak.flatten(layer_or_module_ak).to_numpy()
+    phi_or_strip_np = ak.flatten(phi_or_strip_ak).to_numpy()
+    end_np = ak.flatten(end_ak).to_numpy()
+
+    # Test numpy
+    np_res = identifier.parse_tof_id(tof_id_np)
+    assert list(np_res.keys()) == ["part", "layer_or_module", "phi_or_strip", "end"]
+    assert np.all(np_res["part"] == part_np)
+    assert np.all(np_res["layer_or_module"] == layer_or_module_np)
+    assert np.all(np_res["phi_or_strip"] == phi_or_strip_np)
+    assert np.all(np_res["end"] == end_np)
+
+    # Test int
+    tof_id_int = int(tof_id_np[0])
+    int_res = identifier.parse_tof_id(tof_id_int)
+    assert list(int_res.keys()) == ["part", "layer_or_module", "phi_or_strip", "end"]
+    assert int_res["part"] == part_np[0]
+    assert int_res["layer_or_module"] == layer_or_module_np[0]
+    assert int_res["phi_or_strip"] == phi_or_strip_np[0]
+    assert int_res["end"] == end_np[0]
+
+
+def test_muc_id(rtraw_event):
+    muc_id_ak: ak.Array = rtraw_event["m_mucDigiCol"]["m_intId"]
+
+    # Test awkward
+    ak_part, ak_segment, ak_layer, ak_channel, ak_gap, ak_strip = (
+        identifier.muc_id_to_part(muc_id_ak),
+        identifier.muc_id_to_segment(muc_id_ak),
+        identifier.muc_id_to_layer(muc_id_ak),
+        identifier.muc_id_to_channel(muc_id_ak),
+        identifier.muc_id_to_gap(muc_id_ak),
+        identifier.muc_id_to_strip(muc_id_ak),
+    )
+    assert ak.all(
+        identifier.get_muc_id(ak_part, ak_segment, ak_layer, ak_channel) == muc_id_ak
+    )
+    assert ak.all(identifier.check_muc_id(muc_id_ak))
+    assert ak.all(ak_layer == ak_gap)
+    assert ak.all(ak_channel == ak_strip)
+
+    # Test numpy
+    muc_id_np = ak.flatten(muc_id_ak).to_numpy()
+    np_part, np_segment, np_layer, np_channel, np_gap, np_strip = (
+        identifier.muc_id_to_part(muc_id_np),
+        identifier.muc_id_to_segment(muc_id_np),
+        identifier.muc_id_to_layer(muc_id_np),
+        identifier.muc_id_to_channel(muc_id_np),
+        identifier.muc_id_to_gap(muc_id_np),
+        identifier.muc_id_to_strip(muc_id_np),
+    )
+    assert np.all(
+        identifier.get_muc_id(np_part, np_segment, np_layer, np_channel) == muc_id_np
+    )
+    assert np.all(identifier.check_muc_id(muc_id_np))
+    assert np.all(np_layer == np_gap)
+    assert np.all(np_channel == np_strip)
+
+    # Test uint32
+    tmp_id = muc_id_np[0]
+    tmp_part, tmp_segment, tmp_layer, tmp_channel, tmp_gap, tmp_strip = (
+        identifier.muc_id_to_part(tmp_id),
+        identifier.muc_id_to_segment(tmp_id),
+        identifier.muc_id_to_layer(tmp_id),
+        identifier.muc_id_to_channel(tmp_id),
+        identifier.muc_id_to_gap(tmp_id),
+        identifier.muc_id_to_strip(tmp_id),
+    )
+    assert tmp_part == np_part[0]
+    assert tmp_segment == np_segment[0]
+    assert tmp_layer == np_layer[0]
+    assert tmp_channel == np_channel[0]
+    assert tmp_gap == np_gap[0]
+    assert tmp_strip == np_strip[0]
+    assert identifier.get_muc_id(tmp_part, tmp_segment, tmp_layer, tmp_channel) == tmp_id
+    assert identifier.check_muc_id(tmp_id)
+
+    # Test python int
+    tmp_id = int(muc_id_np[0])
+    tmp_part, tmp_segment, tmp_layer, tmp_channel, tmp_gap, tmp_strip = (
+        identifier.muc_id_to_part(tmp_id),
+        identifier.muc_id_to_segment(tmp_id),
+        identifier.muc_id_to_layer(tmp_id),
+        identifier.muc_id_to_channel(tmp_id),
+        identifier.muc_id_to_gap(tmp_id),
+        identifier.muc_id_to_strip(tmp_id),
+    )
+    assert tmp_part == np_part[0]
+    assert tmp_segment == np_segment[0]
+    assert tmp_layer == np_layer[0]
+    assert tmp_channel == np_channel[0]
+    assert tmp_gap == np_gap[0]
+    assert tmp_strip == np_strip[0]
+    assert identifier.get_muc_id(tmp_part, tmp_segment, tmp_layer, tmp_channel) == tmp_id
+    assert identifier.check_muc_id(tmp_id)
+
+
+def test_parse_muc_id(test_data_dir):
+    muc_id_ak: ak.Array = uproot.open(test_data_dir / "test_full_mc_evt_1.rtraw")[
+        "Event/TDigiEvent/m_mucDigiCol"
+    ].array()["m_intId"]
+
+    part_ak = identifier.muc_id_to_part(muc_id_ak)
+    segment_ak = identifier.muc_id_to_segment(muc_id_ak)
+    layer_ak = identifier.muc_id_to_layer(muc_id_ak)
+    channel_ak = identifier.muc_id_to_channel(muc_id_ak)
+    gap_ak = identifier.muc_id_to_gap(muc_id_ak)
+    strip_ak = identifier.muc_id_to_strip(muc_id_ak)
+
+    # Test awkward, flat=False, library='ak'
+    ak_res1 = identifier.parse_muc_id(muc_id_ak)
+    assert ak_res1.fields == [
+        "part",
+        "segment",
+        "layer",
+        "channel",
+        "gap",
+        "strip",
+    ]
+    assert len(ak_res1.positional_axis) == 2
+    assert ak.all(ak_res1["part"] == part_ak)
+    assert ak.all(ak_res1["segment"] == segment_ak)
+    assert ak.all(ak_res1["layer"] == layer_ak)
+    assert ak.all(ak_res1["channel"] == channel_ak)
+    assert ak.all(ak_res1["gap"] == gap_ak)
+    assert ak.all(ak_res1["strip"] == strip_ak)
+
+    muc_id_np = ak.flatten(muc_id_ak).to_numpy()
+    part_np = ak.flatten(part_ak).to_numpy()
+    segment_np = ak.flatten(segment_ak).to_numpy()
+    layer_np = ak.flatten(layer_ak).to_numpy()
+    channel_np = ak.flatten(channel_ak).to_numpy()
+    gap_np = ak.flatten(gap_ak).to_numpy()
+    strip_np = ak.flatten(strip_ak).to_numpy()
+
+    # Test numpy
+    np_res = identifier.parse_muc_id(muc_id_np)
+    assert list(np_res.keys()) == [
+        "part",
+        "segment",
+        "layer",
+        "channel",
+        "gap",
+        "strip",
+    ]
+    assert np.all(np_res["part"] == part_np)
+    assert np.all(np_res["segment"] == segment_np)
+    assert np.all(np_res["layer"] == layer_np)
+    assert np.all(np_res["channel"] == channel_np)
+    assert np.all(np_res["gap"] == gap_np)
+    assert np.all(np_res["strip"] == strip_np)
+
+    # Test int
+    muc_id_int = int(muc_id_np[0])
+    int_res = identifier.parse_muc_id(muc_id_int)
+    assert list(int_res.keys()) == [
+        "part",
+        "segment",
+        "layer",
+        "channel",
+        "gap",
+        "strip",
+    ]
+    assert int_res["part"] == part_np[0]
+    assert int_res["segment"] == segment_np[0]
+    assert int_res["layer"] == layer_np[0]
+    assert int_res["channel"] == channel_np[0]
+    assert int_res["gap"] == gap_np[0]
+    assert int_res["strip"] == strip_np[0]
+
+
+def test_cgem_id(test_data_dir):
+    cgem_id_ak: ak.Array = uproot.open(test_data_dir / "test_cgem.rtraw")[
+        "Event/TDigiEvent/m_cgemDigiCol"
+    ].array()["m_intId"]
+
+    # Test awkward
+    ak_layer, ak_sheet, ak_strip_type, ak_strip = (
+        identifier.cgem_id_to_layer(cgem_id_ak),
+        identifier.cgem_id_to_sheet(cgem_id_ak),
+        identifier.cgem_id_to_strip_type(cgem_id_ak),
+        identifier.cgem_id_to_strip(cgem_id_ak),
+    )
+    assert ak.all(
+        identifier.get_cgem_id(ak_layer, ak_sheet, ak_strip_type, ak_strip) == cgem_id_ak
+    )
+    assert ak.all(identifier.check_cgem_id(cgem_id_ak))
+
+    # Test numpy
+    cgem_id_np = ak.flatten(cgem_id_ak).to_numpy()
+    np_layer, np_sheet, np_strip_type, np_strip = (
+        identifier.cgem_id_to_layer(cgem_id_np),
+        identifier.cgem_id_to_sheet(cgem_id_np),
+        identifier.cgem_id_to_strip_type(cgem_id_np),
+        identifier.cgem_id_to_strip(cgem_id_np),
+    )
+    assert np.all(
+        identifier.get_cgem_id(np_layer, np_sheet, np_strip_type, np_strip) == cgem_id_np
+    )
+    assert np.all(identifier.check_cgem_id(cgem_id_np))
+
+    # Test uint32
+    tmp_id = cgem_id_np[0]
+    tmp_layer, tmp_sheet, tmp_strip_type, tmp_strip = (
+        identifier.cgem_id_to_layer(tmp_id),
+        identifier.cgem_id_to_sheet(tmp_id),
+        identifier.cgem_id_to_strip_type(tmp_id),
+        identifier.cgem_id_to_strip(tmp_id),
+    )
+    assert tmp_layer == np_layer[0]
+    assert tmp_sheet == np_sheet[0]
+    assert tmp_strip_type == np_strip_type[0]
+    assert tmp_strip == np_strip[0]
+    assert identifier.get_cgem_id(tmp_layer, tmp_sheet, tmp_strip_type, tmp_strip) == tmp_id
+    assert identifier.check_cgem_id(tmp_id)
+
+    # Test python int
+    tmp_id = int(cgem_id_np[0])
+    tmp_layer, tmp_sheet, tmp_strip_type, tmp_strip = (
+        identifier.cgem_id_to_layer(tmp_id),
+        identifier.cgem_id_to_sheet(tmp_id),
+        identifier.cgem_id_to_strip_type(tmp_id),
+        identifier.cgem_id_to_strip(tmp_id),
+    )
+    assert tmp_layer == np_layer[0]
+    assert tmp_sheet == np_sheet[0]
+    assert tmp_strip_type == np_strip_type[0]
+    assert tmp_strip == np_strip[0]
+    assert identifier.get_cgem_id(tmp_layer, tmp_sheet, tmp_strip_type, tmp_strip) == tmp_id
+    assert identifier.check_cgem_id(tmp_id)
+
+
+def test_parse_cgem_id(test_data_dir):
+    cgem_id_ak: ak.Array = uproot.open(test_data_dir / "test_cgem.rtraw")[
+        "Event/TDigiEvent/m_cgemDigiCol"
+    ].array()["m_intId"]
+
+    layer_ak = identifier.cgem_id_to_layer(cgem_id_ak)
+    sheet_ak = identifier.cgem_id_to_sheet(cgem_id_ak)
+    strip_type_ak = identifier.cgem_id_to_strip_type(cgem_id_ak)
+    strip_ak = identifier.cgem_id_to_strip(cgem_id_ak)
+
+    # Test awkward, flat=False, library='ak'
+    ak_res1 = identifier.parse_cgem_id(cgem_id_ak)
+    assert ak_res1.fields == ["layer", "sheet", "strip_type", "strip"]
+    assert len(ak_res1.positional_axis) == 2
+    assert ak.all(ak_res1["layer"] == layer_ak)
+    assert ak.all(ak_res1["sheet"] == sheet_ak)
+    assert ak.all(ak_res1["strip_type"] == strip_type_ak)
+    assert ak.all(ak_res1["strip"] == strip_ak)
+
+    cgem_id_np = ak.flatten(cgem_id_ak).to_numpy()
+    layer_np = ak.flatten(layer_ak).to_numpy()
+    sheet_np = ak.flatten(sheet_ak).to_numpy()
+    strip_type_np = ak.flatten(strip_type_ak).to_numpy()
+    strip_np = ak.flatten(strip_ak).to_numpy()
+
+    # Test numpy
+    np_res = identifier.parse_cgem_id(cgem_id_np)
+    assert list(np_res.keys()) == ["layer", "sheet", "strip_type", "strip"]
+    assert np.all(np_res["layer"] == layer_np)
+    assert np.all(np_res["sheet"] == sheet_np)
+    assert np.all(np_res["strip_type"] == strip_type_np)
+    assert np.all(np_res["strip"] == strip_np)
+
+    # Test int
+    cgem_id_int = int(cgem_id_np[0])
+    int_res = identifier.parse_cgem_id(cgem_id_int)
+    assert list(int_res.keys()) == ["layer", "sheet", "strip_type", "strip"]
+    assert int_res["layer"] == layer_np[0]
+    assert int_res["sheet"] == sheet_np[0]
+    assert int_res["strip_type"] == strip_type_np[0]
+    assert int_res["strip"] == strip_np[0]
+
+
+def test_mdc_id_to_gid(rtraw_event):
+    from pybes3 import detectors as det
+
+    mdc_id_ak: ak.Array = rtraw_event["m_mdcDigiCol"]["m_intId"]
+
+    # gid should equal det.get_mdc_gid(layer, wire)
+    expected_gid = det.get_mdc_gid(
+        identifier.mdc_id_to_layer(mdc_id_ak),
+        identifier.mdc_id_to_wire(mdc_id_ak),
+    )
+    assert ak.all(identifier.mdc_id_to_gid(mdc_id_ak) == expected_gid)
+
+    mdc_id_np = ak.flatten(mdc_id_ak).to_numpy()
+    expected_gid_np = ak.flatten(expected_gid).to_numpy()
+    assert np.all(identifier.mdc_id_to_gid(mdc_id_np) == expected_gid_np)
+
+    tmp_id = mdc_id_np[0]
+    assert identifier.mdc_id_to_gid(tmp_id) == expected_gid_np[0]
+    assert identifier.mdc_id_to_gid(int(tmp_id)) == expected_gid_np[0]
+
+
+def test_emc_id_to_gid(rtraw_event):
+    from pybes3 import detectors as det
+
+    emc_id_ak: ak.Array = rtraw_event["m_emcDigiCol"]["m_intId"]
+
+    expected_gid = det.get_emc_gid(
+        identifier.emc_id_to_module(emc_id_ak),
+        identifier.emc_id_to_theta(emc_id_ak),
+        identifier.emc_id_to_phi(emc_id_ak),
+    )
+    assert ak.all(identifier.emc_id_to_gid(emc_id_ak) == expected_gid)
+
+    emc_id_np = ak.flatten(emc_id_ak).to_numpy()
+    expected_gid_np = ak.flatten(expected_gid).to_numpy()
+    assert np.all(identifier.emc_id_to_gid(emc_id_np) == expected_gid_np)
+
+    tmp_id = emc_id_np[0]
+    assert identifier.emc_id_to_gid(tmp_id) == expected_gid_np[0]
+    assert identifier.emc_id_to_gid(int(tmp_id)) == expected_gid_np[0]
+
+
+def test_tof_id_to_gid(test_data_dir):
+    from pybes3 import detectors as det
+
+    tof_id_ak: ak.Array = uproot.open(test_data_dir / "test_mrpc.rtraw")[
+        "Event/TDigiEvent/m_tofDigiCol"
+    ].array()["m_intId"]
+
+    part_ak = identifier.tof_id_to_part(tof_id_ak)
+    expected_gid = det.get_tof_gid(
+        part_ak,
+        identifier.tof_id_to_layer_or_module(tof_id_ak, part_ak),
+        identifier.tof_id_to_phi_or_strip(tof_id_ak, part_ak),
+    )
+    assert ak.all(identifier.tof_id_to_gid(tof_id_ak) == expected_gid)
+
+    tof_id_np = ak.flatten(tof_id_ak).to_numpy()
+    expected_gid_np = ak.flatten(expected_gid).to_numpy()
+    assert np.all(identifier.tof_id_to_gid(tof_id_np) == expected_gid_np)
+
+    tmp_id = tof_id_np[0]
+    assert identifier.tof_id_to_gid(tmp_id) == expected_gid_np[0]
+    assert identifier.tof_id_to_gid(int(tmp_id)) == expected_gid_np[0]
+
+
+def test_cgem_id_to_gid(test_data_dir):
+    from pybes3 import detectors as det
+
+    cgem_id_ak: ak.Array = uproot.open(test_data_dir / "test_cgem.rtraw")[
+        "Event/TDigiEvent/m_cgemDigiCol"
+    ].array()["m_intId"]
+
+    expected_gid = det.get_cgem_gid(
+        identifier.cgem_id_to_layer(cgem_id_ak),
+        identifier.cgem_id_to_sheet(cgem_id_ak),
+        identifier.cgem_id_to_strip_type(cgem_id_ak),
+        identifier.cgem_id_to_strip(cgem_id_ak),
+    )
+    assert ak.all(identifier.cgem_id_to_gid(cgem_id_ak) == expected_gid)
+
+    cgem_id_np = ak.flatten(cgem_id_ak).to_numpy()
+    expected_gid_np = ak.flatten(expected_gid).to_numpy()
+    assert np.all(identifier.cgem_id_to_gid(cgem_id_np) == expected_gid_np)
+
+    tmp_id = cgem_id_np[0]
+    assert identifier.cgem_id_to_gid(tmp_id) == expected_gid_np[0]
+    assert identifier.cgem_id_to_gid(int(tmp_id)) == expected_gid_np[0]
+
+
+if __name__ == "__main__":
+    import pytest
+
+    pytest.main([__file__, "-v", "-s"])

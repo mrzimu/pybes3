@@ -9,6 +9,12 @@ check_numba_cache()
 from pybes3._version import __version__, version
 from pybes3.besio import concatenate, concatenate_raw, open, open_raw
 from pybes3.detectors import (
+    cgem_gid_to_is_vstrip,
+    cgem_gid_to_is_xstrip,
+    cgem_gid_to_layer,
+    cgem_gid_to_sheet,
+    cgem_gid_to_strip,
+    cgem_gid_to_strip_type,
     emc_barrel_h1,
     emc_barrel_h2,
     emc_barrel_h3,
@@ -28,10 +34,12 @@ from pybes3.detectors import (
     emc_gid_to_point_y,
     emc_gid_to_point_z,
     emc_gid_to_theta,
+    get_cgem_gid,
     get_emc_crystal_position,
     get_emc_gid,
     get_mdc_gid,
     get_mdc_wire_position,
+    get_tof_gid,
     mdc_gid_to_east_x,
     mdc_gid_to_east_y,
     mdc_gid_to_east_z,
@@ -47,31 +55,13 @@ from pybes3.detectors import (
     mdc_gid_z_to_y,
     mdc_layer_to_is_stereo,
     mdc_layer_to_superlayer,
+    parse_cgem_gid,
     parse_emc_gid,
     parse_mdc_gid,
-    cgem_gid_to_is_vstrip,
-    cgem_gid_to_is_xstrip,
-    cgem_gid_to_layer,
-    cgem_gid_to_sheet,
-    cgem_gid_to_strip,
-    cgem_gid_to_strip_type,
-    get_cgem_gid,
-    parse_cgem_gid,
-    get_tof_gid,
     parse_tof_gid,
     tof_gid_to_layer_or_module,
     tof_gid_to_part,
     tof_gid_to_phi_or_strip,
-)
-
-from pybes3.digi_id import (
-    parse_cgem_digi_id,
-    parse_emc_digi,
-    parse_emc_digi_id,
-    parse_mdc_digi,
-    parse_mdc_digi_id,
-    parse_muc_digi_id,
-    parse_tof_digi_id,
 )
 from pybes3.helix import (
     HelixObject,
@@ -147,14 +137,6 @@ __all__ = [
     "get_emc_crystal_position",
     "get_emc_gid",
     "parse_emc_gid",
-    # digi_id
-    "parse_cgem_digi_id",
-    "parse_emc_digi",
-    "parse_emc_digi_id",
-    "parse_mdc_digi",
-    "parse_mdc_digi_id",
-    "parse_muc_digi_id",
-    "parse_tof_digi_id",
     # tracks
     "HelixObject",
     "dr_phi0_to_x",

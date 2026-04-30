@@ -49,11 +49,7 @@ def _ensure_loaded():
 
 
 @nb.vectorize(cache=True)
-def get_tof_gid(
-    part: IntLike,
-    layer_or_module: IntLike,
-    phi_or_strip: IntLike,
-) -> IntLike:
+def get_tof_gid(part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike) -> IntLike:
     """
     Get TOF gid of given part, layer_or_module and phi_or_strip.
 

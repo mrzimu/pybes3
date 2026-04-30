@@ -470,8 +470,6 @@ def helix_obj(*args, **kwargs) -> HelixObject:
 
 
 ###############################################################################################
-
-
 @nb.vectorize(cache=True)
 def dr_phi0_to_x(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     """
@@ -757,7 +755,7 @@ class HelixAwkwardRecord(ak.Record):
         Returns the radius of the helix.
 
         Returns:
-            float: The radius of the helix in mm.
+            The radius of the helix in mm.
         """
         return kappa_to_radius(self.kappa)
 
@@ -920,12 +918,12 @@ def _fix_dr_sign(dr: FloatLike, phi0: FloatLike, dist_phi: FloatLike) -> FloatLi
     Fix the sign of dr based on the azimuthal angle.
 
     Parameters:
-        dr (float): The radial distance.
-        phi0 (float): The azimuthal angle.
-        dist_phi (float): The difference between the azimuthal angle and phi0.
+        dr: The radial distance.
+        phi0: The azimuthal angle.
+        dist_phi: The difference between the azimuthal angle and phi0.
 
     Returns:
-        float: The corrected radial distance.
+        The corrected radial distance.
     """
     if not np.isclose(dist_phi % (2 * np.pi), phi0):
         return -dr

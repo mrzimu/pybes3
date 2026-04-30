@@ -9,62 +9,68 @@ When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, `muc`, an
 
 
 ```python
-import pybes3 as p3
+import pybes3.identifier as p3id
 import uproot
 
 # read raw digi array
 mdc_digi = uproot.open("test.rtraw")["Event/TDigiEvent/m_mdcDigiCol"].array()
 
 # parse whole digi array
-mdc_digi = p3.parse_mdc_digi(mdc_digi)
+mdc_digi = p3id.parse_mdc_digi(mdc_digi)
 ```
 
 ## Standalone digi-ID parsing
 
-When full digi array parsing is not necessary or not yet supported, use `parse_xxx_digi_id` methods (where `xxx` is the detector name: `cgem`, `mdc`, `tof`, `emc`, `muc`) to parse only the digi ID:
+When full digi array parsing is not necessary or not yet supported, use `parse_xxx_id` methods (where `xxx` is the detector name: `cgem`, `mdc`, `tof`, `emc`, `muc`) to parse only the digi ID:
 
 ```python
+import pybes3.identifier as p3id
+import uproot
+
 # read raw digi array
 tof_digi = uproot.open("test.rtraw")["Event/TDigiEvent/m_tofDigiCol"].array()
 emc_digi = uproot.open("test.rtraw")["Event/TDigiEvent/m_emcDigiCol"].array()
 
 # parse digi ID
-tof_digi_id = p3.parse_tof_digi_id(tof_digi["m_intId"])
-emc_digi_id = p3.parse_emc_digi_id(emc_digi["m_intId"])
+tof_id = p3id.parse_tof_id(tof_digi["m_intId"])
+emc_id = p3id.parse_emc_id(emc_digi["m_intId"])
 ```
 
 !!! info
-    As `pybes3.detectors.geometry` continues to develop, the `parse_xxx_digi_id` methods will be updated to return additional fields.
+    `parse_mdc_id` and `parse_emc_id` currently return detector ID-related fields only.
 
 ## Convert digi ID to a specific field
 
 ```python
-import pybes3.detectors.digi_id as digi_id
+import pybes3.identifier as p3id
 
 # get TOF part number
-tof_part = digi_id.tof_id_to_part(tof_digi["m_intId"])
+tof_part = p3id.tof_id_to_part(tof_digi["m_intId"])
 
 # get EMC theta number
-emc_theta = digi_id.emc_id_to_theta(emc_digi["m_intId"])
+emc_theta = p3id.emc_id_to_theta(emc_digi["m_intId"])
+
+# get detector gid from electronics ID
+tof_gid = p3id.tof_id_to_gid(tof_digi["m_intId"])
 ```
 
-See the [Digi Identifier API](../api/pybes3.digi_id.md) for all available methods.
+See the [Identifier API](../api/pybes3.identifier.md) for all available methods.
 
 ## Digi-ID calculation
 
-To compute `m_intId` from geometry numbers, use `get_xxx_digi_id` methods (where `xxx` is the detector name: `cgem`, `mdc`, `tof`, `emc`, `muc`):
+To compute `m_intId` from geometry numbers, use `get_xxx_id` methods (where `xxx` is the detector name: `cgem`, `mdc`, `tof`, `emc`, `muc`):
 
 ```python
-import pybes3.detectors as p3det
+import pybes3.identifier as p3id
 
 # get TOF digi geometry numbers
-part = tof_digi_id["part"]
-layer_or_module = tof_digi_id["layer_or_module"]
-phi_or_strip = tof_digi_id["phi_or_strip"]
-end = tof_digi_id["end"]
+part = tof_id["part"]
+layer_or_module = tof_id["layer_or_module"]
+phi_or_strip = tof_id["phi_or_strip"]
+end = tof_id["end"]
 
 # calculate TOF digi ID
-tof_digi_id = p3det.get_tof_digi_id(part, layer_or_module, phi_or_strip, end)
+tof_int_id = p3id.get_tof_id(part, layer_or_module, phi_or_strip, end)
 ```
 
 !!! info

@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from typing import Any
+
 import awkward as ak
 import numba as nb
 import numpy as np
 
 from pybes3._utils import _make_lazy
-from pybes3.typing import IntLike, BoolLike
+from pybes3.typing import BoolLike, IntLike
 
 N_LAYER = 3
 N_STRIPS = 9897
@@ -66,10 +68,7 @@ def _ensure_loaded():
 
 @nb.vectorize(cache=True)
 def get_cgem_gid(
-    layer: IntLike,
-    sheet: IntLike,
-    strip_type: IntLike,
-    strip: IntLike,
+    layer: IntLike, sheet: IntLike, strip_type: IntLike, strip: IntLike
 ) -> IntLike:
     """
     Get CGEM gid of given layer, sheet, strip_type and strip.
@@ -172,7 +171,7 @@ def cgem_gid_to_is_vstrip(gid: IntLike) -> BoolLike:
     return cgem_gid_to_strip_type(gid) == V_STRIP_TYPE
 
 
-def parse_cgem_gid(gid: IntLike) -> ak.Array | dict[str, IntLike | BoolLike]:
+def parse_cgem_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
     """
     Parse CGEM gid into layer, sheet, strip type and strip number.
 
