@@ -137,7 +137,7 @@ def test_parse_mdc_digi(rtraw_event):
         "time_channel",
         "track_index",
         "overflow",
-        "id",
+        "digi_id",
     ]
 
     opt_fields = [
@@ -275,7 +275,7 @@ def test_parse_emc_digi(rtraw_event):
         "time_channel",
         "track_index",
         "measure",
-        "id",
+        "digi_id",
     ]
 
     opt_fields = [

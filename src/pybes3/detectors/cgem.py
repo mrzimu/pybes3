@@ -7,7 +7,7 @@ import numba as nb
 import numpy as np
 
 from pybes3._utils import _make_lazy
-from pybes3.typing import ArrayLike, IntLike
+from pybes3.typing import ArrayLike, BoolLike, IntLike
 
 N_LAYER = 3
 N_STRIPS = 9897
@@ -209,7 +209,7 @@ def cgem_gid_to_is_xstrip(gid: ArrayLike) -> ArrayLike: ...
 def cgem_gid_to_is_xstrip(gid: np.integer) -> np.bool_: ...
 
 
-def cgem_gid_to_is_xstrip(gid: IntLike) -> IntLike:
+def cgem_gid_to_is_xstrip(gid: IntLike) -> BoolLike:
     """
     Check whether a CGEM gid corresponds to an x-strip.
 
@@ -228,7 +228,7 @@ def cgem_gid_to_is_vstrip(gid: ArrayLike) -> ArrayLike: ...
 def cgem_gid_to_is_vstrip(gid: np.integer) -> np.bool_: ...
 
 
-def cgem_gid_to_is_vstrip(gid: IntLike) -> IntLike:
+def cgem_gid_to_is_vstrip(gid: IntLike) -> BoolLike:
     """
     Check whether a CGEM gid corresponds to a v-strip.
 
