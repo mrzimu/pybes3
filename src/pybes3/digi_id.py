@@ -14,6 +14,7 @@ warnings.warn(
     "'pybes3.digi_id' is deprecated and will be removed in the future. "
     "Use 'pybes3.identifier' instead.",
     DeprecationWarning,
+    stacklevel=2,
 )
 
 DIGI_MDC_FLAG = np.uint32(0x10)
