@@ -99,7 +99,7 @@ def test_parse_mdc_id(rtraw_event):
 
 
 def test_parse_mdc_digi(rtraw_event):
-    mdc_digi_ak: ak.Record = rtraw_event["m_mdcDigiCol"]
+    mdc_digi_ak: ak.Array = rtraw_event["m_mdcDigiCol"]
     fields = [
         "gid",
         "wire",
