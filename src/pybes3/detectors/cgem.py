@@ -1,11 +1,13 @@
 from __future__ import annotations
 
+from typing import Any, overload
+
 import awkward as ak
 import numba as nb
 import numpy as np
 
 from pybes3._utils import _make_lazy
-from pybes3.typing import IntLike, BoolLike
+from pybes3.typing import ArrayLike
 
 N_LAYER = 3
 N_STRIPS = 9897
@@ -64,13 +66,42 @@ def _ensure_loaded():
     _loaded = True
 
 
-@nb.vectorize(cache=True)
+@overload
 def get_cgem_gid(
-    layer: IntLike,
-    sheet: IntLike,
-    strip_type: IntLike,
-    strip: IntLike,
-) -> IntLike:
+    layer: ArrayLike,
+    sheet: np.integer | ArrayLike,
+    strip_type: np.integer | ArrayLike,
+    strip: np.integer | ArrayLike,
+) -> ArrayLike: ...
+@overload
+def get_cgem_gid(
+    layer: np.integer | ArrayLike,
+    sheet: ArrayLike,
+    strip_type: np.integer | ArrayLike,
+    strip: np.integer | ArrayLike,
+) -> ArrayLike: ...
+@overload
+def get_cgem_gid(
+    layer: np.integer | ArrayLike,
+    sheet: np.integer | ArrayLike,
+    strip_type: ArrayLike,
+    strip: np.integer | ArrayLike,
+) -> ArrayLike: ...
+@overload
+def get_cgem_gid(
+    layer: np.integer | ArrayLike,
+    sheet: np.integer | ArrayLike,
+    strip_type: np.integer | ArrayLike,
+    strip: ArrayLike,
+) -> ArrayLike: ...
+@overload
+def get_cgem_gid(
+    layer: np.integer, sheet: np.integer, strip_type: np.integer, strip: np.integer
+) -> np.integer: ...
+
+
+@nb.vectorize(cache=True)
+def get_cgem_gid(layer, sheet, strip_type, strip):
     """
     Get CGEM gid of given layer, sheet, strip_type and strip.
 
@@ -90,8 +121,14 @@ def get_cgem_gid(
     return gid
 
 
+@overload
+def cgem_gid_to_layer(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def cgem_gid_to_layer(gid: np.integer) -> np.integer: ...
+
+
 @nb.vectorize(cache=True)
-def cgem_gid_to_layer(gid: IntLike) -> IntLike:
+def cgem_gid_to_layer(gid):
     """
     Convert CGEM gid to layer.
 
@@ -104,8 +141,14 @@ def cgem_gid_to_layer(gid: IntLike) -> IntLike:
     return _layer[gid]
 
 
+@overload
+def cgem_gid_to_sheet(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def cgem_gid_to_sheet(gid: np.integer) -> np.integer: ...
+
+
 @nb.vectorize(cache=True)
-def cgem_gid_to_sheet(gid: IntLike) -> IntLike:
+def cgem_gid_to_sheet(gid):
     """
     Convert CGEM gid to sheet.
 
@@ -118,8 +161,14 @@ def cgem_gid_to_sheet(gid: IntLike) -> IntLike:
     return _sheet[gid]
 
 
+@overload
+def cgem_gid_to_strip_type(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def cgem_gid_to_strip_type(gid: np.integer) -> np.integer: ...
+
+
 @nb.vectorize(cache=True)
-def cgem_gid_to_strip_type(gid: IntLike) -> IntLike:
+def cgem_gid_to_strip_type(gid):
     """
     Convert CGEM gid to strip type.
 
@@ -132,8 +181,14 @@ def cgem_gid_to_strip_type(gid: IntLike) -> IntLike:
     return _strip_type[gid]
 
 
+@overload
+def cgem_gid_to_strip(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def cgem_gid_to_strip(gid: np.integer) -> np.integer: ...
+
+
 @nb.vectorize(cache=True)
-def cgem_gid_to_strip(gid: IntLike) -> IntLike:
+def cgem_gid_to_strip(gid):
     """
     Convert CGEM gid to strip number.
 
@@ -146,7 +201,13 @@ def cgem_gid_to_strip(gid: IntLike) -> IntLike:
     return _strip[gid]
 
 
-def cgem_gid_to_is_xstrip(gid: IntLike) -> BoolLike:
+@overload
+def cgem_gid_to_is_xstrip(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def cgem_gid_to_is_xstrip(gid: np.integer) -> np.bool_: ...
+
+
+def cgem_gid_to_is_xstrip(gid) -> np.bool_:
     """
     Check whether a CGEM gid corresponds to an x-strip.
 
@@ -159,7 +220,13 @@ def cgem_gid_to_is_xstrip(gid: IntLike) -> BoolLike:
     return cgem_gid_to_strip_type(gid) == X_STRIP_TYPE
 
 
-def cgem_gid_to_is_vstrip(gid: IntLike) -> BoolLike:
+@overload
+def cgem_gid_to_is_vstrip(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def cgem_gid_to_is_vstrip(gid: np.integer) -> np.bool_: ...
+
+
+def cgem_gid_to_is_vstrip(gid) -> np.bool_:
     """
     Check whether a CGEM gid corresponds to a v-strip.
 
@@ -172,7 +239,7 @@ def cgem_gid_to_is_vstrip(gid: IntLike) -> BoolLike:
     return cgem_gid_to_strip_type(gid) == V_STRIP_TYPE
 
 
-def parse_cgem_gid(gid: IntLike) -> ak.Array | dict[str, IntLike | BoolLike]:
+def parse_cgem_gid(gid) -> ak.Array | dict[str, Any]:
     """
     Parse CGEM gid into layer, sheet, strip type and strip number.
 

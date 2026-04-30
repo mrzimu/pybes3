@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Literal
+from typing import Any, Literal, overload
 
 import awkward as ak
 import numba as nb
@@ -8,7 +8,7 @@ import numpy as np
 
 from pybes3._utils import _make_lazy
 from pybes3.data import EMC_GEOM
-from pybes3.typing import FloatLike, IntLike
+from pybes3.typing import ArrayLike
 
 ENDCAP_PHI_01 = 64
 ENDCAP_PHI_23 = 80
@@ -17,6 +17,8 @@ ENDCAP_CRYSTALS = 480
 
 BARREL_PHI = 120
 BARREL_CRYSTALS = 5280
+
+N_CRYSTALS = 6240
 
 # ---------------------------------------------------------------------------
 # Lazy loading: geometry arrays are loaded from disk on first use.
@@ -124,8 +126,24 @@ def get_emc_crystal_position(library: Literal["np", "ak", "pd"] = "np"):
         raise ValueError(f"Invalid library {library}. Choose from 'ak', 'np', 'pd'.")
 
 
+@overload
+def get_emc_gid(
+    part: ArrayLike, theta: np.integer | ArrayLike, phi: np.integer | ArrayLike
+) -> ArrayLike: ...
+@overload
+def get_emc_gid(
+    part: np.integer | ArrayLike, theta: ArrayLike, phi: np.integer | ArrayLike
+) -> ArrayLike: ...
+@overload
+def get_emc_gid(
+    part: np.integer | ArrayLike, theta: np.integer | ArrayLike, phi: ArrayLike
+) -> ArrayLike: ...
+@overload
+def get_emc_gid(part: np.integer, theta: np.integer, phi: np.integer) -> np.integer: ...
+
+
 @nb.vectorize(cache=True)
-def get_emc_gid(part: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
+def get_emc_gid(part, theta, phi):
     """
     Get EMC gid of given part, theta, and phi.
 
@@ -186,8 +204,14 @@ def get_emc_gid(part: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
     return np.uint16(65535)
 
 
+@overload
+def emc_gid_to_part(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_part(gid: np.integer) -> np.integer: ...
+
+
 @nb.vectorize(cache=True)
-def emc_gid_to_part(gid: IntLike) -> IntLike:
+def emc_gid_to_part(gid):
     """
     Convert EMC gid to part.
 
@@ -200,8 +224,14 @@ def emc_gid_to_part(gid: IntLike) -> IntLike:
     return _part[gid]
 
 
+@overload
+def emc_gid_to_theta(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_theta(gid: np.integer) -> np.integer: ...
+
+
 @nb.vectorize(cache=True)
-def emc_gid_to_theta(gid: IntLike) -> IntLike:
+def emc_gid_to_theta(gid):
     """
     Convert EMC gid to theta.
 
@@ -214,8 +244,14 @@ def emc_gid_to_theta(gid: IntLike) -> IntLike:
     return _theta[gid]
 
 
+@overload
+def emc_gid_to_phi(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_phi(gid: np.integer) -> np.integer: ...
+
+
 @nb.vectorize(cache=True)
-def emc_gid_to_phi(gid: IntLike) -> IntLike:
+def emc_gid_to_phi(gid):
     """
     Convert EMC gid to phi.
 
@@ -228,8 +264,16 @@ def emc_gid_to_phi(gid: IntLike) -> IntLike:
     return _phi[gid]
 
 
+@overload
+def emc_gid_to_point_x(gid: ArrayLike, point: np.integer | ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_point_x(gid: np.integer | ArrayLike, point: ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_point_x(gid: np.integer, point: np.integer) -> np.floating: ...
+
+
 @nb.vectorize(cache=True)
-def emc_gid_to_point_x(gid: IntLike, point: IntLike) -> FloatLike:
+def emc_gid_to_point_x(gid, point):
     """
     Convert EMC gid to x coordinate of the point.
 
@@ -243,8 +287,16 @@ def emc_gid_to_point_x(gid: IntLike, point: IntLike) -> FloatLike:
     return _points_x[gid, point]
 
 
+@overload
+def emc_gid_to_point_y(gid: ArrayLike, point: np.integer | ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_point_y(gid: np.integer | ArrayLike, point: ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_point_y(gid: np.integer, point: np.integer) -> np.floating: ...
+
+
 @nb.vectorize(cache=True)
-def emc_gid_to_point_y(gid: IntLike, point: IntLike) -> FloatLike:
+def emc_gid_to_point_y(gid, point):
     """
     Convert EMC gid to y coordinate of the point.
 
@@ -258,8 +310,16 @@ def emc_gid_to_point_y(gid: IntLike, point: IntLike) -> FloatLike:
     return _points_y[gid, point]
 
 
+@overload
+def emc_gid_to_point_z(gid: ArrayLike, point: np.integer | ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_point_z(gid: np.integer | ArrayLike, point: ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_point_z(gid: np.integer, point: np.integer) -> np.floating: ...
+
+
 @nb.vectorize(cache=True)
-def emc_gid_to_point_z(gid: IntLike, point: IntLike) -> FloatLike:
+def emc_gid_to_point_z(gid, point):
     """
     Convert EMC gid to z coordinate of the point.
 
@@ -273,8 +333,14 @@ def emc_gid_to_point_z(gid: IntLike, point: IntLike) -> FloatLike:
     return _points_z[gid, point]
 
 
+@overload
+def emc_gid_to_center_x(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_center_x(gid: np.integer) -> np.floating: ...
+
+
 @nb.vectorize(cache=True)
-def emc_gid_to_center_x(gid: IntLike) -> FloatLike:
+def emc_gid_to_center_x(gid):
     """
     Convert EMC gid to x coordinate of the crystal's center.
 
@@ -287,8 +353,14 @@ def emc_gid_to_center_x(gid: IntLike) -> FloatLike:
     return _center_x[gid]
 
 
+@overload
+def emc_gid_to_center_y(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_center_y(gid: np.integer) -> np.floating: ...
+
+
 @nb.vectorize(cache=True)
-def emc_gid_to_center_y(gid: IntLike) -> FloatLike:
+def emc_gid_to_center_y(gid):
     """
     Convert EMC gid to y coordinate of the crystal's center.
 
@@ -301,8 +373,14 @@ def emc_gid_to_center_y(gid: IntLike) -> FloatLike:
     return _center_y[gid]
 
 
+@overload
+def emc_gid_to_center_z(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_center_z(gid: np.integer) -> np.floating: ...
+
+
 @nb.vectorize(cache=True)
-def emc_gid_to_center_z(gid: IntLike) -> FloatLike:
+def emc_gid_to_center_z(gid):
     """
     Convert EMC gid to z coordinate of the crystal's center.
 
@@ -315,8 +393,14 @@ def emc_gid_to_center_z(gid: IntLike) -> FloatLike:
     return _center_z[gid]
 
 
+@overload
+def emc_gid_to_front_center_x(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_front_center_x(gid: np.integer) -> np.floating: ...
+
+
 @nb.vectorize(cache=True)
-def emc_gid_to_front_center_x(gid: IntLike) -> FloatLike:
+def emc_gid_to_front_center_x(gid):
     """
     Convert EMC gid to x coordinate of the crystal's front center.
 
@@ -329,8 +413,14 @@ def emc_gid_to_front_center_x(gid: IntLike) -> FloatLike:
     return _front_center_x[gid]
 
 
+@overload
+def emc_gid_to_front_center_y(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_front_center_y(gid: np.integer) -> np.floating: ...
+
+
 @nb.vectorize(cache=True)
-def emc_gid_to_front_center_y(gid: IntLike) -> FloatLike:
+def emc_gid_to_front_center_y(gid):
     """
     Convert EMC gid to y coordinate of the crystal's front center.
 
@@ -343,8 +433,14 @@ def emc_gid_to_front_center_y(gid: IntLike) -> FloatLike:
     return _front_center_y[gid]
 
 
+@overload
+def emc_gid_to_front_center_z(gid: ArrayLike) -> ArrayLike: ...
+@overload
+def emc_gid_to_front_center_z(gid: np.integer) -> np.floating: ...
+
+
 @nb.vectorize(cache=True)
-def emc_gid_to_front_center_z(gid: IntLike) -> FloatLike:
+def emc_gid_to_front_center_z(gid):
     """
     Convert EMC gid to z coordinate of the crystal's front center.
 
@@ -357,7 +453,7 @@ def emc_gid_to_front_center_z(gid: IntLike) -> FloatLike:
     return _front_center_z[gid]
 
 
-def parse_emc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, Any]:
+def parse_emc_gid(gid, with_pos=True) -> ak.Array | dict[str, Any]:
     """
     Parse the gid of EMC crystals. "gid" is the global ID of the crystal, ranges from 0 to 6239.
     When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.

@@ -64,7 +64,11 @@ from pybes3.detectors import (
     tof_gid_to_phi_or_strip,
 )
 
-from pybes3.digi_id import (
+from pybes3.identifier import (
+    cgem_id_to_gid,
+    emc_id_to_gid,
+    mdc_id_to_gid,
+    tof_id_to_gid,
     parse_cgem_digi_id,
     parse_emc_digi,
     parse_emc_digi_id,
@@ -147,7 +151,11 @@ __all__ = [
     "get_emc_crystal_position",
     "get_emc_gid",
     "parse_emc_gid",
-    # digi_id
+    # identifier
+    "cgem_id_to_gid",
+    "emc_id_to_gid",
+    "mdc_id_to_gid",
+    "tof_id_to_gid",
     "parse_cgem_digi_id",
     "parse_emc_digi",
     "parse_emc_digi_id",
