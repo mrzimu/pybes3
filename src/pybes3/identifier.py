@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal, overload
+from typing import overload
 
 import awkward as ak
 import numba as nb
@@ -211,15 +211,17 @@ def mdc_id_to_gid(mdc_id: IntLike) -> IntLike:
     return det.get_mdc_gid(mdc_id_to_layer(mdc_id), mdc_id_to_wire(mdc_id))
 
 
-def parse_mdc_id(
-    mdc_id: IntLike,
-    flat: bool = False,
-    library: Literal["ak", "np"] = "ak",
-) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
+@overload
+def parse_mdc_id(mdc_id: ak.Array) -> ak.Array: ...
+@overload
+def parse_mdc_id(mdc_id: np.ndarray) -> dict[str, np.ndarray]: ...
+@overload
+def parse_mdc_id(mdc_id: np.integer) -> dict[str, np.int_]: ...
+
+
+def parse_mdc_id(mdc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
     """
     Parse MDC digi ID.
-
-    If `library` is `ak`, return `ak.Array`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
 
@@ -230,17 +232,10 @@ def parse_mdc_id(
 
     Parameters:
         mdc_id: The MDC digi ID.
-        flat: Whether to flatten the output.
-        library: The library to use as output.
 
     Returns:
         The parsed MDC digi ID.
     """
-    if library not in ["ak", "np"]:
-        raise ValueError(f"Unsupported library: {library}")
-
-    if flat and isinstance(mdc_id, ak.Array):
-        mdc_id = ak.flatten(mdc_id)
 
     res = {
         "gid": mdc_id_to_gid(mdc_id),
@@ -249,17 +244,23 @@ def parse_mdc_id(
         "is_stereo": mdc_id_to_is_stereo(mdc_id),
     }
 
-    if library == "ak":
+    if isinstance(mdc_id, ak.Array):
         return ak.zip(res)
     else:
         return res
 
 
+@overload
+def parse_mdc_digi(mdc_digi: ak.Array) -> ak.Array: ...
+@overload
+def parse_mdc_digi(mdc_digi: dict[str, np.ndarray]) -> dict[str, np.ndarray]: ...
+@overload
+def parse_mdc_digi(mdc_digi: dict[str, np.integer]) -> dict[str, np.integer]: ...
+
+
 def parse_mdc_digi(
-    mdc_digi: ak.Array,
-    flat: bool = False,
-    library: Literal["ak", "np"] = "ak",
-) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
+    mdc_digi: IntLike,
+) -> ak.Array | dict[str, np.ndarray] | dict[str, np.integer]:
     """
     Parse MDC raw digi array. The raw digi array should contain [`m_intId`,
     `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_overflow`] fields.
@@ -276,33 +277,19 @@ def parse_mdc_digi(
     - `overflow`: Overflow flag.
     - `id`: Raw digi ID.
 
-    If `library` is `ak`, return `ak.Array`. If `library` is `np`, return `dict[str, np.ndarray]`.
-
     Parameters:
         mdc_digi: The MDC raw digi array.
-        flat: Whether to flatten the output.
-        library: The library to use as output.
 
     Returns:
         The parsed MDC digi array.
     """
-    if library not in ["ak", "np"]:
-        raise ValueError(f"Unsupported library: {library}")
-
-    parsed_id = parse_mdc_id(mdc_digi["m_intId"], flat=flat, library=library)
+    parsed_id = parse_mdc_id(mdc_digi["m_intId"])
 
     charge_channel = mdc_digi["m_chargeChannel"]
     time_channel = mdc_digi["m_timeChannel"]
     track_index = mdc_digi["m_trackIndex"]
     overflow = mdc_digi["m_overflow"]
     int_id = mdc_digi["m_intId"]
-
-    if flat and isinstance(mdc_digi, ak.Array):
-        charge_channel = ak.flatten(charge_channel)
-        time_channel = ak.flatten(time_channel)
-        track_index = ak.flatten(track_index)
-        overflow = ak.flatten(overflow)
-        int_id = ak.flatten(int_id)
 
     res = {
         "gid": parsed_id["gid"],
@@ -316,7 +303,7 @@ def parse_mdc_digi(
         "id": int_id,
     }
 
-    if library == "ak":
+    if isinstance(mdc_digi, ak.Array):
         return ak.zip(res)
     else:
         return res
@@ -642,15 +629,17 @@ def tof_id_to_gid(tof_id: IntLike) -> IntLike:
     )
 
 
-def parse_tof_id(
-    tof_id: IntLike,
-    flat: bool = False,
-    library: Literal["ak", "np"] = "ak",
-) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
+@overload
+def parse_tof_id(tof_id: ak.Array) -> ak.Array: ...
+@overload
+def parse_tof_id(tof_id: np.ndarray) -> dict[str, np.ndarray]: ...
+@overload
+def parse_tof_id(tof_id: np.integer) -> dict[str, np.int_]: ...
+
+
+def parse_tof_id(tof_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
     """
     Parse TOF digi ID.
-
-    If `library` is `ak`, return `ak.Array`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
 
@@ -667,19 +656,11 @@ def parse_tof_id(
 
     Parameters:
         tof_id: The TOF ID.
-        flat: Whether to flatten the output.
-        library: The library to use as output.
 
     Returns:
         The parsed TOF ID.
 
     """
-    if library not in ["ak", "np"]:
-        raise ValueError(f"Unsupported library: {library}")
-
-    if flat and isinstance(tof_id, ak.Array):
-        tof_id = ak.flatten(tof_id)
-
     part = tof_id_to_part(tof_id)
     res = {
         "part": part,
@@ -688,7 +669,7 @@ def parse_tof_id(
         "end": tof_id_to_end(tof_id),
     }
 
-    if library == "ak":
+    if isinstance(tof_id, ak.Array):
         return ak.zip(res)
     else:
         return res
@@ -831,15 +812,17 @@ def emc_id_to_gid(emc_id: IntLike) -> IntLike:
     )
 
 
-def parse_emc_id(
-    emc_id: IntLike,
-    flat: bool = False,
-    library: Literal["ak", "np"] = "ak",
-) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
+@overload
+def parse_emc_id(emc_id: ak.Array) -> ak.Array: ...
+@overload
+def parse_emc_id(emc_id: np.ndarray) -> dict[str, np.ndarray]: ...
+@overload
+def parse_emc_id(emc_id: np.integer) -> dict[str, np.integer]: ...
+
+
+def parse_emc_id(emc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, np.integer]:
     """
     Parse EMC digi ID.
-
-    If `library` is `ak`, return `ak.Array`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
 
@@ -850,18 +833,10 @@ def parse_emc_id(
 
     Parameters:
         emc_id: The EMC digi ID.
-        flat: Whether to flatten the output.
-        library: The library to use as output.
 
     Returns:
         The parsed EMC digi ID.
     """
-    if library not in ["ak", "np"]:
-        raise ValueError(f"Unsupported library: {library}")
-
-    if flat and isinstance(emc_id, ak.Array):
-        emc_id = ak.flatten(emc_id)
-
     module = emc_id_to_module(emc_id)
     theta = emc_id_to_theta(emc_id)
     phi = emc_id_to_phi(emc_id)
@@ -872,17 +847,23 @@ def parse_emc_id(
         "phi": phi,
     }
 
-    if library == "ak":
+    if isinstance(emc_id, ak.Array):
         return ak.zip(res)
     else:
         return res
 
 
+@overload
+def parse_emc_digi(emc_digi: ak.Array) -> ak.Array: ...
+@overload
+def parse_emc_digi(emc_digi: dict[str, np.ndarray]) -> dict[str, np.ndarray]: ...
+@overload
+def parse_emc_digi(emc_digi: dict[str, np.integer]) -> dict[str, np.integer]: ...
+
+
 def parse_emc_digi(
-    emc_digi: ak.Array,
-    flat: bool = False,
-    library: Literal["ak", "np"] = "ak",
-) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
+    emc_digi: ak.Array | dict[str, np.ndarray | np.integer],
+) -> ak.Array | dict[str, np.ndarray | np.integer]:
     """
     Parse EMC raw digi array. The raw digi array should contain [`m_intId`,
     `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_measure`] fields.
@@ -903,29 +884,17 @@ def parse_emc_digi(
 
     Parameters:
         emc_digi: The EMC raw digi array.
-        flat: Whether to flatten the output.
-        library: The library to use as output.
 
     Returns:
         The parsed EMC digi array.
     """
-    if library not in ["ak", "np"]:
-        raise ValueError(f"Unsupported library: {library}")
-
-    parsed_id = parse_emc_id(emc_digi["m_intId"], flat=flat, library=library)
+    parsed_id = parse_emc_id(emc_digi["m_intId"])
 
     charge_channel = emc_digi["m_chargeChannel"]
     time_channel = emc_digi["m_timeChannel"]
     track_index = emc_digi["m_trackIndex"]
     measure = emc_digi["m_measure"]
     int_id = emc_digi["m_intId"]
-
-    if flat and isinstance(emc_digi, ak.Array):
-        charge_channel = ak.flatten(charge_channel)
-        time_channel = ak.flatten(time_channel)
-        track_index = ak.flatten(track_index)
-        measure = ak.flatten(measure)
-        int_id = ak.flatten(int_id)
 
     res = {
         "gid": parsed_id["gid"],
@@ -939,7 +908,7 @@ def parse_emc_digi(
         "id": int_id,
     }
 
-    if library == "ak":
+    if isinstance(emc_digi, ak.Array):
         return ak.zip(res)
     else:
         return res
@@ -1131,15 +1100,17 @@ def muc_id_to_strip(muc_id: IntLike) -> IntLike:
     return muc_id_to_channel(muc_id)
 
 
-def parse_muc_id(
-    muc_id: IntLike,
-    flat: bool = False,
-    library: Literal["ak", "np"] = "ak",
-) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
+@overload
+def parse_muc_id(muc_id: ak.Array) -> ak.Array: ...
+@overload
+def parse_muc_id(muc_id: np.ndarray) -> dict[str, np.ndarray]: ...
+@overload
+def parse_muc_id(muc_id: np.integer) -> dict[str, np.integer]: ...
+
+
+def parse_muc_id(muc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, np.integer]:
     """
     Parse MUC digi ID.
-
-    If `library` is `ak`, return `ak.Array`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
 
@@ -1152,18 +1123,10 @@ def parse_muc_id(
 
     Parameters:
         muc_id: The MUC digi ID.
-        flat: Whether to flatten the output.
-        library: The library to use as output.
 
     Returns:
         The parsed MUC digi ID.
     """
-    if library not in ["ak", "np"]:
-        raise ValueError(f"Unsupported library: {library}")
-
-    if flat and isinstance(muc_id, ak.Array):
-        muc_id = ak.flatten(muc_id)
-
     part = muc_id_to_part(muc_id)
     segment = muc_id_to_segment(muc_id)
     layer = muc_id_to_layer(muc_id)
@@ -1178,7 +1141,7 @@ def parse_muc_id(
         "strip": channel,
     }
 
-    if library == "ak":
+    if isinstance(muc_id, ak.Array):
         return ak.zip(res)
     else:
         return res
@@ -1358,15 +1321,17 @@ def cgem_id_to_gid(cgem_id: IntLike) -> IntLike:
     )
 
 
-def parse_cgem_id(
-    cgem_id: IntLike,
-    flat: bool = False,
-    library: Literal["ak", "np"] = "ak",
-) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
+@overload
+def parse_cgem_id(cgem_id: ak.Array) -> ak.Array: ...
+@overload
+def parse_cgem_id(cgem_id: np.ndarray) -> dict[str, np.ndarray]: ...
+@overload
+def parse_cgem_id(cgem_id: np.integer) -> dict[str, np.int_]: ...
+
+
+def parse_cgem_id(cgem_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
     """
     Parse CGEM digi ID.
-
-    If `library` is `ak`, return `ak.Array`. If `library` is `np`, return `dict[str, np.ndarray]`.
 
     Available keys of the output:
 
@@ -1377,18 +1342,10 @@ def parse_cgem_id(
 
     Parameters:
         cgem_id: The CGEM digi ID.
-        flat: Whether to flatten the output.
-        library: The library to use as output.
 
     Returns:
         The parsed CGEM digi ID.
     """
-    if library not in ["ak", "np"]:
-        raise ValueError(f"Unsupported library: {library}")
-
-    if flat and isinstance(cgem_id, ak.Array):
-        cgem_id = ak.flatten(cgem_id)
-
     res = {
         "layer": cgem_id_to_layer(cgem_id),
         "sheet": cgem_id_to_sheet(cgem_id),
@@ -1396,7 +1353,7 @@ def parse_cgem_id(
         "strip": cgem_id_to_strip(cgem_id),
     }
 
-    if library == "ak":
+    if isinstance(cgem_id, ak.Array):
         return ak.zip(res)
     else:
         return res

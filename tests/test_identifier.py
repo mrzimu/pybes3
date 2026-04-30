@@ -62,7 +62,7 @@ def test_parse_mdc_id(rtraw_event):
     layer_ak = identifier.mdc_id_to_layer(mdc_id_ak)
     is_stereo_ak = identifier.mdc_id_to_is_stereo(mdc_id_ak)
 
-    # Test awkward, default options
+    # Test awkward
     ak_res1 = identifier.parse_mdc_id(mdc_id_ak)
     assert ak_res1.fields == mdc_fields
     assert len(ak_res1.positional_axis) == 2
@@ -75,27 +75,19 @@ def test_parse_mdc_id(rtraw_event):
     layer_np = ak.flatten(layer_ak).to_numpy()
     is_stereo_np = ak.flatten(is_stereo_ak).to_numpy()
 
-    # Test numpy output
-    np_res1 = identifier.parse_mdc_id(mdc_id_np, library="np")
-    assert list(np_res1.keys()) == mdc_fields
-    assert np.all(np_res1["wire"] == wire_np)
-    assert np.all(np_res1["layer"] == layer_np)
-    assert np.all(np_res1["is_stereo"] == is_stereo_np)
+    # Test numpy
+    np_res = identifier.parse_mdc_id(mdc_id_np)
+    assert list(np_res.keys()) == mdc_fields
+    assert np.all(np_res["wire"] == wire_np)
+    assert np.all(np_res["layer"] == layer_np)
+    assert np.all(np_res["is_stereo"] == is_stereo_np)
 
     # Test int output
     mdc_id_int = int(mdc_id_np[0])
-    int_res1 = identifier.parse_mdc_id(mdc_id_int, library="np")
-    assert int_res1["wire"] == wire_np[0]
-    assert int_res1["layer"] == layer_np[0]
-    assert int_res1["is_stereo"] == is_stereo_np[0]
-
-    # Test awkward, flatten output
-    ak_res2 = identifier.parse_mdc_id(mdc_id_ak, flat=True)
-    assert ak_res2.fields == mdc_fields
-    assert len(ak_res2.positional_axis) == 1
-    assert ak.all(ak_res2["wire"] == ak.flatten(wire_ak))
-    assert ak.all(ak_res2["layer"] == ak.flatten(layer_ak))
-    assert ak.all(ak_res2["is_stereo"] == ak.flatten(is_stereo_ak))
+    int_res = identifier.parse_mdc_id(mdc_id_int)
+    assert int_res["wire"] == wire_np[0]
+    assert int_res["layer"] == layer_np[0]
+    assert int_res["is_stereo"] == is_stereo_np[0]
 
 
 def test_parse_mdc_digi(rtraw_event):
@@ -116,11 +108,10 @@ def test_parse_mdc_digi(rtraw_event):
     assert ak_res1.fields == fields
     assert len(ak_res1.positional_axis) == 2
 
-    ak_res2 = identifier.parse_mdc_digi(mdc_digi_ak, flat=True)
-    assert ak_res2.fields == fields
-    assert len(ak_res2.positional_axis) == 1
+    flat_mdc_digi_ak = ak.flatten(mdc_digi_ak)
+    mdc_digi_np = {k: flat_mdc_digi_ak[k].to_numpy() for k in flat_mdc_digi_ak.fields}
 
-    np_res = identifier.parse_mdc_digi(mdc_digi_ak, flat=True, library="np")
+    np_res = identifier.parse_mdc_digi(mdc_digi_np)
     assert list(np_res.keys()) == fields
     for field in fields:
         assert np.asarray(np_res[field]).ndim == 1
@@ -183,7 +174,7 @@ def test_parse_emc_id(rtraw_event):
     theta_ak = identifier.emc_id_to_theta(emc_id_ak)
     phi_ak = identifier.emc_id_to_phi(emc_id_ak)
 
-    # Test awkward, default options
+    # Test awkward
     ak_res1 = identifier.parse_emc_id(emc_id_ak)
     assert ak_res1.fields == emc_fields
     assert len(ak_res1.positional_axis) == 2
@@ -196,27 +187,19 @@ def test_parse_emc_id(rtraw_event):
     theta_np = ak.flatten(theta_ak).to_numpy()
     phi_np = ak.flatten(phi_ak).to_numpy()
 
-    # Test numpy output
-    np_res1 = identifier.parse_emc_id(emc_id_np, library="np")
-    assert list(np_res1.keys()) == emc_fields
-    assert np.all(np_res1["part"] == module_np)
-    assert np.all(np_res1["theta"] == theta_np)
-    assert np.all(np_res1["phi"] == phi_np)
+    # Test numpy
+    np_res = identifier.parse_emc_id(emc_id_np)
+    assert list(np_res.keys()) == emc_fields
+    assert np.all(np_res["part"] == module_np)
+    assert np.all(np_res["theta"] == theta_np)
+    assert np.all(np_res["phi"] == phi_np)
 
     # Test int output
     emc_id_int = int(emc_id_np[0])
-    int_res1 = identifier.parse_emc_id(emc_id_int, library="np")
-    assert int_res1["part"] == module_np[0]
-    assert int_res1["theta"] == theta_np[0]
-    assert int_res1["phi"] == phi_np[0]
-
-    # Test awkward, flatten output
-    ak_res2 = identifier.parse_emc_id(emc_id_ak, flat=True)
-    assert ak_res2.fields == emc_fields
-    assert len(ak_res2.positional_axis) == 1
-    assert ak.all(ak_res2["part"] == ak.flatten(module_ak))
-    assert ak.all(ak_res2["theta"] == ak.flatten(theta_ak))
-    assert ak.all(ak_res2["phi"] == ak.flatten(phi_ak))
+    int_res = identifier.parse_emc_id(emc_id_int)
+    assert int_res["part"] == module_np[0]
+    assert int_res["theta"] == theta_np[0]
+    assert int_res["phi"] == phi_np[0]
 
 
 def test_parse_emc_digi(rtraw_event):
@@ -237,11 +220,9 @@ def test_parse_emc_digi(rtraw_event):
     assert ak_res1.fields == fields
     assert len(ak_res1.positional_axis) == 2
 
-    ak_res2 = identifier.parse_emc_digi(emc_digi_ak, flat=True)
-    assert ak_res2.fields == fields
-    assert len(ak_res2.positional_axis) == 1
-
-    np_res = identifier.parse_emc_digi(emc_digi_ak, flat=True, library="np")
+    flat_emc_digi_ak = ak.flatten(emc_digi_ak)
+    emc_digi_np = {k: flat_emc_digi_ak[k].to_numpy() for k in flat_emc_digi_ak.fields}
+    np_res = identifier.parse_emc_digi(emc_digi_np)
     assert list(np_res.keys()) == fields
     for field in fields:
         assert np.asarray(np_res[field]).ndim == 1
@@ -324,8 +305,8 @@ def test_parse_tof_id(test_data_dir):
     phi_or_strip_ak = identifier.tof_id_to_phi_or_strip(tof_id_ak)
     end_ak = identifier.tof_id_to_end(tof_id_ak)
 
-    # Test awkward, flat=False, library='ak'
-    ak_res1 = identifier.parse_tof_id(tof_id_ak, flat=False, library="ak")
+    # Test awkward
+    ak_res1 = identifier.parse_tof_id(tof_id_ak)
     assert ak_res1.fields == ["part", "layer_or_module", "phi_or_strip", "end"]
     assert len(ak_res1.positional_axis) == 2
     assert ak.all(ak_res1["part"] == part_ak)
@@ -333,45 +314,28 @@ def test_parse_tof_id(test_data_dir):
     assert ak.all(ak_res1["phi_or_strip"] == phi_or_strip_ak)
     assert ak.all(ak_res1["end"] == end_ak)
 
-    # Test awkward, flat=True, library='ak'
-    ak_res2 = identifier.parse_tof_id(tof_id_ak, flat=True, library="ak")
-    assert ak_res2.fields == ["part", "layer_or_module", "phi_or_strip", "end"]
-    assert len(ak_res2.positional_axis) == 1
-    assert ak.all(ak_res2["part"] == ak.flatten(part_ak))
-    assert ak.all(ak_res2["layer_or_module"] == ak.flatten(layer_or_module_ak))
-    assert ak.all(ak_res2["phi_or_strip"] == ak.flatten(phi_or_strip_ak))
-    assert ak.all(ak_res2["end"] == ak.flatten(end_ak))
-
     tof_id_np = ak.flatten(tof_id_ak).to_numpy()
     part_np = ak.flatten(part_ak).to_numpy()
     layer_or_module_np = ak.flatten(layer_or_module_ak).to_numpy()
     phi_or_strip_np = ak.flatten(phi_or_strip_ak).to_numpy()
     end_np = ak.flatten(end_ak).to_numpy()
 
-    # Test numpy, library='np'
-    np_res1 = identifier.parse_tof_id(tof_id_np, flat=False, library="np")
-    assert list(np_res1.keys()) == ["part", "layer_or_module", "phi_or_strip", "end"]
-    assert np.all(np_res1["part"] == part_np)
-    assert np.all(np_res1["layer_or_module"] == layer_or_module_np)
-    assert np.all(np_res1["phi_or_strip"] == phi_or_strip_np)
-    assert np.all(np_res1["end"] == end_np)
+    # Test numpy
+    np_res = identifier.parse_tof_id(tof_id_np)
+    assert list(np_res.keys()) == ["part", "layer_or_module", "phi_or_strip", "end"]
+    assert np.all(np_res["part"] == part_np)
+    assert np.all(np_res["layer_or_module"] == layer_or_module_np)
+    assert np.all(np_res["phi_or_strip"] == phi_or_strip_np)
+    assert np.all(np_res["end"] == end_np)
 
-    # Test int, library='ak'
+    # Test int
     tof_id_int = int(tof_id_np[0])
-    int_res1 = identifier.parse_tof_id(tof_id_int, flat=False, library="ak")
-    assert int_res1.fields == ["part", "layer_or_module", "phi_or_strip", "end"]
-    assert int_res1["part"] == part_np[0]
-    assert int_res1["layer_or_module"] == layer_or_module_np[0]
-    assert int_res1["phi_or_strip"] == phi_or_strip_np[0]
-    assert int_res1["end"] == end_np[0]
-
-    # Test int, library='np'
-    int_res2 = identifier.parse_tof_id(tof_id_int, flat=False, library="np")
-    assert list(int_res2.keys()) == ["part", "layer_or_module", "phi_or_strip", "end"]
-    assert int_res2["part"] == part_np[0]
-    assert int_res2["layer_or_module"] == layer_or_module_np[0]
-    assert int_res2["phi_or_strip"] == phi_or_strip_np[0]
-    assert int_res2["end"] == end_np[0]
+    int_res = identifier.parse_tof_id(tof_id_int)
+    assert list(int_res.keys()) == ["part", "layer_or_module", "phi_or_strip", "end"]
+    assert int_res["part"] == part_np[0]
+    assert int_res["layer_or_module"] == layer_or_module_np[0]
+    assert int_res["phi_or_strip"] == phi_or_strip_np[0]
+    assert int_res["end"] == end_np[0]
 
 
 def test_muc_id(rtraw_event):
@@ -462,7 +426,7 @@ def test_parse_muc_id(test_data_dir):
     strip_ak = identifier.muc_id_to_strip(muc_id_ak)
 
     # Test awkward, flat=False, library='ak'
-    ak_res1 = identifier.parse_muc_id(muc_id_ak, flat=False, library="ak")
+    ak_res1 = identifier.parse_muc_id(muc_id_ak)
     assert ak_res1.fields == [
         "part",
         "segment",
@@ -479,24 +443,6 @@ def test_parse_muc_id(test_data_dir):
     assert ak.all(ak_res1["gap"] == gap_ak)
     assert ak.all(ak_res1["strip"] == strip_ak)
 
-    # Test awkward, flat=True, library='ak'
-    ak_res2 = identifier.parse_muc_id(muc_id_ak, flat=True, library="ak")
-    assert ak_res2.fields == [
-        "part",
-        "segment",
-        "layer",
-        "channel",
-        "gap",
-        "strip",
-    ]
-    assert len(ak_res2.positional_axis) == 1
-    assert ak.all(ak_res2["part"] == ak.flatten(part_ak))
-    assert ak.all(ak_res2["segment"] == ak.flatten(segment_ak))
-    assert ak.all(ak_res2["layer"] == ak.flatten(layer_ak))
-    assert ak.all(ak_res2["channel"] == ak.flatten(channel_ak))
-    assert ak.all(ak_res2["gap"] == ak.flatten(gap_ak))
-    assert ak.all(ak_res2["strip"] == ak.flatten(strip_ak))
-
     muc_id_np = ak.flatten(muc_id_ak).to_numpy()
     part_np = ak.flatten(part_ak).to_numpy()
     segment_np = ak.flatten(segment_ak).to_numpy()
@@ -505,9 +451,9 @@ def test_parse_muc_id(test_data_dir):
     gap_np = ak.flatten(gap_ak).to_numpy()
     strip_np = ak.flatten(strip_ak).to_numpy()
 
-    # Test numpy, library='np'
-    np_res1 = identifier.parse_muc_id(muc_id_np, flat=False, library="np")
-    assert list(np_res1.keys()) == [
+    # Test numpy
+    np_res = identifier.parse_muc_id(muc_id_np)
+    assert list(np_res.keys()) == [
         "part",
         "segment",
         "layer",
@@ -515,12 +461,30 @@ def test_parse_muc_id(test_data_dir):
         "gap",
         "strip",
     ]
-    assert np.all(np_res1["part"] == part_np)
-    assert np.all(np_res1["segment"] == segment_np)
-    assert np.all(np_res1["layer"] == layer_np)
-    assert np.all(np_res1["channel"] == channel_np)
-    assert np.all(np_res1["gap"] == gap_np)
-    assert np.all(np_res1["strip"] == strip_np)
+    assert np.all(np_res["part"] == part_np)
+    assert np.all(np_res["segment"] == segment_np)
+    assert np.all(np_res["layer"] == layer_np)
+    assert np.all(np_res["channel"] == channel_np)
+    assert np.all(np_res["gap"] == gap_np)
+    assert np.all(np_res["strip"] == strip_np)
+
+    # Test int
+    muc_id_int = int(muc_id_np[0])
+    int_res = identifier.parse_muc_id(muc_id_int)
+    assert list(int_res.keys()) == [
+        "part",
+        "segment",
+        "layer",
+        "channel",
+        "gap",
+        "strip",
+    ]
+    assert int_res["part"] == part_np[0]
+    assert int_res["segment"] == segment_np[0]
+    assert int_res["layer"] == layer_np[0]
+    assert int_res["channel"] == channel_np[0]
+    assert int_res["gap"] == gap_np[0]
+    assert int_res["strip"] == strip_np[0]
 
 
 def test_cgem_id(test_data_dir):
@@ -595,7 +559,7 @@ def test_parse_cgem_id(test_data_dir):
     strip_ak = identifier.cgem_id_to_strip(cgem_id_ak)
 
     # Test awkward, flat=False, library='ak'
-    ak_res1 = identifier.parse_cgem_id(cgem_id_ak, flat=False, library="ak")
+    ak_res1 = identifier.parse_cgem_id(cgem_id_ak)
     assert ak_res1.fields == ["layer", "sheet", "strip_type", "strip"]
     assert len(ak_res1.positional_axis) == 2
     assert ak.all(ak_res1["layer"] == layer_ak)
@@ -603,45 +567,28 @@ def test_parse_cgem_id(test_data_dir):
     assert ak.all(ak_res1["strip_type"] == strip_type_ak)
     assert ak.all(ak_res1["strip"] == strip_ak)
 
-    # Test awkward, flat=True, library='ak'
-    ak_res2 = identifier.parse_cgem_id(cgem_id_ak, flat=True, library="ak")
-    assert ak_res2.fields == ["layer", "sheet", "strip_type", "strip"]
-    assert len(ak_res2.positional_axis) == 1
-    assert ak.all(ak_res2["layer"] == ak.flatten(layer_ak))
-    assert ak.all(ak_res2["sheet"] == ak.flatten(sheet_ak))
-    assert ak.all(ak_res2["strip_type"] == ak.flatten(strip_type_ak))
-    assert ak.all(ak_res2["strip"] == ak.flatten(strip_ak))
-
     cgem_id_np = ak.flatten(cgem_id_ak).to_numpy()
     layer_np = ak.flatten(layer_ak).to_numpy()
     sheet_np = ak.flatten(sheet_ak).to_numpy()
     strip_type_np = ak.flatten(strip_type_ak).to_numpy()
     strip_np = ak.flatten(strip_ak).to_numpy()
 
-    # Test numpy, library='np'
-    np_res1 = identifier.parse_cgem_id(cgem_id_np, flat=False, library="np")
-    assert list(np_res1.keys()) == ["layer", "sheet", "strip_type", "strip"]
-    assert np.all(np_res1["layer"] == layer_np)
-    assert np.all(np_res1["sheet"] == sheet_np)
-    assert np.all(np_res1["strip_type"] == strip_type_np)
-    assert np.all(np_res1["strip"] == strip_np)
+    # Test numpy
+    np_res = identifier.parse_cgem_id(cgem_id_np)
+    assert list(np_res.keys()) == ["layer", "sheet", "strip_type", "strip"]
+    assert np.all(np_res["layer"] == layer_np)
+    assert np.all(np_res["sheet"] == sheet_np)
+    assert np.all(np_res["strip_type"] == strip_type_np)
+    assert np.all(np_res["strip"] == strip_np)
 
-    # Test int, library='ak'
+    # Test int
     cgem_id_int = int(cgem_id_np[0])
-    int_res1 = identifier.parse_cgem_id(cgem_id_int, flat=False, library="ak")
-    assert int_res1.fields == ["layer", "sheet", "strip_type", "strip"]
-    assert int_res1["layer"] == layer_np[0]
-    assert int_res1["sheet"] == sheet_np[0]
-    assert int_res1["strip_type"] == strip_type_np[0]
-    assert int_res1["strip"] == strip_np[0]
-
-    # Test int, library='np'
-    int_res2 = identifier.parse_cgem_id(cgem_id_int, flat=False, library="np")
-    assert list(int_res2.keys()) == ["layer", "sheet", "strip_type", "strip"]
-    assert int_res2["layer"] == layer_np[0]
-    assert int_res2["sheet"] == sheet_np[0]
-    assert int_res2["strip_type"] == strip_type_np[0]
-    assert int_res2["strip"] == strip_np[0]
+    int_res = identifier.parse_cgem_id(cgem_id_int)
+    assert list(int_res.keys()) == ["layer", "sheet", "strip_type", "strip"]
+    assert int_res["layer"] == layer_np[0]
+    assert int_res["sheet"] == sheet_np[0]
+    assert int_res["strip_type"] == strip_type_np[0]
+    assert int_res["strip"] == strip_np[0]
 
 
 def test_mdc_id_to_gid(rtraw_event):

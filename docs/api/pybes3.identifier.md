@@ -22,6 +22,8 @@ These methods parse the given ID and return the corresponding components. They a
 ## MDC
 ::: pybes3.identifier.check_mdc_id
 ---
+::: pybes3.identifier.mdc_id_to_gid
+---
 ::: pybes3.identifier.mdc_id_to_wire
 ---
 ::: pybes3.identifier.mdc_id_to_layer
@@ -33,6 +35,8 @@ These methods parse the given ID and return the corresponding components. They a
 
 ## TOF
 ::: pybes3.identifier.check_tof_id
+---
+::: pybes3.identifier.tof_id_to_gid
 ---
 ::: pybes3.identifier.tof_id_to_part
 ---
@@ -47,6 +51,8 @@ These methods parse the given ID and return the corresponding components. They a
 
 ## EMC
 ::: pybes3.identifier.check_emc_id
+---
+::: pybes3.identifier.emc_id_to_gid
 ---
 ::: pybes3.identifier.emc_id_to_module
 ---
@@ -77,6 +83,8 @@ These methods parse the given ID and return the corresponding components. They a
 
 ## CGEM
 ::: pybes3.identifier.check_cgem_id
+---
+::: pybes3.identifier.cgem_id_to_gid
 ---
 ::: pybes3.identifier.cgem_id_to_layer
 ---
