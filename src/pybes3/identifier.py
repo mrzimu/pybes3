@@ -488,7 +488,7 @@ def _tof_id_to_phi_or_strip_1(tof_id: IntLike) -> IntLike:
     Convert the TOF digi ID to the scintillator phi or MRPC strip number.
     No part number is provided, so it will be calculated based on the TOF digi ID.
 
-    This function is used by `tof_id_to_phiOrStrip` when part number is not provided.
+    This function is used by `tof_id_to_phi_or_strip` when part number is not provided.
 
     Parameters:
         tof_id: The TOF digi ID array or value.
