@@ -220,7 +220,7 @@ def test_parse_emc_id(rtraw_event):
 
 
 def test_parse_emc_digi(rtraw_event):
-    emc_digi_ak: ak.Record = rtraw_event["m_emcDigiCol"]
+    emc_digi_ak: ak.Array = rtraw_event["m_emcDigiCol"]
     fields = [
         "gid",
         "part",
