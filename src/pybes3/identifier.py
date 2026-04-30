@@ -329,7 +329,7 @@ def _tof_id_to_layer_or_module_2(tof_id: IntLike, part: IntLike) -> IntLike:
     """
     Convert the TOF digi ID to the scintillator layer or MRPC module number.
 
-    This function is used by `tof_id_to_layerOrModule` when part number is provided.
+    This function is used by `tof_id_to_layer_or_module` when part number is provided.
 
     Parameters:
         tof_id: The TOF digi ID array or value.
