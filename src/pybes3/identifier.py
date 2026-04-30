@@ -1,13 +1,11 @@
 from __future__ import annotations
 
-from typing import overload
-
 import awkward as ak
 import numba as nb
 import numpy as np
 
 import pybes3.detectors as det
-from pybes3.typing import ArrayLike, BoolLike, IntLike
+from pybes3.typing import BoolLike, IntLike
 
 DIGI_MDC_FLAG = np.uint32(0x10)
 DIGI_TOF_FLAG = np.uint32(0x20)
@@ -79,12 +77,6 @@ DIGI_CGEM_XSTRIP = np.uint32(0)
 ###############################################################################
 #                                     MDC                                     #
 ###############################################################################
-@overload
-def check_mdc_id(mdc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def check_mdc_id(mdc_id: np.integer) -> bool: ...
-
-
 @nb.vectorize(cache=True)
 def check_mdc_id(mdc_id: IntLike) -> BoolLike:
     """
@@ -97,12 +89,6 @@ def check_mdc_id(mdc_id: IntLike) -> BoolLike:
         Whether the digi ID is valid.
     """
     return (mdc_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_MDC_FLAG
-
-
-@overload
-def mdc_id_to_wire(mdc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_id_to_wire(mdc_id: np.integer) -> np.uint16: ...
 
 
 @nb.vectorize(cache=True)
@@ -119,12 +105,6 @@ def mdc_id_to_wire(mdc_id: IntLike) -> IntLike:
     return np.uint16((mdc_id & DIGI_MDC_WIRE_MASK) >> DIGI_MDC_WIRE_OFFSET)
 
 
-@overload
-def mdc_id_to_layer(mdc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_id_to_layer(mdc_id: np.integer) -> np.uint8: ...
-
-
 @nb.vectorize(cache=True)
 def mdc_id_to_layer(mdc_id: IntLike) -> IntLike:
     """
@@ -137,12 +117,6 @@ def mdc_id_to_layer(mdc_id: IntLike) -> IntLike:
         The layer number.
     """
     return np.uint8((mdc_id & DIGI_MDC_LAYER_MASK) >> DIGI_MDC_LAYER_OFFSET)
-
-
-@overload
-def mdc_id_to_is_stereo(mdc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_id_to_is_stereo(mdc_id: np.integer) -> bool: ...
 
 
 @nb.vectorize(cache=True)
@@ -159,16 +133,6 @@ def mdc_id_to_is_stereo(mdc_id: IntLike) -> BoolLike:
     return (
         mdc_id & DIGI_MDC_WIRETYPE_MASK
     ) >> DIGI_MDC_WIRETYPE_OFFSET == DIGI_MDC_STEREO_WIRE
-
-
-@overload
-def get_mdc_id(wire: ArrayLike, layer: IntLike, wire_type: IntLike) -> ArrayLike: ...
-@overload
-def get_mdc_id(wire: IntLike, layer: ArrayLike, wire_type: IntLike) -> ArrayLike: ...
-@overload
-def get_mdc_id(wire: IntLike, layer: IntLike, wire_type: ArrayLike) -> ArrayLike: ...
-@overload
-def get_mdc_id(wire: np.integer, layer: np.integer, wire_type: np.integer) -> np.uint32: ...
 
 
 @nb.vectorize(cache=True)
@@ -192,12 +156,6 @@ def get_mdc_id(wire: IntLike, layer: IntLike, wire_type: IntLike) -> IntLike:
     )
 
 
-@overload
-def mdc_id_to_gid(mdc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_id_to_gid(mdc_id: np.integer) -> np.intp: ...
-
-
 def mdc_id_to_gid(mdc_id: IntLike) -> IntLike:
     """
     Convert MDC digi ID to global wire ID (gid).
@@ -209,14 +167,6 @@ def mdc_id_to_gid(mdc_id: IntLike) -> IntLike:
         The global wire ID.
     """
     return det.get_mdc_gid(mdc_id_to_layer(mdc_id), mdc_id_to_wire(mdc_id))
-
-
-@overload
-def parse_mdc_id(mdc_id: ak.Array) -> ak.Array: ...
-@overload
-def parse_mdc_id(mdc_id: np.ndarray) -> dict[str, np.ndarray]: ...
-@overload
-def parse_mdc_id(mdc_id: np.integer) -> dict[str, np.int_]: ...
 
 
 def parse_mdc_id(mdc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
@@ -250,17 +200,9 @@ def parse_mdc_id(mdc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str
         return res
 
 
-@overload
-def parse_mdc_digi(mdc_digi: ak.Array) -> ak.Array: ...
-@overload
-def parse_mdc_digi(mdc_digi: dict[str, np.ndarray]) -> dict[str, np.ndarray]: ...
-@overload
-def parse_mdc_digi(mdc_digi: dict[str, np.integer]) -> dict[str, np.integer]: ...
-
-
 def parse_mdc_digi(
     mdc_digi: IntLike,
-) -> ak.Array | dict[str, np.ndarray] | dict[str, np.integer]:
+) -> ak.Array | dict[str, np.ndarray] | dict[str, int]:
     """
     Parse MDC raw digi array. The raw digi array should contain [`m_intId`,
     `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_overflow`] fields.
@@ -312,10 +254,6 @@ def parse_mdc_digi(
 ###############################################################################
 #                                     TOF                                     #
 ###############################################################################
-@overload
-def check_tof_id(tof_id: ArrayLike) -> ArrayLike: ...
-@overload
-def check_tof_id(tof_id: np.integer) -> bool: ...
 
 
 @nb.vectorize(cache=True)
@@ -330,12 +268,6 @@ def check_tof_id(tof_id: IntLike) -> BoolLike:
         Whether the digi ID is valid.
     """
     return (tof_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_TOF_FLAG
-
-
-@overload
-def tof_id_to_part(tof_id: ArrayLike) -> ArrayLike: ...
-@overload
-def tof_id_to_part(tof_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
@@ -356,12 +288,6 @@ def tof_id_to_part(tof_id: IntLike) -> IntLike:
     return np.uint8(part)
 
 
-@overload
-def tof_id_to_end(tof_id: ArrayLike) -> ArrayLike: ...
-@overload
-def tof_id_to_end(tof_id: np.integer) -> np.uint8: ...
-
-
 @nb.vectorize(cache=True)
 def tof_id_to_end(tof_id: IntLike) -> IntLike:
     """
@@ -374,12 +300,6 @@ def tof_id_to_end(tof_id: IntLike) -> IntLike:
         The readout end number.
     """
     return np.uint8((tof_id & DIGI_TOF_END_MASK) >> DIGI_TOF_END_OFFSET)
-
-
-@overload
-def _tof_id_to_layer_or_module_1(tof_id: ArrayLike) -> ArrayLike: ...
-@overload
-def _tof_id_to_layer_or_module_1(tof_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
@@ -404,14 +324,6 @@ def _tof_id_to_layer_or_module_1(tof_id: IntLike) -> IntLike:
     return np.uint8(res)
 
 
-@overload
-def _tof_id_to_layer_or_module_2(tof_id: ArrayLike, part: IntLike) -> ArrayLike: ...
-@overload
-def _tof_id_to_layer_or_module_2(tof_id: IntLike, part: ArrayLike) -> ArrayLike: ...
-@overload
-def _tof_id_to_layer_or_module_2(tof_id: np.integer, part: np.integer) -> np.uint8: ...
-
-
 @nb.vectorize(cache=True)
 def _tof_id_to_layer_or_module_2(tof_id: IntLike, part: IntLike) -> IntLike:
     """
@@ -431,14 +343,6 @@ def _tof_id_to_layer_or_module_2(tof_id: IntLike, part: IntLike) -> IntLike:
     else:
         res = (tof_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
     return np.uint8(res)
-
-
-@overload
-def tof_id_to_layer_or_module(tof_id: ArrayLike, part: IntLike | None = None) -> ArrayLike: ...
-@overload
-def tof_id_to_layer_or_module(
-    tof_id: np.integer, part: np.integer | None = None
-) -> np.uint8: ...
 
 
 def tof_id_to_layer_or_module(
@@ -463,12 +367,6 @@ def tof_id_to_layer_or_module(
         return _tof_id_to_layer_or_module_2(tof_id, part)
 
 
-@overload
-def _tof_id_to_phi_or_strip_1(tof_id: ArrayLike) -> ArrayLike: ...
-@overload
-def _tof_id_to_phi_or_strip_1(tof_id: np.integer) -> np.uint8: ...
-
-
 @nb.vectorize(cache=True)
 def _tof_id_to_phi_or_strip_1(tof_id: IntLike) -> IntLike:
     """
@@ -489,14 +387,6 @@ def _tof_id_to_phi_or_strip_1(tof_id: IntLike) -> IntLike:
     else:
         res = (tof_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
     return np.uint8(res)
-
-
-@overload
-def _tof_id_to_phi_or_strip_2(tof_id: ArrayLike, part: IntLike) -> ArrayLike: ...
-@overload
-def _tof_id_to_phi_or_strip_2(tof_id: IntLike, part: ArrayLike) -> ArrayLike: ...
-@overload
-def _tof_id_to_phi_or_strip_2(tof_id: np.integer, part: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
@@ -520,12 +410,6 @@ def _tof_id_to_phi_or_strip_2(tof_id: IntLike, part: IntLike) -> IntLike:
     return np.uint8(res)
 
 
-@overload
-def tof_id_to_phi_or_strip(tof_id: ArrayLike, part: IntLike | None = None) -> ArrayLike: ...
-@overload
-def tof_id_to_phi_or_strip(tof_id: np.integer, part: np.integer | None = None) -> np.uint8: ...
-
-
 def tof_id_to_phi_or_strip(
     tof_id: IntLike,
     part: IntLike | None = None,
@@ -546,28 +430,6 @@ def tof_id_to_phi_or_strip(
         return _tof_id_to_phi_or_strip_1(tof_id)
     else:
         return _tof_id_to_phi_or_strip_2(tof_id, part)
-
-
-@overload
-def get_tof_id(
-    part: ArrayLike, layer_or_module: IntLike, phi_or_strip: IntLike, end: IntLike
-) -> ArrayLike: ...
-@overload
-def get_tof_id(
-    part: IntLike, layer_or_module: ArrayLike, phi_or_strip: IntLike, end: IntLike
-) -> ArrayLike: ...
-@overload
-def get_tof_id(
-    part: IntLike, layer_or_module: IntLike, phi_or_strip: ArrayLike, end: IntLike
-) -> ArrayLike: ...
-@overload
-def get_tof_id(
-    part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike, end: ArrayLike
-) -> ArrayLike: ...
-@overload
-def get_tof_id(
-    part: np.integer, layer_or_module: np.integer, phi_or_strip: np.integer, end: np.integer
-) -> np.uint32: ...
 
 
 @nb.vectorize(cache=True)
@@ -605,12 +467,6 @@ def get_tof_id(
         )
 
 
-@overload
-def tof_id_to_gid(tof_id: ArrayLike) -> ArrayLike: ...
-@overload
-def tof_id_to_gid(tof_id: np.integer) -> np.intp: ...
-
-
 def tof_id_to_gid(tof_id: IntLike) -> IntLike:
     """
     Convert TOF digi ID to global strip ID (gid).
@@ -627,14 +483,6 @@ def tof_id_to_gid(tof_id: IntLike) -> IntLike:
         tof_id_to_layer_or_module(tof_id, part),
         tof_id_to_phi_or_strip(tof_id, part),
     )
-
-
-@overload
-def parse_tof_id(tof_id: ak.Array) -> ak.Array: ...
-@overload
-def parse_tof_id(tof_id: np.ndarray) -> dict[str, np.ndarray]: ...
-@overload
-def parse_tof_id(tof_id: np.integer) -> dict[str, np.int_]: ...
 
 
 def parse_tof_id(tof_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:
@@ -678,10 +526,6 @@ def parse_tof_id(tof_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str
 ###############################################################################
 #                                     EMC                                     #
 ###############################################################################
-@overload
-def check_emc_id(emc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def check_emc_id(emc_id: np.integer) -> bool: ...
 
 
 @nb.vectorize(cache=True)
@@ -698,12 +542,6 @@ def check_emc_id(emc_id: IntLike) -> BoolLike:
     return (emc_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_EMC_FLAG
 
 
-@overload
-def emc_id_to_module(emc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def emc_id_to_module(emc_id: np.integer) -> np.uint8: ...
-
-
 @nb.vectorize(cache=True)
 def emc_id_to_module(emc_id: IntLike) -> IntLike:
     """
@@ -716,12 +554,6 @@ def emc_id_to_module(emc_id: IntLike) -> IntLike:
         The module number.
     """
     return np.uint8((emc_id & DIGI_EMC_MODULE_MASK) >> DIGI_EMC_MODULE_OFFSET)
-
-
-@overload
-def emc_id_to_theta(emc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def emc_id_to_theta(emc_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
@@ -738,12 +570,6 @@ def emc_id_to_theta(emc_id: IntLike) -> IntLike:
     return np.uint8((emc_id & DIGI_EMC_THETA_MASK) >> DIGI_EMC_THETA_OFFSET)
 
 
-@overload
-def emc_id_to_phi(emc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def emc_id_to_phi(emc_id: np.integer) -> np.uint8: ...
-
-
 @nb.vectorize(cache=True)
 def emc_id_to_phi(emc_id: IntLike) -> IntLike:
     """
@@ -756,16 +582,6 @@ def emc_id_to_phi(emc_id: IntLike) -> IntLike:
         The phi number.
     """
     return np.uint8((emc_id & DIGI_EMC_PHI_MASK) >> DIGI_EMC_PHI_OFFSET)
-
-
-@overload
-def get_emc_id(module: ArrayLike, theta: IntLike, phi: IntLike) -> ArrayLike: ...
-@overload
-def get_emc_id(module: IntLike, theta: ArrayLike, phi: IntLike) -> ArrayLike: ...
-@overload
-def get_emc_id(module: IntLike, theta: IntLike, phi: ArrayLike) -> ArrayLike: ...
-@overload
-def get_emc_id(module: np.integer, theta: np.integer, phi: np.integer) -> np.uint32: ...
 
 
 @nb.vectorize(cache=True)
@@ -789,12 +605,6 @@ def get_emc_id(module: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
     )
 
 
-@overload
-def emc_id_to_gid(emc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def emc_id_to_gid(emc_id: np.integer) -> np.intp: ...
-
-
 def emc_id_to_gid(emc_id: IntLike) -> IntLike:
     """
     Convert EMC digi ID to global crystal ID (gid).
@@ -812,15 +622,7 @@ def emc_id_to_gid(emc_id: IntLike) -> IntLike:
     )
 
 
-@overload
-def parse_emc_id(emc_id: ak.Array) -> ak.Array: ...
-@overload
-def parse_emc_id(emc_id: np.ndarray) -> dict[str, np.ndarray]: ...
-@overload
-def parse_emc_id(emc_id: np.integer) -> dict[str, np.integer]: ...
-
-
-def parse_emc_id(emc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, np.integer]:
+def parse_emc_id(emc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, int]:
     """
     Parse EMC digi ID.
 
@@ -853,17 +655,9 @@ def parse_emc_id(emc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str
         return res
 
 
-@overload
-def parse_emc_digi(emc_digi: ak.Array) -> ak.Array: ...
-@overload
-def parse_emc_digi(emc_digi: dict[str, np.ndarray]) -> dict[str, np.ndarray]: ...
-@overload
-def parse_emc_digi(emc_digi: dict[str, np.integer]) -> dict[str, np.integer]: ...
-
-
 def parse_emc_digi(
-    emc_digi: ak.Array | dict[str, np.ndarray | np.integer],
-) -> ak.Array | dict[str, np.ndarray | np.integer]:
+    emc_digi: ak.Array | dict[str, np.ndarray | int],
+) -> ak.Array | dict[str, np.ndarray | int]:
     """
     Parse EMC raw digi array. The raw digi array should contain [`m_intId`,
     `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_measure`] fields.
@@ -917,10 +711,6 @@ def parse_emc_digi(
 ###############################################################################
 #                                     MUC                                     #
 ###############################################################################
-@overload
-def check_muc_id(muc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def check_muc_id(muc_id: np.integer) -> bool: ...
 
 
 @nb.vectorize(cache=True)
@@ -937,12 +727,6 @@ def check_muc_id(muc_id: IntLike) -> BoolLike:
     return (muc_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_MUC_FLAG
 
 
-@overload
-def muc_id_to_part(muc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def muc_id_to_part(muc_id: np.integer) -> np.uint8: ...
-
-
 @nb.vectorize(cache=True)
 def muc_id_to_part(muc_id: IntLike) -> IntLike:
     """
@@ -955,12 +739,6 @@ def muc_id_to_part(muc_id: IntLike) -> IntLike:
         The part number.
     """
     return np.uint8((muc_id & DIGI_MUC_PART_MASK) >> DIGI_MUC_PART_OFFSET)
-
-
-@overload
-def muc_id_to_segment(muc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def muc_id_to_segment(muc_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
@@ -977,12 +755,6 @@ def muc_id_to_segment(muc_id: IntLike) -> IntLike:
     return np.uint8((muc_id & DIGI_MUC_SEGMENT_MASK) >> DIGI_MUC_SEGMENT_OFFSET)
 
 
-@overload
-def muc_id_to_layer(muc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def muc_id_to_layer(muc_id: np.integer) -> np.uint8: ...
-
-
 @nb.vectorize(cache=True)
 def muc_id_to_layer(muc_id: IntLike) -> IntLike:
     """
@@ -997,12 +769,6 @@ def muc_id_to_layer(muc_id: IntLike) -> IntLike:
     return np.uint8((muc_id & DIGI_MUC_LAYER_MASK) >> DIGI_MUC_LAYER_OFFSET)
 
 
-@overload
-def muc_id_to_channel(muc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def muc_id_to_channel(muc_id: np.integer) -> np.uint8: ...
-
-
 @nb.vectorize(cache=True)
 def muc_id_to_channel(muc_id: IntLike) -> IntLike:
     """
@@ -1015,28 +781,6 @@ def muc_id_to_channel(muc_id: IntLike) -> IntLike:
         The channel number.
     """
     return np.uint8((muc_id & DIGI_MUC_CHANNEL_MASK) >> DIGI_MUC_CHANNEL_OFFSET)
-
-
-@overload
-def get_muc_id(
-    part: ArrayLike, segment: IntLike, layer: IntLike, channel: IntLike
-) -> ArrayLike: ...
-@overload
-def get_muc_id(
-    part: IntLike, segment: ArrayLike, layer: IntLike, channel: IntLike
-) -> ArrayLike: ...
-@overload
-def get_muc_id(
-    part: IntLike, segment: IntLike, layer: ArrayLike, channel: IntLike
-) -> ArrayLike: ...
-@overload
-def get_muc_id(
-    part: IntLike, segment: IntLike, layer: IntLike, channel: ArrayLike
-) -> ArrayLike: ...
-@overload
-def get_muc_id(
-    part: np.integer, segment: np.integer, layer: np.integer, channel: np.integer
-) -> np.uint32: ...
 
 
 @nb.vectorize(cache=True)
@@ -1062,12 +806,6 @@ def get_muc_id(part: IntLike, segment: IntLike, layer: IntLike, channel: IntLike
     )
 
 
-@overload
-def muc_id_to_gap(muc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def muc_id_to_gap(muc_id: np.integer) -> np.uint8: ...
-
-
 def muc_id_to_gap(muc_id: IntLike) -> IntLike:
     """
     Convert the MUC digi ID to the gap ID, which is equivalent to layer number.
@@ -1079,12 +817,6 @@ def muc_id_to_gap(muc_id: IntLike) -> IntLike:
         The gap ID.
     """
     return muc_id_to_layer(muc_id)
-
-
-@overload
-def muc_id_to_strip(muc_id: ArrayLike) -> ArrayLike: ...
-@overload
-def muc_id_to_strip(muc_id: np.integer) -> np.uint8: ...
 
 
 def muc_id_to_strip(muc_id: IntLike) -> IntLike:
@@ -1100,15 +832,7 @@ def muc_id_to_strip(muc_id: IntLike) -> IntLike:
     return muc_id_to_channel(muc_id)
 
 
-@overload
-def parse_muc_id(muc_id: ak.Array) -> ak.Array: ...
-@overload
-def parse_muc_id(muc_id: np.ndarray) -> dict[str, np.ndarray]: ...
-@overload
-def parse_muc_id(muc_id: np.integer) -> dict[str, np.integer]: ...
-
-
-def parse_muc_id(muc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, np.integer]:
+def parse_muc_id(muc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, int]:
     """
     Parse MUC digi ID.
 
@@ -1150,10 +874,6 @@ def parse_muc_id(muc_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str
 ###############################################################################
 #                                    CGEM                                     #
 ###############################################################################
-@overload
-def check_cgem_id(cgem_id: ArrayLike) -> ArrayLike: ...
-@overload
-def check_cgem_id(cgem_id: np.integer) -> bool: ...
 
 
 @nb.vectorize(cache=True)
@@ -1170,12 +890,6 @@ def check_cgem_id(cgem_id: IntLike) -> BoolLike:
     return (cgem_id & DIGI_FLAG_MASK) >> DIGI_FLAG_OFFSET == DIGI_CGEM_FLAG
 
 
-@overload
-def cgem_id_to_layer(cgem_id: ArrayLike) -> ArrayLike: ...
-@overload
-def cgem_id_to_layer(cgem_id: np.integer) -> np.uint8: ...
-
-
 @nb.vectorize(cache=True)
 def cgem_id_to_layer(cgem_id: IntLike) -> IntLike:
     """
@@ -1188,12 +902,6 @@ def cgem_id_to_layer(cgem_id: IntLike) -> IntLike:
         The layer number.
     """
     return np.uint8((cgem_id & DIGI_CGEM_LAYER_MASK) >> DIGI_CGEM_LAYER_OFFSET)
-
-
-@overload
-def cgem_id_to_sheet(cgem_id: ArrayLike) -> ArrayLike: ...
-@overload
-def cgem_id_to_sheet(cgem_id: np.integer) -> np.uint8: ...
 
 
 @nb.vectorize(cache=True)
@@ -1210,12 +918,6 @@ def cgem_id_to_sheet(cgem_id: IntLike) -> IntLike:
     return np.uint8((cgem_id & DIGI_CGEM_SHEET_MASK) >> DIGI_CGEM_SHEET_OFFSET)
 
 
-@overload
-def cgem_id_to_strip_type(cgem_id: ArrayLike) -> ArrayLike: ...
-@overload
-def cgem_id_to_strip_type(cgem_id: np.integer) -> np.uint8: ...
-
-
 @nb.vectorize(cache=True)
 def cgem_id_to_strip_type(cgem_id: IntLike) -> IntLike:
     """
@@ -1230,12 +932,6 @@ def cgem_id_to_strip_type(cgem_id: IntLike) -> IntLike:
     return np.uint8((cgem_id & DIGI_CGEM_STRIPTYPE_MASK) >> DIGI_CGEM_STRIPTYPE_OFFSET)
 
 
-@overload
-def cgem_id_to_strip(cgem_id: ArrayLike) -> ArrayLike: ...
-@overload
-def cgem_id_to_strip(cgem_id: np.integer) -> np.uint16: ...
-
-
 @nb.vectorize(cache=True)
 def cgem_id_to_strip(cgem_id: IntLike) -> IntLike:
     """
@@ -1248,28 +944,6 @@ def cgem_id_to_strip(cgem_id: IntLike) -> IntLike:
         The strip number.
     """
     return np.uint16((cgem_id & DIGI_CGEM_STRIP_MASK) >> DIGI_CGEM_STRIP_OFFSET)
-
-
-@overload
-def get_cgem_id(
-    layer: ArrayLike, sheet: IntLike, strip_type: IntLike, strip: IntLike
-) -> ArrayLike: ...
-@overload
-def get_cgem_id(
-    layer: IntLike, sheet: ArrayLike, strip_type: IntLike, strip: IntLike
-) -> ArrayLike: ...
-@overload
-def get_cgem_id(
-    layer: IntLike, sheet: IntLike, strip_type: ArrayLike, strip: IntLike
-) -> ArrayLike: ...
-@overload
-def get_cgem_id(
-    layer: IntLike, sheet: IntLike, strip_type: IntLike, strip: ArrayLike
-) -> ArrayLike: ...
-@overload
-def get_cgem_id(
-    layer: np.integer, sheet: np.integer, strip_type: np.integer, strip: np.integer
-) -> np.uint32: ...
 
 
 @nb.vectorize(cache=True)
@@ -1297,12 +971,6 @@ def get_cgem_id(
     )
 
 
-@overload
-def cgem_id_to_gid(cgem_id: ArrayLike) -> ArrayLike: ...
-@overload
-def cgem_id_to_gid(cgem_id: np.integer) -> np.intp: ...
-
-
 def cgem_id_to_gid(cgem_id: IntLike) -> IntLike:
     """
     Convert CGEM digi ID to global strip ID (gid).
@@ -1319,14 +987,6 @@ def cgem_id_to_gid(cgem_id: IntLike) -> IntLike:
         cgem_id_to_strip_type(cgem_id),
         cgem_id_to_strip(cgem_id),
     )
-
-
-@overload
-def parse_cgem_id(cgem_id: ak.Array) -> ak.Array: ...
-@overload
-def parse_cgem_id(cgem_id: np.ndarray) -> dict[str, np.ndarray]: ...
-@overload
-def parse_cgem_id(cgem_id: np.integer) -> dict[str, np.int_]: ...
 
 
 def parse_cgem_id(cgem_id: IntLike) -> ak.Array | dict[str, np.ndarray] | dict[str, np.int_]:

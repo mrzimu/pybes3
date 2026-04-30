@@ -14,7 +14,7 @@ import vector.backends.awkward as vec_ak
 vector.register_awkward()
 
 from pybes3._utils import _extract_index, _flat_to_numpy
-from pybes3.typing import ArrayLike, FloatLike, IntLike
+from pybes3.typing import FloatLike, IntLike
 
 TypeObjPosition = Union[vector.VectorObject3D, tuple[float, float, float]]
 TypeObjMomentum = Union[vector.MomentumObject3D, tuple[float, float, float]]
@@ -470,16 +470,6 @@ def helix_obj(*args, **kwargs) -> HelixObject:
 
 
 ###############################################################################################
-
-
-@overload
-def dr_phi0_to_x(dr: ArrayLike, phi0: np.floating | ArrayLike) -> ArrayLike: ...
-@overload
-def dr_phi0_to_x(dr: np.floating | ArrayLike, phi0: ArrayLike) -> ArrayLike: ...
-@overload
-def dr_phi0_to_x(dr: np.floating, phi0: np.floating) -> float: ...
-
-
 @nb.vectorize(cache=True)
 def dr_phi0_to_x(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     """
@@ -493,14 +483,6 @@ def dr_phi0_to_x(dr: FloatLike, phi0: FloatLike) -> FloatLike:
         x location of the helix.
     """
     return dr * np.cos(phi0)
-
-
-@overload
-def dr_phi0_to_y(dr: ArrayLike, phi0: np.floating | ArrayLike) -> ArrayLike: ...
-@overload
-def dr_phi0_to_y(dr: np.floating | ArrayLike, phi0: ArrayLike) -> ArrayLike: ...
-@overload
-def dr_phi0_to_y(dr: np.floating, phi0: np.floating) -> float: ...
 
 
 @nb.vectorize(cache=True)
@@ -518,12 +500,6 @@ def dr_phi0_to_y(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     return dr * np.sin(phi0)
 
 
-@overload
-def phi0_to_phi(phi0: ArrayLike) -> ArrayLike: ...
-@overload
-def phi0_to_phi(phi0: np.floating) -> float: ...
-
-
 @nb.vectorize(cache=True)
 def phi0_to_phi(phi0: FloatLike) -> FloatLike:
     """
@@ -536,12 +512,6 @@ def phi0_to_phi(phi0: FloatLike) -> FloatLike:
         phi of the momentum vector.
     """
     return (phi0 + np.pi / 2) % (2 * np.pi)
-
-
-@overload
-def kappa_to_pt(kappa: ArrayLike) -> ArrayLike: ...
-@overload
-def kappa_to_pt(kappa: np.floating) -> float: ...
 
 
 @nb.vectorize(cache=True)
@@ -558,12 +528,6 @@ def kappa_to_pt(kappa: FloatLike) -> FloatLike:
     return 1 / np.abs(kappa)
 
 
-@overload
-def kappa_to_charge(kappa: ArrayLike) -> ArrayLike: ...
-@overload
-def kappa_to_charge(kappa: np.floating) -> np.int8: ...
-
-
 @nb.vectorize(cache=True)
 def kappa_to_charge(kappa: FloatLike) -> IntLike:
     """
@@ -576,12 +540,6 @@ def kappa_to_charge(kappa: FloatLike) -> IntLike:
         charge of the helix.
     """
     return np.int8(1) if kappa > 1e-10 else np.int8(-1) if kappa < -1e-10 else np.int8(0)
-
-
-@overload
-def kappa_to_radius(kappa: ArrayLike) -> ArrayLike: ...
-@overload
-def kappa_to_radius(kappa: np.floating) -> float: ...
 
 
 @nb.vectorize(cache=True)
@@ -797,7 +755,7 @@ class HelixAwkwardRecord(ak.Record):
         Returns the radius of the helix.
 
         Returns:
-            float: The radius of the helix in mm.
+            The radius of the helix in mm.
         """
         return kappa_to_radius(self.kappa)
 
@@ -954,34 +912,18 @@ def helix_awk(
 ) -> HelixAwkwardArray: ...
 
 
-@overload
-def _fix_dr_sign(
-    dr: ArrayLike, phi0: np.floating | ArrayLike, dist_phi: np.floating | ArrayLike
-) -> ArrayLike: ...
-@overload
-def _fix_dr_sign(
-    dr: np.floating | ArrayLike, phi0: ArrayLike, dist_phi: np.floating | ArrayLike
-) -> ArrayLike: ...
-@overload
-def _fix_dr_sign(
-    dr: np.floating | ArrayLike, phi0: np.floating | ArrayLike, dist_phi: ArrayLike
-) -> ArrayLike: ...
-@overload
-def _fix_dr_sign(dr: np.floating, phi0: np.floating, dist_phi: np.floating) -> float: ...
-
-
 @nb.vectorize(cache=True)
 def _fix_dr_sign(dr: FloatLike, phi0: FloatLike, dist_phi: FloatLike) -> FloatLike:
     """
     Fix the sign of dr based on the azimuthal angle.
 
     Parameters:
-        dr (float): The radial distance.
-        phi0 (float): The azimuthal angle.
-        dist_phi (float): The difference between the azimuthal angle and phi0.
+        dr: The radial distance.
+        phi0: The azimuthal angle.
+        dist_phi: The difference between the azimuthal angle and phi0.
 
     Returns:
-        float: The corrected radial distance.
+        The corrected radial distance.
     """
     if not np.isclose(dist_phi % (2 * np.pi), phi0):
         return -dr

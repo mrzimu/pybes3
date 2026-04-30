@@ -1,13 +1,13 @@
 from __future__ import annotations
 
-from typing import Any, overload
+from typing import Any
 
 import awkward as ak
 import numba as nb
 import numpy as np
 
 from pybes3._utils import _make_lazy
-from pybes3.typing import ArrayLike, BoolLike, IntLike
+from pybes3.typing import BoolLike, IntLike
 
 N_LAYER = 3
 N_STRIPS = 9897
@@ -66,40 +66,6 @@ def _ensure_loaded():
     _loaded = True
 
 
-@overload
-def get_cgem_gid(
-    layer: ArrayLike,
-    sheet: np.integer | ArrayLike,
-    strip_type: np.integer | ArrayLike,
-    strip: np.integer | ArrayLike,
-) -> ArrayLike: ...
-@overload
-def get_cgem_gid(
-    layer: np.integer | ArrayLike,
-    sheet: ArrayLike,
-    strip_type: np.integer | ArrayLike,
-    strip: np.integer | ArrayLike,
-) -> ArrayLike: ...
-@overload
-def get_cgem_gid(
-    layer: np.integer | ArrayLike,
-    sheet: np.integer | ArrayLike,
-    strip_type: ArrayLike,
-    strip: np.integer | ArrayLike,
-) -> ArrayLike: ...
-@overload
-def get_cgem_gid(
-    layer: np.integer | ArrayLike,
-    sheet: np.integer | ArrayLike,
-    strip_type: np.integer | ArrayLike,
-    strip: ArrayLike,
-) -> ArrayLike: ...
-@overload
-def get_cgem_gid(
-    layer: np.integer, sheet: np.integer, strip_type: np.integer, strip: np.integer
-) -> np.integer: ...
-
-
 @nb.vectorize(cache=True)
 def get_cgem_gid(
     layer: IntLike, sheet: IntLike, strip_type: IntLike, strip: IntLike
@@ -123,12 +89,6 @@ def get_cgem_gid(
     return gid
 
 
-@overload
-def cgem_gid_to_layer(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def cgem_gid_to_layer(gid: np.integer) -> np.integer: ...
-
-
 @nb.vectorize(cache=True)
 def cgem_gid_to_layer(gid: IntLike) -> IntLike:
     """
@@ -141,12 +101,6 @@ def cgem_gid_to_layer(gid: IntLike) -> IntLike:
         The layer number of the strip.
     """
     return _layer[gid]
-
-
-@overload
-def cgem_gid_to_sheet(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def cgem_gid_to_sheet(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
@@ -163,12 +117,6 @@ def cgem_gid_to_sheet(gid: IntLike) -> IntLike:
     return _sheet[gid]
 
 
-@overload
-def cgem_gid_to_strip_type(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def cgem_gid_to_strip_type(gid: np.integer) -> np.integer: ...
-
-
 @nb.vectorize(cache=True)
 def cgem_gid_to_strip_type(gid: IntLike) -> IntLike:
     """
@@ -181,12 +129,6 @@ def cgem_gid_to_strip_type(gid: IntLike) -> IntLike:
         The strip type of the strip, 0 for x-strip and 1 for v-strip.
     """
     return _strip_type[gid]
-
-
-@overload
-def cgem_gid_to_strip(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def cgem_gid_to_strip(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
@@ -203,12 +145,6 @@ def cgem_gid_to_strip(gid: IntLike) -> IntLike:
     return _strip[gid]
 
 
-@overload
-def cgem_gid_to_is_xstrip(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def cgem_gid_to_is_xstrip(gid: np.integer) -> np.bool_: ...
-
-
 def cgem_gid_to_is_xstrip(gid: IntLike) -> BoolLike:
     """
     Check whether a CGEM gid corresponds to an x-strip.
@@ -220,12 +156,6 @@ def cgem_gid_to_is_xstrip(gid: IntLike) -> BoolLike:
         True if the strip is an x-strip, otherwise False.
     """
     return cgem_gid_to_strip_type(gid) == X_STRIP_TYPE
-
-
-@overload
-def cgem_gid_to_is_vstrip(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def cgem_gid_to_is_vstrip(gid: np.integer) -> np.bool_: ...
 
 
 def cgem_gid_to_is_vstrip(gid: IntLike) -> BoolLike:

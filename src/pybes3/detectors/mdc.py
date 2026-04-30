@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Literal, overload
+from typing import Any, Literal
 
 import awkward as ak
 import numba as nb
@@ -8,7 +8,7 @@ import numpy as np
 
 from pybes3._utils import _make_lazy
 from pybes3.data import MDC_GEOM
-from pybes3.typing import ArrayLike, BoolLike, FloatLike, IntLike
+from pybes3.typing import BoolLike, FloatLike, IntLike
 
 # Constant (not dependent on geometry data)
 superlayer_splits = np.array([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 43])
@@ -101,14 +101,6 @@ def get_mdc_wire_position(library: Literal["np", "ak", "pd"] = "np"):
         raise ValueError(f"Invalid library {library}. Choose from 'ak', 'np', 'pd'.")
 
 
-@overload
-def get_mdc_gid(layer: ArrayLike, wire: np.integer | ArrayLike) -> ArrayLike: ...
-@overload
-def get_mdc_gid(layer: np.integer | ArrayLike, wire: ArrayLike) -> ArrayLike: ...
-@overload
-def get_mdc_gid(layer: np.integer, wire: np.integer) -> np.integer: ...
-
-
 @nb.vectorize(cache=True)
 def get_mdc_gid(layer: IntLike, wire: IntLike) -> IntLike:
     """
@@ -122,12 +114,6 @@ def get_mdc_gid(layer: IntLike, wire: IntLike) -> IntLike:
         The gid of the wire.
     """
     return layer_start_gid[layer] + wire
-
-
-@overload
-def mdc_gid_to_superlayer(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_to_superlayer(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
@@ -144,12 +130,6 @@ def mdc_gid_to_superlayer(gid: IntLike) -> IntLike:
     return _superlayer[gid]
 
 
-@overload
-def mdc_layer_to_superlayer(layer: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_layer_to_superlayer(layer: np.integer) -> np.integer: ...
-
-
 @nb.vectorize(cache=True)
 def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
     """
@@ -162,12 +142,6 @@ def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
         The superlayer number of the layer.
     """
     return np.digitize(layer, superlayer_splits, right=False) - 1
-
-
-@overload
-def mdc_gid_to_layer(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_to_layer(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
@@ -184,12 +158,6 @@ def mdc_gid_to_layer(gid: IntLike) -> IntLike:
     return _layer[gid]
 
 
-@overload
-def mdc_gid_to_wire(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_to_wire(gid: np.integer) -> np.integer: ...
-
-
 @nb.vectorize(cache=True)
 def mdc_gid_to_wire(gid: IntLike) -> IntLike:
     """
@@ -202,12 +170,6 @@ def mdc_gid_to_wire(gid: IntLike) -> IntLike:
         The wire number of the wire.
     """
     return _wire[gid]
-
-
-@overload
-def mdc_gid_to_stereo(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_to_stereo(gid: np.integer) -> np.integer: ...
 
 
 @nb.vectorize(cache=True)
@@ -227,12 +189,6 @@ def mdc_gid_to_stereo(gid: IntLike) -> IntLike:
     return _stereo[gid]
 
 
-@overload
-def mdc_layer_to_is_stereo(layer: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_layer_to_is_stereo(layer: np.integer) -> np.bool_: ...
-
-
 @nb.vectorize(cache=True)
 def mdc_layer_to_is_stereo(layer: IntLike) -> BoolLike:
     """
@@ -245,12 +201,6 @@ def mdc_layer_to_is_stereo(layer: IntLike) -> BoolLike:
         The is_stereo of the layer.
     """
     return is_layer_stereo[layer]
-
-
-@overload
-def mdc_gid_to_is_stereo(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_to_is_stereo(gid: np.integer) -> np.bool_: ...
 
 
 @nb.vectorize(cache=True)
@@ -267,12 +217,6 @@ def mdc_gid_to_is_stereo(gid: IntLike) -> BoolLike:
     return _is_stereo[gid]
 
 
-@overload
-def mdc_gid_to_west_x(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_to_west_x(gid: np.integer) -> np.floating: ...
-
-
 @nb.vectorize(cache=True)
 def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
     """
@@ -285,12 +229,6 @@ def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
         The west_x (cm) of the wire.
     """
     return _west_x[gid]
-
-
-@overload
-def mdc_gid_to_west_y(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_to_west_y(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
@@ -307,12 +245,6 @@ def mdc_gid_to_west_y(gid: IntLike) -> FloatLike:
     return _west_y[gid]
 
 
-@overload
-def mdc_gid_to_west_z(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_to_west_z(gid: np.integer) -> np.floating: ...
-
-
 @nb.vectorize(cache=True)
 def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
     """
@@ -325,12 +257,6 @@ def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
         The west_z (cm) of the wire.
     """
     return _west_z[gid]
-
-
-@overload
-def mdc_gid_to_east_x(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_to_east_x(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
@@ -347,12 +273,6 @@ def mdc_gid_to_east_x(gid: IntLike) -> FloatLike:
     return _east_x[gid]
 
 
-@overload
-def mdc_gid_to_east_y(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_to_east_y(gid: np.integer) -> np.floating: ...
-
-
 @nb.vectorize(cache=True)
 def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
     """
@@ -365,12 +285,6 @@ def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
         The east_y (cm) of the wire.
     """
     return _east_y[gid]
-
-
-@overload
-def mdc_gid_to_east_z(gid: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_to_east_z(gid: np.integer) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
@@ -387,14 +301,6 @@ def mdc_gid_to_east_z(gid: IntLike) -> FloatLike:
     return _east_z[gid]
 
 
-@overload
-def mdc_gid_z_to_x(gid: ArrayLike, z: np.floating | ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_z_to_x(gid: np.integer | ArrayLike, z: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_z_to_x(gid: np.integer, z: np.floating) -> np.floating: ...
-
-
 @nb.vectorize(cache=True)
 def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
     """
@@ -408,14 +314,6 @@ def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
         The x (cm) position of the wire at z (cm).
     """
     return _west_x[gid] + dx_dz[gid] * (z - _west_z[gid])
-
-
-@overload
-def mdc_gid_z_to_y(gid: ArrayLike, z: np.floating | ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_z_to_y(gid: np.integer | ArrayLike, z: ArrayLike) -> ArrayLike: ...
-@overload
-def mdc_gid_z_to_y(gid: np.integer, z: np.floating) -> np.floating: ...
 
 
 @nb.vectorize(cache=True)
