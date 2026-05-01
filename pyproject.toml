@@ -47,7 +47,7 @@ description = "Unofficial Python module for BES3"
 dynamic = ["version"]
 name = "pybes3"
 readme = "README.md"
-requires-python = ">=3.9, <=3.14"
+requires-python = ">=3.9, <3.15"
 urls = {"Homepage" = "https://github.com/mrzimu/pybes3", "Documentation" = "https://pybes3.readthedocs.io/en/stable/"}
 
 [tool.cibuildwheel]
