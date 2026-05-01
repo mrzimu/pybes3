@@ -99,10 +99,10 @@ class ExportTestRawDataAlg : public Algorithm {
             }
 
             m_tuple_mdc->addItem( "index", m_mdc_index, 0, 10000 ).ignore();
-            m_tuple_mdc->addIndexedItem( "id", m_mdc_index, m_mdc_id ).ignore();
-            m_tuple_mdc->addIndexedItem( "adc", m_mdc_index, m_mdc_adc ).ignore();
-            m_tuple_mdc->addIndexedItem( "tdc", m_mdc_index, m_mdc_tdc ).ignore();
-            m_tuple_mdc->addIndexedItem( "overflow", m_mdc_index, m_mdc_overflow ).ignore();
+            m_tuple_mdc->addIndexedItem( "m_intId", m_mdc_index, m_mdc_id ).ignore();
+            m_tuple_mdc->addIndexedItem( "m_chargeChannel", m_mdc_index, m_mdc_adc ).ignore();
+            m_tuple_mdc->addIndexedItem( "m_timeChannel", m_mdc_index, m_mdc_tdc ).ignore();
+            m_tuple_mdc->addIndexedItem( "m_overflow", m_mdc_index, m_mdc_overflow ).ignore();
         }
 
         NTuplePtr nt_tof( ntupleSvc(), "FILE1/tof" );
@@ -117,10 +117,10 @@ class ExportTestRawDataAlg : public Algorithm {
             }
 
             m_tuple_tof->addItem( "index", m_tof_index, 0, 10000 ).ignore();
-            m_tuple_tof->addIndexedItem( "id", m_tof_index, m_tof_id ).ignore();
-            m_tuple_tof->addIndexedItem( "adc", m_tof_index, m_tof_adc ).ignore();
-            m_tuple_tof->addIndexedItem( "tdc", m_tof_index, m_tof_tdc ).ignore();
-            m_tuple_tof->addIndexedItem( "overflow", m_tof_index, m_tof_overflow ).ignore();
+            m_tuple_tof->addIndexedItem( "m_intId", m_tof_index, m_tof_id ).ignore();
+            m_tuple_tof->addIndexedItem( "m_chargeChannel", m_tof_index, m_tof_adc ).ignore();
+            m_tuple_tof->addIndexedItem( "m_timeChannel", m_tof_index, m_tof_tdc ).ignore();
+            m_tuple_tof->addIndexedItem( "m_overflow", m_tof_index, m_tof_overflow ).ignore();
         }
 
         NTuplePtr nt_emc( ntupleSvc(), "FILE1/emc" );
@@ -135,10 +135,10 @@ class ExportTestRawDataAlg : public Algorithm {
             }
 
             m_tuple_emc->addItem( "index", m_emc_index, 0, 10000 ).ignore();
-            m_tuple_emc->addIndexedItem( "id", m_emc_index, m_emc_id ).ignore();
-            m_tuple_emc->addIndexedItem( "adc", m_emc_index, m_emc_adc ).ignore();
-            m_tuple_emc->addIndexedItem( "tdc", m_emc_index, m_emc_tdc ).ignore();
-            m_tuple_emc->addIndexedItem( "measure", m_emc_index, m_emc_measure ).ignore();
+            m_tuple_emc->addIndexedItem( "m_intId", m_emc_index, m_emc_id ).ignore();
+            m_tuple_emc->addIndexedItem( "m_chargeChannel", m_emc_index, m_emc_adc ).ignore();
+            m_tuple_emc->addIndexedItem( "m_timeChannel", m_emc_index, m_emc_tdc ).ignore();
+            m_tuple_emc->addIndexedItem( "m_measure", m_emc_index, m_emc_measure ).ignore();
         }
 
         NTuplePtr nt_muc( ntupleSvc(), "FILE1/muc" );
@@ -153,7 +153,7 @@ class ExportTestRawDataAlg : public Algorithm {
             }
 
             m_tuple_muc->addItem( "index", m_muc_index, 0, 10000 ).ignore();
-            m_tuple_muc->addIndexedItem( "id", m_muc_index, m_muc_id ).ignore();
+            m_tuple_muc->addIndexedItem( "m_intId", m_muc_index, m_muc_id ).ignore();
         }
 
         NTuplePtr nt_cgem( ntupleSvc(), "FILE1/cgem" );
@@ -169,11 +169,13 @@ class ExportTestRawDataAlg : public Algorithm {
             }
 
             m_tuple_cgem->addItem( "index", m_cgem_index, 0, 10000 ).ignore();
-            m_tuple_cgem->addIndexedItem( "id", m_cgem_index, m_cgem_id ).ignore();
-            m_tuple_cgem->addIndexedItem( "adc", m_cgem_index, m_cgem_adc ).ignore();
-            m_tuple_cgem->addIndexedItem( "tdc", m_cgem_index, m_cgem_tdc ).ignore();
-            m_tuple_cgem->addIndexedItem( "charge", m_cgem_index, m_cgem_charge ).ignore();
-            m_tuple_cgem->addIndexedItem( "time", m_cgem_index, m_cgem_time ).ignore();
+            m_tuple_cgem->addIndexedItem( "m_intId", m_cgem_index, m_cgem_id ).ignore();
+            m_tuple_cgem->addIndexedItem( "m_chargeChannel", m_cgem_index, m_cgem_adc )
+                .ignore();
+            m_tuple_cgem->addIndexedItem( "m_timeChannel", m_cgem_index, m_cgem_tdc ).ignore();
+            m_tuple_cgem->addIndexedItem( "m_charge_fc", m_cgem_index, m_cgem_charge )
+                .ignore();
+            m_tuple_cgem->addIndexedItem( "m_time_ns", m_cgem_index, m_cgem_time ).ignore();
         }
 
         NTuplePtr nt_trigGTD( ntupleSvc(), "FILE1/trigGTD" );
@@ -189,15 +191,15 @@ class ExportTestRawDataAlg : public Algorithm {
             }
 
             m_tuple_trigGTD->addItem( "index", m_trigGTD_index, 0, 10000 ).ignore();
-            m_tuple_trigGTD->addIndexedItem( "id", m_trigGTD_index, m_trigGTD_id ).ignore();
+            m_tuple_trigGTD->addIndexedItem( "m_id", m_trigGTD_index, m_trigGTD_id ).ignore();
             m_tuple_trigGTD
-                ->addIndexedItem( "data_size", m_trigGTD_index, m_trigGTD_data_size )
+                ->addIndexedItem( "m_dataSize", m_trigGTD_index, m_trigGTD_data_size )
                 .ignore();
             m_tuple_trigGTD
-                ->addIndexedItem( "time_window", m_trigGTD_index, m_trigGTD_time_window )
+                ->addIndexedItem( "m_timeWindow", m_trigGTD_index, m_trigGTD_time_window )
                 .ignore();
             m_tuple_trigGTD
-                ->addIndexedItem( "data_type", m_trigGTD_index, m_trigGTD_data_type )
+                ->addIndexedItem( "m_dataType", m_trigGTD_index, m_trigGTD_data_type )
                 .ignore();
         }
 
