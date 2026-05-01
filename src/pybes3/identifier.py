@@ -497,6 +497,7 @@ def parse_tof_id(tof_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
 
     Available keys of the output:
 
+    - `gid`: Global ID of the strip. Note that it corresponds to the strip instead of readout end, so it is the same for both ends of the strip.
     - `part`: The part number. `0,1,2` for scintillator endcap0, barrel, endcap1; `3,4` for MRPC endcap0, endcap1.
     - `layer_or_module`: The scintillator layer or MRPC module number, based on the part number.
     - `phi_or_strip`: The scintillator phi or MRPC strip ID, based on the part number.
@@ -541,16 +542,18 @@ def parse_tof_digi(
 ) -> ak.Array | dict[str, np.ndarray | int]:
     """
     Parse TOF raw digi array. The raw digi array should contain [`m_intId`,
-    `m_timeChannel`, `m_chargeChannel`] fields.
+    `m_timeChannel`, `m_chargeChannel`, `m_overflow`] fields.
 
     Fields of the output:
 
+    - `gid`: Global ID of the strip. Note that it corresponds to the strip instead of readout end, so it is the same for both ends of the strip.
     - `part`: The part number. `0,1,2` for scintillator endcap0, barrel, endcap1; `3,4` for MRPC endcap0, endcap1.
     - `layer_or_module`: The scintillator layer or MRPC module number, based on the part number.
     - `phi_or_strip`: The scintillator phi or MRPC strip ID, based on the part number.
     - `end`: The readout end ID.
     - `charge_channel`: Charge channel.
     - `time_channel`: Time channel.
+    - `overflow`: Overflow flag.
 
     Parameters:
         tof_digi: The TOF raw digi array.
@@ -729,8 +732,8 @@ def parse_emc_digi(
     - `phi`: Phi number.
     - `charge_channel`: Charge channel.
     - `time_channel`: Time channel.
-    - `track_index`: Track index.
     - `measure`: Measure value.
+    - `track_index`: Track index.
 
     Parameters:
         emc_digi: The EMC raw digi array.
@@ -1086,16 +1089,18 @@ def parse_cgem_digi(
 ) -> ak.Array | dict[str, np.ndarray | int]:
     """
     Parse CGEM raw digi array. The raw digi array should contain [`m_intId`,
-    `m_timeChannel`, `m_chargeChannel`] fields.
+    `m_timeChannel`, `m_chargeChannel`, `m_overflow`] fields.
 
     Fields of the output:
 
+    - `gid`: The global strip ID.
     - `layer`: The layer number.
     - `sheet`: The sheet ID.
     - `strip_type`: The strip type. 0 for X-strip, 1 for V-strip.
     - `strip`: The strip ID.
     - `charge_channel`: Charge channel.
     - `time_channel`: Time channel.
+    - `overflow`: Overflow flag.
     - `track_index`: Track index.
 
     Parameters:
