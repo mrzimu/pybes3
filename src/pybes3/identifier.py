@@ -74,6 +74,15 @@ DIGI_CGEM_LAYER_MASK = np.uint32(0x00000007)
 DIGI_CGEM_XSTRIP = np.uint32(0)
 
 
+def _add_field_if_exist(digi: ak.Array | dict, res: dict, field: str, output: str):
+    if isinstance(digi, ak.Array):
+        if field in digi.fields:
+            res[output] = digi[field]
+    else:
+        if field in digi:
+            res[output] = digi[field]
+
+
 ###############################################################################
 #                                     MDC                                     #
 ###############################################################################
@@ -205,7 +214,7 @@ def parse_mdc_digi(
 ) -> ak.Array | dict[str, np.ndarray | int]:
     """
     Parse MDC raw digi array. The raw digi array should contain [`m_intId`,
-    `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_overflow`] fields.
+    `m_timeChannel`, `m_chargeChannel`, `m_overflow`] fields.
 
     Fields of the output:
 
@@ -215,9 +224,8 @@ def parse_mdc_digi(
     - `is_stereo`: Whether the wire is a stereo wire.
     - `charge_channel`: Charge channel.
     - `time_channel`: Time channel.
-    - `track_index`: Track index.
     - `overflow`: Overflow flag.
-    - `id`: Raw digi ID.
+    - `track_index`: Track index.
 
     Parameters:
         mdc_digi: The MDC raw digi array.
@@ -229,9 +237,7 @@ def parse_mdc_digi(
 
     charge_channel = mdc_digi["m_chargeChannel"]
     time_channel = mdc_digi["m_timeChannel"]
-    track_index = mdc_digi["m_trackIndex"]
     overflow = mdc_digi["m_overflow"]
-    int_id = mdc_digi["m_intId"]
 
     res = {
         "gid": parsed_id["gid"],
@@ -240,10 +246,10 @@ def parse_mdc_digi(
         "is_stereo": parsed_id["is_stereo"],
         "charge_channel": charge_channel,
         "time_channel": time_channel,
-        "track_index": track_index,
         "overflow": overflow,
-        "id": int_id,
     }
+
+    _add_field_if_exist(mdc_digi, res, "m_trackIndex", "track_index")
 
     if isinstance(mdc_digi, ak.Array):
         return ak.zip(res)
@@ -509,15 +515,68 @@ def parse_tof_id(tof_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
         The parsed TOF ID.
 
     """
+
     part = tof_id_to_part(tof_id)
+    layer_or_module = tof_id_to_layer_or_module(tof_id, part)
+    phi_or_strip = tof_id_to_phi_or_strip(tof_id, part)
+    end = tof_id_to_end(tof_id)
+    gid = det.get_tof_gid(part, layer_or_module, phi_or_strip)
+
     res = {
+        "gid": gid,
         "part": part,
-        "layer_or_module": tof_id_to_layer_or_module(tof_id, part),
-        "phi_or_strip": tof_id_to_phi_or_strip(tof_id, part),
-        "end": tof_id_to_end(tof_id),
+        "layer_or_module": layer_or_module,
+        "phi_or_strip": phi_or_strip,
+        "end": end,
     }
 
     if isinstance(tof_id, ak.Array):
+        return ak.zip(res)
+    else:
+        return res
+
+
+def parse_tof_digi(
+    tof_digi: ak.Array | dict[str, np.ndarray | int],
+) -> ak.Array | dict[str, np.ndarray | int]:
+    """
+    Parse TOF raw digi array. The raw digi array should contain [`m_intId`,
+    `m_timeChannel`, `m_chargeChannel`] fields.
+
+    Fields of the output:
+
+    - `part`: The part number. `0,1,2` for scintillator endcap0, barrel, endcap1; `3,4` for MRPC endcap0, endcap1.
+    - `layer_or_module`: The scintillator layer or MRPC module number, based on the part number.
+    - `phi_or_strip`: The scintillator phi or MRPC strip ID, based on the part number.
+    - `end`: The readout end ID.
+    - `charge_channel`: Charge channel.
+    - `time_channel`: Time channel.
+
+    Parameters:
+        tof_digi: The TOF raw digi array.
+
+    Returns:
+        The parsed TOF digi array.
+    """
+    parsed_id = parse_tof_id(tof_digi["m_intId"])
+
+    charge_channel = tof_digi["m_chargeChannel"]
+    time_channel = tof_digi["m_timeChannel"]
+
+    res = {
+        "gid": parsed_id["gid"],
+        "part": parsed_id["part"],
+        "layer_or_module": parsed_id["layer_or_module"],
+        "phi_or_strip": parsed_id["phi_or_strip"],
+        "end": parsed_id["end"],
+        "charge_channel": charge_channel,
+        "time_channel": time_channel,
+        "overflow": tof_digi["m_overflow"],
+    }
+
+    _add_field_if_exist(tof_digi, res, "m_trackIndex", "track_index")
+
+    if isinstance(tof_digi, ak.Array):
         return ak.zip(res)
     else:
         return res
@@ -660,7 +719,7 @@ def parse_emc_digi(
 ) -> ak.Array | dict[str, np.ndarray | int]:
     """
     Parse EMC raw digi array. The raw digi array should contain [`m_intId`,
-    `m_timeChannel`, `m_chargeChannel`, `m_trackIndex`, `m_measure`] fields.
+    `m_timeChannel`, `m_chargeChannel`, `m_measure`] fields.
 
     Fields of the output:
 
@@ -672,7 +731,6 @@ def parse_emc_digi(
     - `time_channel`: Time channel.
     - `track_index`: Track index.
     - `measure`: Measure value.
-    - `id`: Raw digi ID.
 
     Parameters:
         emc_digi: The EMC raw digi array.
@@ -684,9 +742,7 @@ def parse_emc_digi(
 
     charge_channel = emc_digi["m_chargeChannel"]
     time_channel = emc_digi["m_timeChannel"]
-    track_index = emc_digi["m_trackIndex"]
     measure = emc_digi["m_measure"]
-    int_id = emc_digi["m_intId"]
 
     res = {
         "gid": parsed_id["gid"],
@@ -695,10 +751,10 @@ def parse_emc_digi(
         "phi": parsed_id["phi"],
         "charge_channel": charge_channel,
         "time_channel": time_channel,
-        "track_index": track_index,
         "measure": measure,
-        "id": int_id,
     }
+
+    _add_field_if_exist(emc_digi, res, "m_trackIndex", "track_index")
 
     if isinstance(emc_digi, ak.Array):
         return ak.zip(res)
@@ -993,6 +1049,7 @@ def parse_cgem_id(cgem_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
 
     Available keys of the output:
 
+    - `gid`: The global strip ID.
     - `layer`: The layer number.
     - `sheet`: The sheet ID.
     - `strip_type`: The strip type. 0 for X-strip, 1 for V-strip.
@@ -1004,14 +1061,68 @@ def parse_cgem_id(cgem_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     Returns:
         The parsed CGEM digi ID.
     """
+    layer = cgem_id_to_layer(cgem_id)
+    sheet = cgem_id_to_sheet(cgem_id)
+    strip_type = cgem_id_to_strip_type(cgem_id)
+    strip = cgem_id_to_strip(cgem_id)
+    gid = det.get_cgem_gid(layer, sheet, strip_type, strip)
+
     res = {
-        "layer": cgem_id_to_layer(cgem_id),
-        "sheet": cgem_id_to_sheet(cgem_id),
-        "strip_type": cgem_id_to_strip_type(cgem_id),
-        "strip": cgem_id_to_strip(cgem_id),
+        "gid": gid,
+        "layer": layer,
+        "sheet": sheet,
+        "strip_type": strip_type,
+        "strip": strip,
     }
 
     if isinstance(cgem_id, ak.Array):
+        return ak.zip(res)
+    else:
+        return res
+
+
+def parse_cgem_digi(
+    cgem_digi: ak.Array | dict[str, np.ndarray | int],
+) -> ak.Array | dict[str, np.ndarray | int]:
+    """
+    Parse CGEM raw digi array. The raw digi array should contain [`m_intId`,
+    `m_timeChannel`, `m_chargeChannel`] fields.
+
+    Fields of the output:
+
+    - `layer`: The layer number.
+    - `sheet`: The sheet ID.
+    - `strip_type`: The strip type. 0 for X-strip, 1 for V-strip.
+    - `strip`: The strip ID.
+    - `charge_channel`: Charge channel.
+    - `time_channel`: Time channel.
+    - `track_index`: Track index.
+
+    Parameters:
+        cgem_digi: The CGEM raw digi array.
+
+    Returns:
+        The parsed CGEM digi array.
+    """
+    parsed_id = parse_cgem_id(cgem_digi["m_intId"])
+
+    charge_channel = cgem_digi["m_chargeChannel"]
+    time_channel = cgem_digi["m_timeChannel"]
+
+    res = {
+        "gid": parsed_id["gid"],
+        "layer": parsed_id["layer"],
+        "sheet": parsed_id["sheet"],
+        "strip_type": parsed_id["strip_type"],
+        "strip": parsed_id["strip"],
+        "charge_channel": charge_channel,
+        "time_channel": time_channel,
+    }
+
+    _add_field_if_exist(cgem_digi, res, "m_overflow", "overflow")
+    _add_field_if_exist(cgem_digi, res, "m_trackIndex", "track_index")
+
+    if isinstance(cgem_digi, ak.Array):
         return ak.zip(res)
     else:
         return res

@@ -795,10 +795,10 @@ py::dict RawBinaryParser::arrays() {
             auto& [data_id, data_t, data_q, data_overflow] = m_mdc_data;
 
             py::dict mdc_data;
-            mdc_data["id"]       = make_array( data_id );
-            mdc_data["adc"]      = make_array( data_q );
-            mdc_data["tdc"]      = make_array( data_t );
-            mdc_data["overflow"] = make_array( data_overflow );
+            mdc_data["m_intId"]         = make_array( data_id );
+            mdc_data["m_chargeChannel"] = make_array( data_q );
+            mdc_data["m_timeChannel"]   = make_array( data_t );
+            mdc_data["m_overflow"]      = make_array( data_overflow );
 
             auto offsets = make_array( m_mdc_offsets );
 
@@ -810,10 +810,10 @@ py::dict RawBinaryParser::arrays() {
             auto& [data_id, data_t, data_q, data_overflow] = m_tof_data;
 
             py::dict tof_data;
-            tof_data["id"]       = make_array( data_id );
-            tof_data["adc"]      = make_array( data_q );
-            tof_data["tdc"]      = make_array( data_t );
-            tof_data["overflow"] = make_array( data_overflow );
+            tof_data["m_intId"]         = make_array( data_id );
+            tof_data["m_chargeChannel"] = make_array( data_q );
+            tof_data["m_timeChannel"]   = make_array( data_t );
+            tof_data["m_overflow"]      = make_array( data_overflow );
 
             auto offsets = make_array( m_tof_offsets );
 
@@ -825,10 +825,10 @@ py::dict RawBinaryParser::arrays() {
             auto& [data_id, data_t, data_q, data_measure] = m_emc_data;
 
             py::dict emc_data;
-            emc_data["id"]      = make_array( data_id );
-            emc_data["adc"]     = make_array( data_q );
-            emc_data["tdc"]     = make_array( data_t );
-            emc_data["measure"] = make_array( data_measure );
+            emc_data["m_intId"]         = make_array( data_id );
+            emc_data["m_chargeChannel"] = make_array( data_q );
+            emc_data["m_timeChannel"]   = make_array( data_t );
+            emc_data["m_measure"]       = make_array( data_measure );
 
             auto offsets = make_array( m_emc_offsets );
 
@@ -840,7 +840,7 @@ py::dict RawBinaryParser::arrays() {
             auto& [data_id] = m_muc_data;
 
             py::dict muc_data;
-            muc_data["id"] = make_array( data_id );
+            muc_data["m_intId"] = make_array( data_id );
 
             auto offsets = make_array( m_muc_offsets );
 
@@ -852,10 +852,10 @@ py::dict RawBinaryParser::arrays() {
             auto& [id, data_size, time_window, data_type] = m_trg_data;
 
             py::dict trg_data;
-            trg_data["id"]          = make_array( id );
-            trg_data["data_size"]   = make_array( data_size );
-            trg_data["time_window"] = make_array( time_window );
-            trg_data["data_type"]   = make_array( data_type );
+            trg_data["m_id"]         = make_array( id );
+            trg_data["m_dataSize"]   = make_array( data_size );
+            trg_data["m_timeWindow"] = make_array( time_window );
+            trg_data["m_dataType"]   = make_array( data_type );
 
             auto trg_offsets = make_array( m_trg_offsets );
             res["trigGTD"]   = py::make_tuple( trg_offsets, trg_data );
@@ -864,11 +864,11 @@ py::dict RawBinaryParser::arrays() {
 
         case FieldID::CGEM: {
             py::dict cgem_data;
-            cgem_data["id"]     = make_array( m_cgem_data.id );
-            cgem_data["adc"]    = make_array( m_cgem_data.adc );
-            cgem_data["tdc"]    = make_array( m_cgem_data.tdc );
-            cgem_data["time"]   = make_array( m_cgem_data.time );
-            cgem_data["charge"] = make_array( m_cgem_data.charge );
+            cgem_data["m_intId"]         = make_array( m_cgem_data.id );
+            cgem_data["m_chargeChannel"] = make_array( m_cgem_data.adc );
+            cgem_data["m_timeChannel"]   = make_array( m_cgem_data.tdc );
+            cgem_data["m_time_ns"]       = make_array( m_cgem_data.time );
+            cgem_data["m_charge_fc"]     = make_array( m_cgem_data.charge );
 
             auto cgem_offsets = make_array( m_cgem_offsets );
             res["cgem"]       = py::make_tuple( cgem_offsets, cgem_data );
