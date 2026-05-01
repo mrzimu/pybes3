@@ -9,8 +9,8 @@ with warnings.catch_warnings():
     from pybes3 import digi_id
 
 
-def test_mdc_digi_id(rtraw_event):
-    mdc_id_ak: ak.Array = rtraw_event["m_mdcDigiCol"]["m_intId"]
+def test_mdc_digi_id(digi_event):
+    mdc_id_ak: ak.Array = digi_event["m_mdcDigiCol"]["m_intId"]
 
     # Test awkward
     ak_wire, ak_layer, ak_is_stereo = (
@@ -58,8 +58,8 @@ def test_mdc_digi_id(rtraw_event):
     assert digi_id.check_mdc_id(tmp_id)
 
 
-def test_parse_mdc_digi_id(rtraw_event):
-    mdc_id_ak: ak.Array = rtraw_event["m_mdcDigiCol"]["m_intId"]
+def test_parse_mdc_digi_id(digi_event):
+    mdc_id_ak: ak.Array = digi_event["m_mdcDigiCol"]["m_intId"]
     mdc_fields = [
         "gid",
         "layer",
@@ -124,8 +124,8 @@ def test_parse_mdc_digi_id(rtraw_event):
     assert ak.all(ak_res2["is_stereo"] == is_stereo_ak)
 
 
-def test_parse_mdc_digi(rtraw_event):
-    mdc_digi_ak: ak.Record = rtraw_event["m_mdcDigiCol"]
+def test_parse_mdc_digi(digi_event):
+    mdc_digi_ak: ak.Record = digi_event["m_mdcDigiCol"]
     base_fields = [
         "gid",
         "wire",
@@ -160,8 +160,8 @@ def test_parse_mdc_digi(rtraw_event):
     assert len(ak_res2.positional_axis) == 2
 
 
-def test_emc_digi_id(rtraw_event):
-    emc_id_ak: ak.Array = rtraw_event["m_emcDigiCol"]["m_intId"]
+def test_emc_digi_id(digi_event):
+    emc_id_ak: ak.Array = digi_event["m_emcDigiCol"]["m_intId"]
 
     # Test awkward
     ak_module, ak_theta, ak_phi = (
@@ -209,8 +209,8 @@ def test_emc_digi_id(rtraw_event):
     assert digi_id.check_emc_id(tmp_id)
 
 
-def test_parse_emc_digi_id(rtraw_event):
-    emc_id_ak: ak.Array = rtraw_event["m_emcDigiCol"]["m_intId"]
+def test_parse_emc_digi_id(digi_event):
+    emc_id_ak: ak.Array = digi_event["m_emcDigiCol"]["m_intId"]
     emc_fields = [
         "gid",
         "part",
@@ -264,8 +264,8 @@ def test_parse_emc_digi_id(rtraw_event):
     assert ak.all(ak_res2["phi"] == phi_ak)
 
 
-def test_parse_emc_digi(rtraw_event):
-    emc_digi_ak: ak.Record = rtraw_event["m_emcDigiCol"]
+def test_parse_emc_digi(digi_event):
+    emc_digi_ak: ak.Record = digi_event["m_emcDigiCol"]
     base_fields = [
         "gid",
         "part",
@@ -296,8 +296,8 @@ def test_parse_emc_digi(rtraw_event):
     assert len(ak_res2.positional_axis) == 2
 
 
-def test_tof_digi_id(rtraw_event):
-    tof_id_ak: ak.Array = rtraw_event["m_tofDigiCol"]["m_intId"]
+def test_tof_digi_id(digi_event):
+    tof_id_ak: ak.Array = digi_event["m_tofDigiCol"]["m_intId"]
 
     # Test awkward
     ak_part, ak_layer_or_module, ak_phi_or_strip, ak_end = (
@@ -423,8 +423,8 @@ def test_parse_tof_digi_id(test_data_dir):
     assert int_res2["end"] == end_np[0]
 
 
-def test_muc_digi_id(rtraw_event):
-    muc_id_ak: ak.Array = rtraw_event["m_mucDigiCol"]["m_intId"]
+def test_muc_digi_id(digi_event):
+    muc_id_ak: ak.Array = digi_event["m_mucDigiCol"]["m_intId"]
 
     # Test awkward
     ak_part, ak_segment, ak_layer, ak_channel, ak_gap, ak_strip = (

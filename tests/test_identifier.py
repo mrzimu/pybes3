@@ -5,8 +5,8 @@ import uproot
 from pybes3 import identifier
 
 
-def test_mdc_id(rtraw_event):
-    mdc_id_ak: ak.Array = rtraw_event["m_mdcDigiCol"]["m_intId"]
+def test_mdc_id(digi_event):
+    mdc_id_ak: ak.Array = digi_event["m_mdcDigiCol"]["m_intId"]
 
     # Test awkward
     ak_wire, ak_layer, ak_is_stereo = (
@@ -54,8 +54,8 @@ def test_mdc_id(rtraw_event):
     assert identifier.check_mdc_id(tmp_id)
 
 
-def test_parse_mdc_id(rtraw_event):
-    mdc_id_ak: ak.Array = rtraw_event["m_mdcDigiCol"]["m_intId"]
+def test_parse_mdc_id(digi_event):
+    mdc_id_ak: ak.Array = digi_event["m_mdcDigiCol"]["m_intId"]
     mdc_fields = ["gid", "layer", "wire", "is_stereo"]
 
     wire_ak = identifier.mdc_id_to_wire(mdc_id_ak)
@@ -90,8 +90,8 @@ def test_parse_mdc_id(rtraw_event):
     assert int_res["is_stereo"] == is_stereo_np[0]
 
 
-def test_parse_mdc_digi(rtraw_event):
-    mdc_digi_ak: ak.Array = rtraw_event["m_mdcDigiCol"]
+def test_parse_mdc_digi_rtraw(digi_event):
+    digi_ak: ak.Array = digi_event["m_mdcDigiCol"]
     fields = [
         "gid",
         "wire",
@@ -99,26 +99,50 @@ def test_parse_mdc_digi(rtraw_event):
         "is_stereo",
         "charge_channel",
         "time_channel",
-        "track_index",
         "overflow",
-        "id",
+        "track_index",
     ]
 
-    ak_res1 = identifier.parse_mdc_digi(mdc_digi_ak)
-    assert ak_res1.fields == fields
-    assert len(ak_res1.positional_axis) == 2
+    ak_res = identifier.parse_mdc_digi(digi_ak)
+    assert ak_res.fields == fields
+    assert len(ak_res.positional_axis) == 2
 
-    flat_mdc_digi_ak = ak.flatten(mdc_digi_ak)
-    mdc_digi_np = {k: flat_mdc_digi_ak[k].to_numpy() for k in flat_mdc_digi_ak.fields}
+    flat_digi_ak = ak.flatten(digi_ak)
+    digi_np = {k: flat_digi_ak[k].to_numpy() for k in flat_digi_ak.fields}
 
-    np_res = identifier.parse_mdc_digi(mdc_digi_np)
+    np_res = identifier.parse_mdc_digi(digi_np)
     assert list(np_res.keys()) == fields
     for field in fields:
         assert np.asarray(np_res[field]).ndim == 1
 
 
-def test_emc_id(rtraw_event):
-    emc_id_ak: ak.Array = rtraw_event["m_emcDigiCol"]["m_intId"]
+def test_parse_mdc_digi_raw(raw_event):
+    digi_ak: ak.Array = raw_event["mdc"]
+    fields = [
+        "gid",
+        "wire",
+        "layer",
+        "is_stereo",
+        "charge_channel",
+        "time_channel",
+        "overflow",
+    ]
+
+    ak_res = identifier.parse_mdc_digi(digi_ak)
+    assert ak_res.fields == fields
+    assert len(ak_res.positional_axis) == 2
+
+    flat_digi_ak = ak.flatten(digi_ak)
+    digi_np = {k: flat_digi_ak[k].to_numpy() for k in flat_digi_ak.fields}
+
+    np_res = identifier.parse_mdc_digi(digi_np)
+    assert list(np_res.keys()) == fields
+    for field in fields:
+        assert np.asarray(np_res[field]).ndim == 1
+
+
+def test_emc_id(digi_event):
+    emc_id_ak: ak.Array = digi_event["m_emcDigiCol"]["m_intId"]
 
     # Test awkward
     ak_module, ak_theta, ak_phi = (
@@ -166,8 +190,8 @@ def test_emc_id(rtraw_event):
     assert identifier.check_emc_id(tmp_id)
 
 
-def test_parse_emc_id(rtraw_event):
-    emc_id_ak: ak.Array = rtraw_event["m_emcDigiCol"]["m_intId"]
+def test_parse_emc_id(digi_event):
+    emc_id_ak: ak.Array = digi_event["m_emcDigiCol"]["m_intId"]
     emc_fields = ["gid", "part", "theta", "phi"]
 
     module_ak = identifier.emc_id_to_module(emc_id_ak)
@@ -202,8 +226,8 @@ def test_parse_emc_id(rtraw_event):
     assert int_res["phi"] == phi_np[0]
 
 
-def test_parse_emc_digi(rtraw_event):
-    emc_digi_ak: ak.Array = rtraw_event["m_emcDigiCol"]
+def test_parse_emc_digi_rtraw(digi_event):
+    emc_digi_ak: ak.Array = digi_event["m_emcDigiCol"]
     fields = [
         "gid",
         "part",
@@ -211,9 +235,8 @@ def test_parse_emc_digi(rtraw_event):
         "phi",
         "charge_channel",
         "time_channel",
-        "track_index",
         "measure",
-        "id",
+        "track_index",
     ]
 
     ak_res1 = identifier.parse_emc_digi(emc_digi_ak)
@@ -228,8 +251,32 @@ def test_parse_emc_digi(rtraw_event):
         assert np.asarray(np_res[field]).ndim == 1
 
 
-def test_tof_id(rtraw_event):
-    tof_id_ak: ak.Array = rtraw_event["m_tofDigiCol"]["m_intId"]
+def test_parse_emc_digi_raw(raw_event):
+    digi_ak: ak.Array = raw_event["emc"]
+    fields = [
+        "gid",
+        "part",
+        "theta",
+        "phi",
+        "charge_channel",
+        "time_channel",
+        "measure",
+    ]
+
+    ak_res = identifier.parse_emc_digi(digi_ak)
+    assert ak_res.fields == fields
+    assert len(ak_res.positional_axis) == 2
+
+    flat_digi_ak = ak.flatten(digi_ak)
+    digi_np = {k: flat_digi_ak[k].to_numpy() for k in flat_digi_ak.fields}
+    np_res = identifier.parse_emc_digi(digi_np)
+    assert list(np_res.keys()) == fields
+    for field in fields:
+        assert np.asarray(np_res[field]).ndim == 1
+
+
+def test_tof_id(digi_event):
+    tof_id_ak: ak.Array = digi_event["m_tofDigiCol"]["m_intId"]
 
     # Test awkward
     ak_part, ak_layer_or_module, ak_phi_or_strip, ak_end = (
@@ -307,7 +354,7 @@ def test_parse_tof_id(test_data_dir):
 
     # Test awkward
     ak_res1 = identifier.parse_tof_id(tof_id_ak)
-    assert ak_res1.fields == ["part", "layer_or_module", "phi_or_strip", "end"]
+    assert ak_res1.fields == ["gid", "part", "layer_or_module", "phi_or_strip", "end"]
     assert len(ak_res1.positional_axis) == 2
     assert ak.all(ak_res1["part"] == part_ak)
     assert ak.all(ak_res1["layer_or_module"] == layer_or_module_ak)
@@ -322,7 +369,7 @@ def test_parse_tof_id(test_data_dir):
 
     # Test numpy
     np_res = identifier.parse_tof_id(tof_id_np)
-    assert list(np_res.keys()) == ["part", "layer_or_module", "phi_or_strip", "end"]
+    assert list(np_res.keys()) == ["gid", "part", "layer_or_module", "phi_or_strip", "end"]
     assert np.all(np_res["part"] == part_np)
     assert np.all(np_res["layer_or_module"] == layer_or_module_np)
     assert np.all(np_res["phi_or_strip"] == phi_or_strip_np)
@@ -331,15 +378,66 @@ def test_parse_tof_id(test_data_dir):
     # Test int
     tof_id_int = int(tof_id_np[0])
     int_res = identifier.parse_tof_id(tof_id_int)
-    assert list(int_res.keys()) == ["part", "layer_or_module", "phi_or_strip", "end"]
+    assert list(int_res.keys()) == ["gid", "part", "layer_or_module", "phi_or_strip", "end"]
     assert int_res["part"] == part_np[0]
     assert int_res["layer_or_module"] == layer_or_module_np[0]
     assert int_res["phi_or_strip"] == phi_or_strip_np[0]
     assert int_res["end"] == end_np[0]
 
 
-def test_muc_id(rtraw_event):
-    muc_id_ak: ak.Array = rtraw_event["m_mucDigiCol"]["m_intId"]
+def test_parse_tof_digi_rtraw(digi_event):
+    tof_digi_ak: ak.Array = digi_event["m_tofDigiCol"]
+    fields = [
+        "gid",
+        "part",
+        "layer_or_module",
+        "phi_or_strip",
+        "end",
+        "charge_channel",
+        "time_channel",
+        "overflow",
+        "track_index",
+    ]
+
+    ak_res = identifier.parse_tof_digi(tof_digi_ak)
+    assert ak_res.fields == fields
+    assert len(ak_res.positional_axis) == 2
+
+    flat_digi_ak = ak.flatten(tof_digi_ak)
+    digi_np = {k: flat_digi_ak[k].to_numpy() for k in flat_digi_ak.fields}
+    np_res = identifier.parse_tof_digi(digi_np)
+    assert list(np_res.keys()) == fields
+    for field in fields:
+        assert np.asarray(np_res[field]).ndim == 1
+
+
+def test_parse_tof_digi_raw(raw_event):
+    digi_ak: ak.Array = raw_event["tof"]
+    fields = [
+        "gid",
+        "part",
+        "layer_or_module",
+        "phi_or_strip",
+        "end",
+        "charge_channel",
+        "time_channel",
+        "overflow",
+    ]
+
+    ak_res = identifier.parse_tof_digi(digi_ak)
+    assert ak_res.fields == fields
+    assert len(ak_res.positional_axis) == 2
+
+    flat_digi_ak = ak.flatten(digi_ak)
+    digi_np = {k: flat_digi_ak[k].to_numpy() for k in flat_digi_ak.fields}
+    np_res = identifier.parse_tof_digi(digi_np)
+    assert list(np_res.keys()) == fields
+    for field in fields:
+        assert np.asarray(np_res[field]).ndim == 1
+
+
+def test_muc_id(digi_event):
+    muc_id_ak: ak.Array = digi_event["m_mucDigiCol"]["m_intId"]
 
     # Test awkward
     ak_part, ak_segment, ak_layer, ak_channel, ak_gap, ak_strip = (
@@ -413,10 +511,8 @@ def test_muc_id(rtraw_event):
     assert identifier.check_muc_id(tmp_id)
 
 
-def test_parse_muc_id(test_data_dir):
-    muc_id_ak: ak.Array = uproot.open(test_data_dir / "test_full_mc_evt_1.rtraw")[
-        "Event/TDigiEvent/m_mucDigiCol"
-    ].array()["m_intId"]
+def test_parse_muc_id(digi_event):
+    muc_id_ak: ak.Array = digi_event["m_mucDigiCol"]["m_intId"]
 
     part_ak = identifier.muc_id_to_part(muc_id_ak)
     segment_ak = identifier.muc_id_to_segment(muc_id_ak)
@@ -487,10 +583,8 @@ def test_parse_muc_id(test_data_dir):
     assert int_res["strip"] == strip_np[0]
 
 
-def test_cgem_id(test_data_dir):
-    cgem_id_ak: ak.Array = uproot.open(test_data_dir / "test_cgem.rtraw")[
-        "Event/TDigiEvent/m_cgemDigiCol"
-    ].array()["m_intId"]
+def test_cgem_id(cgem_digi_event):
+    cgem_id_ak: ak.Array = cgem_digi_event["m_cgemDigiCol"]["m_intId"]
 
     # Test awkward
     ak_layer, ak_sheet, ak_strip_type, ak_strip = (
@@ -548,10 +642,8 @@ def test_cgem_id(test_data_dir):
     assert identifier.check_cgem_id(tmp_id)
 
 
-def test_parse_cgem_id(test_data_dir):
-    cgem_id_ak: ak.Array = uproot.open(test_data_dir / "test_cgem.rtraw")[
-        "Event/TDigiEvent/m_cgemDigiCol"
-    ].array()["m_intId"]
+def test_parse_cgem_id(cgem_digi_event):
+    cgem_id_ak: ak.Array = cgem_digi_event["m_cgemDigiCol"]["m_intId"]
 
     layer_ak = identifier.cgem_id_to_layer(cgem_id_ak)
     sheet_ak = identifier.cgem_id_to_sheet(cgem_id_ak)
@@ -560,7 +652,7 @@ def test_parse_cgem_id(test_data_dir):
 
     # Test awkward, flat=False, library='ak'
     ak_res1 = identifier.parse_cgem_id(cgem_id_ak)
-    assert ak_res1.fields == ["layer", "sheet", "strip_type", "strip"]
+    assert ak_res1.fields == ["gid", "layer", "sheet", "strip_type", "strip"]
     assert len(ak_res1.positional_axis) == 2
     assert ak.all(ak_res1["layer"] == layer_ak)
     assert ak.all(ak_res1["sheet"] == sheet_ak)
@@ -575,7 +667,7 @@ def test_parse_cgem_id(test_data_dir):
 
     # Test numpy
     np_res = identifier.parse_cgem_id(cgem_id_np)
-    assert list(np_res.keys()) == ["layer", "sheet", "strip_type", "strip"]
+    assert list(np_res.keys()) == ["gid", "layer", "sheet", "strip_type", "strip"]
     assert np.all(np_res["layer"] == layer_np)
     assert np.all(np_res["sheet"] == sheet_np)
     assert np.all(np_res["strip_type"] == strip_type_np)
@@ -584,17 +676,17 @@ def test_parse_cgem_id(test_data_dir):
     # Test int
     cgem_id_int = int(cgem_id_np[0])
     int_res = identifier.parse_cgem_id(cgem_id_int)
-    assert list(int_res.keys()) == ["layer", "sheet", "strip_type", "strip"]
+    assert list(int_res.keys()) == ["gid", "layer", "sheet", "strip_type", "strip"]
     assert int_res["layer"] == layer_np[0]
     assert int_res["sheet"] == sheet_np[0]
     assert int_res["strip_type"] == strip_type_np[0]
     assert int_res["strip"] == strip_np[0]
 
 
-def test_mdc_id_to_gid(rtraw_event):
+def test_mdc_id_to_gid(digi_event):
     from pybes3 import detectors as det
 
-    mdc_id_ak: ak.Array = rtraw_event["m_mdcDigiCol"]["m_intId"]
+    mdc_id_ak: ak.Array = digi_event["m_mdcDigiCol"]["m_intId"]
 
     # gid should equal det.get_mdc_gid(layer, wire)
     expected_gid = det.get_mdc_gid(
@@ -612,10 +704,10 @@ def test_mdc_id_to_gid(rtraw_event):
     assert identifier.mdc_id_to_gid(int(tmp_id)) == expected_gid_np[0]
 
 
-def test_emc_id_to_gid(rtraw_event):
+def test_emc_id_to_gid(digi_event):
     from pybes3 import detectors as det
 
-    emc_id_ak: ak.Array = rtraw_event["m_emcDigiCol"]["m_intId"]
+    emc_id_ak: ak.Array = digi_event["m_emcDigiCol"]["m_intId"]
 
     expected_gid = det.get_emc_gid(
         identifier.emc_id_to_module(emc_id_ak),
@@ -657,12 +749,10 @@ def test_tof_id_to_gid(test_data_dir):
     assert identifier.tof_id_to_gid(int(tmp_id)) == expected_gid_np[0]
 
 
-def test_cgem_id_to_gid(test_data_dir):
+def test_cgem_id_to_gid(cgem_digi_event):
     from pybes3 import detectors as det
 
-    cgem_id_ak: ak.Array = uproot.open(test_data_dir / "test_cgem.rtraw")[
-        "Event/TDigiEvent/m_cgemDigiCol"
-    ].array()["m_intId"]
+    cgem_id_ak: ak.Array = cgem_digi_event["m_cgemDigiCol"]["m_intId"]
 
     expected_gid = det.get_cgem_gid(
         identifier.cgem_id_to_layer(cgem_id_ak),
@@ -679,6 +769,56 @@ def test_cgem_id_to_gid(test_data_dir):
     tmp_id = cgem_id_np[0]
     assert identifier.cgem_id_to_gid(tmp_id) == expected_gid_np[0]
     assert identifier.cgem_id_to_gid(int(tmp_id)) == expected_gid_np[0]
+
+
+def test_parse_cgem_digi_rtraw(cgem_digi_event):
+    digi_ak: ak.Array = cgem_digi_event["m_cgemDigiCol"]
+    fields = [
+        "gid",
+        "layer",
+        "sheet",
+        "strip_type",
+        "strip",
+        "charge_channel",
+        "time_channel",
+        "overflow",
+        "track_index",
+    ]
+
+    ak_res = identifier.parse_cgem_digi(digi_ak)
+    assert ak_res.fields == fields
+    assert len(ak_res.positional_axis) == 2
+
+    flat_digi_ak = ak.flatten(digi_ak)
+    digi_np = {k: flat_digi_ak[k].to_numpy() for k in flat_digi_ak.fields}
+    np_res = identifier.parse_cgem_digi(digi_np)
+    assert list(np_res.keys()) == fields
+    for field in fields:
+        assert np.asarray(np_res[field]).ndim == 1
+
+
+def test_parse_cgem_digi_raw(raw_event):
+    digi_ak: ak.Array = raw_event["cgem"]
+    fields = [
+        "gid",
+        "layer",
+        "sheet",
+        "strip_type",
+        "strip",
+        "charge_channel",
+        "time_channel",
+    ]
+
+    ak_res = identifier.parse_cgem_digi(digi_ak)
+    assert ak_res.fields == fields
+    assert len(ak_res.positional_axis) == 2
+
+    flat_digi_ak = ak.flatten(digi_ak)
+    digi_np = {k: flat_digi_ak[k].to_numpy() for k in flat_digi_ak.fields}
+    np_res = identifier.parse_cgem_digi(digi_np)
+    assert list(np_res.keys()) == fields
+    for field in fields:
+        assert np.asarray(np_res[field]).ndim == 1
 
 
 if __name__ == "__main__":

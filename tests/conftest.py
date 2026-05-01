@@ -18,5 +18,15 @@ def geom_dir():
 
 
 @pytest.fixture(scope="session")
-def rtraw_event(test_data_dir):
+def digi_event(test_data_dir):
     yield uproot.open(test_data_dir / "test_full_mc_evt_1.rtraw")["Event/TDigiEvent"].arrays()
+
+
+@pytest.fixture(scope="session")
+def cgem_digi_event(test_data_dir):
+    yield uproot.open(test_data_dir / "test_cgem.rtraw")["Event/TDigiEvent"].arrays()
+
+
+@pytest.fixture(scope="session")
+def raw_event(test_data_dir):
+    yield pybes3.open_raw(test_data_dir / "test_raw_data.raw").arrays()
