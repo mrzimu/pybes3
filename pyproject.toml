@@ -33,6 +33,7 @@ classifiers = [
   "Programming Language :: Python :: 3.11",
   "Programming Language :: Python :: 3.12",
   "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
   "Operating System :: OS Independent"
 ]
 dependencies = [
@@ -46,7 +47,7 @@ description = "Unofficial Python module for BES3"
 dynamic = ["version"]
 name = "pybes3"
 readme = "README.md"
-requires-python = ">=3.9, <3.14"
+requires-python = ">=3.9, <=3.14"
 urls = {"Homepage" = "https://github.com/mrzimu/pybes3", "Documentation" = "https://pybes3.readthedocs.io/en/stable/"}
 
 [tool.cibuildwheel]
