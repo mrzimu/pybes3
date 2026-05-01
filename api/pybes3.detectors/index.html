@@ -11,7 +11,7 @@
       
       
       
-        <link rel="prev" href="../pybes3.digi_id/">
+        <link rel="prev" href="../pybes3.besio/">
       
       
         <link rel="next" href="../pybes3.helix/">
@@ -21,7 +21,7 @@
       
       
       <link rel="icon" href="../../assets/images/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -721,34 +721,6 @@
                 
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../pybes3.digi_id/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    pybes3.digi_id
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
     
   
   
@@ -1309,6 +1281,62 @@
     
   
     pybes3.helix
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pybes3.identifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pybes3.identifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pybes3.digi_id/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pybes3.digi_id (deprecated)
   
 
     
@@ -4171,9 +4199,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 79</span>
 <span class="normal"> 80</span>
 <span class="normal"> 81</span>
 <span class="normal"> 82</span>
@@ -4218,7 +4244,9 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">121</span>
 <span class="normal">122</span>
 <span class="normal">123</span>
-<span class="normal">124</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_emc_crystal_position</span><span class="p">(</span><span class="n">library</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;np&quot;</span><span class="p">,</span> <span class="s2">&quot;ak&quot;</span><span class="p">,</span> <span class="s2">&quot;pd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;np&quot;</span><span class="p">):</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_emc_crystal_position</span><span class="p">(</span><span class="n">library</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="s2">&quot;np&quot;</span><span class="p">,</span> <span class="s2">&quot;ak&quot;</span><span class="p">,</span> <span class="s2">&quot;pd&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;np&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get EMC crystal position table.</span>
 
@@ -4396,9 +4424,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">127</span>
-<span class="normal">128</span>
-<span class="normal">129</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">129</span>
 <span class="normal">130</span>
 <span class="normal">131</span>
 <span class="normal">132</span>
@@ -4455,7 +4481,9 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">183</span>
 <span class="normal">184</span>
 <span class="normal">185</span>
-<span class="normal">186</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">186</span>
+<span class="normal">187</span>
+<span class="normal">188</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_emc_gid</span><span class="p">(</span><span class="n">part</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span> <span class="n">theta</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span> <span class="n">phi</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Get EMC gid of given part, theta, and phi.</span>
@@ -4592,9 +4620,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">276</span>
-<span class="normal">277</span>
-<span class="normal">278</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">278</span>
 <span class="normal">279</span>
 <span class="normal">280</span>
 <span class="normal">281</span>
@@ -4603,7 +4629,9 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">284</span>
 <span class="normal">285</span>
 <span class="normal">286</span>
-<span class="normal">287</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">287</span>
+<span class="normal">288</span>
+<span class="normal">289</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_gid_to_center_x</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert EMC gid to x coordinate of the crystal&#39;s center.</span>
@@ -4692,9 +4720,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">290</span>
-<span class="normal">291</span>
-<span class="normal">292</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">292</span>
 <span class="normal">293</span>
 <span class="normal">294</span>
 <span class="normal">295</span>
@@ -4703,7 +4729,9 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">298</span>
 <span class="normal">299</span>
 <span class="normal">300</span>
-<span class="normal">301</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">301</span>
+<span class="normal">302</span>
+<span class="normal">303</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_gid_to_center_y</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert EMC gid to y coordinate of the crystal&#39;s center.</span>
@@ -4792,9 +4820,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">304</span>
-<span class="normal">305</span>
-<span class="normal">306</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">306</span>
 <span class="normal">307</span>
 <span class="normal">308</span>
 <span class="normal">309</span>
@@ -4803,7 +4829,9 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">312</span>
 <span class="normal">313</span>
 <span class="normal">314</span>
-<span class="normal">315</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_gid_to_center_z</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert EMC gid to z coordinate of the crystal&#39;s center.</span>
@@ -4892,9 +4920,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">318</span>
-<span class="normal">319</span>
-<span class="normal">320</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">320</span>
 <span class="normal">321</span>
 <span class="normal">322</span>
 <span class="normal">323</span>
@@ -4903,7 +4929,9 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">326</span>
 <span class="normal">327</span>
 <span class="normal">328</span>
-<span class="normal">329</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_gid_to_front_center_x</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert EMC gid to x coordinate of the crystal&#39;s front center.</span>
@@ -4992,9 +5020,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">332</span>
-<span class="normal">333</span>
-<span class="normal">334</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">334</span>
 <span class="normal">335</span>
 <span class="normal">336</span>
 <span class="normal">337</span>
@@ -5003,7 +5029,9 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">340</span>
 <span class="normal">341</span>
 <span class="normal">342</span>
-<span class="normal">343</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">343</span>
+<span class="normal">344</span>
+<span class="normal">345</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_gid_to_front_center_y</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert EMC gid to y coordinate of the crystal&#39;s front center.</span>
@@ -5092,9 +5120,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">348</span>
 <span class="normal">349</span>
 <span class="normal">350</span>
 <span class="normal">351</span>
@@ -5103,7 +5129,9 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">354</span>
 <span class="normal">355</span>
 <span class="normal">356</span>
-<span class="normal">357</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_gid_to_front_center_z</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert EMC gid to z coordinate of the crystal&#39;s front center.</span>
@@ -5192,9 +5220,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">189</span>
-<span class="normal">190</span>
-<span class="normal">191</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">191</span>
 <span class="normal">192</span>
 <span class="normal">193</span>
 <span class="normal">194</span>
@@ -5203,7 +5229,9 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">197</span>
 <span class="normal">198</span>
 <span class="normal">199</span>
-<span class="normal">200</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">200</span>
+<span class="normal">201</span>
+<span class="normal">202</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_gid_to_part</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert EMC gid to part.</span>
@@ -5292,9 +5320,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">219</span>
 <span class="normal">220</span>
 <span class="normal">221</span>
 <span class="normal">222</span>
@@ -5303,7 +5329,9 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">225</span>
 <span class="normal">226</span>
 <span class="normal">227</span>
-<span class="normal">228</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_gid_to_phi</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert EMC gid to phi.</span>
@@ -5408,9 +5436,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">233</span>
 <span class="normal">234</span>
 <span class="normal">235</span>
 <span class="normal">236</span>
@@ -5420,7 +5446,9 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">240</span>
 <span class="normal">241</span>
 <span class="normal">242</span>
-<span class="normal">243</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">243</span>
+<span class="normal">244</span>
+<span class="normal">245</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_gid_to_point_x</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert EMC gid to x coordinate of the point.</span>
@@ -5526,9 +5554,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">248</span>
 <span class="normal">249</span>
 <span class="normal">250</span>
 <span class="normal">251</span>
@@ -5538,7 +5564,9 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">255</span>
 <span class="normal">256</span>
 <span class="normal">257</span>
-<span class="normal">258</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">258</span>
+<span class="normal">259</span>
+<span class="normal">260</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_gid_to_point_y</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert EMC gid to y coordinate of the point.</span>
@@ -5644,9 +5672,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">261</span>
-<span class="normal">262</span>
-<span class="normal">263</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">263</span>
 <span class="normal">264</span>
 <span class="normal">265</span>
 <span class="normal">266</span>
@@ -5656,7 +5682,9 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">270</span>
 <span class="normal">271</span>
 <span class="normal">272</span>
-<span class="normal">273</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_gid_to_point_z</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span> <span class="n">point</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">FloatLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert EMC gid to z coordinate of the point.</span>
@@ -5746,9 +5774,7 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">205</span>
 <span class="normal">206</span>
 <span class="normal">207</span>
 <span class="normal">208</span>
@@ -5757,7 +5783,9 @@ When <code>gid</code> is an <code>ak.Array</code>, the result is an <code>ak.Arr
 <span class="normal">211</span>
 <span class="normal">212</span>
 <span class="normal">213</span>
-<span class="normal">214</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="normal">214</span>
+<span class="normal">215</span>
+<span class="normal">216</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@nb</span><span class="o">.</span><span class="n">vectorize</span><span class="p">(</span><span class="n">cache</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">emc_gid_to_theta</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">IntLike</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Convert EMC gid to theta.</span>
@@ -5885,9 +5913,7 @@ and <code>emc_gid_to_point_z</code>.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>src/pybes3/detectors/emc.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">360</span>
-<span class="normal">361</span>
-<span class="normal">362</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">362</span>
 <span class="normal">363</span>
 <span class="normal">364</span>
 <span class="normal">365</span>
@@ -5935,7 +5961,9 @@ and <code>emc_gid_to_point_z</code>.</p>
 <span class="normal">407</span>
 <span class="normal">408</span>
 <span class="normal">409</span>
-<span class="normal">410</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_emc_gid</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span> <span class="n">with_pos</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="normal">410</span>
+<span class="normal">411</span>
+<span class="normal">412</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">parse_emc_gid</span><span class="p">(</span><span class="n">gid</span><span class="p">:</span> <span class="n">IntLike</span><span class="p">,</span> <span class="n">with_pos</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Parse the gid of EMC crystals. &quot;gid&quot; is the global ID of the crystal, ranges from 0 to 6239.</span>
 <span class="sd">    When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.</span>
