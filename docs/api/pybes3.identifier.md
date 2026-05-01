@@ -6,7 +6,11 @@ These methods parse the given ID and return the corresponding components. They a
 
 ::: pybes3.identifier.parse_mdc_digi
 ---
+::: pybes3.identifier.parse_tof_digi
+---
 ::: pybes3.identifier.parse_emc_digi
+---
+::: pybes3.identifier.parse_cgem_digi
 ---
 ::: pybes3.identifier.parse_mdc_id
 ---

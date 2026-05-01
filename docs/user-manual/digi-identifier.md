@@ -5,8 +5,7 @@ When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, `muc`, an
 ## Digi array parsing
 
 !!! info
-    Currently, only MDC and EMC full digi parsing is supported. Support for other detectors is under development. For unsupported detectors, use the [standalone digi ID parsing methods](#standalone-digi-id-parsing).
-
+    The MUC full digi parsing is still under development. Use the [standalone digi ID parsing methods](#standalone-digi-id-parsing) for MUC digis for now.
 
 ```python
 import pybes3.identifier as p3id
