@@ -11,20 +11,6 @@
 ---
 
 ## detectors
-::: pybes3.emc_barrel_h1
----
-::: pybes3.emc_barrel_h2
----
-::: pybes3.emc_barrel_h3
----
-::: pybes3.emc_barrel_l
----
-::: pybes3.emc_barrel_offset_1
----
-::: pybes3.emc_barrel_offset_2
----
-::: pybes3.emc_barrel_r
----
 ::: pybes3.emc_gid_to_center_x
 ---
 ::: pybes3.emc_gid_to_center_y
@@ -49,11 +35,15 @@
 ---
 ::: pybes3.emc_gid_to_theta
 ---
+::: pybes3.get_emc_geom_table
+---
 ::: pybes3.get_emc_crystal_position
 ---
 ::: pybes3.get_emc_gid
 ---
 ::: pybes3.get_mdc_gid
+---
+::: pybes3.get_mdc_geom_table
 ---
 ::: pybes3.get_mdc_wire_position
 ---

@@ -11,13 +11,6 @@ from pybes3.detectors.cgem import (
     parse_cgem_gid,
 )
 from pybes3.detectors.emc import (
-    emc_barrel_h1,
-    emc_barrel_h2,
-    emc_barrel_h3,
-    emc_barrel_l,
-    emc_barrel_offset_1,
-    emc_barrel_offset_2,
-    emc_barrel_r,
     emc_gid_to_center_x,
     emc_gid_to_center_y,
     emc_gid_to_center_z,
@@ -31,10 +24,12 @@ from pybes3.detectors.emc import (
     emc_gid_to_point_z,
     emc_gid_to_theta,
     get_emc_crystal_position,
+    get_emc_geom_table,
     get_emc_gid,
     parse_emc_gid,
 )
 from pybes3.detectors.mdc import (
+    get_mdc_geom_table,
     get_mdc_gid,
     get_mdc_wire_position,
     mdc_gid_to_east_x,
@@ -74,6 +69,7 @@ __all__ = [
     "parse_cgem_gid",
     # mdc
     "get_mdc_gid",
+    "get_mdc_geom_table",
     "get_mdc_wire_position",
     "mdc_gid_to_east_x",
     "mdc_gid_to_east_y",
@@ -98,13 +94,6 @@ __all__ = [
     "tof_gid_to_part",
     "tof_gid_to_phi_or_strip",
     # emc
-    "emc_barrel_h1",
-    "emc_barrel_h2",
-    "emc_barrel_h3",
-    "emc_barrel_l",
-    "emc_barrel_offset_1",
-    "emc_barrel_offset_2",
-    "emc_barrel_r",
     "emc_gid_to_center_x",
     "emc_gid_to_center_y",
     "emc_gid_to_center_z",
@@ -119,5 +108,6 @@ __all__ = [
     "emc_gid_to_theta",
     "get_emc_crystal_position",
     "get_emc_gid",
+    "get_emc_geom_table",
     "parse_emc_gid",
 ]
