@@ -9,18 +9,26 @@ import numpy as np
 from pybes3.data import EMC_GEOM
 from pybes3.typing import FloatLike, IntLike
 
+N_CRYSTALS = 6240
+
 ENDCAP_PHI_01 = 64
 ENDCAP_PHI_23 = 80
 ENDCAP_PHI_45 = 96
 ENDCAP_CRYSTALS = 480
-
 BARREL_PHI = 120
 BARREL_CRYSTALS = 5280
 
-N_CRYSTALS = 6240
+BARREL_RADIUS = 94.2
+BARREL_OFFSET_1 = 2.5
+BARREL_OFFSET_2 = 5.0
+BARREL_H1 = 5.1
+BARREL_H2 = 5.2
+BARREL_H3 = 5.2466
+BARREL_L = 28.0
 
+with np.load(EMC_GEOM) as f:
+    _emc_geom = dict(f)
 
-_emc_geom = dict(np.load(EMC_GEOM))
 _part = _emc_geom["part"]
 _theta = _emc_geom["theta"]
 _phi = _emc_geom["phi"]
@@ -33,15 +41,6 @@ _center_z = _emc_geom["center_z"]
 _front_center_x = _emc_geom["front_center_x"]
 _front_center_y = _emc_geom["front_center_y"]
 _front_center_z = _emc_geom["front_center_z"]
-
-
-BARREL_RADIUS = 94.2
-BARREL_OFFSET_1 = 2.5
-BARREL_OFFSET_2 = 5.0
-BARREL_H1 = 5.1
-BARREL_H2 = 5.2
-BARREL_H3 = 5.2466
-BARREL_L = 28.0
 
 
 def get_emc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
@@ -342,7 +341,7 @@ def emc_gid_to_front_center_z(gid: IntLike) -> FloatLike:
     return _front_center_z[gid]
 
 
-def parse_emc_gid(gid: IntLike, geometry: bool = False, **kwargs) -> ak.Array | dict[str, Any]:
+def parse_emc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, Any]:
     """
     Parse the gid of EMC crystals. "gid" is the global ID of the crystal, ranges from 0 to 6239.
     When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
@@ -375,17 +374,6 @@ def parse_emc_gid(gid: IntLike, geometry: bool = False, **kwargs) -> ak.Array | 
     Returns:
         The parsed result.
     """
-    # backward compatibility
-    if "with_pos" in kwargs:
-        import warnings
-
-        warnings.warn(
-            "The `with_pos` argument is deprecated, use `geometry` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        geometry = kwargs["with_pos"]
-
     part = emc_gid_to_part(gid)
     theta = emc_gid_to_theta(gid)
     phi = emc_gid_to_phi(gid)

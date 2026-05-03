@@ -11,7 +11,9 @@ from pybes3.typing import BoolLike, FloatLike, IntLike
 
 N_WIRES = 6796
 
-_mdc_geom_table = dict(np.load(MDC_GEOM))
+with np.load(MDC_GEOM) as f:
+    _mdc_geom_table = dict(f)
+
 _superlayer = _mdc_geom_table["superlayer"]
 _layer = _mdc_geom_table["layer"]
 _wire = _mdc_geom_table["wire"]
@@ -313,7 +315,7 @@ def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
     return _west_y[gid] + _dy_dz[gid] * (z - _west_z[gid])
 
 
-def parse_mdc_gid(gid: IntLike, geometry: bool = False, **kwargs) -> ak.Array | dict[str, Any]:
+def parse_mdc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, Any]:
     """
     Parse the gid of MDC wires. "gid" is the global ID of the wire, ranges from 0 to 6795.
     When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
@@ -345,17 +347,6 @@ def parse_mdc_gid(gid: IntLike, geometry: bool = False, **kwargs) -> ak.Array | 
     Returns:
         The parsed result.
     """
-    # backward compatibility
-    if "with_pos" in kwargs:
-        import warnings
-
-        warnings.warn(
-            "The `with_pos` argument is deprecated, use `geometry` instead.",
-            DeprecationWarning,
-            stacklevel=2,
-        )
-        geometry = kwargs["with_pos"]
-
     layer = mdc_gid_to_layer(gid)
     wire = mdc_gid_to_wire(gid)
 
