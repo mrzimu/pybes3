@@ -11,20 +11,6 @@
 ---
 
 ## detectors
-::: pybes3.emc_barrel_h1
----
-::: pybes3.emc_barrel_h2
----
-::: pybes3.emc_barrel_h3
----
-::: pybes3.emc_barrel_l
----
-::: pybes3.emc_barrel_offset_1
----
-::: pybes3.emc_barrel_offset_2
----
-::: pybes3.emc_barrel_r
----
 ::: pybes3.emc_gid_to_center_x
 ---
 ::: pybes3.emc_gid_to_center_y

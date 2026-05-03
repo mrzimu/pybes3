@@ -6,7 +6,7 @@ from pybes3.detectors import emc
 
 
 def test_emc_geom():
-    gid: np.ndarray = p3.get_emc_crystal_position()["gid"]
+    gid: np.ndarray = p3.get_emc_geom_table()["gid"]
     assert np.all(p3.get_emc_gid(emc._part, emc._theta, emc._phi) == gid)
     assert np.all(p3.emc_gid_to_part(gid) == emc._part)
     assert np.all(p3.emc_gid_to_theta(gid) == emc._theta)
@@ -26,7 +26,7 @@ def test_emc_geom():
 
 
 def test_parse_emc_gid():
-    np_gid = p3.get_emc_crystal_position()["gid"]
+    np_gid = p3.get_emc_geom_table()["gid"]
     ak_gid = ak.Array(np_gid)
     emc_fields = [
         "gid",
@@ -41,14 +41,14 @@ def test_parse_emc_gid():
         "center_z",
     ]
 
-    ak_res1 = emc.parse_emc_gid(ak_gid, with_pos=True)
+    ak_res1 = emc.parse_emc_gid(ak_gid, geometry=True)
     assert ak_res1.fields == emc_fields
 
-    ak_res2 = emc.parse_emc_gid(ak_gid, with_pos=False)
+    ak_res2 = emc.parse_emc_gid(ak_gid, geometry=False)
     assert ak_res2.fields == ["gid", "part", "theta", "phi"]
 
-    np_res1 = emc.parse_emc_gid(np_gid, with_pos=True)
+    np_res1 = emc.parse_emc_gid(np_gid, geometry=True)
     assert list(np_res1.keys()) == emc_fields
 
-    np_res2 = emc.parse_emc_gid(np_gid, with_pos=False)
+    np_res2 = emc.parse_emc_gid(np_gid, geometry=False)
     assert list(np_res2.keys()) == ["gid", "part", "theta", "phi"]

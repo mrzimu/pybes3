@@ -6,35 +6,23 @@ import awkward as ak
 import numba as nb
 import numpy as np
 
-from pybes3._utils import _make_lazy
 from pybes3.typing import BoolLike, IntLike
 
 N_LAYER = 3
 N_STRIPS = 9897
+X_STRIP_TYPE = 0
+V_STRIP_TYPE = 1
 
 N_SHEETS = np.array([1, 2, 2])
 N_XSTRIPS = np.array([856, 630, 832])
 N_VSTRIPS = np.array([1173, 1077, 1395])
 
-X_STRIP_TYPE = 0
-V_STRIP_TYPE = 1
-
-# ---------------------------------------------------------------------------
-# Lazy loading: gid arrays are loaded on first use.
-# ---------------------------------------------------------------------------
-_layer: np.ndarray = None
-_sheet: np.ndarray = None
-_strip_type: np.ndarray = None
-_strip: np.ndarray = None
-_loaded = False
+N_SHEETS.setflags(write=False)
+N_XSTRIPS.setflags(write=False)
+N_VSTRIPS.setflags(write=False)
 
 
-def _ensure_loaded():
-    """Load CGEM gid data on first access."""
-    global _layer, _sheet, _strip_type, _strip, _loaded
-    if _loaded:
-        return
-
+def _init():
     _layer = np.empty(N_STRIPS, dtype=np.uint8)
     _sheet = np.empty(N_STRIPS, dtype=np.uint8)
     _strip_type = np.empty(N_STRIPS, dtype=np.uint8)
@@ -63,10 +51,18 @@ def _ensure_loaded():
                 _strip[gid] = strip
                 gid += 1
 
-    _loaded = True
+    _layer.setflags(write=False)
+    _sheet.setflags(write=False)
+    _strip_type.setflags(write=False)
+    _strip.setflags(write=False)
+
+    return _layer, _sheet, _strip_type, _strip
 
 
-@nb.vectorize(cache=True)
+_layer, _sheet, _strip_type, _strip = _init()
+
+
+@nb.vectorize
 def get_cgem_gid(
     layer: IntLike, sheet: IntLike, strip_type: IntLike, strip: IntLike
 ) -> IntLike:
@@ -89,7 +85,7 @@ def get_cgem_gid(
     return gid
 
 
-@nb.vectorize(cache=True)
+@nb.vectorize
 def cgem_gid_to_layer(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to layer.
@@ -103,7 +99,7 @@ def cgem_gid_to_layer(gid: IntLike) -> IntLike:
     return _layer[gid]
 
 
-@nb.vectorize(cache=True)
+@nb.vectorize
 def cgem_gid_to_sheet(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to sheet.
@@ -117,7 +113,7 @@ def cgem_gid_to_sheet(gid: IntLike) -> IntLike:
     return _sheet[gid]
 
 
-@nb.vectorize(cache=True)
+@nb.vectorize
 def cgem_gid_to_strip_type(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to strip type.
@@ -131,7 +127,7 @@ def cgem_gid_to_strip_type(gid: IntLike) -> IntLike:
     return _strip_type[gid]
 
 
-@nb.vectorize(cache=True)
+@nb.vectorize
 def cgem_gid_to_strip(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to strip number.
@@ -202,18 +198,3 @@ def parse_cgem_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
         return ak.zip(res)
     else:
         return res
-
-
-# ---------------------------------------------------------------------------
-# Apply lazy-loading wrappers to all functions that access gid data.
-# ---------------------------------------------------------------------------
-for _fn_name in [
-    "cgem_gid_to_layer",
-    "cgem_gid_to_sheet",
-    "cgem_gid_to_strip_type",
-    "cgem_gid_to_strip",
-    "cgem_gid_to_is_xstrip",
-    "cgem_gid_to_is_vstrip",
-]:
-    globals()[_fn_name] = _make_lazy(globals()[_fn_name], _ensure_loaded)
-del _fn_name

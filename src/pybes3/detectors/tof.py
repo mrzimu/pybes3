@@ -6,7 +6,6 @@ import awkward as ak
 import numba as nb
 import numpy as np
 
-from pybes3._utils import _make_lazy
 from pybes3.typing import IntLike
 
 N_PARTS = 5
@@ -14,21 +13,11 @@ N_LAYER_OR_MODULE = np.array([1, 2, 1, 36, 36])
 N_PHI_OR_STRIP = np.array([48, 88, 48, 12, 12])
 N_STRIPS = (N_LAYER_OR_MODULE * N_PHI_OR_STRIP).sum()
 
-# ---------------------------------------------------------------------------
-# Lazy loading: gid arrays are loaded on first use.
-# ---------------------------------------------------------------------------
-_part: np.ndarray = None
-_layer_or_module: np.ndarray = None
-_phi_or_strip: np.ndarray = None
-_loaded = False
+N_LAYER_OR_MODULE.setflags(write=False)
+N_PHI_OR_STRIP.setflags(write=False)
 
 
-def _ensure_loaded():
-    """Load TOF gid data on first access."""
-    global _part, _layer_or_module, _phi_or_strip, _loaded
-    if _loaded:
-        return
-
+def _init():
     _part = np.empty(N_STRIPS, dtype=np.uint8)
     _layer_or_module = np.empty(N_STRIPS, dtype=np.uint8)
     _phi_or_strip = np.empty(N_STRIPS, dtype=np.uint8)
@@ -45,7 +34,14 @@ def _ensure_loaded():
                 _phi_or_strip[gid] = j
                 gid += 1
 
-    _loaded = True
+    _part.setflags(write=False)
+    _layer_or_module.setflags(write=False)
+    _phi_or_strip.setflags(write=False)
+
+    return _part, _layer_or_module, _phi_or_strip
+
+
+_part, _layer_or_module, _phi_or_strip = _init()
 
 
 @nb.vectorize(cache=True)
@@ -110,15 +106,3 @@ def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
         return ak.zip(res)
     else:
         return res
-
-
-# ---------------------------------------------------------------------------
-# Apply lazy-loading wrappers to all functions that access gid data.
-# ---------------------------------------------------------------------------
-for _fn_name in [
-    "tof_gid_to_part",
-    "tof_gid_to_layer_or_module",
-    "tof_gid_to_phi_or_strip",
-]:
-    globals()[_fn_name] = _make_lazy(globals()[_fn_name], _ensure_loaded)
-del _fn_name

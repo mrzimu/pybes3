@@ -6,71 +6,38 @@ import awkward as ak
 import numba as nb
 import numpy as np
 
-from pybes3._utils import _make_lazy
 from pybes3.data import MDC_GEOM
 from pybes3.typing import BoolLike, FloatLike, IntLike
 
-# Constant (not dependent on geometry data)
-superlayer_splits = np.array([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 43])
+N_WIRES = 6796
 
-# ---------------------------------------------------------------------------
-# Lazy loading: geometry arrays are loaded from disk on first use.
-# ---------------------------------------------------------------------------
-_mdc_wire_position = None
-_superlayer = None
-_layer = None
-_wire = None
-_east_x = None
-_east_y = None
-_east_z = None
-_west_x = None
-_west_y = None
-_west_z = None
-_stereo = None
-_is_stereo = None
-layer_start_gid = None
-dx_dz = None
-dy_dz = None
-is_layer_stereo = None
-_loaded = False
+_mdc_geom_table = dict(np.load(MDC_GEOM))
+_superlayer = _mdc_geom_table["superlayer"]
+_layer = _mdc_geom_table["layer"]
+_wire = _mdc_geom_table["wire"]
+_east_x = _mdc_geom_table["east_x"]
+_east_y = _mdc_geom_table["east_y"]
+_east_z = _mdc_geom_table["east_z"]
+_west_x = _mdc_geom_table["west_x"]
+_west_y = _mdc_geom_table["west_y"]
+_west_z = _mdc_geom_table["west_z"]
+_stereo = _mdc_geom_table["stereo"]
+_is_stereo = _mdc_geom_table["is_stereo"]
+
+_layer_start_gid = np.zeros(44, dtype=np.uint16)
+_layer_start_gid[1:] = np.cumsum(np.bincount(_layer, minlength=43))
+
+_dx_dz = (_east_x - _west_x) / (_east_z - _west_z)
+_dy_dz = (_east_y - _west_y) / (_east_z - _west_z)
 
 
-def _ensure_loaded():
-    """Load MDC geometry data from disk on first access."""
-    global _loaded
-    if _loaded:
-        return
+_first_wire_idx = np.searchsorted(_layer, np.arange(43))
+_is_layer_stereo = _is_stereo[_first_wire_idx].astype(bool)
 
-    global _mdc_wire_position, _superlayer, _layer, _wire
-    global _east_x, _east_y, _east_z, _west_x, _west_y, _west_z
-    global _stereo, _is_stereo, layer_start_gid, dx_dz, dy_dz, is_layer_stereo
-
-    _mdc_wire_position = dict(np.load(MDC_GEOM))
-    _superlayer = _mdc_wire_position["superlayer"]
-    _layer = _mdc_wire_position["layer"]
-    _wire = _mdc_wire_position["wire"]
-    _east_x = _mdc_wire_position["east_x"]
-    _east_y = _mdc_wire_position["east_y"]
-    _east_z = _mdc_wire_position["east_z"]
-    _west_x = _mdc_wire_position["west_x"]
-    _west_y = _mdc_wire_position["west_y"]
-    _west_z = _mdc_wire_position["west_z"]
-    _stereo = _mdc_wire_position["stereo"]
-    _is_stereo = _mdc_wire_position["is_stereo"]
-
-    layer_start_gid = np.zeros(44, dtype=np.uint16)
-    layer_start_gid[1:] = np.cumsum(np.bincount(_layer, minlength=43))
-
-    dx_dz = (_east_x - _west_x) / (_east_z - _west_z)
-    dy_dz = (_east_y - _west_y) / (_east_z - _west_z)
-
-    _first_wire_idx = np.searchsorted(_layer, np.arange(43))
-    is_layer_stereo = _is_stereo[_first_wire_idx].astype(bool)
-
-    _loaded = True
+_superlayer_splits = np.array([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 43])
 
 
-def get_mdc_wire_position(library: Literal["np", "ak", "pd"] = "np"):
+def get_mdc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
     """
     Get the MDC wire position table.
 
@@ -84,8 +51,7 @@ def get_mdc_wire_position(library: Literal["np", "ak", "pd"] = "np"):
         ValueError: If the library is not 'ak', 'np', or 'pd'.
         ImportError: If the library is 'pd' but pandas is not installed.
     """
-    _ensure_loaded()
-    cp: dict[str, np.ndarray] = {k: v.copy() for k, v in _mdc_wire_position.items()}
+    cp: dict[str, np.ndarray] = {k: v.copy() for k, v in _mdc_geom_table.items()}
 
     if library == "ak":
         return ak.Array(cp)
@@ -101,6 +67,22 @@ def get_mdc_wire_position(library: Literal["np", "ak", "pd"] = "np"):
         raise ValueError(f"Invalid library {library}. Choose from 'ak', 'np', 'pd'.")
 
 
+def get_mdc_wire_position(library: Literal["np", "ak", "pd"] = "np"):
+    """
+    !!! warning "Deprecated"
+        This function is deprecated, use `get_mdc_geom_table` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "get_mdc_wire_position is deprecated, use get_mdc_geom_table instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+
+    return get_mdc_geom_table(library)
+
+
 @nb.vectorize(cache=True)
 def get_mdc_gid(layer: IntLike, wire: IntLike) -> IntLike:
     """
@@ -113,7 +95,7 @@ def get_mdc_gid(layer: IntLike, wire: IntLike) -> IntLike:
     Returns:
         The gid of the wire.
     """
-    return layer_start_gid[layer] + wire
+    return _layer_start_gid[layer] + wire
 
 
 @nb.vectorize(cache=True)
@@ -141,7 +123,7 @@ def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
     Returns:
         The superlayer number of the layer.
     """
-    return np.digitize(layer, superlayer_splits, right=False) - 1
+    return np.digitize(layer, _superlayer_splits, right=False) - 1
 
 
 @nb.vectorize(cache=True)
@@ -200,7 +182,7 @@ def mdc_layer_to_is_stereo(layer: IntLike) -> BoolLike:
     Returns:
         The is_stereo of the layer.
     """
-    return is_layer_stereo[layer]
+    return _is_layer_stereo[layer]
 
 
 @nb.vectorize(cache=True)
@@ -313,7 +295,7 @@ def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
     Returns:
         The x (cm) position of the wire at z (cm).
     """
-    return _west_x[gid] + dx_dz[gid] * (z - _west_z[gid])
+    return _west_x[gid] + _dx_dz[gid] * (z - _west_z[gid])
 
 
 @nb.vectorize(cache=True)
@@ -328,10 +310,10 @@ def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
     Returns:
         The y (cm) position of the wire at z (cm).
     """
-    return _west_y[gid] + dy_dz[gid] * (z - _west_z[gid])
+    return _west_y[gid] + _dy_dz[gid] * (z - _west_z[gid])
 
 
-def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, Any]:
+def parse_mdc_gid(gid: IntLike, geometry: bool = False, **kwargs) -> ak.Array | dict[str, Any]:
     """
     Parse the gid of MDC wires. "gid" is the global ID of the wire, ranges from 0 to 6795.
     When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
@@ -345,7 +327,7 @@ def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, A
     - `is_stereo`: Whether the wire is a stereo wire.
     - `superlayer`: Superlayer number.
 
-    Optional keys of the output when `with_pos` is `True`:
+    Optional keys of the output when `geometry` is `True`:
 
     - `mid_x`: x position of the wire at `z=0`.
     - `mid_y`: y position of the wire at `z=0`.
@@ -358,11 +340,22 @@ def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, A
 
     Parameters:
         gid: The gid of the wire.
-        with_pos: Whether to include the position information.
+        geometry: Whether to include the geometry information.
 
     Returns:
         The parsed result.
     """
+    # backward compatibility
+    if "with_pos" in kwargs:
+        import warnings
+
+        warnings.warn(
+            "The `with_pos` argument is deprecated, use `geometry` instead.",
+            DeprecationWarning,
+            stacklevel=2,
+        )
+        geometry = kwargs["with_pos"]
+
     layer = mdc_gid_to_layer(gid)
     wire = mdc_gid_to_wire(gid)
 
@@ -375,7 +368,7 @@ def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, A
         "superlayer": mdc_gid_to_superlayer(gid),
     }
 
-    if with_pos:
+    if geometry:
         west_x = mdc_gid_to_west_x(gid)
         west_y = mdc_gid_to_west_y(gid)
         east_x = mdc_gid_to_east_x(gid)
@@ -393,29 +386,3 @@ def parse_mdc_gid(gid: IntLike, with_pos: bool = True) -> ak.Array | dict[str, A
         return ak.zip(res)
     else:
         return res
-
-
-# ---------------------------------------------------------------------------
-# Apply lazy-loading wrappers to all functions that access geometry data.
-# After wrapping, calling any of these functions will first trigger
-# _ensure_loaded() to load the .npz data if not already loaded.
-# ---------------------------------------------------------------------------
-for _fn_name in [
-    "get_mdc_gid",
-    "mdc_gid_to_superlayer",
-    "mdc_gid_to_layer",
-    "mdc_gid_to_wire",
-    "mdc_gid_to_stereo",
-    "mdc_layer_to_is_stereo",
-    "mdc_gid_to_is_stereo",
-    "mdc_gid_to_west_x",
-    "mdc_gid_to_west_y",
-    "mdc_gid_to_west_z",
-    "mdc_gid_to_east_x",
-    "mdc_gid_to_east_y",
-    "mdc_gid_to_east_z",
-    "mdc_gid_z_to_x",
-    "mdc_gid_z_to_y",
-]:
-    globals()[_fn_name] = _make_lazy(globals()[_fn_name], _ensure_loaded)
-del _fn_name

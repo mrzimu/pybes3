@@ -6,7 +6,7 @@ from pybes3.detectors import mdc
 
 
 def test_mdc_geom():
-    gid: np.ndarray = p3.get_mdc_wire_position()["gid"]
+    gid: np.ndarray = p3.get_mdc_geom_table()["gid"]
     assert np.all(p3.get_mdc_gid(mdc._layer, mdc._wire) == gid)
     assert np.all(p3.mdc_gid_to_superlayer(gid) == mdc._superlayer)
     assert np.all(p3.mdc_layer_to_superlayer(mdc._layer) == mdc._superlayer)
@@ -29,7 +29,7 @@ def test_mdc_geom():
 
 
 def test_mdc_parse_gid():
-    np_gid = p3.get_mdc_wire_position()["gid"]
+    np_gid = p3.get_mdc_geom_table()["gid"]
     ak_gid = ak.Array(np_gid)
     mdc_fields = [
         "gid",
@@ -48,10 +48,10 @@ def test_mdc_parse_gid():
         "east_z",
     ]
 
-    ak_res1 = p3.parse_mdc_gid(ak_gid, with_pos=True)
+    ak_res1 = p3.parse_mdc_gid(ak_gid, geometry=True)
     assert ak_res1.fields == mdc_fields
 
-    ak_res2 = p3.parse_mdc_gid(ak_gid, with_pos=False)
+    ak_res2 = p3.parse_mdc_gid(ak_gid, geometry=False)
     assert ak_res2.fields == [
         "gid",
         "layer",
@@ -61,10 +61,10 @@ def test_mdc_parse_gid():
         "superlayer",
     ]
 
-    np_res1 = p3.parse_mdc_gid(np_gid, with_pos=True)
+    np_res1 = p3.parse_mdc_gid(np_gid, geometry=True)
     assert list(np_res1.keys()) == mdc_fields
 
-    np_res2 = p3.parse_mdc_gid(np_gid, with_pos=False)
+    np_res2 = p3.parse_mdc_gid(np_gid, geometry=False)
     assert list(np_res2.keys()) == [
         "gid",
         "layer",
