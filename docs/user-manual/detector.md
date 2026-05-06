@@ -42,7 +42,7 @@ import pybes3 as p3
 # generate random wire gid
 gid = np.random.randint(0, 6796, 100)
 
-# parse all fields, returns a dict[str, np.ndarray]
+# parse all fields; values are NumPy scalars for scalar gids and arrays for array-like gids
 res = p3.parse_mdc_gid(gid)
 layer = res["layer"]
 wire = res["wire"]
