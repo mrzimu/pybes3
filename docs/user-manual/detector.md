@@ -196,7 +196,7 @@ center_z = res_geom["center_z"]
 
 !!! info
     The 8 corner points of crystals are **not** returned by `parse_emc_gid`.
-    Use `emc_gid_to_point_x/y/z` to get them individually.
+    Use `emc_gid_to_point_x`, `emc_gid_to_point_y`, and `emc_gid_to_point_z` to get them individually.
 
 When the input is an `ak.Array`, the result is also an `ak.Array` with record fields.
 
