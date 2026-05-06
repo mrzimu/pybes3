@@ -18,9 +18,9 @@ N_PHI_OR_STRIP.setflags(write=False)
 
 
 def _init():
-    _part = np.empty(N_STRIPS, dtype=np.uint8)
-    _layer_or_module = np.empty(N_STRIPS, dtype=np.uint8)
-    _phi_or_strip = np.empty(N_STRIPS, dtype=np.uint8)
+    _part = np.empty(N_STRIPS, dtype=np.int64)
+    _layer_or_module = np.empty(N_STRIPS, dtype=np.int64)
+    _phi_or_strip = np.empty(N_STRIPS, dtype=np.int64)
 
     gid = 0
     for part in range(5):
