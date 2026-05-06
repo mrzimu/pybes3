@@ -62,7 +62,7 @@ def _init():
 _layer, _sheet, _strip_type, _strip = _init()
 
 
-@nb.vectorize
+@nb.vectorize(cache=True)
 def get_cgem_gid(
     layer: IntLike, sheet: IntLike, strip_type: IntLike, strip: IntLike
 ) -> IntLike:
@@ -85,7 +85,7 @@ def get_cgem_gid(
     return gid
 
 
-@nb.vectorize
+@nb.vectorize(cache=True)
 def cgem_gid_to_layer(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to layer.
@@ -99,7 +99,7 @@ def cgem_gid_to_layer(gid: IntLike) -> IntLike:
     return _layer[gid]
 
 
-@nb.vectorize
+@nb.vectorize(cache=True)
 def cgem_gid_to_sheet(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to sheet.
@@ -113,7 +113,7 @@ def cgem_gid_to_sheet(gid: IntLike) -> IntLike:
     return _sheet[gid]
 
 
-@nb.vectorize
+@nb.vectorize(cache=True)
 def cgem_gid_to_strip_type(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to strip type.
@@ -127,7 +127,7 @@ def cgem_gid_to_strip_type(gid: IntLike) -> IntLike:
     return _strip_type[gid]
 
 
-@nb.vectorize
+@nb.vectorize(cache=True)
 def cgem_gid_to_strip(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to strip number.
