@@ -539,7 +539,7 @@ def kappa_to_charge(kappa: FloatLike) -> IntLike:
     Returns:
         charge of the helix.
     """
-    return np.int8(1) if kappa > 1e-10 else np.int8(-1) if kappa < -1e-10 else np.int8(0)
+    return 1 if kappa > 1e-10 else -1 if kappa < -1e-10 else 0
 
 
 @nb.vectorize(cache=True)

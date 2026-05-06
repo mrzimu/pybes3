@@ -23,10 +23,10 @@ N_VSTRIPS.setflags(write=False)
 
 
 def _init():
-    _layer = np.empty(N_STRIPS, dtype=np.uint8)
-    _sheet = np.empty(N_STRIPS, dtype=np.uint8)
-    _strip_type = np.empty(N_STRIPS, dtype=np.uint8)
-    _strip = np.empty(N_STRIPS, dtype=np.uint16)
+    _layer = np.empty(N_STRIPS, dtype=np.int64)
+    _sheet = np.empty(N_STRIPS, dtype=np.int64)
+    _strip_type = np.empty(N_STRIPS, dtype=np.int64)
+    _strip = np.empty(N_STRIPS, dtype=np.int64)
 
     gid = 0
     for layer in range(3):

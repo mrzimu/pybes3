@@ -14,19 +14,19 @@ N_WIRES = 6796
 with np.load(MDC_GEOM) as f:
     _mdc_geom_table = dict(f)
 
-_superlayer = _mdc_geom_table["superlayer"]
-_layer = _mdc_geom_table["layer"]
-_wire = _mdc_geom_table["wire"]
+_superlayer = _mdc_geom_table["superlayer"].astype(np.int64)
+_layer = _mdc_geom_table["layer"].astype(np.int64)
+_wire = _mdc_geom_table["wire"].astype(np.int64)
+_stereo = _mdc_geom_table["stereo"].astype(np.int64)
+_is_stereo = _mdc_geom_table["is_stereo"]
 _east_x = _mdc_geom_table["east_x"]
 _east_y = _mdc_geom_table["east_y"]
 _east_z = _mdc_geom_table["east_z"]
 _west_x = _mdc_geom_table["west_x"]
 _west_y = _mdc_geom_table["west_y"]
 _west_z = _mdc_geom_table["west_z"]
-_stereo = _mdc_geom_table["stereo"]
-_is_stereo = _mdc_geom_table["is_stereo"]
 
-_layer_start_gid = np.zeros(44, dtype=np.uint16)
+_layer_start_gid = np.zeros(44, dtype=np.int64)
 _layer_start_gid[1:] = np.cumsum(np.bincount(_layer, minlength=43))
 
 _dx_dz = (_east_x - _west_x) / (_east_z - _west_z)
@@ -34,7 +34,7 @@ _dy_dz = (_east_y - _west_y) / (_east_z - _west_z)
 
 
 _first_wire_idx = np.searchsorted(_layer, np.arange(43))
-_is_layer_stereo = _is_stereo[_first_wire_idx].astype(bool)
+_is_layer_stereo = _is_stereo[_first_wire_idx].copy()
 
 _superlayer_splits = np.array([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 43])
 

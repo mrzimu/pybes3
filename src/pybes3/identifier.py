@@ -7,71 +7,71 @@ import numpy as np
 import pybes3.detectors as det
 from pybes3.typing import BoolLike, IntLike
 
-DIGI_MDC_FLAG = np.uint32(0x10)
-DIGI_TOF_FLAG = np.uint32(0x20)
-DIGI_EMC_FLAG = np.uint32(0x30)
-DIGI_MUC_FLAG = np.uint32(0x40)
-DIGI_HLT_FLAG = np.uint32(0x50)
-DIGI_CGEM_FLAG = np.uint32(0x60)
-DIGI_MRPC_FLAG = np.uint32(0x70)
-DIGI_FLAG_OFFSET = np.uint32(24)
-DIGI_FLAG_MASK = np.uint32(0xFF000000)
+DIGI_MDC_FLAG = 0x10
+DIGI_TOF_FLAG = 0x20
+DIGI_EMC_FLAG = 0x30
+DIGI_MUC_FLAG = 0x40
+DIGI_HLT_FLAG = 0x50
+DIGI_CGEM_FLAG = 0x60
+DIGI_MRPC_FLAG = 0x70
+DIGI_FLAG_OFFSET = 24
+DIGI_FLAG_MASK = 0xFF000000
 
 # MDC
-DIGI_MDC_WIRETYPE_OFFSET = np.uint32(15)
-DIGI_MDC_WIRETYPE_MASK = np.uint32(0x00008000)
-DIGI_MDC_LAYER_OFFSET = np.uint32(9)
-DIGI_MDC_LAYER_MASK = np.uint32(0x00007E00)
-DIGI_MDC_WIRE_OFFSET = np.uint32(0)
-DIGI_MDC_WIRE_MASK = np.uint32(0x000001FF)
-DIGI_MDC_STEREO_WIRE = np.uint32(1)
+DIGI_MDC_WIRETYPE_OFFSET = 15
+DIGI_MDC_WIRETYPE_MASK = 0x00008000
+DIGI_MDC_LAYER_OFFSET = 9
+DIGI_MDC_LAYER_MASK = 0x00007E00
+DIGI_MDC_WIRE_OFFSET = 0
+DIGI_MDC_WIRE_MASK = 0x000001FF
+DIGI_MDC_STEREO_WIRE = 1
 
 # TOF
-DIGI_TOF_PART_OFFSET = np.uint32(14)
-DIGI_TOF_PART_MASK = np.uint32(0x0000C000)
-DIGI_TOF_END_OFFSET = np.uint32(0)
-DIGI_TOF_END_MASK = np.uint32(0x00000001)
+DIGI_TOF_PART_OFFSET = 14
+DIGI_TOF_PART_MASK = 0x0000C000
+DIGI_TOF_END_OFFSET = 0
+DIGI_TOF_END_MASK = 0x00000001
 
-DIGI_TOF_SCINT_LAYER_OFFSET = np.uint32(8)
-DIGI_TOF_SCINT_LAYER_MASK = np.uint32(0x00000100)
-DIGI_TOF_SCINT_PHI_OFFSET = np.uint32(1)
-DIGI_TOF_SCINT_PHI_MASK = np.uint32(0x000000FE)
+DIGI_TOF_SCINT_LAYER_OFFSET = 8
+DIGI_TOF_SCINT_LAYER_MASK = 0x00000100
+DIGI_TOF_SCINT_PHI_OFFSET = 1
+DIGI_TOF_SCINT_PHI_MASK = 0x000000FE
 
-DIGI_TOF_MRPC_ENDCAP_OFFSET = np.uint32(11)
-DIGI_TOF_MRPC_ENDCAP_MASK = np.uint32(0x00000800)
-DIGI_TOF_MRPC_MODULE_OFFSET = np.uint32(5)
-DIGI_TOF_MRPC_MODULE_MASK = np.uint32(0x000007E0)
-DIGI_TOF_MRPC_STRIP_OFFSET = np.uint32(1)
-DIGI_TOF_MRPC_STRIP_MASK = np.uint32(0x0000001E)
+DIGI_TOF_MRPC_ENDCAP_OFFSET = 11
+DIGI_TOF_MRPC_ENDCAP_MASK = 0x00000800
+DIGI_TOF_MRPC_MODULE_OFFSET = 5
+DIGI_TOF_MRPC_MODULE_MASK = 0x000007E0
+DIGI_TOF_MRPC_STRIP_OFFSET = 1
+DIGI_TOF_MRPC_STRIP_MASK = 0x0000001E
 
 # EMC
-DIGI_EMC_MODULE_OFFSET = np.uint32(16)
-DIGI_EMC_MODULE_MASK = np.uint32(0x000F0000)
-DIGI_EMC_THETA_OFFSET = np.uint32(8)
-DIGI_EMC_THETA_MASK = np.uint32(0x00003F00)
-DIGI_EMC_PHI_OFFSET = np.uint32(0)
-DIGI_EMC_PHI_MASK = np.uint32(0x000000FF)
+DIGI_EMC_MODULE_OFFSET = 16
+DIGI_EMC_MODULE_MASK = 0x000F0000
+DIGI_EMC_THETA_OFFSET = 8
+DIGI_EMC_THETA_MASK = 0x00003F00
+DIGI_EMC_PHI_OFFSET = 0
+DIGI_EMC_PHI_MASK = 0x000000FF
 
 # MUC
-DIGI_MUC_PART_OFFSET = np.uint32(16)
-DIGI_MUC_PART_MASK = np.uint32(0x000F0000)
-DIGI_MUC_SEGMENT_OFFSET = np.uint32(12)
-DIGI_MUC_SEGMENT_MASK = np.uint32(0x0000F000)
-DIGI_MUC_LAYER_OFFSET = np.uint32(8)
-DIGI_MUC_LAYER_MASK = np.uint32(0x00000F00)
-DIGI_MUC_CHANNEL_OFFSET = np.uint32(0)
-DIGI_MUC_CHANNEL_MASK = np.uint32(0x000000FF)
+DIGI_MUC_PART_OFFSET = 16
+DIGI_MUC_PART_MASK = 0x000F0000
+DIGI_MUC_SEGMENT_OFFSET = 12
+DIGI_MUC_SEGMENT_MASK = 0x0000F000
+DIGI_MUC_LAYER_OFFSET = 8
+DIGI_MUC_LAYER_MASK = 0x00000F00
+DIGI_MUC_CHANNEL_OFFSET = 0
+DIGI_MUC_CHANNEL_MASK = 0x000000FF
 
 # CGEM
-DIGI_CGEM_STRIP_OFFSET = np.uint32(7)
-DIGI_CGEM_STRIP_MASK = np.uint32(0x0007FF80)
-DIGI_CGEM_STRIPTYPE_OFFSET = np.uint32(6)
-DIGI_CGEM_STRIPTYPE_MASK = np.uint32(0x00000040)
-DIGI_CGEM_SHEET_OFFSET = np.uint32(3)
-DIGI_CGEM_SHEET_MASK = np.uint32(0x00000038)
-DIGI_CGEM_LAYER_OFFSET = np.uint32(0)
-DIGI_CGEM_LAYER_MASK = np.uint32(0x00000007)
-DIGI_CGEM_XSTRIP = np.uint32(0)
+DIGI_CGEM_STRIP_OFFSET = 7
+DIGI_CGEM_STRIP_MASK = 0x0007FF80
+DIGI_CGEM_STRIPTYPE_OFFSET = 6
+DIGI_CGEM_STRIPTYPE_MASK = 0x00000040
+DIGI_CGEM_SHEET_OFFSET = 3
+DIGI_CGEM_SHEET_MASK = 0x00000038
+DIGI_CGEM_LAYER_OFFSET = 0
+DIGI_CGEM_LAYER_MASK = 0x00000007
+DIGI_CGEM_XSTRIP = 0
 
 
 def _add_field_if_exist(digi: ak.Array | dict, res: dict, field: str, output: str):
@@ -111,7 +111,7 @@ def mdc_id_to_wire(mdc_id: IntLike) -> IntLike:
     Returns:
         The wire number.
     """
-    return np.uint16((mdc_id & DIGI_MDC_WIRE_MASK) >> DIGI_MDC_WIRE_OFFSET)
+    return (mdc_id & DIGI_MDC_WIRE_MASK) >> DIGI_MDC_WIRE_OFFSET
 
 
 @nb.vectorize(cache=True)
@@ -125,7 +125,7 @@ def mdc_id_to_layer(mdc_id: IntLike) -> IntLike:
     Returns:
         The layer number.
     """
-    return np.uint8((mdc_id & DIGI_MDC_LAYER_MASK) >> DIGI_MDC_LAYER_OFFSET)
+    return (mdc_id & DIGI_MDC_LAYER_MASK) >> DIGI_MDC_LAYER_OFFSET
 
 
 @nb.vectorize(cache=True)
@@ -291,7 +291,7 @@ def tof_id_to_part(tof_id: IntLike) -> IntLike:
     part = (tof_id & DIGI_TOF_PART_MASK) >> DIGI_TOF_PART_OFFSET
     if part == 3:  # += MRPC endcap number
         part += (tof_id & DIGI_TOF_MRPC_ENDCAP_MASK) >> DIGI_TOF_MRPC_ENDCAP_OFFSET
-    return np.uint8(part)
+    return part
 
 
 @nb.vectorize(cache=True)
@@ -305,7 +305,7 @@ def tof_id_to_end(tof_id: IntLike) -> IntLike:
     Returns:
         The readout end number.
     """
-    return np.uint8((tof_id & DIGI_TOF_END_MASK) >> DIGI_TOF_END_OFFSET)
+    return (tof_id & DIGI_TOF_END_MASK) >> DIGI_TOF_END_OFFSET
 
 
 @nb.vectorize(cache=True)
@@ -327,7 +327,7 @@ def _tof_id_to_layer_or_module_1(tof_id: IntLike) -> IntLike:
         res = (tof_id & DIGI_TOF_SCINT_LAYER_MASK) >> DIGI_TOF_SCINT_LAYER_OFFSET
     else:
         res = (tof_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
-    return np.uint8(res)
+    return res
 
 
 @nb.vectorize(cache=True)
@@ -348,7 +348,7 @@ def _tof_id_to_layer_or_module_2(tof_id: IntLike, part: IntLike) -> IntLike:
         res = (tof_id & DIGI_TOF_SCINT_LAYER_MASK) >> DIGI_TOF_SCINT_LAYER_OFFSET
     else:
         res = (tof_id & DIGI_TOF_MRPC_MODULE_MASK) >> DIGI_TOF_MRPC_MODULE_OFFSET
-    return np.uint8(res)
+    return res
 
 
 def tof_id_to_layer_or_module(
@@ -392,7 +392,7 @@ def _tof_id_to_phi_or_strip_1(tof_id: IntLike) -> IntLike:
         res = (tof_id & DIGI_TOF_SCINT_PHI_MASK) >> DIGI_TOF_SCINT_PHI_OFFSET
     else:
         res = (tof_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
-    return np.uint8(res)
+    return res
 
 
 @nb.vectorize(cache=True)
@@ -413,7 +413,7 @@ def _tof_id_to_phi_or_strip_2(tof_id: IntLike, part: IntLike) -> IntLike:
         res = (tof_id & DIGI_TOF_SCINT_PHI_MASK) >> DIGI_TOF_SCINT_PHI_OFFSET
     else:
         res = (tof_id & DIGI_TOF_MRPC_STRIP_MASK) >> DIGI_TOF_MRPC_STRIP_OFFSET
-    return np.uint8(res)
+    return res
 
 
 def tof_id_to_phi_or_strip(
@@ -615,7 +615,7 @@ def emc_id_to_module(emc_id: IntLike) -> IntLike:
     Returns:
         The module number.
     """
-    return np.uint8((emc_id & DIGI_EMC_MODULE_MASK) >> DIGI_EMC_MODULE_OFFSET)
+    return (emc_id & DIGI_EMC_MODULE_MASK) >> DIGI_EMC_MODULE_OFFSET
 
 
 @nb.vectorize(cache=True)
@@ -629,7 +629,7 @@ def emc_id_to_theta(emc_id: IntLike) -> IntLike:
     Returns:
         The theta number.
     """
-    return np.uint8((emc_id & DIGI_EMC_THETA_MASK) >> DIGI_EMC_THETA_OFFSET)
+    return (emc_id & DIGI_EMC_THETA_MASK) >> DIGI_EMC_THETA_OFFSET
 
 
 @nb.vectorize(cache=True)
@@ -643,7 +643,7 @@ def emc_id_to_phi(emc_id: IntLike) -> IntLike:
     Returns:
         The phi number.
     """
-    return np.uint8((emc_id & DIGI_EMC_PHI_MASK) >> DIGI_EMC_PHI_OFFSET)
+    return (emc_id & DIGI_EMC_PHI_MASK) >> DIGI_EMC_PHI_OFFSET
 
 
 @nb.vectorize(cache=True)
@@ -795,7 +795,7 @@ def muc_id_to_part(muc_id: IntLike) -> IntLike:
     Returns:
         The part number.
     """
-    return np.uint8((muc_id & DIGI_MUC_PART_MASK) >> DIGI_MUC_PART_OFFSET)
+    return (muc_id & DIGI_MUC_PART_MASK) >> DIGI_MUC_PART_OFFSET
 
 
 @nb.vectorize(cache=True)
@@ -809,7 +809,7 @@ def muc_id_to_segment(muc_id: IntLike) -> IntLike:
     Returns:
         The segment number.
     """
-    return np.uint8((muc_id & DIGI_MUC_SEGMENT_MASK) >> DIGI_MUC_SEGMENT_OFFSET)
+    return (muc_id & DIGI_MUC_SEGMENT_MASK) >> DIGI_MUC_SEGMENT_OFFSET
 
 
 @nb.vectorize(cache=True)
@@ -823,7 +823,7 @@ def muc_id_to_layer(muc_id: IntLike) -> IntLike:
     Returns:
         The layer number.
     """
-    return np.uint8((muc_id & DIGI_MUC_LAYER_MASK) >> DIGI_MUC_LAYER_OFFSET)
+    return (muc_id & DIGI_MUC_LAYER_MASK) >> DIGI_MUC_LAYER_OFFSET
 
 
 @nb.vectorize(cache=True)
@@ -837,7 +837,7 @@ def muc_id_to_channel(muc_id: IntLike) -> IntLike:
     Returns:
         The channel number.
     """
-    return np.uint8((muc_id & DIGI_MUC_CHANNEL_MASK) >> DIGI_MUC_CHANNEL_OFFSET)
+    return (muc_id & DIGI_MUC_CHANNEL_MASK) >> DIGI_MUC_CHANNEL_OFFSET
 
 
 @nb.vectorize(cache=True)
@@ -958,7 +958,7 @@ def cgem_id_to_layer(cgem_id: IntLike) -> IntLike:
     Returns:
         The layer number.
     """
-    return np.uint8((cgem_id & DIGI_CGEM_LAYER_MASK) >> DIGI_CGEM_LAYER_OFFSET)
+    return (cgem_id & DIGI_CGEM_LAYER_MASK) >> DIGI_CGEM_LAYER_OFFSET
 
 
 @nb.vectorize(cache=True)
@@ -972,7 +972,7 @@ def cgem_id_to_sheet(cgem_id: IntLike) -> IntLike:
     Returns:
         The sheet number.
     """
-    return np.uint8((cgem_id & DIGI_CGEM_SHEET_MASK) >> DIGI_CGEM_SHEET_OFFSET)
+    return (cgem_id & DIGI_CGEM_SHEET_MASK) >> DIGI_CGEM_SHEET_OFFSET
 
 
 @nb.vectorize(cache=True)
@@ -986,7 +986,7 @@ def cgem_id_to_strip_type(cgem_id: IntLike) -> IntLike:
     Returns:
         The strip type. 0 for X-strip, 1 for V-strip.
     """
-    return np.uint8((cgem_id & DIGI_CGEM_STRIPTYPE_MASK) >> DIGI_CGEM_STRIPTYPE_OFFSET)
+    return (cgem_id & DIGI_CGEM_STRIPTYPE_MASK) >> DIGI_CGEM_STRIPTYPE_OFFSET
 
 
 @nb.vectorize(cache=True)
