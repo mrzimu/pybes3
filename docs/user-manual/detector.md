@@ -42,7 +42,7 @@ import pybes3 as p3
 # generate random wire gid
 gid = np.random.randint(0, 6796, 100)
 
-# parse all fields; values are NumPy scalars for scalar gids and arrays for array-like gids
+# parse all fields; returns a dict (or ak.Array when gid is an ak.Array)
 res = p3.parse_mdc_gid(gid)
 layer = res["layer"]
 wire = res["wire"]
@@ -143,8 +143,7 @@ gid = p3.get_tof_gid(part, layer_or_module, phi_or_strip)
 Use `parse_tof_gid` to parse all fields from a gid at once:
 
 ```python
-# parse all fields; returns a dict whose values are NumPy scalars
-# for scalar gids and NumPy arrays for array-like gids
+# parse all fields; returns a dict (or ak.Array when gid is an ak.Array)
 res = p3.parse_tof_gid(gid)
 part = res["part"]
 layer_or_module = res["layer_or_module"]
@@ -178,8 +177,7 @@ gid = p3.get_emc_gid(part, theta, phi)
 Use `parse_emc_gid` to parse all fields from a gid at once:
 
 ```python
-# parse all fields; returns a plain dict whose values are NumPy scalars
-# for scalar gids and NumPy arrays for array-like gids
+# parse all fields; returns a dict (or ak.Array when gid is an ak.Array)
 res = p3.parse_emc_gid(gid)
 part = res["part"]
 theta = res["theta"]
@@ -307,6 +305,7 @@ gid = p3.get_cgem_gid(layer, sheet, strip_type, strip)
 Use `parse_cgem_gid` to parse all fields from a gid at once:
 
 ```python
+# parse all fields; returns a dict (or ak.Array when gid is an ak.Array)
 res = p3.parse_cgem_gid(gid)
 layer = res["layer"]
 sheet = res["sheet"]
