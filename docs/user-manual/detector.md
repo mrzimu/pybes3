@@ -178,7 +178,8 @@ gid = p3.get_emc_gid(part, theta, phi)
 Use `parse_emc_gid` to parse all fields from a gid at once:
 
 ```python
-# parse all fields, returns a dict[str, np.ndarray]
+# parse all fields; returns a plain dict whose values are NumPy scalars
+# for scalar gids and NumPy arrays for array-like gids
 res = p3.parse_emc_gid(gid)
 part = res["part"]
 theta = res["theta"]
