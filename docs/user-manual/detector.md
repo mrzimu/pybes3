@@ -33,6 +33,37 @@ gid = p3.get_mdc_gid(layer, wire)
 !!! note
     `mdc_gid_to_stereo` returns the stereo type of the wire, which can be `0` (axial), `-1` for `west_phi < east_phi` and `1` for `west_phi > east_phi`.
 
+Use `parse_mdc_gid` to parse all fields from a gid at once:
+
+```python
+import numpy as np
+import pybes3 as p3
+
+# generate random wire gid
+gid = np.random.randint(0, 6796, 100)
+
+# parse all fields, returns a dict[str, np.ndarray]
+res = p3.parse_mdc_gid(gid)
+layer = res["layer"]
+wire = res["wire"]
+stereo = res["stereo"]
+is_stereo = res["is_stereo"]
+superlayer = res["superlayer"]
+
+# with geometry information (west/east endpoints and mid-point at z=0)
+res_geom = p3.parse_mdc_gid(gid, geometry=True)
+mid_x = res_geom["mid_x"]
+mid_y = res_geom["mid_y"]
+west_x = res_geom["west_x"]
+west_y = res_geom["west_y"]
+west_z = res_geom["west_z"]
+east_x = res_geom["east_x"]
+east_y = res_geom["east_y"]
+east_z = res_geom["east_z"]
+```
+
+When the input is an `ak.Array`, the result is also an `ak.Array` with record fields.
+
 ### Wires position
 
 Get the west/east endpoint coordinates of wires:
@@ -70,13 +101,13 @@ Retrieve the full wire position table:
 
 ```python
 # get table in `dict[str, np.ndarray]`
-wire_position_np = p3.get_mdc_wire_position()
+wire_position_np = p3.get_mdc_geom_table()
 
 # get table in `ak.Array`
-wire_position_ak = p3.get_mdc_wire_position(library="ak")
+wire_position_ak = p3.get_mdc_geom_table(library="ak")
 
 # get table in `pd.DataFrame`
-wire_position_pd = p3.get_mdc_wire_position(library="pd")
+wire_position_pd = p3.get_mdc_geom_table(library="pd")
 ```
 
 ## TOF
@@ -109,6 +140,18 @@ gid = p3.get_tof_gid(part, layer_or_module, phi_or_strip)
 
     The scintillator `layer` and MRPC `module` share the same axis, and the `phi` and `strip` fields also share the same axis.
 
+Use `parse_tof_gid` to parse all fields from a gid at once:
+
+```python
+# parse all fields, returns a dict[str, np.ndarray]
+res = p3.parse_tof_gid(gid)
+part = res["part"]
+layer_or_module = res["layer_or_module"]
+phi_or_strip = res["phi_or_strip"]
+```
+
+When the input is an `ak.Array`, the result is also an `ak.Array` with record fields.
+
 ## EMC
 
 ### GID Conversion
@@ -130,6 +173,31 @@ phi = p3.emc_gid_to_phi(gid)
 # get gid
 gid = p3.get_emc_gid(part, theta, phi)
 ```
+
+Use `parse_emc_gid` to parse all fields from a gid at once:
+
+```python
+# parse all fields, returns a dict[str, np.ndarray]
+res = p3.parse_emc_gid(gid)
+part = res["part"]
+theta = res["theta"]
+phi = res["phi"]
+
+# with geometry information (front center and center)
+res_geom = p3.parse_emc_gid(gid, geometry=True)
+front_center_x = res_geom["front_center_x"]
+front_center_y = res_geom["front_center_y"]
+front_center_z = res_geom["front_center_z"]
+center_x = res_geom["center_x"]
+center_y = res_geom["center_y"]
+center_z = res_geom["center_z"]
+```
+
+!!! info
+    The 8 corner points of crystals are **not** returned by `parse_emc_gid`.
+    Use `emc_gid_to_point_x/y/z` to get them individually.
+
+When the input is an `ak.Array`, the result is also an `ak.Array` with record fields.
 
 ### Crystals position
 
@@ -175,13 +243,13 @@ Retrieve the full crystal position table:
 
 ```python
 # get table in `dict[str, np.ndarray]`
-crystal_position_np = p3.get_emc_crystal_position()
+crystal_position_np = p3.get_emc_geom_table()
 
 # get table in `ak.Array`
-crystal_position_ak = p3.get_emc_crystal_position(library="ak")
+crystal_position_ak = p3.get_emc_geom_table(library="ak")
 
 # get table in `pd.DataFrame`
-crystal_position_pd = p3.get_emc_crystal_position(library="pd")
+crystal_position_pd = p3.get_emc_geom_table(library="pd")
 ```
 
 ### Barrel geometry
@@ -223,9 +291,27 @@ sheet = p3.cgem_gid_to_sheet(gid)
 strip_type = p3.cgem_gid_to_strip_type(gid)
 strip = p3.cgem_gid_to_strip(gid)
 
+# check strip type
+is_xstrip = p3.cgem_gid_to_is_xstrip(gid)
+is_vstrip = p3.cgem_gid_to_is_vstrip(gid)
+
 # get gid
 gid = p3.get_cgem_gid(layer, sheet, strip_type, strip)
 ```
 
 !!! info
     `strip_type=0` for x-strips and `strip_type=1` for v-strips.
+
+Use `parse_cgem_gid` to parse all fields from a gid at once:
+
+```python
+res = p3.parse_cgem_gid(gid)
+layer = res["layer"]
+sheet = res["sheet"]
+strip_type = res["strip_type"]
+strip = res["strip"]
+is_xstrip = res["is_xstrip"]
+is_vstrip = res["is_vstrip"]
+```
+
+When the input is an `ak.Array`, the result is also an `ak.Array` with record fields.
