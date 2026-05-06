@@ -167,7 +167,7 @@ def get_emc_gid(part: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
         if theta == 0 or theta == 1:
             return res + (1 - theta) * ENDCAP_PHI_01 + phi
 
-    return -1
+    raise ValueError(f"Unsupported part: {part}")
 
 
 @nb.vectorize(cache=True)
