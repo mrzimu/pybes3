@@ -896,6 +896,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pybes3.helix.helix_awk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        helix_awk
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pybes3.helix.dr_phi0_to_x" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1113,17 +1124,6 @@
         
       </ul>
     </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pybes3.helix.helix_awk" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        helix_awk
-      
-    </span>
-  </a>
   
 </li>
         
@@ -1315,6 +1315,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#pybes3.helix.helix_awk" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        helix_awk
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#pybes3.helix.dr_phi0_to_x" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1532,17 +1543,6 @@
         
       </ul>
     </nav>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#pybes3.helix.helix_awk" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        helix_awk
-      
-    </span>
-  </a>
   
 </li>
         
@@ -2194,6 +2194,229 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <div class="doc doc-object doc-function">
 
 
+<h3 id="pybes3.helix.helix_awk" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">helix_awk</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+</h3>
+          <div class="doc-overloads">
+<div class="doc-signature highlight"><pre><span></span><code><span class="nf">helix_awk</span><span class="p">(</span>
+    <span class="n">helix</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">error</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">pivot</span><span class="p">:</span> <span class="n">TypeAwkPosition</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HelixAwkwardArray</span>
+</code></pre></div><div class="doc-signature highlight"><pre><span></span><code><span class="nf">helix_awk</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">dr</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">phi0</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">kappa</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">dz</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">tanl</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">error</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">pivot</span><span class="p">:</span> <span class="n">TypeAwkPosition</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HelixAwkwardArray</span>
+</code></pre></div><div class="doc-signature highlight"><pre><span></span><code><span class="nf">helix_awk</span><span class="p">(</span>
+    <span class="o">*</span><span class="p">,</span>
+    <span class="n">momentum</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">position</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">charge</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">|</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
+    <span class="n">error</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">pivot</span><span class="p">:</span> <span class="n">TypeAwkPosition</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HelixAwkwardArray</span>
+</code></pre></div>          </div>
+
+
+    <div class="doc doc-contents first">
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>src/pybes3/helix.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 936</span>
+<span class="normal"> 937</span>
+<span class="normal"> 938</span>
+<span class="normal"> 939</span>
+<span class="normal"> 940</span>
+<span class="normal"> 941</span>
+<span class="normal"> 942</span>
+<span class="normal"> 943</span>
+<span class="normal"> 944</span>
+<span class="normal"> 945</span>
+<span class="normal"> 946</span>
+<span class="normal"> 947</span>
+<span class="normal"> 948</span>
+<span class="normal"> 949</span>
+<span class="normal"> 950</span>
+<span class="normal"> 951</span>
+<span class="normal"> 952</span>
+<span class="normal"> 953</span>
+<span class="normal"> 954</span>
+<span class="normal"> 955</span>
+<span class="normal"> 956</span>
+<span class="normal"> 957</span>
+<span class="normal"> 958</span>
+<span class="normal"> 959</span>
+<span class="normal"> 960</span>
+<span class="normal"> 961</span>
+<span class="normal"> 962</span>
+<span class="normal"> 963</span>
+<span class="normal"> 964</span>
+<span class="normal"> 965</span>
+<span class="normal"> 966</span>
+<span class="normal"> 967</span>
+<span class="normal"> 968</span>
+<span class="normal"> 969</span>
+<span class="normal"> 970</span>
+<span class="normal"> 971</span>
+<span class="normal"> 972</span>
+<span class="normal"> 973</span>
+<span class="normal"> 974</span>
+<span class="normal"> 975</span>
+<span class="normal"> 976</span>
+<span class="normal"> 977</span>
+<span class="normal"> 978</span>
+<span class="normal"> 979</span>
+<span class="normal"> 980</span>
+<span class="normal"> 981</span>
+<span class="normal"> 982</span>
+<span class="normal"> 983</span>
+<span class="normal"> 984</span>
+<span class="normal"> 985</span>
+<span class="normal"> 986</span>
+<span class="normal"> 987</span>
+<span class="normal"> 988</span>
+<span class="normal"> 989</span>
+<span class="normal"> 990</span>
+<span class="normal"> 991</span>
+<span class="normal"> 992</span>
+<span class="normal"> 993</span>
+<span class="normal"> 994</span>
+<span class="normal"> 995</span>
+<span class="normal"> 996</span>
+<span class="normal"> 997</span>
+<span class="normal"> 998</span>
+<span class="normal"> 999</span>
+<span class="normal">1000</span>
+<span class="normal">1001</span>
+<span class="normal">1002</span>
+<span class="normal">1003</span>
+<span class="normal">1004</span>
+<span class="normal">1005</span>
+<span class="normal">1006</span>
+<span class="normal">1007</span>
+<span class="normal">1008</span>
+<span class="normal">1009</span>
+<span class="normal">1010</span>
+<span class="normal">1011</span>
+<span class="normal">1012</span>
+<span class="normal">1013</span>
+<span class="normal">1014</span>
+<span class="normal">1015</span>
+<span class="normal">1016</span>
+<span class="normal">1017</span>
+<span class="normal">1018</span>
+<span class="normal">1019</span>
+<span class="normal">1020</span>
+<span class="normal">1021</span>
+<span class="normal">1022</span>
+<span class="normal">1023</span>
+<span class="normal">1024</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">helix_awk</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HelixAwkwardArray</span><span class="p">:</span>
+    <span class="c1"># Use a sentinel to distinguish &quot;not provided&quot; from an explicit None</span>
+    <span class="n">error</span> <span class="o">=</span> <span class="n">_SENTINEL</span>
+    <span class="n">pivot</span> <span class="o">=</span> <span class="n">_SENTINEL</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">helix</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot pass both helix and error as positional arguments.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">pivot</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s2">&quot;pivot&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot pass both helix and pivot as positional arguments.&quot;</span><span class="p">)</span>
+
+        <span class="n">dr</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">phi0</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="n">dz</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="n">tanl</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+
+    <span class="k">elif</span> <span class="s2">&quot;helix&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">helix</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;helix&quot;</span><span class="p">)</span>
+
+        <span class="n">dr</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+        <span class="n">phi0</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+        <span class="n">dz</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
+        <span class="n">tanl</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+
+    <span class="k">elif</span> <span class="s2">&quot;dr&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">dr</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;dr&quot;</span><span class="p">)</span>
+        <span class="n">phi0</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;phi0&quot;</span><span class="p">)</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;kappa&quot;</span><span class="p">)</span>
+        <span class="n">dz</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;dz&quot;</span><span class="p">)</span>
+        <span class="n">tanl</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;tanl&quot;</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">momentum</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;momentum&quot;</span><span class="p">)</span>
+        <span class="n">position</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;position&quot;</span><span class="p">)</span>
+        <span class="n">charge</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;charge&quot;</span><span class="p">)</span>
+
+        <span class="n">pivot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pivot&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pivot</span><span class="p">,</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+            <span class="n">pivot</span> <span class="o">=</span> <span class="n">_regularize_obj_position</span><span class="p">(</span><span class="n">pivot</span><span class="p">)</span>
+
+        <span class="c1"># compute helix parameters</span>
+        <span class="n">kappa</span> <span class="o">=</span> <span class="n">charge</span> <span class="o">/</span> <span class="n">momentum</span><span class="o">.</span><span class="n">pt</span>
+        <span class="n">phi0</span> <span class="o">=</span> <span class="p">(</span><span class="n">momentum</span><span class="o">.</span><span class="n">phi</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
+
+        <span class="n">dist</span> <span class="o">=</span> <span class="p">(</span><span class="n">position</span> <span class="o">-</span> <span class="n">pivot</span><span class="p">)</span><span class="o">.</span><span class="n">to_2D</span><span class="p">()</span>
+        <span class="n">dr</span> <span class="o">=</span> <span class="n">_fix_dr_sign</span><span class="p">(</span><span class="n">dist</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span> <span class="n">phi0</span><span class="p">,</span> <span class="n">dist</span><span class="o">.</span><span class="n">phi</span><span class="p">)</span>
+
+        <span class="n">dz</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">z</span> <span class="o">-</span> <span class="n">pivot</span><span class="o">.</span><span class="n">z</span>
+        <span class="n">tanl</span> <span class="o">=</span> <span class="n">momentum</span><span class="o">.</span><span class="n">pz</span> <span class="o">/</span> <span class="n">momentum</span><span class="o">.</span><span class="n">pt</span>
+
+    <span class="c1"># Only pop from kwargs if not already set via positional args</span>
+    <span class="k">if</span> <span class="n">error</span> <span class="ow">is</span> <span class="n">_SENTINEL</span><span class="p">:</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">pivot</span> <span class="ow">is</span> <span class="n">_SENTINEL</span><span class="p">:</span>
+        <span class="n">pivot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pivot&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pivot</span><span class="p">,</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
+        <span class="n">pivot</span> <span class="o">=</span> <span class="n">_regularize_obj_position</span><span class="p">(</span><span class="n">pivot</span><span class="p">)</span>
+
+        <span class="n">x0</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">dr</span><span class="p">)</span> <span class="o">*</span> <span class="n">pivot</span><span class="o">.</span><span class="n">x</span>
+        <span class="n">y0</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">dr</span><span class="p">)</span> <span class="o">*</span> <span class="n">pivot</span><span class="o">.</span><span class="n">y</span>
+        <span class="n">z0</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">dr</span><span class="p">)</span> <span class="o">*</span> <span class="n">pivot</span><span class="o">.</span><span class="n">z</span>
+        <span class="n">pivot</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">zip</span><span class="p">({</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x0</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y0</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="n">z0</span><span class="p">},</span> <span class="n">with_name</span><span class="o">=</span><span class="s2">&quot;Vector3D&quot;</span><span class="p">)</span>
+
+    <span class="n">res_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;dr&quot;</span><span class="p">:</span> <span class="n">dr</span><span class="p">,</span>
+        <span class="s2">&quot;phi0&quot;</span><span class="p">:</span> <span class="n">phi0</span><span class="p">,</span>
+        <span class="s2">&quot;kappa&quot;</span><span class="p">:</span> <span class="n">kappa</span><span class="p">,</span>
+        <span class="s2">&quot;dz&quot;</span><span class="p">:</span> <span class="n">dz</span><span class="p">,</span>
+        <span class="s2">&quot;tanl&quot;</span><span class="p">:</span> <span class="n">tanl</span><span class="p">,</span>
+        <span class="s2">&quot;pivot&quot;</span><span class="p">:</span> <span class="n">pivot</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">res_dict</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">error</span>
+
+    <span class="n">_check_kwargs_used_up</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="n">raw_shape</span> <span class="o">=</span> <span class="n">_extract_index</span><span class="p">(</span><span class="n">dr</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">ak</span><span class="o">.</span><span class="n">zip</span><span class="p">(</span><span class="n">res_dict</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">raw_shape</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">with_name</span><span class="o">=</span><span class="s2">&quot;Bes3Helix&quot;</span><span class="p">)</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div><hr />
+
+
+<div class="doc doc-object doc-function">
+
+
 <h3 id="pybes3.helix.dr_phi0_to_x" class="doc doc-heading">
             <code class="highlight language-python"><span class="n">dr_phi0_to_x</span><span class="p">(</span><span class="n">dr</span><span class="p">,</span> <span class="n">phi0</span><span class="p">)</span></code>
 
@@ -2719,7 +2942,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="sd">    Returns:</span>
 <span class="sd">        charge of the helix.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">kappa</span> <span class="o">&gt;</span> <span class="mf">1e-10</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">kappa</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1e-10</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">int8</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="k">return</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">kappa</span> <span class="o">&gt;</span> <span class="mf">1e-10</span> <span class="k">else</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">kappa</span> <span class="o">&lt;</span> <span class="o">-</span><span class="mf">1e-10</span> <span class="k">else</span> <span class="mi">0</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -3847,229 +4070,6 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 
   </div>
 
-    </div>
-
-</div><hr />
-
-
-<div class="doc doc-object doc-function">
-
-
-<h3 id="pybes3.helix.helix_awk" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">helix_awk</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
-
-</h3>
-          <div class="doc-overloads">
-<div class="doc-signature highlight"><pre><span></span><code><span class="nf">helix_awk</span><span class="p">(</span>
-    <span class="n">helix</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">error</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">pivot</span><span class="p">:</span> <span class="n">TypeAwkPosition</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HelixAwkwardArray</span>
-</code></pre></div><div class="doc-signature highlight"><pre><span></span><code><span class="nf">helix_awk</span><span class="p">(</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">dr</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">phi0</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">kappa</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">dz</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">tanl</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">error</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">pivot</span><span class="p">:</span> <span class="n">TypeAwkPosition</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HelixAwkwardArray</span>
-</code></pre></div><div class="doc-signature highlight"><pre><span></span><code><span class="nf">helix_awk</span><span class="p">(</span>
-    <span class="o">*</span><span class="p">,</span>
-    <span class="n">momentum</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">position</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">charge</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">|</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span>
-    <span class="n">error</span><span class="p">:</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">pivot</span><span class="p">:</span> <span class="n">TypeAwkPosition</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HelixAwkwardArray</span>
-</code></pre></div>          </div>
-
-
-    <div class="doc doc-contents first">
-
-
-            <details class="mkdocstrings-source">
-              <summary>Source code in <code>src/pybes3/helix.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 936</span>
-<span class="normal"> 937</span>
-<span class="normal"> 938</span>
-<span class="normal"> 939</span>
-<span class="normal"> 940</span>
-<span class="normal"> 941</span>
-<span class="normal"> 942</span>
-<span class="normal"> 943</span>
-<span class="normal"> 944</span>
-<span class="normal"> 945</span>
-<span class="normal"> 946</span>
-<span class="normal"> 947</span>
-<span class="normal"> 948</span>
-<span class="normal"> 949</span>
-<span class="normal"> 950</span>
-<span class="normal"> 951</span>
-<span class="normal"> 952</span>
-<span class="normal"> 953</span>
-<span class="normal"> 954</span>
-<span class="normal"> 955</span>
-<span class="normal"> 956</span>
-<span class="normal"> 957</span>
-<span class="normal"> 958</span>
-<span class="normal"> 959</span>
-<span class="normal"> 960</span>
-<span class="normal"> 961</span>
-<span class="normal"> 962</span>
-<span class="normal"> 963</span>
-<span class="normal"> 964</span>
-<span class="normal"> 965</span>
-<span class="normal"> 966</span>
-<span class="normal"> 967</span>
-<span class="normal"> 968</span>
-<span class="normal"> 969</span>
-<span class="normal"> 970</span>
-<span class="normal"> 971</span>
-<span class="normal"> 972</span>
-<span class="normal"> 973</span>
-<span class="normal"> 974</span>
-<span class="normal"> 975</span>
-<span class="normal"> 976</span>
-<span class="normal"> 977</span>
-<span class="normal"> 978</span>
-<span class="normal"> 979</span>
-<span class="normal"> 980</span>
-<span class="normal"> 981</span>
-<span class="normal"> 982</span>
-<span class="normal"> 983</span>
-<span class="normal"> 984</span>
-<span class="normal"> 985</span>
-<span class="normal"> 986</span>
-<span class="normal"> 987</span>
-<span class="normal"> 988</span>
-<span class="normal"> 989</span>
-<span class="normal"> 990</span>
-<span class="normal"> 991</span>
-<span class="normal"> 992</span>
-<span class="normal"> 993</span>
-<span class="normal"> 994</span>
-<span class="normal"> 995</span>
-<span class="normal"> 996</span>
-<span class="normal"> 997</span>
-<span class="normal"> 998</span>
-<span class="normal"> 999</span>
-<span class="normal">1000</span>
-<span class="normal">1001</span>
-<span class="normal">1002</span>
-<span class="normal">1003</span>
-<span class="normal">1004</span>
-<span class="normal">1005</span>
-<span class="normal">1006</span>
-<span class="normal">1007</span>
-<span class="normal">1008</span>
-<span class="normal">1009</span>
-<span class="normal">1010</span>
-<span class="normal">1011</span>
-<span class="normal">1012</span>
-<span class="normal">1013</span>
-<span class="normal">1014</span>
-<span class="normal">1015</span>
-<span class="normal">1016</span>
-<span class="normal">1017</span>
-<span class="normal">1018</span>
-<span class="normal">1019</span>
-<span class="normal">1020</span>
-<span class="normal">1021</span>
-<span class="normal">1022</span>
-<span class="normal">1023</span>
-<span class="normal">1024</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">helix_awk</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HelixAwkwardArray</span><span class="p">:</span>
-    <span class="c1"># Use a sentinel to distinguish &quot;not provided&quot; from an explicit None</span>
-    <span class="n">error</span> <span class="o">=</span> <span class="n">_SENTINEL</span>
-    <span class="n">pivot</span> <span class="o">=</span> <span class="n">_SENTINEL</span>
-
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">helix</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="n">error</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">&quot;error&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot pass both helix and error as positional arguments.&quot;</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="n">pivot</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-            <span class="k">if</span> <span class="s2">&quot;pivot&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Cannot pass both helix and pivot as positional arguments.&quot;</span><span class="p">)</span>
-
-        <span class="n">dr</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-        <span class="n">phi0</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">kappa</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-        <span class="n">dz</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-        <span class="n">tanl</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
-
-    <span class="k">elif</span> <span class="s2">&quot;helix&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-        <span class="n">helix</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;helix&quot;</span><span class="p">)</span>
-
-        <span class="n">dr</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
-        <span class="n">phi0</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
-        <span class="n">kappa</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
-        <span class="n">dz</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span>
-        <span class="n">tanl</span> <span class="o">=</span> <span class="n">helix</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
-
-    <span class="k">elif</span> <span class="s2">&quot;dr&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-        <span class="n">dr</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;dr&quot;</span><span class="p">)</span>
-        <span class="n">phi0</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;phi0&quot;</span><span class="p">)</span>
-        <span class="n">kappa</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;kappa&quot;</span><span class="p">)</span>
-        <span class="n">dz</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;dz&quot;</span><span class="p">)</span>
-        <span class="n">tanl</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;tanl&quot;</span><span class="p">)</span>
-
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">momentum</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;momentum&quot;</span><span class="p">)</span>
-        <span class="n">position</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;position&quot;</span><span class="p">)</span>
-        <span class="n">charge</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;charge&quot;</span><span class="p">)</span>
-
-        <span class="n">pivot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pivot&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pivot</span><span class="p">,</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
-            <span class="n">pivot</span> <span class="o">=</span> <span class="n">_regularize_obj_position</span><span class="p">(</span><span class="n">pivot</span><span class="p">)</span>
-
-        <span class="c1"># compute helix parameters</span>
-        <span class="n">kappa</span> <span class="o">=</span> <span class="n">charge</span> <span class="o">/</span> <span class="n">momentum</span><span class="o">.</span><span class="n">pt</span>
-        <span class="n">phi0</span> <span class="o">=</span> <span class="p">(</span><span class="n">momentum</span><span class="o">.</span><span class="n">phi</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">%</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span><span class="p">)</span>
-
-        <span class="n">dist</span> <span class="o">=</span> <span class="p">(</span><span class="n">position</span> <span class="o">-</span> <span class="n">pivot</span><span class="p">)</span><span class="o">.</span><span class="n">to_2D</span><span class="p">()</span>
-        <span class="n">dr</span> <span class="o">=</span> <span class="n">_fix_dr_sign</span><span class="p">(</span><span class="n">dist</span><span class="o">.</span><span class="n">rho</span><span class="p">,</span> <span class="n">phi0</span><span class="p">,</span> <span class="n">dist</span><span class="o">.</span><span class="n">phi</span><span class="p">)</span>
-
-        <span class="n">dz</span> <span class="o">=</span> <span class="n">position</span><span class="o">.</span><span class="n">z</span> <span class="o">-</span> <span class="n">pivot</span><span class="o">.</span><span class="n">z</span>
-        <span class="n">tanl</span> <span class="o">=</span> <span class="n">momentum</span><span class="o">.</span><span class="n">pz</span> <span class="o">/</span> <span class="n">momentum</span><span class="o">.</span><span class="n">pt</span>
-
-    <span class="c1"># Only pop from kwargs if not already set via positional args</span>
-    <span class="k">if</span> <span class="n">error</span> <span class="ow">is</span> <span class="n">_SENTINEL</span><span class="p">:</span>
-        <span class="n">error</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;error&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">pivot</span> <span class="ow">is</span> <span class="n">_SENTINEL</span><span class="p">:</span>
-        <span class="n">pivot</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;pivot&quot;</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-
-    <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">pivot</span><span class="p">,</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">):</span>
-        <span class="n">pivot</span> <span class="o">=</span> <span class="n">_regularize_obj_position</span><span class="p">(</span><span class="n">pivot</span><span class="p">)</span>
-
-        <span class="n">x0</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">dr</span><span class="p">)</span> <span class="o">*</span> <span class="n">pivot</span><span class="o">.</span><span class="n">x</span>
-        <span class="n">y0</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">dr</span><span class="p">)</span> <span class="o">*</span> <span class="n">pivot</span><span class="o">.</span><span class="n">y</span>
-        <span class="n">z0</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">ones_like</span><span class="p">(</span><span class="n">dr</span><span class="p">)</span> <span class="o">*</span> <span class="n">pivot</span><span class="o">.</span><span class="n">z</span>
-        <span class="n">pivot</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">zip</span><span class="p">({</span><span class="s2">&quot;x&quot;</span><span class="p">:</span> <span class="n">x0</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span> <span class="n">y0</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">:</span> <span class="n">z0</span><span class="p">},</span> <span class="n">with_name</span><span class="o">=</span><span class="s2">&quot;Vector3D&quot;</span><span class="p">)</span>
-
-    <span class="n">res_dict</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="s2">&quot;dr&quot;</span><span class="p">:</span> <span class="n">dr</span><span class="p">,</span>
-        <span class="s2">&quot;phi0&quot;</span><span class="p">:</span> <span class="n">phi0</span><span class="p">,</span>
-        <span class="s2">&quot;kappa&quot;</span><span class="p">:</span> <span class="n">kappa</span><span class="p">,</span>
-        <span class="s2">&quot;dz&quot;</span><span class="p">:</span> <span class="n">dz</span><span class="p">,</span>
-        <span class="s2">&quot;tanl&quot;</span><span class="p">:</span> <span class="n">tanl</span><span class="p">,</span>
-        <span class="s2">&quot;pivot&quot;</span><span class="p">:</span> <span class="n">pivot</span><span class="p">,</span>
-    <span class="p">}</span>
-
-    <span class="k">if</span> <span class="n">error</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">res_dict</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">error</span>
-
-    <span class="n">_check_kwargs_used_up</span><span class="p">(</span><span class="n">kwargs</span><span class="p">)</span>
-
-    <span class="n">raw_shape</span> <span class="o">=</span> <span class="n">_extract_index</span><span class="p">(</span><span class="n">dr</span><span class="o">.</span><span class="n">layout</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">ak</span><span class="o">.</span><span class="n">zip</span><span class="p">(</span><span class="n">res_dict</span><span class="p">,</span> <span class="n">depth_limit</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">raw_shape</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">with_name</span><span class="o">=</span><span class="s2">&quot;Bes3Helix&quot;</span><span class="p">)</span>
-</code></pre></div></td></tr></table></div>
-            </details>
     </div>
 
 </div><hr />
