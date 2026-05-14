@@ -252,9 +252,7 @@ class Bes3PyCgemClusterColReader(uproot_custom.readers.python.IReader):
 
             if self.version == -1:
                 if fNBytes not in (96, 88):
-                    raise ValueError(
-                        f"Unknown TCgemCluster version with FNBytes = {fNBytes}"
-                    )
+                    raise ValueError(f"Unknown TCgemCluster version with FNBytes = {fNBytes}")
 
                 self.version = 0 if fNBytes == 96 else 1
 
