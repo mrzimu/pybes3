@@ -23,31 +23,31 @@ class Bes3TObjArrayReader : public IReader {
         , m_element_reader( element_reader )
         , m_offsets( make_shared_vector<uint32_t>( 1, 0 ) ) {}
 
-    void read( BinaryBuffer& bparser ) override {
+    void read( BinaryStream& stream ) override {
         debug_printf( "Bes3TObjArrayReader %s: reading...\n", m_name.c_str() );
-        debug_printf( bparser );
+        debug_printf( stream );
 
-        bparser.skip_fNBytes();
-        bparser.skip_fVersion();
-        bparser.skip_fVersion();
-        bparser.skip( 4 ); // fUniqueID
-        bparser.skip( 4 ); // fBits
+        stream.skip_fNBytes();
+        stream.skip_fVersion();
+        stream.skip_fVersion();
+        stream.skip( 4 ); // fUniqueID
+        stream.skip( 4 ); // fBits
 
-        bparser.skip( 1 ); // fName
-        auto fSize = bparser.read<uint32_t>();
-        bparser.skip( 4 ); // fLowerBound
+        stream.skip( 1 ); // fName
+        auto fSize = stream.read<uint32_t>();
+        stream.skip( 4 ); // fLowerBound
 
         m_offsets->push_back( m_offsets->back() + fSize );
         for ( uint32_t i = 0; i < fSize; i++ )
         {
 
-            bparser.skip_obj_header();
+            stream.skip_obj_header();
 
             debug_printf( "Bes3TObjArrayReader %s: skipped obj header of %d element\n",
                           m_name.c_str(), i );
-            debug_printf( bparser );
+            debug_printf( stream );
 
-            m_element_reader->read( bparser );
+            m_element_reader->read( stream );
         }
     }
 
@@ -91,10 +91,10 @@ class Bes3SymMatrixArrayReader : public IReader {
         return i < j ? j * ( j + 1 ) / 2 + i : i * ( i + 1 ) / 2 + j;
     }
 
-    void read( BinaryBuffer& bparser ) override {
+    void read( BinaryStream& stream ) override {
         // temporary flat array to hold the data
         std::vector<T> flat_array( m_flat_size );
-        for ( int i = 0; i < m_flat_size; i++ ) flat_array[i] = bparser.read<T>();
+        for ( int i = 0; i < m_flat_size; i++ ) flat_array[i] = stream.read<T>();
 
         // fill the m_data with the symmetric matrix data
         for ( int i = 0; i < m_full_dim; i++ )
@@ -148,27 +148,27 @@ class Bes3CgemClusterColReader : public IReader {
         , m_clusterflag( make_shared_vector<int32_t>() )
         , m_stripid( make_shared_vector<int32_t>() ) {}
 
-    void read( BinaryBuffer& bparser ) override {
-        bparser.skip_obj_header();
+    void read( BinaryStream& stream ) override {
+        stream.skip_obj_header();
 
         // TObjArray
-        bparser.skip_fNBytes();
-        bparser.skip_fVersion();
-        bparser.skip_fVersion();
-        bparser.skip( 4 ); // fUniqueID
-        bparser.skip( 4 ); // fBits
-        bparser.skip( 1 ); // fName
-        auto fSize = bparser.read<uint32_t>();
-        bparser.skip( 4 ); // fLowerBound
+        stream.skip_fNBytes();
+        stream.skip_fVersion();
+        stream.skip_fVersion();
+        stream.skip( 4 ); // fUniqueID
+        stream.skip( 4 ); // fBits
+        stream.skip( 1 ); // fName
+        auto fSize = stream.read<uint32_t>();
+        stream.skip( 4 ); // fLowerBound
 
         m_offsets->push_back( m_offsets->back() + fSize );
 
         for ( uint32_t i = 0; i < fSize; i++ )
         {
-            bparser.skip_obj_header();
+            stream.skip_obj_header();
 
-            auto fNBytes = bparser.read_fNBytes();
-            bparser.skip_fVersion();
+            auto fNBytes = stream.read_fNBytes();
+            stream.skip_fVersion();
 
             // Determine class version
             if ( m_version == -1 )
@@ -184,25 +184,25 @@ class Bes3CgemClusterColReader : public IReader {
             }
 
             // TObject
-            bparser.skip_TObject();
+            stream.skip_TObject();
 
             // TRecCgemCluster
-            m_clusterid->push_back( bparser.read<int32_t>() );
-            m_trkid->push_back( bparser.read<int32_t>() );
-            m_layerid->push_back( bparser.read<int32_t>() );
-            m_sheetid->push_back( bparser.read<int32_t>() );
-            m_flag->push_back( bparser.read<int32_t>() );
-            m_energydeposit->push_back( bparser.read<double>() );
-            m_recphi->push_back( bparser.read<double>() );
-            if ( m_version == 0 ) m_recpositiony->push_back( bparser.read<double>() );
-            m_recv->push_back( bparser.read<double>() );
-            m_recZ->push_back( bparser.read<double>() );
+            m_clusterid->push_back( stream.read<int32_t>() );
+            m_trkid->push_back( stream.read<int32_t>() );
+            m_layerid->push_back( stream.read<int32_t>() );
+            m_sheetid->push_back( stream.read<int32_t>() );
+            m_flag->push_back( stream.read<int32_t>() );
+            m_energydeposit->push_back( stream.read<double>() );
+            m_recphi->push_back( stream.read<double>() );
+            if ( m_version == 0 ) m_recpositiony->push_back( stream.read<double>() );
+            m_recv->push_back( stream.read<double>() );
+            m_recZ->push_back( stream.read<double>() );
 
             // m_clusterflag is int[2]
-            for ( int i = 0; i < 2; i++ ) m_clusterflag->push_back( bparser.read<int32_t>() );
+            for ( int i = 0; i < 2; i++ ) m_clusterflag->push_back( stream.read<int32_t>() );
 
             // m_stripid is int[2][2]
-            for ( int i = 0; i < 4; i++ ) m_stripid->push_back( bparser.read<int32_t>() );
+            for ( int i = 0; i < 4; i++ ) m_stripid->push_back( stream.read<int32_t>() );
         }
     }
 
