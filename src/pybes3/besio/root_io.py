@@ -8,7 +8,9 @@ import uproot
 import uproot.behaviors.TBranch
 import uproot.extras
 import uproot.interpretation
-import uproot_custom.cpp
+import uproot_custom.readers.cpp
+import uproot_custom.readers.python
+import array
 from uproot_custom import (
     AnyClassFactory,
     AsCustom,
@@ -70,6 +72,34 @@ bes3_branch2types = {
 }
 
 
+class Bes3PyTObjArrayReader(uproot_custom.readers.python.IReader):
+    def __init__(self, name, element_reader: uproot_custom.readers.python.IReader):
+        super().__init__(name)
+        self.element_reader = element_reader
+        self.offsets = array.array("I", [0])
+
+    def read(self, stream):
+        stream.skip_fNBytes()
+        stream.skip_fVersion()
+        stream.skip_fVersion()
+        stream.skip(4)
+        stream.skip(4)
+
+        stream.skip(1)
+        fSize = stream.read_uint32()
+        stream.skip(4)
+
+        self.offsets.append(self.offsets[-1] + fSize)
+
+        for _ in range(fSize):
+            stream.skip_obj_header()
+            self.element_reader.read(stream)
+
+    def data(self):
+        element_data = self.element_reader.data()
+        return np.asarray(self.offsets), element_data
+
+
 class Bes3TObjArrayFactory(Factory):
     @classmethod
     def priority(cls):
@@ -124,6 +154,10 @@ class Bes3TObjArrayFactory(Factory):
         element_reader = self.element_factory.build_cpp_reader()
         return bcpp.Bes3TObjArrayReader(self.name, element_reader)
 
+    def build_python_reader(self):
+        element_reader = self.element_factory.build_python_reader()
+        return Bes3PyTObjArrayReader(self.name, element_reader)
+
     def make_awkward_content(self, raw_data):
         offsets, element_raw_data = raw_data
         element_content = self.element_factory.make_awkward_content(element_raw_data)
@@ -172,7 +206,101 @@ class Bes3BaseObjectFactory(GroupFactory):
         sub_readers = [s.build_cpp_reader() for s in self.sub_factories]
         # In TObjArray, base class always contains fNBytes+fVersion header,
         # so use `AnyClassReader` instead of `GroupReader` to read it.
-        return uproot_custom.cpp.AnyClassReader(self.name, sub_readers)
+        return uproot_custom.readers.cpp.AnyClassReader(self.name, sub_readers)
+
+    def build_python_reader(self):
+        sub_readers = [s.build_python_reader() for s in self.sub_factories]
+        return uproot_custom.readers.python.AnyClassReader(self.name, sub_readers)
+
+
+class Bes3PyCgemClusterColReader(uproot_custom.readers.python.IReader):
+    def __init__(self, name):
+        super().__init__(name)
+
+        self.version = -1  # -1: unknown, 0: with recpositiony, 1: without recpositiony
+
+        self.offsets = array.array("I", [0])
+        self.clusterid = array.array("i")
+        self.trkid = array.array("i")
+        self.layerid = array.array("i")
+        self.sheetid = array.array("i")
+        self.flag = array.array("i")
+        self.energydeposit = array.array("d")
+        self.recphi = array.array("d")
+        self.recpositiony = array.array("d")
+        self.recv = array.array("d")
+        self.recZ = array.array("d")
+        self.clusterflag = array.array("i")
+        self.stripid = array.array("i")
+
+    def read(self, stream):
+        stream.skip_obj_header()
+
+        # TObjArray
+        stream.skip_fNBytes()
+        stream.skip(13)  # fVersion(2) + fVersion(2) + fUniqueID(4) + fBits(4) + fName(1)
+        fSize = stream.read_uint32()
+        stream.skip(4)  # fLowerBound
+
+        self.offsets.append(self.offsets[-1] + fSize)
+
+        for _ in range(fSize):
+            stream.skip_obj_header()
+
+            fNBytes = stream.read_fNBytes()
+            stream.skip_fVersion()
+
+            if self.version == -1:
+                if fNBytes not in (96, 88):
+                    raise ValueError(f"Unknown TCgemCluster version with FNBytes = {fNBytes}")
+
+                self.version = 0 if fNBytes == 96 else 1
+
+            stream.skip_TObject()
+
+            self.clusterid.append(stream.read_int32())
+            self.trkid.append(stream.read_int32())
+            self.layerid.append(stream.read_int32())
+            self.sheetid.append(stream.read_int32())
+            self.flag.append(stream.read_int32())
+            self.energydeposit.append(stream.read_double())
+            self.recphi.append(stream.read_double())
+
+            if self.version == 0:
+                self.recpositiony.append(stream.read_double())
+
+            self.recv.append(stream.read_double())
+            self.recZ.append(stream.read_double())
+
+            # m_clusterflag is int[2]
+            for _ in range(2):
+                self.clusterflag.append(stream.read_int32())
+
+            # m_stripid is int[2][2]
+            for _ in range(4):
+                self.stripid.append(stream.read_int32())
+
+    def data(self):
+        result = {}
+
+        result["offsets"] = np.asarray(self.offsets)
+        result["m_clusterID"] = np.asarray(self.clusterid)
+        result["m_trkID"] = np.asarray(self.trkid)
+        result["m_layerID"] = np.asarray(self.layerid)
+        result["m_sheetID"] = np.asarray(self.sheetid)
+        result["m_flag"] = np.asarray(self.flag)
+        result["m_energyDeposit"] = np.asarray(self.energydeposit)
+        result["m_recPhi"] = np.asarray(self.recphi)
+
+        if self.version == 0:
+            result["m_recPositionY"] = np.asarray(self.recpositiony)
+
+        result["m_recV"] = np.asarray(self.recv)
+        result["m_recZ"] = np.asarray(self.recZ)
+        result["m_clusterFlag"] = np.asarray(self.clusterflag)
+        result["m_stripID"] = np.asarray(self.stripid)
+
+        return result
 
 
 class Bes3CgemClusterColFactory(Factory):
@@ -201,6 +329,9 @@ class Bes3CgemClusterColFactory(Factory):
     def build_cpp_reader(self):
         return bcpp.Bes3CgemClusterColReader(self.name)
 
+    def build_python_reader(self):
+        return Bes3PyCgemClusterColReader(self.name)
+
     def make_awkward_content(self, raw_data: dict):
         offsets = raw_data.pop("offsets")
 
@@ -226,6 +357,40 @@ class Bes3CgemClusterColFactory(Factory):
         raise NotImplementedError(
             "make_awkward_form is not implemented for Bes3CgemClusterColFactory"
         )
+
+
+class Bes3PySymMatrixArrayReader(uproot_custom.readers.python.IReader):
+    def __init__(self, name: str, flat_size: int, full_dim: int):
+        super().__init__(name)
+
+        self.flat_size = flat_size
+        self.full_dim = full_dim
+        self._data = array.array("d")
+
+        self._sym_idx = np.empty((full_dim, full_dim), dtype=np.int64)
+        for i in range(full_dim):
+            for j in range(full_dim):
+                idx = self.get_symmetric_matrix_index(i, j)
+                if idx >= flat_size:
+                    raise ValueError(
+                        f"Invalid flat size: {flat_size}, full dim: {full_dim}, "
+                        f"i: {i}, j: {j}, idx: {idx}"
+                    )
+                self._sym_idx[i, j] = idx
+
+    @staticmethod
+    def get_symmetric_matrix_index(i: int, j: int) -> int:
+        return j * (j + 1) // 2 + i if i < j else i * (i + 1) // 2 + j
+
+    def read(self, stream):
+        flat_array = np.empty(self.flat_size, dtype=np.float64)
+        for i in range(self.flat_size):
+            flat_array[i] = stream.read_double()
+
+        self._data.extend(flat_array[self._sym_idx].ravel())
+
+    def data(self):
+        return np.asarray(self._data)
 
 
 class Bes3SymMatrixArrayFactory(Factory):
@@ -294,6 +459,9 @@ class Bes3SymMatrixArrayFactory(Factory):
 
     def build_cpp_reader(self):
         return bcpp.Bes3SymMatrixArrayReader(self.name, self.flat_size, self.full_dim)
+
+    def build_python_reader(self):
+        return Bes3PySymMatrixArrayReader(self.name, self.flat_size, self.full_dim)
 
     def make_awkward_content(self, raw_data: np.ndarray):
         return awkward.contents.NumpyArray(raw_data.reshape(-1, self.full_dim, self.full_dim))
