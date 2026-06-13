@@ -34,7 +34,7 @@
   </a>
 
 - <a href="convention/global-id" style="text-decoration: none; color: inherit;">
-    :material-identifier: __Global identifier__
+    :material-identifier: __Global ID__
 
     Global ID numbers for each detector element in `pybes3`.
   </a>
@@ -42,7 +42,7 @@
 - <a href="user-manual/identifier" style="text-decoration: none; color: inherit;">
     :material-scatter-plot: __BOSS identifier__
 
-    Convert BOSS detector id number to a human-readable format.
+    Convert BOSS detector identifier number to a human-readable format.
   </a>
 
 - <a href="user-manual/detector/mdc" style="text-decoration: none; color: inherit;">
