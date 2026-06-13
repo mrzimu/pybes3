@@ -27,7 +27,7 @@ python3 -m pip install pybes3
 
 "lxlogin server" means the login server of computation clusters of IHEP. If you are not using lxlogin server, you can skip this section.
 
-Since there is a quota limitation on user's home directory (`~/`), you need to create symbolinks for `~/.local` and `~/.cache`, which contains pip packages and caches that installed in "user mode":
+Since there is a quota limitation on the user's home directory (`~/`), you need to create symlinks for `~/.local` and `~/.cache`, which contain pip packages and caches installed in "user mode":
 
 ```bash
 # Check whether a `.local` directory and `.cache` already exists.
