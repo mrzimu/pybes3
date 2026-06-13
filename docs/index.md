@@ -27,28 +27,28 @@
 
 <div class="grid cards" markdown>
 
-- <a href="user-manual/bes3-data-reading" style="text-decoration: none; color: inherit;">
-    :material-import: __BES3 data reading__
+- <a href="user-manual/data-reading" style="text-decoration: none; color: inherit;">
+    :material-import: __Data reading__
 
     Read `rtraw`, `rec`, `dst`, and even `raw` files.
   </a>
 
-- <a href="user-manual/digi-identifier" style="text-decoration: none; color: inherit;">
-    :material-scatter-plot: __Digi identifier__
-
-    Convert digi identifier id number to a human-readable format.
-  </a>
-
-- <a href="user-manual/detector/global-id" style="text-decoration: none; color: inherit;">
+- <a href="convention/global-id" style="text-decoration: none; color: inherit;">
     :material-identifier: __Global ID__
 
     Global ID numbers for each detector element in `pybes3`.
   </a>
 
-- <a href="user-manual/detector/geometry" style="text-decoration: none; color: inherit;">
-    :material-crosshairs-gps: __Geometry__
+- <a href="user-manual/identifier" style="text-decoration: none; color: inherit;">
+    :material-scatter-plot: __BOSS identifier__
 
-    Retrieve and compute geometry information of detectors.
+    Convert BOSS detector identifier number to a human-readable format.
+  </a>
+
+- <a href="user-manual/detector/mdc" style="text-decoration: none; color: inherit;">
+    :material-crosshairs-gps: __Detectors__
+
+    Comprehensive functions for BES3 detectors, such as geometry information.
   </a>
 
 - <a href="user-manual/helix" style="text-decoration: none; color: inherit;">
@@ -61,7 +61,7 @@
 
 ## Performance
 
-`pybes3` is designed to be fast and efficient. It uses `numba` to accelerate some of the operations, such as helix operations and digi identifier conversion. When `numba` is not available, `pybes3` falls back to C++ extensions.
+`pybes3` is designed to be fast and efficient. It uses `numba` to accelerate some of the operations, such as helix operations and detector identifier conversion. When `numba` is not available, `pybes3` falls back to C++ extensions.
 
 ### Data reading
 

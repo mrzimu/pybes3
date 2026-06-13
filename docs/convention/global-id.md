@@ -15,7 +15,7 @@ For example, MDC gid follows the order `(layer, wire)`, meaning it increases fir
 ```
 
 !!! note
-    This section only describes the numbering scheme of global ID (gid) for each detector. For how to parse and calculate gid, see [Detector](../user-manual/detector.md) page and the [Detector API](../api/pybes3.detectors.md).
+    This section only describes the numbering scheme of global ID (gid) for each detector. For how to parse and calculate gid, see [MDC](../user-manual/detector/mdc.md), [TOF](../user-manual/detector/tof.md), [EMC](../user-manual/detector/emc.md), [CGEM](../user-manual/detector/cgem.md) pages and the [Detector API](../api/pybes3.detectors.md).
 
 ## MDC
 

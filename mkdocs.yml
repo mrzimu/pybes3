@@ -82,9 +82,13 @@ nav:
       - Unit: convention/unit.md
       - Global ID (gid): convention/global-id.md
   - User manual:
-      - BES3 data reading: user-manual/bes3-data-reading.md
-      - Digi identifier: user-manual/digi-identifier.md
-      - Detector: user-manual/detector.md
+      - Data reading: user-manual/data-reading.md
+      - Identifier: user-manual/identifier.md
+      - Detector:
+          - MDC: user-manual/detector/mdc.md
+          - TOF: user-manual/detector/tof.md
+          - EMC: user-manual/detector/emc.md
+          - CGEM: user-manual/detector/cgem.md
       - Helix operations: user-manual/helix.md
   - API Reference:
       - pybes3: api/pybes3.md

@@ -17,11 +17,17 @@ Visit the [documentation](https://pybes3.readthedocs.io/en/stable/) for more inf
 > [!NOTE]
 > `pybes3` requires Python 3.9 or higher.
 
+### Install `pybes3` using pip
+
+```bash
+python3 -m pip install pybes3
+```
+
 ### Users on lxlogin server
 
-"lxlogin server" means the login server of computation clusters of IHEP. If you are not using lxlogin server, please skip to [Install `pybes3` using pip](#install-pybes3-using-pip).
+"lxlogin server" means the login server of computation clusters of IHEP. If you are not using lxlogin server, you can skip this section.
 
-Since there is a quota limitation on user's home directory (`~/`), you need to create symbolinks for `~/.local` and `~/.cache`, which contains pip packages and caches that installed in "user mode":
+Since there is a quota limitation on the user's home directory (`~/`), you need to create symlinks for `~/.local` and `~/.cache`, which contain pip packages and caches installed in "user mode":
 
 ```bash
 # Check whether a `.local` directory and `.cache` already exists.
@@ -37,12 +43,6 @@ mkdir /path/to/somewhere/.cache
 # After moving or creating them, link them back to `~`
 ln -s /path/to/somewhere/.local ~/.local
 ln -s /path/to/somewhere/.cache ~/.cache
-```
-
-### Install `pybes3` using pip
-
-```bash
-pip install pybes3
 ```
 
 ### Using `pybes3` under `BOSS8` environment
@@ -61,29 +61,19 @@ export PATH=`python -m site --user-base`/bin:$PATH
 
 At the moment, `pybes3` provides:
 
-- BES3 data reading
+- **BES3 data reading**: Read `rtraw`, `rec`, `dst`, and even `raw` files.
 
-    Read `rtraw`, `rec`, `dst`, and even `raw` files.
+- **Identifier**: Convert BOSS detector identifier number to a human-readable format.
 
-- Digi identifier
+- **Global ID**: Numbers for each detector element in `pybes3`, starting from `0` and increasing by `1` for each element. This is useful for indexing and mapping detector elements.
 
-    Convert digi identifier id number to a human-readable format.
+- **Geometry**: Retrieve and compute geometry information of detectors.
 
-- Global ID
-
-    Global ID numbers for each detector element in `pybes3`.
-
-- Geometry
-
-    Retrieve and compute geometry information of detectors.
-
-- Helix operations
-
-    Parse and transform helix parameters.
+- **Helix operations**: Parse and transform helix parameters.
 
 ## Performance
 
-`pybes3` is designed to be fast and efficient. It uses `numba` to accelerate some of the operations, such as helix operations, digi identifier conversion, etc. When `numba` is not available, `pybes3` will use C++ to accelerate the operations.
+`pybes3` is designed to be fast and efficient. It uses `numba` to accelerate some of the operations, such as helix operations, detector identifier conversion, etc. When `numba` is not available, `pybes3` will use C++ to accelerate the operations.
 
 ### Data reading
 
