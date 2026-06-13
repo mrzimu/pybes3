@@ -1,4 +1,4 @@
-# BES3 Data Reading
+# Data Reading
 
 ## Read ROOT files (rtraw, dst, rec)
 

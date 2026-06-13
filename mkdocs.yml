@@ -82,8 +82,8 @@ nav:
       - Unit: convention/unit.md
       - Global ID (gid): convention/global-id.md
   - User manual:
-      - Data reading: user-manual/bes3-data-reading.md
-      - Digi identifier: user-manual/digi-identifier.md
+      - Data reading: user-manual/data-reading.md
+      - Identifier: user-manual/identifier.md
       - Detector:
           - MDC: user-manual/detector/mdc.md
           - TOF: user-manual/detector/tof.md

@@ -1,7 +1,7 @@
 # pybes3.besio
 
 !!! tip "Looking for usage examples?"
-    See the [BES3 Data Reading](../user-manual/bes3-data-reading.md) user guide for practical examples.
+    See the [Data Reading](../user-manual/data-reading.md) user guide for practical examples.
 
 ::: pybes3.besio
 
