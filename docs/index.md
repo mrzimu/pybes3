@@ -34,9 +34,9 @@
   </a>
 
 - <a href="user-manual/digi-identifier" style="text-decoration: none; color: inherit;">
-    :material-scatter-plot: __Digi identifier__
+    :material-scatter-plot: __Detector identifier__
 
-    Convert digi identifier id number to a human-readable format.
+    Convert detector identifier number to a human-readable format.
   </a>
 
 - <a href="user-manual/detector/global-id" style="text-decoration: none; color: inherit;">
@@ -61,7 +61,7 @@
 
 ## Performance
 
-`pybes3` is designed to be fast and efficient. It uses `numba` to accelerate some of the operations, such as helix operations and digi identifier conversion. When `numba` is not available, `pybes3` falls back to C++ extensions.
+`pybes3` is designed to be fast and efficient. It uses `numba` to accelerate some of the operations, such as helix operations and detector identifier conversion. When `numba` is not available, `pybes3` falls back to C++ extensions.
 
 ### Data reading
 
