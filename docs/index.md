@@ -33,7 +33,7 @@
     Read `rtraw`, `rec`, `dst`, and even `raw` files.
   </a>
 
-- <a href="user-manual/detector/global-id" style="text-decoration: none; color: inherit;">
+- <a href="convention/global-id" style="text-decoration: none; color: inherit;">
     :material-identifier: __Global identifier__
 
     Global ID numbers for each detector element in `pybes3`.
