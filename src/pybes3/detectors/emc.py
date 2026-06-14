@@ -29,9 +29,13 @@ BARREL_L = 28.0
 with np.load(EMC_GEOM) as f:
     _emc_geom = dict(f)
 
-_part = _emc_geom["part"].astype(np.int64)
-_theta = _emc_geom["theta"].astype(np.int64)
-_phi = _emc_geom["phi"].astype(np.int64)
+_emc_geom["part"] = _emc_geom["part"].astype(np.int16)
+_emc_geom["theta"] = _emc_geom["theta"].astype(np.int32)
+_emc_geom["phi"] = _emc_geom["phi"].astype(np.int32)
+
+_part = _emc_geom["part"]
+_theta = _emc_geom["theta"]
+_phi = _emc_geom["phi"]
 _points_x = _emc_geom["points_x"]
 _points_y = _emc_geom["points_y"]
 _points_z = _emc_geom["points_z"]
@@ -63,6 +67,9 @@ def get_emc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
 
     for k in [
         "gid",
+        "part",
+        "theta",
+        "phi",
         "center_x",
         "center_y",
         "center_z",
@@ -140,32 +147,32 @@ def get_emc_gid(part: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
     if part == 0:
         res = 0
         if theta == 0 or theta == 1:
-            return theta * ENDCAP_PHI_01 + phi
+            return np.int32(theta * ENDCAP_PHI_01 + phi)
 
         res += 2 * ENDCAP_PHI_01
         if theta == 2 or theta == 3:
-            return res + (theta - 2) * ENDCAP_PHI_23 + phi
+            return np.int32(res + (theta - 2) * ENDCAP_PHI_23 + phi)
 
         res += 2 * ENDCAP_PHI_23
         if theta == 4 or theta == 5:
-            return res + (theta - 4) * ENDCAP_PHI_45 + phi
+            return np.int32(res + (theta - 4) * ENDCAP_PHI_45 + phi)
 
     if part == 1:
-        return ENDCAP_CRYSTALS + theta * BARREL_PHI + phi
+        return np.int32(ENDCAP_CRYSTALS + theta * BARREL_PHI + phi)
 
     if part == 2:
         res = ENDCAP_CRYSTALS + BARREL_CRYSTALS
 
         if theta == 4 or theta == 5:
-            return res + (5 - theta) * ENDCAP_PHI_45 + phi
+            return np.int32(res + (5 - theta) * ENDCAP_PHI_45 + phi)
 
         res += 2 * ENDCAP_PHI_45
         if theta == 2 or theta == 3:
-            return res + (3 - theta) * ENDCAP_PHI_23 + phi
+            return np.int32(res + (3 - theta) * ENDCAP_PHI_23 + phi)
 
         res += 2 * ENDCAP_PHI_23
         if theta == 0 or theta == 1:
-            return res + (1 - theta) * ENDCAP_PHI_01 + phi
+            return np.int32(res + (1 - theta) * ENDCAP_PHI_01 + phi)
 
     raise ValueError(f"Unsupported part: {part}")
 

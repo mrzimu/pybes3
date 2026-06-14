@@ -18,9 +18,9 @@ N_PHI_OR_STRIP.setflags(write=False)
 
 
 def _init():
-    _part = np.empty(N_STRIPS, dtype=np.int64)
-    _layer_or_module = np.empty(N_STRIPS, dtype=np.int64)
-    _phi_or_strip = np.empty(N_STRIPS, dtype=np.int64)
+    _part = np.empty(N_STRIPS, dtype=np.int16)
+    _layer_or_module = np.empty(N_STRIPS, dtype=np.int16)
+    _phi_or_strip = np.empty(N_STRIPS, dtype=np.int32)
 
     gid = 0
     for part in range(5):
@@ -60,7 +60,7 @@ def get_tof_gid(part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike) 
     gid = (N_LAYER_OR_MODULE[:part] * N_PHI_OR_STRIP[:part]).sum()
     gid += layer_or_module * N_PHI_OR_STRIP[part]
     gid += phi_or_strip
-    return gid
+    return np.int32(gid)
 
 
 @nb.vectorize(cache=True)
