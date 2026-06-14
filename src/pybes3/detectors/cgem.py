@@ -8,10 +8,10 @@ import numpy as np
 
 from pybes3.typing import BoolLike, IntLike
 
-N_LAYER = 3
-N_STRIPS = 9897
-X_STRIP_TYPE = 0
-V_STRIP_TYPE = 1
+N_LAYER = np.int8(3)
+N_STRIPS = np.int32(9897)
+X_STRIP_TYPE = np.int8(0)
+V_STRIP_TYPE = np.int8(1)
 
 N_SHEETS = np.array([1, 2, 2])
 N_XSTRIPS = np.array([856, 630, 832])
