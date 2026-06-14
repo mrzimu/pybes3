@@ -108,68 +108,81 @@ def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
         return res
 
 
-@nb.vectorize(cache=False)
+@nb.vectorize(cache=True)
 def tof_hit_status_to_is_raw(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_raw`."""
     return ((status & np.uint32(0x00000001)) >> np.uint32(0)) > 0
 
 
-@nb.vectorize(cache=False)
+@nb.vectorize(cache=True)
 def tof_hit_status_to_is_readout(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_readout`."""
     return ((status & np.uint32(0x00000002)) >> np.uint32(1)) > 0
 
 
-@nb.vectorize(cache=False)
+@nb.vectorize(cache=True)
 def tof_hit_status_to_is_counter(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_counter`."""
     return ((status & np.uint32(0x00000004)) >> np.uint32(2)) > 0
 
 
-@nb.vectorize(cache=False)
+@nb.vectorize(cache=True)
 def tof_hit_status_to_is_cluster(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_cluster`."""
     return ((status & np.uint32(0x00000008)) >> np.uint32(3)) > 0
 
 
-@nb.vectorize(cache=False)
+@nb.vectorize(cache=True)
 def tof_hit_status_to_is_barrel(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_barrel`."""
     return ((status & np.uint32(0x00000010)) >> np.uint32(4)) > 0
 
 
-@nb.vectorize(cache=False)
+@nb.vectorize(cache=True)
 def tof_hit_status_to_is_east(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_east`."""
     return ((status & np.uint32(0x00000020)) >> np.uint32(5)) > 0
 
 
-@nb.vectorize(cache=False)
+@nb.vectorize(cache=True)
 def tof_hit_status_to_layer(status: IntLike) -> IntLike:
+    """Convert hit status to `layer`."""
     return np.int32((status & np.uint32(0x000000C0)) >> np.uint32(6))
 
 
-@nb.vectorize(cache=False)
+@nb.vectorize(cache=True)
 def tof_hit_status_to_is_overflow(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_overflow`."""
     return ((status & np.uint32(0x00000100)) >> np.uint32(8)) > 0
 
 
-@nb.vectorize(cache=False)
+@nb.vectorize(cache=True)
 def tof_hit_status_to_is_multihit(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_multihit`."""
     return ((status & np.uint32(0x00000200)) >> np.uint32(9)) > 0
 
 
-@nb.vectorize(cache=False)
+@nb.vectorize(cache=True)
 def tof_hit_status_to_n_counter(status: IntLike) -> IntLike:
+    """Convert hit status to `n_counter`."""
     return np.int32((status >> np.uint32(12)) & np.uint32(0x0000000F))
 
 
-@nb.vectorize(cache=False)
+@nb.vectorize(cache=True)
 def tof_hit_status_to_n_east(status: IntLike) -> IntLike:
+    """Convert hit status to `n_east`."""
     return np.int32((status >> np.uint32(16)) & np.uint32(0x0000000F))
 
 
-@nb.vectorize(cache=False)
+@nb.vectorize(cache=True)
 def tof_hit_status_to_n_west(status: IntLike) -> IntLike:
+    """Convert hit status to `n_west`."""
     return np.int32((status >> np.uint32(20)) & np.uint32(0x0000000F))
 
 
-@nb.vectorize(cache=False)
+@nb.vectorize(cache=True)
 def tof_hit_status_to_is_mrpc(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_mrpc`."""
     return ((status & np.uint32(0x01000000)) >> np.uint32(24)) > 0
 
 
@@ -181,12 +194,8 @@ def parse_tof_hit_status(status: IntLike) -> ak.Array | dict[str, Any]:
         status: The hit status of a TOF hit, encoded as an integer.
 
     Returns:
-        `is_raw`, `is_readout`, `is_counter`, `is_cluster`, `is_barrel`,
-        `is_east`, `is_overflow`, `is_multihit`, `is_mrpc`, `layer`,
-        `n_counter`, `n_east` and `n_west` fields.
-
-        If status is a ak.Array, returns an ak.Array with the above fields.
-        Otherwise, returns a dictionary with the above keys.
+        If status is a ak.Array, returns an ak.Array with the parsed fields.
+        Otherwise, returns a dictionary with the parsed fields.
     """
     res = {
         "is_raw": tof_hit_status_to_is_raw(status),

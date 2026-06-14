@@ -1,6 +1,6 @@
 # MDC
 
-## GID Conversion
+## GID conversion
 
 All `mdc_gid_to_*`, `mdc_layer_to_*` and `get_mdc_gid` are decorated with `@nb.vectorize`.
 The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
