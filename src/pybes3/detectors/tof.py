@@ -108,116 +108,100 @@ def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
         return res
 
 
-RAW_IDX = np.int32(0)
-RAW_MASK = np.int32(0x00000001)
-READOUT_IDX = np.int32(1)
-READOUT_MASK = np.int32(0x00000002)
-COUNTER_IDX = np.int32(2)
-COUNTER_MASK = np.int32(0x00000004)
-CLUSTER_IDX = np.int32(3)
-CLUSTER_MASK = np.int32(0x00000008)
-BARREL_IDX = np.int32(4)
-BARREL_MASK = np.int32(0x00000010)
-EAST_IDX = np.int32(5)
-EAST_MASK = np.int32(0x00000020)
-LAYER_IDX = np.int32(6)
-LAYER_MASK = np.int32(0x000000C0)
-OVERFLOW_IDX = np.int32(8)
-OVERFLOW_MASK = np.int32(0x00000100)
-MULTIHIT_IDX = np.int32(9)
-MULTIHIT_MASK = np.int32(0x00000200)
-NCOUNTER_IDX = np.int32(12)
-NCOUNTER_MASK = np.int32(0x0000F000)
-NEAST_IDX = np.int32(16)
-NEAST_MASK = np.int32(0x000F0000)
-NWEST_IDX = np.int32(20)
-NWEST_MASK = np.int32(0x00F00000)
-N_MASK = np.int32(0x0000000F)
-MRPC_IDX = np.int32(24)
-MRPC_MASK = np.int32(0x01000000)
-N_MRPC = np.int32(0x00000001)
+@nb.vectorize(cache=False)
+def tof_hit_status_to_is_raw(status: IntLike) -> BoolLike:
+    return ((status & np.uint32(0x00000001)) >> np.uint32(0)) > 0
 
 
-@nb.vectorize(cache=True)
-def tof_trk_status_to_is_raw(status: IntLike) -> BoolLike:
-    return ((status & RAW_MASK) >> RAW_IDX) > 0
+@nb.vectorize(cache=False)
+def tof_hit_status_to_is_readout(status: IntLike) -> BoolLike:
+    return ((status & np.uint32(0x00000002)) >> np.uint32(1)) > 0
 
 
-@nb.vectorize(cache=True)
-def tof_trk_status_to_is_readout(status: IntLike) -> BoolLike:
-    return ((status & READOUT_MASK) >> READOUT_IDX) > 0
+@nb.vectorize(cache=False)
+def tof_hit_status_to_is_counter(status: IntLike) -> BoolLike:
+    return ((status & np.uint32(0x00000004)) >> np.uint32(2)) > 0
 
 
-@nb.vectorize(cache=True)
-def tof_trk_status_to_is_counter(status: IntLike) -> BoolLike:
-    return ((status & COUNTER_MASK) >> COUNTER_IDX) > 0
+@nb.vectorize(cache=False)
+def tof_hit_status_to_is_cluster(status: IntLike) -> BoolLike:
+    return ((status & np.uint32(0x00000008)) >> np.uint32(3)) > 0
 
 
-@nb.vectorize(cache=True)
-def tof_trk_status_to_is_cluster(status: IntLike) -> BoolLike:
-    return ((status & CLUSTER_MASK) >> CLUSTER_IDX) > 0
+@nb.vectorize(cache=False)
+def tof_hit_status_to_is_barrel(status: IntLike) -> BoolLike:
+    return ((status & np.uint32(0x00000010)) >> np.uint32(4)) > 0
 
 
-@nb.vectorize(cache=True)
-def tof_trk_status_to_is_barrel(status: IntLike) -> BoolLike:
-    return ((status & BARREL_MASK) >> BARREL_IDX) > 0
+@nb.vectorize(cache=False)
+def tof_hit_status_to_is_east(status: IntLike) -> BoolLike:
+    return ((status & np.uint32(0x00000020)) >> np.uint32(5)) > 0
 
 
-@nb.vectorize(cache=True)
-def tof_trk_status_to_is_east(status: IntLike) -> BoolLike:
-    return ((status & EAST_MASK) >> EAST_IDX) > 0
+@nb.vectorize(cache=False)
+def tof_hit_status_to_layer(status: IntLike) -> IntLike:
+    return np.int32((status & np.uint32(0x000000C0)) >> np.uint32(6))
 
 
-@nb.vectorize(cache=True)
-def tof_trk_status_to_layer(status: IntLike) -> IntLike:
-    return (status & LAYER_MASK) >> LAYER_IDX
+@nb.vectorize(cache=False)
+def tof_hit_status_to_is_overflow(status: IntLike) -> BoolLike:
+    return ((status & np.uint32(0x00000100)) >> np.uint32(8)) > 0
 
 
-@nb.vectorize(cache=True)
-def tof_trk_status_to_is_overflow(status: IntLike) -> BoolLike:
-    return ((status & OVERFLOW_MASK) >> OVERFLOW_IDX) > 0
+@nb.vectorize(cache=False)
+def tof_hit_status_to_is_multihit(status: IntLike) -> BoolLike:
+    return ((status & np.uint32(0x00000200)) >> np.uint32(9)) > 0
 
 
-@nb.vectorize(cache=True)
-def tof_trk_status_to_is_multihit(status: IntLike) -> BoolLike:
-    return ((status & MULTIHIT_MASK) >> MULTIHIT_IDX) > 0
+@nb.vectorize(cache=False)
+def tof_hit_status_to_n_counter(status: IntLike) -> IntLike:
+    return np.int32((status >> np.uint32(12)) & np.uint32(0x0000000F))
 
 
-@nb.vectorize(cache=True)
-def tof_trk_status_to_n_counter(status: IntLike) -> IntLike:
-    return (status >> NCOUNTER_IDX) & NCOUNTER_MASK
+@nb.vectorize(cache=False)
+def tof_hit_status_to_n_east(status: IntLike) -> IntLike:
+    return np.int32((status >> np.uint32(16)) & np.uint32(0x0000000F))
 
 
-@nb.vectorize(cache=True)
-def tof_trk_status_to_n_east(status: IntLike) -> IntLike:
-    return (status >> NEAST_IDX) & NEAST_MASK
+@nb.vectorize(cache=False)
+def tof_hit_status_to_n_west(status: IntLike) -> IntLike:
+    return np.int32((status >> np.uint32(20)) & np.uint32(0x0000000F))
 
 
-@nb.vectorize(cache=True)
-def tof_trk_status_to_n_west(status: IntLike) -> IntLike:
-    return (status >> NWEST_IDX) & NWEST_MASK
+@nb.vectorize(cache=False)
+def tof_hit_status_to_is_mrpc(status: IntLike) -> BoolLike:
+    return ((status & np.uint32(0x01000000)) >> np.uint32(24)) > 0
 
 
-@nb.vectorize(cache=True)
-def tof_trk_status_to_is_mrpc(status: IntLike) -> BoolLike:
-    return ((status & MRPC_MASK) >> MRPC_IDX) > 0
+def parse_tof_hit_status(status: IntLike) -> ak.Array | dict[str, Any]:
+    """
+    Parse TOF hit status into its components.
 
+    Parameters:
+        status: The hit status of a TOF hit, encoded as an integer.
 
-def parse_tof_trk_status(status: IntLike) -> ak.Array | dict[str, Any]:
+    Returns:
+        `is_raw`, `is_readout`, `is_counter`, `is_cluster`, `is_barrel`,
+        `is_east`, `is_overflow`, `is_multihit`, `is_mrpc`, `layer`,
+        `n_counter`, `n_east` and `n_west` fields.
+
+        If status is a ak.Array, returns an ak.Array with the above fields.
+        Otherwise, returns a dictionary with the above keys.
+    """
     res = {
-        "is_raw": tof_trk_status_to_is_raw(status),
-        "is_readout": tof_trk_status_to_is_readout(status),
-        "is_counter": tof_trk_status_to_is_counter(status),
-        "is_cluster": tof_trk_status_to_is_cluster(status),
-        "is_barrel": tof_trk_status_to_is_barrel(status),
-        "is_east": tof_trk_status_to_is_east(status),
-        "is_overflow": tof_trk_status_to_is_overflow(status),
-        "is_multihit": tof_trk_status_to_is_multihit(status),
-        "is_mrpc": tof_trk_status_to_is_mrpc(status),
-        "layer": tof_trk_status_to_layer(status),
-        "n_counter": tof_trk_status_to_n_counter(status),
-        "n_east": tof_trk_status_to_n_east(status),
-        "n_west": tof_trk_status_to_n_west(status),
+        "is_raw": tof_hit_status_to_is_raw(status),
+        "is_readout": tof_hit_status_to_is_readout(status),
+        "is_counter": tof_hit_status_to_is_counter(status),
+        "is_cluster": tof_hit_status_to_is_cluster(status),
+        "is_barrel": tof_hit_status_to_is_barrel(status),
+        "is_east": tof_hit_status_to_is_east(status),
+        "is_overflow": tof_hit_status_to_is_overflow(status),
+        "is_multihit": tof_hit_status_to_is_multihit(status),
+        "is_mrpc": tof_hit_status_to_is_mrpc(status),
+        "layer": tof_hit_status_to_layer(status),
+        "n_counter": tof_hit_status_to_n_counter(status),
+        "n_east": tof_hit_status_to_n_east(status),
+        "n_west": tof_hit_status_to_n_west(status),
     }
 
     if isinstance(status, ak.Array):
