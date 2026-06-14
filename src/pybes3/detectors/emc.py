@@ -29,9 +29,13 @@ BARREL_L = 28.0
 with np.load(EMC_GEOM) as f:
     _emc_geom = dict(f)
 
-_part = _emc_geom["part"].astype(np.int16)
-_theta = _emc_geom["theta"].astype(np.int32)
-_phi = _emc_geom["phi"].astype(np.int32)
+_emc_geom["part"] = _emc_geom["part"].astype(np.int16)
+_emc_geom["theta"] = _emc_geom["theta"].astype(np.int32)
+_emc_geom["phi"] = _emc_geom["phi"].astype(np.int32)
+
+_part = _emc_geom["part"]
+_theta = _emc_geom["theta"]
+_phi = _emc_geom["phi"]
 _points_x = _emc_geom["points_x"]
 _points_y = _emc_geom["points_y"]
 _points_z = _emc_geom["points_z"]
@@ -63,6 +67,9 @@ def get_emc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
 
     for k in [
         "gid",
+        "part",
+        "theta",
+        "phi",
         "center_x",
         "center_y",
         "center_z",

@@ -14,10 +14,15 @@ N_WIRES = 6796
 with np.load(MDC_GEOM) as f:
     _mdc_geom_table = dict(f)
 
-_superlayer = _mdc_geom_table["superlayer"].astype(np.int16)
-_layer = _mdc_geom_table["layer"].astype(np.int16)
-_wire = _mdc_geom_table["wire"].astype(np.int32)
-_stereo = _mdc_geom_table["stereo"].astype(np.int8)
+_mdc_geom_table["superlayer"] = _mdc_geom_table["superlayer"].astype(np.int16)
+_mdc_geom_table["layer"] = _mdc_geom_table["layer"].astype(np.int16)
+_mdc_geom_table["wire"] = _mdc_geom_table["wire"].astype(np.int32)
+_mdc_geom_table["stereo"] = _mdc_geom_table["stereo"].astype(np.int8)
+
+_superlayer = _mdc_geom_table["superlayer"]
+_layer = _mdc_geom_table["layer"]
+_wire = _mdc_geom_table["wire"]
+_stereo = _mdc_geom_table["stereo"]
 _is_stereo = _mdc_geom_table["is_stereo"]
 _east_x = _mdc_geom_table["east_x"]
 _east_y = _mdc_geom_table["east_y"]
