@@ -23,10 +23,10 @@ N_VSTRIPS.setflags(write=False)
 
 
 def _init():
-    _layer = np.empty(N_STRIPS, dtype=np.int64)
-    _sheet = np.empty(N_STRIPS, dtype=np.int64)
-    _strip_type = np.empty(N_STRIPS, dtype=np.int64)
-    _strip = np.empty(N_STRIPS, dtype=np.int64)
+    _layer = np.empty(N_STRIPS, dtype=np.int16)
+    _sheet = np.empty(N_STRIPS, dtype=np.int16)
+    _strip_type = np.empty(N_STRIPS, dtype=np.int16)
+    _strip = np.empty(N_STRIPS, dtype=np.int32)
 
     gid = 0
     for layer in range(3):
@@ -39,7 +39,7 @@ def _init():
             for strip in range(n_xstrips):
                 _layer[gid] = layer
                 _sheet[gid] = sheet
-                _strip_type[gid] = 0
+                _strip_type[gid] = X_STRIP_TYPE
                 _strip[gid] = strip
                 gid += 1
 
@@ -47,7 +47,7 @@ def _init():
             for strip in range(n_vstrips):
                 _layer[gid] = layer
                 _sheet[gid] = sheet
-                _strip_type[gid] = 1
+                _strip_type[gid] = V_STRIP_TYPE
                 _strip[gid] = strip
                 gid += 1
 
@@ -82,7 +82,7 @@ def get_cgem_gid(
     gid += sheet * (N_XSTRIPS[layer] + N_VSTRIPS[layer])
     gid += strip_type * N_XSTRIPS[layer]
     gid += strip
-    return gid
+    return np.int32(gid)
 
 
 @nb.vectorize(cache=True)
