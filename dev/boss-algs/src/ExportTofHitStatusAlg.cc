@@ -62,9 +62,20 @@ class ExportTofHitStatusAlg : public Algorithm {
 
     StatusCode execute() override {
         SmartDataPtr<DstTofTrackCol> tofTrackCol( eventSvc(), "/Event/Dst/DstTofTrackCol" );
+        if ( !tofTrackCol )
+        {
+            error() << "Cannot retrieve /Event/Dst/DstTofTrackCol" << endmsg;
+            return StatusCode::FAILURE;
+        }
+
         m_index = 0;
         for ( auto tofTrack : *tofTrackCol )
         {
+            if ( m_index >= 10000 )
+            {
+                warning() << "Too many TOF tracks for ntuple (max=10000); truncating" << endmsg;
+                break;
+            }
             TofHitStatus status;
             status.setStatus( tofTrack->status() );
 
