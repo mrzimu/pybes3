@@ -1,0 +1,20 @@
+#include "$ROOTIOROOT/share/jobOptions_ReadRoot.txt"
+
+#include "$OFFLINEEVENTLOOPMGRROOT/share/OfflineEventLoopMgr_Option.txt"
+OfflineEventLoopMgr.ShowProgressInterval = 1;
+OfflineEventLoopMgr.ProgressLevel = 7;
+
+ApplicationMgr.TopAlg += { "ExportTofHitStatusAlg" };
+
+// ROOT input data file
+EventCnvSvc.digiRootInputFile = {"../../../tests/data/test_full_mc_evt_1.dst"};
+
+// Output Data
+ApplicationMgr.HistogramPersistency = "ROOT";
+NTupleSvc.Output = { "FILE1 DATAFILE='../../../tests/data/ref_tof_hit_status.root' OPT='NEW' TYP='ROOT'" };
+
+// Number of events to be processed (default is 10)
+ApplicationMgr.EvtMax = -1;
+
+// Set output level threshold (2=DEBUG, 3=INFO, 4=WARNING, 5=ERROR, 6=FATAL )
+MessageSvc.OutputLevel = 5;

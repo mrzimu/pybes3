@@ -1,5 +1,8 @@
+from pathlib import Path
+
 import awkward as ak
 import numpy as np
+import uproot
 
 import pybes3 as p3
 from pybes3.detectors import tof
@@ -43,3 +46,42 @@ def test_tof_parse_gid(tof_gid_dict):
     assert ak.all(ak_res["part"] == ref_part)
     assert ak.all(ak_res["layer_or_module"] == ref_layer_or_module)
     assert ak.all(ak_res["phi_or_strip"] == ref_phi_or_strip)
+
+
+def test_tof_hit_status(test_data_dir: Path):
+    raw_arr = uproot.open(test_data_dir / "ref_tof_hit_status.root")["tof_hit_status"].arrays()
+
+    status = raw_arr["status"]
+
+    fields = [
+        "is_raw",
+        "is_readout",
+        "is_counter",
+        "is_cluster",
+        "is_barrel",
+        "is_east",
+        "is_overflow",
+        "is_multihit",
+        "is_mrpc",
+        "layer",
+        "n_counter",
+        "n_east",
+        "n_west",
+    ]
+
+    # awkward
+    zipped = ak.zip({f: raw_arr[f] for f in fields})
+    assert ak.array_equal(p3.parse_tof_hit_status(status), zipped)
+
+    # numpy
+    flat_status = ak.flatten(status).to_numpy()
+    flat_expected = {f: ak.flatten(raw_arr[f]).to_numpy() for f in fields}
+    np_parsed = p3.parse_tof_hit_status(flat_status)
+    for f in fields:
+        assert np.array_equal(np_parsed[f], flat_expected[f])
+
+    # scalar
+    s = int(flat_status[0])
+    scalar_parsed = p3.parse_tof_hit_status(s)
+    for f in fields:
+        assert scalar_parsed[f] == flat_expected[f][0]

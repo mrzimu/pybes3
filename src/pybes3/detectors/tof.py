@@ -6,7 +6,7 @@ import awkward as ak
 import numba as nb
 import numpy as np
 
-from pybes3.typing import IntLike
+from pybes3.typing import IntLike, BoolLike
 
 N_PARTS = 5
 N_LAYER_OR_MODULE = np.array([1, 2, 1, 36, 36])
@@ -103,6 +103,117 @@ def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
     }
 
     if isinstance(gid, ak.Array):
+        return ak.zip(res)
+    else:
+        return res
+
+
+@nb.vectorize(cache=True)
+def tof_hit_status_to_is_raw(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_raw`."""
+    return ((status & np.uint32(0x00000001)) >> np.uint32(0)) > 0
+
+
+@nb.vectorize(cache=True)
+def tof_hit_status_to_is_readout(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_readout`."""
+    return ((status & np.uint32(0x00000002)) >> np.uint32(1)) > 0
+
+
+@nb.vectorize(cache=True)
+def tof_hit_status_to_is_counter(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_counter`."""
+    return ((status & np.uint32(0x00000004)) >> np.uint32(2)) > 0
+
+
+@nb.vectorize(cache=True)
+def tof_hit_status_to_is_cluster(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_cluster`."""
+    return ((status & np.uint32(0x00000008)) >> np.uint32(3)) > 0
+
+
+@nb.vectorize(cache=True)
+def tof_hit_status_to_is_barrel(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_barrel`."""
+    return ((status & np.uint32(0x00000010)) >> np.uint32(4)) > 0
+
+
+@nb.vectorize(cache=True)
+def tof_hit_status_to_is_east(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_east`."""
+    return ((status & np.uint32(0x00000020)) >> np.uint32(5)) > 0
+
+
+@nb.vectorize(cache=True)
+def tof_hit_status_to_layer(status: IntLike) -> IntLike:
+    """Convert hit status to `layer`."""
+    return np.int32((status & np.uint32(0x000000C0)) >> np.uint32(6))
+
+
+@nb.vectorize(cache=True)
+def tof_hit_status_to_is_overflow(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_overflow`."""
+    return ((status & np.uint32(0x00000100)) >> np.uint32(8)) > 0
+
+
+@nb.vectorize(cache=True)
+def tof_hit_status_to_is_multihit(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_multihit`."""
+    return ((status & np.uint32(0x00000200)) >> np.uint32(9)) > 0
+
+
+@nb.vectorize(cache=True)
+def tof_hit_status_to_n_counter(status: IntLike) -> IntLike:
+    """Convert hit status to `n_counter`."""
+    return np.int32((status >> np.uint32(12)) & np.uint32(0x0000000F))
+
+
+@nb.vectorize(cache=True)
+def tof_hit_status_to_n_east(status: IntLike) -> IntLike:
+    """Convert hit status to `n_east`."""
+    return np.int32((status >> np.uint32(16)) & np.uint32(0x0000000F))
+
+
+@nb.vectorize(cache=True)
+def tof_hit_status_to_n_west(status: IntLike) -> IntLike:
+    """Convert hit status to `n_west`."""
+    return np.int32((status >> np.uint32(20)) & np.uint32(0x0000000F))
+
+
+@nb.vectorize(cache=True)
+def tof_hit_status_to_is_mrpc(status: IntLike) -> BoolLike:
+    """Convert hit status to `is_mrpc`."""
+    return ((status & np.uint32(0x01000000)) >> np.uint32(24)) > 0
+
+
+def parse_tof_hit_status(status: IntLike) -> ak.Array | dict[str, Any]:
+    """
+    Parse TOF hit status into its components.
+
+    Parameters:
+        status: The hit status of a TOF hit, encoded as an integer.
+
+    Returns:
+        If status is a ak.Array, returns an ak.Array with the parsed fields.
+        Otherwise, returns a dictionary with the parsed fields.
+    """
+    res = {
+        "is_raw": tof_hit_status_to_is_raw(status),
+        "is_readout": tof_hit_status_to_is_readout(status),
+        "is_counter": tof_hit_status_to_is_counter(status),
+        "is_cluster": tof_hit_status_to_is_cluster(status),
+        "is_barrel": tof_hit_status_to_is_barrel(status),
+        "is_east": tof_hit_status_to_is_east(status),
+        "is_overflow": tof_hit_status_to_is_overflow(status),
+        "is_multihit": tof_hit_status_to_is_multihit(status),
+        "is_mrpc": tof_hit_status_to_is_mrpc(status),
+        "layer": tof_hit_status_to_layer(status),
+        "n_counter": tof_hit_status_to_n_counter(status),
+        "n_east": tof_hit_status_to_n_east(status),
+        "n_west": tof_hit_status_to_n_west(status),
+    }
+
+    if isinstance(status, ak.Array):
         return ak.zip(res)
     else:
         return res

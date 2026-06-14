@@ -16,6 +16,7 @@ gaudi_add_executable(ExportGid
 gaudi_add_module(TestPybes3
     SOURCES
         src/ExportTestRawDataAlg.cc
+        src/ExportTofHitStatusAlg.cc
     LINK
         Gaudi::GaudiKernel
         EventModel
@@ -25,4 +26,5 @@ gaudi_add_module(TestPybes3
         MucRawEvent
         TofRawEvent
         TrigEvent
+        DstEvent
 )
