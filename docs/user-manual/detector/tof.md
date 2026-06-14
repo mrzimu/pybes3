@@ -70,7 +70,7 @@ When the input is an `ak.Array`, the result is also an `ak.Array` with record fi
 
 ## Hit status
 
-`pybes3` provides implementation of `TofHitStatus` functions. They are defined as `tof_hit_status_to_*`.All these functions are decorated with `@nb.vectorize`. The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
+`pybes3` provides implementation of `TofHitStatus` functions. They are defined as `tof_hit_status_to_*`. All these functions are decorated with `@nb.vectorize`. The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
 
 === "Scalar"
 
