@@ -34,6 +34,7 @@ jobs:
           path: ./wheelhouse/*.whl
 
   build-sdist:
+    needs: run-pytest
     name: Build source distribution
     runs-on: ubuntu-latest
     steps:
