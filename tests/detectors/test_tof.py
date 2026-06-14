@@ -69,6 +69,19 @@ def test_tof_hit_status(test_data_dir: Path):
         "n_west",
     ]
 
+    # awkward
     zipped = ak.zip({f: raw_arr[f] for f in fields})
-
     assert ak.array_equal(p3.parse_tof_hit_status(status), zipped)
+
+    # numpy
+    flat_status = ak.flatten(status).to_numpy()
+    flat_expected = {f: ak.flatten(raw_arr[f]).to_numpy() for f in fields}
+    np_parsed = p3.parse_tof_hit_status(flat_status)
+    for f in fields:
+        assert np.array_equal(np_parsed[f], flat_expected[f])
+
+    # scalar
+    s = int(flat_status[0])
+    scalar_parsed = p3.parse_tof_hit_status(s)
+    for f in fields:
+        assert scalar_parsed[f] == flat_expected[f][0]
