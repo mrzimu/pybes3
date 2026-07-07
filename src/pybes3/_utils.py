@@ -52,40 +52,19 @@ def _flat_to_numpy(array: ak.Array | ak.Record | np.ndarray | float) -> np.ndarr
         return array
 
 
-def _recover_shape(array: np.ndarray | ak.Array, index: list) -> ak.Array:
+def _check_range(value, min_value, max_value, name: str) -> None:
     """
-    Recovers the shape of a numpy array based on the provided index.
+    Check if the value is within the specified range.
 
-    Args:
-        array: The input numpy array or awkward array.
-        index: The index list that defines the shape.
-
-    Returns:
-        The reshaped awkward array.
+    Parameters:
+        value: The value to check.
+        min_value: The minimum allowed value.
+        max_value: The maximum allowed value.
+        name: The name of the parameter (for error messages).
     """
-    res = ak.Array(array)
-    for i in index:
-        res = ak.unflatten(res, i)
-    return res
-
-
-def _make_lazy(func, load_func):
-    """
-    Creates a lazy-loading wrapper for a function.
-
-    Args:
-        func: The function to wrap.
-        load_func: The function to call to load the data before calling func.
-
-    Returns:
-        The lazy-loading wrapper function.
-    """
-
-    def wrapper(*args, **kwargs):
-        load_func()
-        return func(*args, **kwargs)
-
-    wrapper.__name__ = getattr(func, "__name__", str(func))
-    wrapper.__doc__ = getattr(func, "__doc__", None)
-    wrapper.__wrapped__ = func
-    return wrapper
+    if isinstance(value, (ak.Array, np.ndarray)):
+        if ak.any((value < min_value) | (value >= max_value)):
+            raise ValueError(f"Invalid {name} {value}. Must be in [{min_value}, {max_value}).")
+    else:
+        if value < min_value or value >= max_value:
+            raise ValueError(f"Invalid {name} {value}. Must be in [{min_value}, {max_value}).")

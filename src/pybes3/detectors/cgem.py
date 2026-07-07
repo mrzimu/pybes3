@@ -3,15 +3,16 @@ from __future__ import annotations
 from typing import Any
 
 import awkward as ak
-import numba as nb
 import numpy as np
 
+import pybes3._kernels._ufuncs as _ufuncs
+from pybes3._utils import _check_range
 from pybes3.typing import BoolLike, IntLike
 
-N_LAYER = np.int8(3)
-N_STRIPS = np.int32(9897)
-X_STRIP_TYPE = np.int8(0)
-V_STRIP_TYPE = np.int8(1)
+N_LAYER = 3
+N_STRIPS = 9897
+X_STRIP_TYPE = 0
+V_STRIP_TYPE = 1
 
 N_SHEETS = np.array([1, 2, 2])
 N_XSTRIPS = np.array([856, 630, 832])
@@ -22,47 +23,10 @@ N_XSTRIPS.setflags(write=False)
 N_VSTRIPS.setflags(write=False)
 
 
-def _init():
-    _layer = np.empty(N_STRIPS, dtype=np.int16)
-    _sheet = np.empty(N_STRIPS, dtype=np.int16)
-    _strip_type = np.empty(N_STRIPS, dtype=np.int16)
-    _strip = np.empty(N_STRIPS, dtype=np.int32)
-
-    gid = 0
-    for layer in range(3):
-        n_sheet = N_SHEETS[layer]
-        n_xstrips = N_XSTRIPS[layer]
-        n_vstrips = N_VSTRIPS[layer]
-
-        for sheet in range(n_sheet):
-            # x strips
-            for strip in range(n_xstrips):
-                _layer[gid] = layer
-                _sheet[gid] = sheet
-                _strip_type[gid] = X_STRIP_TYPE
-                _strip[gid] = strip
-                gid += 1
-
-            # v strips
-            for strip in range(n_vstrips):
-                _layer[gid] = layer
-                _sheet[gid] = sheet
-                _strip_type[gid] = V_STRIP_TYPE
-                _strip[gid] = strip
-                gid += 1
-
-    _layer.setflags(write=False)
-    _sheet.setflags(write=False)
-    _strip_type.setflags(write=False)
-    _strip.setflags(write=False)
-
-    return _layer, _sheet, _strip_type, _strip
+def _check_gid(gid: IntLike) -> None:
+    _check_range(gid, 0, N_STRIPS, "gid")
 
 
-_layer, _sheet, _strip_type, _strip = _init()
-
-
-@nb.vectorize(cache=True)
 def get_cgem_gid(
     layer: IntLike, sheet: IntLike, strip_type: IntLike, strip: IntLike
 ) -> IntLike:
@@ -78,14 +42,9 @@ def get_cgem_gid(
     Returns:
         The global strip ID of the CGEM strip, ranging from 0 to 9896.
     """
-    gid = (N_SHEETS[:layer] * (N_XSTRIPS[:layer] + N_VSTRIPS[:layer])).sum()
-    gid += sheet * (N_XSTRIPS[layer] + N_VSTRIPS[layer])
-    gid += strip_type * N_XSTRIPS[layer]
-    gid += strip
-    return np.int32(gid)
+    return _ufuncs.get_cgem_idx(layer, sheet, strip_type, strip)
 
 
-@nb.vectorize(cache=True)
 def cgem_gid_to_layer(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to layer.
@@ -96,10 +55,10 @@ def cgem_gid_to_layer(gid: IntLike) -> IntLike:
     Returns:
         The layer number of the strip.
     """
-    return _layer[gid]
+    _check_gid(gid)
+    return _ufuncs.cgem_idx_to_layer(gid)
 
 
-@nb.vectorize(cache=True)
 def cgem_gid_to_sheet(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to sheet.
@@ -110,10 +69,10 @@ def cgem_gid_to_sheet(gid: IntLike) -> IntLike:
     Returns:
         The sheet number of the strip.
     """
-    return _sheet[gid]
+    _check_gid(gid)
+    return _ufuncs.cgem_idx_to_sheet(gid)
 
 
-@nb.vectorize(cache=True)
 def cgem_gid_to_strip_type(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to strip type.
@@ -124,10 +83,10 @@ def cgem_gid_to_strip_type(gid: IntLike) -> IntLike:
     Returns:
         The strip type of the strip, 0 for x-strip and 1 for v-strip.
     """
-    return _strip_type[gid]
+    _check_gid(gid)
+    return _ufuncs.cgem_idx_to_strip_type(gid)
 
 
-@nb.vectorize(cache=True)
 def cgem_gid_to_strip(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to strip number.
@@ -138,7 +97,8 @@ def cgem_gid_to_strip(gid: IntLike) -> IntLike:
     Returns:
         The strip number within the corresponding strip type.
     """
-    return _strip[gid]
+    _check_gid(gid)
+    return _ufuncs.cgem_idx_to_strip(gid)
 
 
 def cgem_gid_to_is_xstrip(gid: IntLike) -> BoolLike:
@@ -151,7 +111,8 @@ def cgem_gid_to_is_xstrip(gid: IntLike) -> BoolLike:
     Returns:
         True if the strip is an x-strip, otherwise False.
     """
-    return cgem_gid_to_strip_type(gid) == X_STRIP_TYPE
+    _check_gid(gid)
+    return _ufuncs.cgem_idx_to_is_xstrip(gid)
 
 
 def cgem_gid_to_is_vstrip(gid: IntLike) -> BoolLike:
@@ -164,7 +125,8 @@ def cgem_gid_to_is_vstrip(gid: IntLike) -> BoolLike:
     Returns:
         True if the strip is a v-strip, otherwise False.
     """
-    return cgem_gid_to_strip_type(gid) == V_STRIP_TYPE
+    _check_gid(gid)
+    return _ufuncs.cgem_idx_to_is_vstrip(gid)
 
 
 def parse_cgem_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
@@ -180,18 +142,21 @@ def parse_cgem_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
         Otherwise, returns a dictionary with keys "layer", "sheet", "strip_type", "strip",
         "is_xstrip" and "is_vstrip".
     """
-    layer = cgem_gid_to_layer(gid)
-    sheet = cgem_gid_to_sheet(gid)
-    strip_type = cgem_gid_to_strip_type(gid)
-    strip = cgem_gid_to_strip(gid)
+    _check_gid(gid)
+    layer = _ufuncs.cgem_idx_to_layer(gid)
+    sheet = _ufuncs.cgem_idx_to_sheet(gid)
+    strip_type = _ufuncs.cgem_idx_to_strip_type(gid)
+    strip = _ufuncs.cgem_idx_to_strip(gid)
+    is_xstrip = _ufuncs.cgem_idx_to_is_xstrip(gid)
+    is_vstrip = _ufuncs.cgem_idx_to_is_vstrip(gid)
 
     res = {
         "layer": layer,
         "sheet": sheet,
         "strip_type": strip_type,
         "strip": strip,
-        "is_xstrip": strip_type == X_STRIP_TYPE,
-        "is_vstrip": strip_type == V_STRIP_TYPE,
+        "is_xstrip": is_xstrip,
+        "is_vstrip": is_vstrip,
     }
 
     if isinstance(gid, ak.Array):

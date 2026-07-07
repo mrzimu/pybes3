@@ -1,6 +1,11 @@
 [build-system]
 build-backend = "scikit_build_core.build"
-requires = ["scikit-build-core", "pybind11==3.0.*", "uproot-custom==2.4.*"]
+requires = [
+  "scikit-build-core",
+  "pybind11==3.0.*",
+  "uproot-custom==2.4.*",
+  "numpy==2.*"
+]
 
 [dependency-groups]
 dev = [
@@ -39,9 +44,9 @@ classifiers = [
 dependencies = [
   "uproot>=5.6.8",
   "awkward",
-  "numba",
   "vector!=1.7.0",  # Vector 1.7.0 is the last version to support Python 3.9, but it has a bug that breaks pybes3, so we need to exclude it.
-  "uproot-custom==2.4.*"
+  "uproot-custom==2.4.*",
+  "numpy==2.*"
 ]
 description = "Unofficial Python module for BES3"
 dynamic = ["version"]
@@ -54,7 +59,17 @@ urls = {"Homepage" = "https://github.com/mrzimu/pybes3", "Documentation" = "http
 build = ["cp*-manylinux_x86_64", "cp*-macosx_arm64", "cp*-win_amd64"]
 
 [tool.ruff]
-exclude = ["build", "dist", "env", ".git", ".tox", ".eggs", ".venv", ".pytest_cache", "note"]
+exclude = [
+  "build",
+  "dist",
+  "env",
+  ".git",
+  ".tox",
+  ".eggs",
+  ".venv",
+  ".pytest_cache",
+  "note"
+]
 line-length = 95
 target-version = "py39"
 
@@ -67,6 +82,7 @@ ignore = ["E402"]
 [tool.scikit-build]
 build-dir = "build/{wheel_tag}"
 cmake.build-type = "Release"
+cmake.source-dir = "kernels"
 metadata.version.provider = "scikit_build_core.metadata.setuptools_scm"
 sdist.exclude = ["tools"]
 sdist.include = ["src/pybes3/_version.py"]
