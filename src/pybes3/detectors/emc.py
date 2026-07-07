@@ -6,6 +6,7 @@ import awkward as ak
 import numpy as np
 
 import pybes3._kernels._ufuncs as _ufuncs
+from pybes3._utils import _check_range
 from pybes3.data import EMC_GEOM
 from pybes3.typing import FloatLike, IntLike
 
@@ -60,6 +61,14 @@ _ufuncs._init_emc_geom(
     _front_center_y,
     _front_center_z,
 )
+
+
+def _check_gid(gid: IntLike) -> None:
+    _check_range(gid, 0, N_CRYSTALS, "gid")
+
+
+def _check_point(p: IntLike) -> None:
+    _check_range(p, 0, 8, "point")
 
 
 def get_emc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
@@ -171,6 +180,7 @@ def emc_gid_to_part(gid: IntLike) -> IntLike:
     Returns:
         The part number of the crystal.
     """
+    _check_gid(gid)
     return _ufuncs.emc_idx_to_part(gid)
 
 
@@ -184,6 +194,7 @@ def emc_gid_to_theta(gid: IntLike) -> IntLike:
     Returns:
         The theta number of the crystal.
     """
+    _check_gid(gid)
     return _ufuncs.emc_idx_to_theta(gid)
 
 
@@ -197,6 +208,7 @@ def emc_gid_to_phi(gid: IntLike) -> IntLike:
     Returns:
         The phi number of the crystal.
     """
+    _check_gid(gid)
     return _ufuncs.emc_idx_to_phi(gid)
 
 
@@ -211,6 +223,8 @@ def emc_gid_to_point_x(gid: IntLike, point: IntLike) -> FloatLike:
     Returns:
         The x coordinate of the point.
     """
+    _check_gid(gid)
+    _check_point(point)
     return _ufuncs.emc_idx_to_point_x(gid, point)
 
 
@@ -225,6 +239,8 @@ def emc_gid_to_point_y(gid: IntLike, point: IntLike) -> FloatLike:
     Returns:
         The y coordinate of the point.
     """
+    _check_gid(gid)
+    _check_point(point)
     return _ufuncs.emc_idx_to_point_y(gid, point)
 
 
@@ -239,6 +255,8 @@ def emc_gid_to_point_z(gid: IntLike, point: IntLike) -> FloatLike:
     Returns:
         The z coordinate of the point.
     """
+    _check_gid(gid)
+    _check_point(point)
     return _ufuncs.emc_idx_to_point_z(gid, point)
 
 
@@ -252,6 +270,7 @@ def emc_gid_to_center_x(gid: IntLike) -> FloatLike:
     Returns:
         The x coordinate of the crystal's center.
     """
+    _check_gid(gid)
     return _ufuncs.emc_idx_to_center_x(gid)
 
 
@@ -265,6 +284,7 @@ def emc_gid_to_center_y(gid: IntLike) -> FloatLike:
     Returns:
         The y coordinate of the crystal's center.
     """
+    _check_gid(gid)
     return _ufuncs.emc_idx_to_center_y(gid)
 
 
@@ -278,6 +298,7 @@ def emc_gid_to_center_z(gid: IntLike) -> FloatLike:
     Returns:
         The z coordinate of the crystal's center.
     """
+    _check_gid(gid)
     return _ufuncs.emc_idx_to_center_z(gid)
 
 
@@ -291,6 +312,7 @@ def emc_gid_to_front_center_x(gid: IntLike) -> FloatLike:
     Returns:
         The x coordinate of the crystal's front center.
     """
+    _check_gid(gid)
     return _ufuncs.emc_idx_to_front_center_x(gid)
 
 
@@ -304,6 +326,7 @@ def emc_gid_to_front_center_y(gid: IntLike) -> FloatLike:
     Returns:
         The y coordinate of the crystal's front center.
     """
+    _check_gid(gid)
     return _ufuncs.emc_idx_to_front_center_y(gid)
 
 
@@ -317,6 +340,7 @@ def emc_gid_to_front_center_z(gid: IntLike) -> FloatLike:
     Returns:
         The z coordinate of the crystal's front center.
     """
+    _check_gid(gid)
     return _ufuncs.emc_idx_to_front_center_z(gid)
 
 
@@ -353,19 +377,20 @@ def parse_emc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, 
     Returns:
         The parsed result.
     """
-    part = emc_gid_to_part(gid)
-    theta = emc_gid_to_theta(gid)
-    phi = emc_gid_to_phi(gid)
+    _check_gid(gid)
+    part = _ufuncs.emc_idx_to_part(gid)
+    theta = _ufuncs.emc_idx_to_theta(gid)
+    phi = _ufuncs.emc_idx_to_phi(gid)
 
     res = {"gid": gid, "part": part, "theta": theta, "phi": phi}
 
     if geometry:
-        res["front_center_x"] = emc_gid_to_front_center_x(gid)
-        res["front_center_y"] = emc_gid_to_front_center_y(gid)
-        res["front_center_z"] = emc_gid_to_front_center_z(gid)
-        res["center_x"] = emc_gid_to_center_x(gid)
-        res["center_y"] = emc_gid_to_center_y(gid)
-        res["center_z"] = emc_gid_to_center_z(gid)
+        res["front_center_x"] = _ufuncs.emc_idx_to_front_center_x(gid)
+        res["front_center_y"] = _ufuncs.emc_idx_to_front_center_y(gid)
+        res["front_center_z"] = _ufuncs.emc_idx_to_front_center_z(gid)
+        res["center_x"] = _ufuncs.emc_idx_to_center_x(gid)
+        res["center_y"] = _ufuncs.emc_idx_to_center_y(gid)
+        res["center_z"] = _ufuncs.emc_idx_to_center_z(gid)
 
     if isinstance(gid, ak.Array):
         return ak.zip(res)

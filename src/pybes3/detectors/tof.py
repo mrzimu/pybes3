@@ -6,7 +6,8 @@ import awkward as ak
 import numpy as np
 
 import pybes3._kernels._ufuncs as _ufuncs
-from pybes3.typing import IntLike, BoolLike
+from pybes3._utils import _check_range
+from pybes3.typing import BoolLike, IntLike
 
 N_PARTS = 5
 N_LAYER_OR_MODULE = np.array([1, 2, 1, 36, 36])
@@ -17,31 +18,8 @@ N_LAYER_OR_MODULE.setflags(write=False)
 N_PHI_OR_STRIP.setflags(write=False)
 
 
-def _init():
-    _part = np.empty(N_STRIPS, dtype=np.int16)
-    _layer_or_module = np.empty(N_STRIPS, dtype=np.int16)
-    _phi_or_strip = np.empty(N_STRIPS, dtype=np.int32)
-
-    gid = 0
-    for part in range(5):
-        n_layer_or_module = N_LAYER_OR_MODULE[part]
-        n_phi_or_strip = N_PHI_OR_STRIP[part]
-
-        for i in range(n_layer_or_module):
-            for j in range(n_phi_or_strip):
-                _part[gid] = part
-                _layer_or_module[gid] = i
-                _phi_or_strip[gid] = j
-                gid += 1
-
-    _part.setflags(write=False)
-    _layer_or_module.setflags(write=False)
-    _phi_or_strip.setflags(write=False)
-
-    return _part, _layer_or_module, _phi_or_strip
-
-
-_part, _layer_or_module, _phi_or_strip = _init()
+def _check_gid(gid: IntLike) -> None:
+    _check_range(gid, 0, N_STRIPS, "gid")
 
 
 def get_tof_gid(part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike) -> IntLike:
@@ -61,16 +39,19 @@ def get_tof_gid(part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike) 
 
 def tof_gid_to_part(gid: IntLike) -> IntLike:
     """Get TOF part from gid."""
+    _check_gid(gid)
     return _ufuncs.tof_idx_to_part(gid)
 
 
 def tof_gid_to_layer_or_module(gid: IntLike) -> IntLike:
     """Get TOF layer_or_module from gid."""
+    _check_gid(gid)
     return _ufuncs.tof_idx_to_layer_or_module(gid)
 
 
 def tof_gid_to_phi_or_strip(gid: IntLike) -> IntLike:
     """Get TOF phi_or_strip from gid."""
+    _check_gid(gid)
     return _ufuncs.tof_idx_to_phi_or_strip(gid)
 
 
@@ -85,9 +66,10 @@ def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
         If gid is a ak.Array, returns an ak.Array with fields "part", "layer_or_module" and "phi_or_strip".
         Otherwise, returns a dictionary with keys "part", "layer_or_module" and "phi_or_strip".
     """
-    part = tof_gid_to_part(gid)
-    layer_or_module = tof_gid_to_layer_or_module(gid)
-    phi_or_strip = tof_gid_to_phi_or_strip(gid)
+    _check_gid(gid)
+    part = _ufuncs.tof_idx_to_part(gid)
+    layer_or_module = _ufuncs.tof_idx_to_layer_or_module(gid)
+    phi_or_strip = _ufuncs.tof_idx_to_phi_or_strip(gid)
 
     res = {
         "part": part,

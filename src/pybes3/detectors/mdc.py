@@ -6,12 +6,14 @@ import awkward as ak
 import numpy as np
 
 import pybes3._kernels._ufuncs as _ufuncs
+from pybes3._utils import _check_range
 from pybes3.data import MDC_GEOM
 from pybes3.typing import BoolLike, FloatLike, IntLike
 
 N_WIRES = 6796
 N_LAYERS = 43
 N_SUPERLAYERS = 12
+
 
 with np.load(MDC_GEOM) as f:
     _mdc_geom_table = dict(f)
@@ -32,6 +34,14 @@ _ufuncs._init_mdc_geom(
     _mdc_geom_table["west_y"],
     _mdc_geom_table["west_z"],
 )
+
+
+def _check_gid(gid: IntLike) -> None:
+    _check_range(gid, 0, N_WIRES, "gid")
+
+
+def _check_layer(layer: IntLike) -> None:
+    _check_range(layer, 0, N_LAYERS, "layer")
 
 
 def get_mdc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
@@ -102,6 +112,7 @@ def mdc_gid_to_superlayer(gid: IntLike) -> IntLike:
     Returns:
         The superlayer number of the wire.
     """
+    _check_gid(gid)
     return _ufuncs.mdc_idx_to_superlayer(gid)
 
 
@@ -115,6 +126,7 @@ def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
     Returns:
         The superlayer number of the layer.
     """
+    _check_layer(layer)
     return _ufuncs.mdc_layer_to_superlayer(layer)
 
 
@@ -128,6 +140,7 @@ def mdc_gid_to_layer(gid: IntLike) -> IntLike:
     Returns:
         The layer number of the wire.
     """
+    _check_gid(gid)
     return _ufuncs.mdc_idx_to_layer(gid)
 
 
@@ -141,6 +154,7 @@ def mdc_gid_to_wire(gid: IntLike) -> IntLike:
     Returns:
         The wire number of the wire.
     """
+    _check_gid(gid)
     return _ufuncs.mdc_idx_to_wire(gid)
 
 
@@ -157,6 +171,7 @@ def mdc_gid_to_stereo(gid: IntLike) -> IntLike:
     Returns:
         The stereo of the wire.
     """
+    _check_gid(gid)
     return _ufuncs.mdc_idx_to_stereo(gid)
 
 
@@ -170,6 +185,7 @@ def mdc_layer_to_is_stereo(layer: IntLike) -> BoolLike:
     Returns:
         The is_stereo of the layer.
     """
+    _check_layer(layer)
     return _ufuncs.mdc_layer_to_is_stereo(layer)
 
 
@@ -183,6 +199,7 @@ def mdc_gid_to_is_stereo(gid: IntLike) -> BoolLike:
     Returns:
         The is_stereo of the wire.
     """
+    _check_gid(gid)
     return _ufuncs.mdc_idx_to_is_stereo(gid)
 
 
@@ -196,6 +213,7 @@ def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
     Returns:
         The west_x (cm) of the wire.
     """
+    _check_gid(gid)
     return _ufuncs.mdc_idx_to_west_x(gid)
 
 
@@ -209,6 +227,7 @@ def mdc_gid_to_west_y(gid: IntLike) -> FloatLike:
     Returns:
         The west_y (cm) of the wire.
     """
+    _check_gid(gid)
     return _ufuncs.mdc_idx_to_west_y(gid)
 
 
@@ -222,6 +241,7 @@ def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
     Returns:
         The west_z (cm) of the wire.
     """
+    _check_gid(gid)
     return _ufuncs.mdc_idx_to_west_z(gid)
 
 
@@ -235,6 +255,7 @@ def mdc_gid_to_east_x(gid: IntLike) -> FloatLike:
     Returns:
         The east_x (cm) of the wire.
     """
+    _check_gid(gid)
     return _ufuncs.mdc_idx_to_east_x(gid)
 
 
@@ -248,6 +269,7 @@ def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
     Returns:
         The east_y (cm) of the wire.
     """
+    _check_gid(gid)
     return _ufuncs.mdc_idx_to_east_y(gid)
 
 
@@ -261,6 +283,7 @@ def mdc_gid_to_east_z(gid: IntLike) -> FloatLike:
     Returns:
         The east_z (cm) of the wire.
     """
+    _check_gid(gid)
     return _ufuncs.mdc_idx_to_east_z(gid)
 
 
@@ -275,6 +298,7 @@ def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
     Returns:
         The x (cm) position of the wire at z (cm).
     """
+    _check_gid(gid)
     return _ufuncs.mdc_idx_z_to_x(gid, z)
 
 
@@ -289,6 +313,7 @@ def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
     Returns:
         The y (cm) position of the wire at z (cm).
     """
+    _check_gid(gid)
     return _ufuncs.mdc_idx_z_to_y(gid, z)
 
 
@@ -324,31 +349,32 @@ def parse_mdc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, 
     Returns:
         The parsed result.
     """
-    layer = mdc_gid_to_layer(gid)
-    wire = mdc_gid_to_wire(gid)
+    _check_gid(gid)
+    layer = _ufuncs.mdc_idx_to_layer(gid)
+    wire = _ufuncs.mdc_idx_to_wire(gid)
 
     res = {
         "gid": gid,
         "layer": layer,
         "wire": wire,
-        "stereo": mdc_gid_to_stereo(gid),
-        "is_stereo": mdc_gid_to_is_stereo(gid),
-        "superlayer": mdc_gid_to_superlayer(gid),
+        "stereo": _ufuncs.mdc_idx_to_stereo(gid),
+        "is_stereo": _ufuncs.mdc_idx_to_is_stereo(gid),
+        "superlayer": _ufuncs.mdc_idx_to_superlayer(gid),
     }
 
     if geometry:
-        west_x = mdc_gid_to_west_x(gid)
-        west_y = mdc_gid_to_west_y(gid)
-        east_x = mdc_gid_to_east_x(gid)
-        east_y = mdc_gid_to_east_y(gid)
+        west_x = _ufuncs.mdc_idx_to_west_x(gid)
+        west_y = _ufuncs.mdc_idx_to_west_y(gid)
+        east_x = _ufuncs.mdc_idx_to_east_x(gid)
+        east_y = _ufuncs.mdc_idx_to_east_y(gid)
         res["mid_x"] = (west_x + east_x) / 2
         res["mid_y"] = (west_y + east_y) / 2
         res["west_x"] = west_x
         res["west_y"] = west_y
-        res["west_z"] = mdc_gid_to_west_z(gid)
+        res["west_z"] = _ufuncs.mdc_idx_to_west_z(gid)
         res["east_x"] = east_x
         res["east_y"] = east_y
-        res["east_z"] = mdc_gid_to_east_z(gid)
+        res["east_z"] = _ufuncs.mdc_idx_to_east_z(gid)
 
     if isinstance(gid, ak.Array):
         return ak.zip(res)
