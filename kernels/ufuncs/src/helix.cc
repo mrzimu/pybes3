@@ -21,8 +21,9 @@ inline void dr_phi0_to_y( T* dr, T* phi0, T* y ) noexcept {
 
 template <typename T>
 inline void phi0_to_phi( T* phi0, T* phi ) noexcept {
-    T result = std::fmod( *phi0 + T( M_PI_2 ), T( 2.0 * M_PI ) );
-    if ( result < T( 0.0 ) ) result += T( 2.0 * M_PI );
+    const T two_pi = T( 2.0 ) * std::numbers::pi_v<T>;
+    T result = std::fmod( *phi0 + std::numbers::pi_v<T> / T( 2.0 ), two_pi );
+    if ( result < T( 0.0 ) ) result += two_pi;
     *phi = result;
 }
 
