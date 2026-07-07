@@ -1,7 +1,7 @@
+#include "mod.hh"
+
 #include "numpy/ndarraytypes.h"
 #include "numpy/ufuncobject.h"
-
-#include "mod.hh"
 
 static PyMethodDef MyMethods[] = {
     { "_init_emc_geom", _init_emc_geom, METH_VARARGS,
