@@ -167,8 +167,12 @@ void decl_ufunc( PyObject* d, const char* name, const char* doc = "" ) {
 
     auto obj = PyUFunc_FromFuncAndData( funcs, NULL, types.data(), sizeof...( Funcs ), NIN,
                                         NOUT, PyUFunc_None, name, doc, 0 );
+    if ( obj == NULL ) return;
 
-    PyDict_SetItemString( d, name, obj );
+    if ( PyDict_SetItemString( d, name, obj ) < 0 ) {
+        Py_DECREF( obj );
+        return;
+    }
     Py_DECREF( obj );
 }
 
