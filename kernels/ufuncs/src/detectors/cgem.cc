@@ -143,4 +143,22 @@ void declare_cgem( PyObject* d ) {
         cgem_idx_to_strip<uint64_t>, //
         cgem_idx_to_strip<int64_t>>  //
         ( d, "cgem_idx_to_strip" );
+
+    decl_ufunc_11<                        //
+        cgem_idx_to_is_xstrip<uint16_t>, //
+        cgem_idx_to_is_xstrip<int16_t>,  //
+        cgem_idx_to_is_xstrip<uint32_t>, //
+        cgem_idx_to_is_xstrip<int32_t>,  //
+        cgem_idx_to_is_xstrip<uint64_t>, //
+        cgem_idx_to_is_xstrip<int64_t>>  //
+        ( d, "cgem_idx_to_is_xstrip" );
+
+    decl_ufunc_11<                        //
+        cgem_idx_to_is_vstrip<uint16_t>, //
+        cgem_idx_to_is_vstrip<int16_t>,  //
+        cgem_idx_to_is_vstrip<uint32_t>, //
+        cgem_idx_to_is_vstrip<int32_t>,  //
+        cgem_idx_to_is_vstrip<uint64_t>, //
+        cgem_idx_to_is_vstrip<int64_t>>  //
+        ( d, "cgem_idx_to_is_vstrip" );
 }
