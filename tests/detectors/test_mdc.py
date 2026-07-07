@@ -2,30 +2,49 @@ import awkward as ak
 import numpy as np
 
 import pybes3 as p3
-from pybes3.detectors import mdc
 
 
-def test_mdc_geom():
-    gid: np.ndarray = p3.get_mdc_geom_table()["gid"]
-    assert np.all(p3.get_mdc_gid(mdc._layer, mdc._wire) == gid)
-    assert np.all(p3.mdc_gid_to_superlayer(gid) == mdc._superlayer)
-    assert np.all(p3.mdc_layer_to_superlayer(mdc._layer) == mdc._superlayer)
-    assert np.all(p3.mdc_gid_to_layer(gid) == mdc._layer)
-    assert np.all(p3.mdc_gid_to_wire(gid) == mdc._wire)
-    assert np.all(p3.mdc_gid_to_stereo(gid) == mdc._stereo)
-    assert np.all(p3.mdc_layer_to_is_stereo(mdc._layer) == mdc._is_stereo)
-    assert np.all(p3.mdc_gid_to_is_stereo(gid) == mdc._is_stereo)
-    assert np.all(p3.mdc_gid_to_east_x(gid) == mdc._east_x)
-    assert np.all(p3.mdc_gid_to_east_y(gid) == mdc._east_y)
-    assert np.all(p3.mdc_gid_to_east_z(gid) == mdc._east_z)
-    assert np.all(p3.mdc_gid_to_west_x(gid) == mdc._west_x)
-    assert np.all(p3.mdc_gid_to_west_y(gid) == mdc._west_y)
-    assert np.all(p3.mdc_gid_to_west_z(gid) == mdc._west_z)
+def test_mdc_index():
+    geom_table = p3.get_mdc_geom_table()
+    ref_gid = geom_table["gid"]
+    ref_layer = geom_table["layer"]
+    ref_wire = geom_table["wire"]
 
-    assert np.allclose(p3.mdc_gid_z_to_x(gid, mdc._west_z), mdc._west_x, atol=1e-6)
-    assert np.allclose(p3.mdc_gid_z_to_y(gid, mdc._west_z), mdc._west_y, atol=1e-6)
-    assert np.allclose(p3.mdc_gid_z_to_x(gid, mdc._east_z), mdc._east_x, atol=1e-6)
-    assert np.allclose(p3.mdc_gid_z_to_y(gid, mdc._east_z), mdc._east_y, atol=1e-6)
+    assert np.all(p3.get_mdc_gid(ref_layer, ref_wire) == ref_gid)
+    assert np.all(p3.mdc_gid_to_layer(ref_gid) == ref_layer)
+    assert np.all(p3.mdc_gid_to_wire(ref_gid) == ref_wire)
+    assert np.all(p3.mdc_layer_to_superlayer(ref_layer) == geom_table["superlayer"])
+    assert np.all(p3.mdc_gid_to_superlayer(ref_gid) == geom_table["superlayer"])
+    assert np.all(p3.mdc_gid_to_stereo(ref_gid) == geom_table["stereo"])
+    assert np.all(p3.mdc_layer_to_is_stereo(ref_layer) == geom_table["is_stereo"])
+    assert np.all(p3.mdc_gid_to_is_stereo(ref_gid) == geom_table["is_stereo"])
+    assert np.all(p3.mdc_gid_to_east_x(ref_gid) == geom_table["east_x"])
+    assert np.all(p3.mdc_gid_to_east_y(ref_gid) == geom_table["east_y"])
+    assert np.all(p3.mdc_gid_to_east_z(ref_gid) == geom_table["east_z"])
+    assert np.all(p3.mdc_gid_to_west_x(ref_gid) == geom_table["west_x"])
+    assert np.all(p3.mdc_gid_to_west_y(ref_gid) == geom_table["west_y"])
+    assert np.all(p3.mdc_gid_to_west_z(ref_gid) == geom_table["west_z"])
+
+    assert np.allclose(
+        p3.mdc_gid_z_to_x(ref_gid, geom_table["west_z"]),
+        geom_table["west_x"],
+        atol=1e-6,
+    )
+    assert np.allclose(
+        p3.mdc_gid_z_to_y(ref_gid, geom_table["west_z"]),
+        geom_table["west_y"],
+        atol=1e-6,
+    )
+    assert np.allclose(
+        p3.mdc_gid_z_to_x(ref_gid, geom_table["east_z"]),
+        geom_table["east_x"],
+        atol=1e-6,
+    )
+    assert np.allclose(
+        p3.mdc_gid_z_to_y(ref_gid, geom_table["east_z"]),
+        geom_table["east_y"],
+        atol=1e-6,
+    )
 
 
 def test_mdc_parse_gid():

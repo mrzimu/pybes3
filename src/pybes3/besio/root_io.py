@@ -22,7 +22,7 @@ from uproot_custom import (
     regularize_object_path,
 )
 
-from pybes3.besio import besio_cpp as bcpp
+from pybes3._kernels import _io as bcpp
 
 bes3_branch2types = {
     "/Event:TMcEvent/m_mdcMcHitCol": "TMdcMc",

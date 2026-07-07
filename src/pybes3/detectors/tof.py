@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import Any
 
 import awkward as ak
-import numba as nb
 import numpy as np
 
+import pybes3._kernels._ufuncs as _ufuncs
 from pybes3.typing import IntLike, BoolLike
 
 N_PARTS = 5
@@ -44,7 +44,6 @@ def _init():
 _part, _layer_or_module, _phi_or_strip = _init()
 
 
-@nb.vectorize(cache=True)
 def get_tof_gid(part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike) -> IntLike:
     """
     Get TOF gid of given part, layer_or_module and phi_or_strip.
@@ -57,28 +56,22 @@ def get_tof_gid(part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike) 
     Returns:
         The global strip ID of the TOF strip, ranging from 0 to 1135.
     """
-    gid = (N_LAYER_OR_MODULE[:part] * N_PHI_OR_STRIP[:part]).sum()
-    gid += layer_or_module * N_PHI_OR_STRIP[part]
-    gid += phi_or_strip
-    return np.int32(gid)
+    return _ufuncs.get_tof_idx(part, layer_or_module, phi_or_strip)
 
 
-@nb.vectorize(cache=True)
 def tof_gid_to_part(gid: IntLike) -> IntLike:
     """Get TOF part from gid."""
-    return _part[gid]
+    return _ufuncs.tof_idx_to_part(gid)
 
 
-@nb.vectorize(cache=True)
 def tof_gid_to_layer_or_module(gid: IntLike) -> IntLike:
     """Get TOF layer_or_module from gid."""
-    return _layer_or_module[gid]
+    return _ufuncs.tof_idx_to_layer_or_module(gid)
 
 
-@nb.vectorize(cache=True)
 def tof_gid_to_phi_or_strip(gid: IntLike) -> IntLike:
     """Get TOF phi_or_strip from gid."""
-    return _phi_or_strip[gid]
+    return _ufuncs.tof_idx_to_phi_or_strip(gid)
 
 
 def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
@@ -108,82 +101,69 @@ def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
         return res
 
 
-@nb.vectorize(cache=True)
 def tof_hit_status_to_is_raw(status: IntLike) -> BoolLike:
     """Convert hit status to `is_raw`."""
-    return ((status & np.uint32(0x00000001)) >> np.uint32(0)) > 0
+    return _ufuncs.tof_hit_status_to_is_raw(status)
 
 
-@nb.vectorize(cache=True)
 def tof_hit_status_to_is_readout(status: IntLike) -> BoolLike:
     """Convert hit status to `is_readout`."""
-    return ((status & np.uint32(0x00000002)) >> np.uint32(1)) > 0
+    return _ufuncs.tof_hit_status_to_is_readout(status)
 
 
-@nb.vectorize(cache=True)
 def tof_hit_status_to_is_counter(status: IntLike) -> BoolLike:
     """Convert hit status to `is_counter`."""
-    return ((status & np.uint32(0x00000004)) >> np.uint32(2)) > 0
+    return _ufuncs.tof_hit_status_to_is_counter(status)
 
 
-@nb.vectorize(cache=True)
 def tof_hit_status_to_is_cluster(status: IntLike) -> BoolLike:
     """Convert hit status to `is_cluster`."""
-    return ((status & np.uint32(0x00000008)) >> np.uint32(3)) > 0
+    return _ufuncs.tof_hit_status_to_is_cluster(status)
 
 
-@nb.vectorize(cache=True)
 def tof_hit_status_to_is_barrel(status: IntLike) -> BoolLike:
     """Convert hit status to `is_barrel`."""
-    return ((status & np.uint32(0x00000010)) >> np.uint32(4)) > 0
+    return _ufuncs.tof_hit_status_to_is_barrel(status)
 
 
-@nb.vectorize(cache=True)
 def tof_hit_status_to_is_east(status: IntLike) -> BoolLike:
     """Convert hit status to `is_east`."""
-    return ((status & np.uint32(0x00000020)) >> np.uint32(5)) > 0
+    return _ufuncs.tof_hit_status_to_is_east(status)
 
 
-@nb.vectorize(cache=True)
 def tof_hit_status_to_layer(status: IntLike) -> IntLike:
     """Convert hit status to `layer`."""
-    return np.int32((status & np.uint32(0x000000C0)) >> np.uint32(6))
+    return _ufuncs.tof_hit_status_to_layer(status)
 
 
-@nb.vectorize(cache=True)
 def tof_hit_status_to_is_overflow(status: IntLike) -> BoolLike:
     """Convert hit status to `is_overflow`."""
-    return ((status & np.uint32(0x00000100)) >> np.uint32(8)) > 0
+    return _ufuncs.tof_hit_status_to_is_overflow(status)
 
 
-@nb.vectorize(cache=True)
 def tof_hit_status_to_is_multihit(status: IntLike) -> BoolLike:
     """Convert hit status to `is_multihit`."""
-    return ((status & np.uint32(0x00000200)) >> np.uint32(9)) > 0
+    return _ufuncs.tof_hit_status_to_is_multihit(status)
 
 
-@nb.vectorize(cache=True)
 def tof_hit_status_to_n_counter(status: IntLike) -> IntLike:
     """Convert hit status to `n_counter`."""
-    return np.int32((status >> np.uint32(12)) & np.uint32(0x0000000F))
+    return _ufuncs.tof_hit_status_to_n_counter(status)
 
 
-@nb.vectorize(cache=True)
 def tof_hit_status_to_n_east(status: IntLike) -> IntLike:
     """Convert hit status to `n_east`."""
-    return np.int32((status >> np.uint32(16)) & np.uint32(0x0000000F))
+    return _ufuncs.tof_hit_status_to_n_east(status)
 
 
-@nb.vectorize(cache=True)
 def tof_hit_status_to_n_west(status: IntLike) -> IntLike:
     """Convert hit status to `n_west`."""
-    return np.int32((status >> np.uint32(20)) & np.uint32(0x0000000F))
+    return _ufuncs.tof_hit_status_to_n_west(status)
 
 
-@nb.vectorize(cache=True)
 def tof_hit_status_to_is_mrpc(status: IntLike) -> BoolLike:
     """Convert hit status to `is_mrpc`."""
-    return ((status & np.uint32(0x01000000)) >> np.uint32(24)) > 0
+    return _ufuncs.tof_hit_status_to_is_mrpc(status)
 
 
 def parse_tof_hit_status(status: IntLike) -> ak.Array | dict[str, Any]:

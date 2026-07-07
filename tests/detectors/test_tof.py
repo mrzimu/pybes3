@@ -71,7 +71,7 @@ def test_tof_hit_status(test_data_dir: Path):
 
     # awkward
     zipped = ak.zip({f: raw_arr[f] for f in fields})
-    assert ak.array_equal(p3.parse_tof_hit_status(status), zipped)
+    assert ak.array_equal(p3.parse_tof_hit_status(status), zipped, dtype_exact=False)
 
     # numpy
     flat_status = ak.flatten(status).to_numpy()

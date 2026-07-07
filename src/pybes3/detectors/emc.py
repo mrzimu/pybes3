@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import Any, Literal
 
 import awkward as ak
-import numba as nb
 import numpy as np
 
+import pybes3._kernels._ufuncs as _ufuncs
 from pybes3.data import EMC_GEOM
 from pybes3.typing import FloatLike, IntLike
 
@@ -33,6 +33,7 @@ _emc_geom["part"] = _emc_geom["part"].astype(np.int16)
 _emc_geom["theta"] = _emc_geom["theta"].astype(np.int32)
 _emc_geom["phi"] = _emc_geom["phi"].astype(np.int32)
 
+
 _part = _emc_geom["part"]
 _theta = _emc_geom["theta"]
 _phi = _emc_geom["phi"]
@@ -45,6 +46,18 @@ _center_z = _emc_geom["center_z"]
 _front_center_x = _emc_geom["front_center_x"]
 _front_center_y = _emc_geom["front_center_y"]
 _front_center_z = _emc_geom["front_center_z"]
+
+_ufuncs._init_emc_geom(
+    _points_x,
+    _points_y,
+    _points_z,
+    _center_x,
+    _center_y,
+    _center_z,
+    _front_center_x,
+    _front_center_y,
+    _front_center_z,
+)
 
 
 def get_emc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
@@ -115,7 +128,6 @@ def get_emc_crystal_position(library: Literal["np", "ak", "pd"] = "np"):
     return get_emc_geom_table(library)
 
 
-@nb.vectorize(cache=True)
 def get_emc_gid(part: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
     """
     Get EMC gid of given part, theta, and phi.
@@ -144,40 +156,9 @@ def get_emc_gid(part: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
     Returns:
         index: EMC index
     """
-    if part == 0:
-        res = 0
-        if theta == 0 or theta == 1:
-            return np.int32(theta * ENDCAP_PHI_01 + phi)
-
-        res += 2 * ENDCAP_PHI_01
-        if theta == 2 or theta == 3:
-            return np.int32(res + (theta - 2) * ENDCAP_PHI_23 + phi)
-
-        res += 2 * ENDCAP_PHI_23
-        if theta == 4 or theta == 5:
-            return np.int32(res + (theta - 4) * ENDCAP_PHI_45 + phi)
-
-    if part == 1:
-        return np.int32(ENDCAP_CRYSTALS + theta * BARREL_PHI + phi)
-
-    if part == 2:
-        res = ENDCAP_CRYSTALS + BARREL_CRYSTALS
-
-        if theta == 4 or theta == 5:
-            return np.int32(res + (5 - theta) * ENDCAP_PHI_45 + phi)
-
-        res += 2 * ENDCAP_PHI_45
-        if theta == 2 or theta == 3:
-            return np.int32(res + (3 - theta) * ENDCAP_PHI_23 + phi)
-
-        res += 2 * ENDCAP_PHI_23
-        if theta == 0 or theta == 1:
-            return np.int32(res + (1 - theta) * ENDCAP_PHI_01 + phi)
-
-    raise ValueError(f"Unsupported part: {part}")
+    return _ufuncs.get_emc_idx(part, theta, phi)
 
 
-@nb.vectorize(cache=True)
 def emc_gid_to_part(gid: IntLike) -> IntLike:
     """
     Convert EMC gid to part.
@@ -188,10 +169,9 @@ def emc_gid_to_part(gid: IntLike) -> IntLike:
     Returns:
         The part number of the crystal.
     """
-    return _part[gid]
+    return _ufuncs.emc_idx_to_part(gid)
 
 
-@nb.vectorize(cache=True)
 def emc_gid_to_theta(gid: IntLike) -> IntLike:
     """
     Convert EMC gid to theta.
@@ -202,10 +182,9 @@ def emc_gid_to_theta(gid: IntLike) -> IntLike:
     Returns:
         The theta number of the crystal.
     """
-    return _theta[gid]
+    return _ufuncs.emc_idx_to_theta(gid)
 
 
-@nb.vectorize(cache=True)
 def emc_gid_to_phi(gid: IntLike) -> IntLike:
     """
     Convert EMC gid to phi.
@@ -216,10 +195,9 @@ def emc_gid_to_phi(gid: IntLike) -> IntLike:
     Returns:
         The phi number of the crystal.
     """
-    return _phi[gid]
+    return _ufuncs.emc_idx_to_phi(gid)
 
 
-@nb.vectorize(cache=True)
 def emc_gid_to_point_x(gid: IntLike, point: IntLike) -> FloatLike:
     """
     Convert EMC gid to x coordinate of the point.
@@ -231,10 +209,9 @@ def emc_gid_to_point_x(gid: IntLike, point: IntLike) -> FloatLike:
     Returns:
         The x coordinate of the point.
     """
-    return _points_x[gid, point]
+    return _ufuncs.emc_idx_to_point_x(gid, point)
 
 
-@nb.vectorize(cache=True)
 def emc_gid_to_point_y(gid: IntLike, point: IntLike) -> FloatLike:
     """
     Convert EMC gid to y coordinate of the point.
@@ -246,10 +223,9 @@ def emc_gid_to_point_y(gid: IntLike, point: IntLike) -> FloatLike:
     Returns:
         The y coordinate of the point.
     """
-    return _points_y[gid, point]
+    return _ufuncs.emc_idx_to_point_y(gid, point)
 
 
-@nb.vectorize(cache=True)
 def emc_gid_to_point_z(gid: IntLike, point: IntLike) -> FloatLike:
     """
     Convert EMC gid to z coordinate of the point.
@@ -261,10 +237,9 @@ def emc_gid_to_point_z(gid: IntLike, point: IntLike) -> FloatLike:
     Returns:
         The z coordinate of the point.
     """
-    return _points_z[gid, point]
+    return _ufuncs.emc_idx_to_point_z(gid, point)
 
 
-@nb.vectorize(cache=True)
 def emc_gid_to_center_x(gid: IntLike) -> FloatLike:
     """
     Convert EMC gid to x coordinate of the crystal's center.
@@ -275,10 +250,9 @@ def emc_gid_to_center_x(gid: IntLike) -> FloatLike:
     Returns:
         The x coordinate of the crystal's center.
     """
-    return _center_x[gid]
+    return _ufuncs.emc_idx_to_center_x(gid)
 
 
-@nb.vectorize(cache=True)
 def emc_gid_to_center_y(gid: IntLike) -> FloatLike:
     """
     Convert EMC gid to y coordinate of the crystal's center.
@@ -289,10 +263,9 @@ def emc_gid_to_center_y(gid: IntLike) -> FloatLike:
     Returns:
         The y coordinate of the crystal's center.
     """
-    return _center_y[gid]
+    return _ufuncs.emc_idx_to_center_y(gid)
 
 
-@nb.vectorize(cache=True)
 def emc_gid_to_center_z(gid: IntLike) -> FloatLike:
     """
     Convert EMC gid to z coordinate of the crystal's center.
@@ -303,10 +276,9 @@ def emc_gid_to_center_z(gid: IntLike) -> FloatLike:
     Returns:
         The z coordinate of the crystal's center.
     """
-    return _center_z[gid]
+    return _ufuncs.emc_idx_to_center_z(gid)
 
 
-@nb.vectorize(cache=True)
 def emc_gid_to_front_center_x(gid: IntLike) -> FloatLike:
     """
     Convert EMC gid to x coordinate of the crystal's front center.
@@ -317,10 +289,9 @@ def emc_gid_to_front_center_x(gid: IntLike) -> FloatLike:
     Returns:
         The x coordinate of the crystal's front center.
     """
-    return _front_center_x[gid]
+    return _ufuncs.emc_idx_to_front_center_x(gid)
 
 
-@nb.vectorize(cache=True)
 def emc_gid_to_front_center_y(gid: IntLike) -> FloatLike:
     """
     Convert EMC gid to y coordinate of the crystal's front center.
@@ -331,10 +302,9 @@ def emc_gid_to_front_center_y(gid: IntLike) -> FloatLike:
     Returns:
         The y coordinate of the crystal's front center.
     """
-    return _front_center_y[gid]
+    return _ufuncs.emc_idx_to_front_center_y(gid)
 
 
-@nb.vectorize(cache=True)
 def emc_gid_to_front_center_z(gid: IntLike) -> FloatLike:
     """
     Convert EMC gid to z coordinate of the crystal's front center.
@@ -345,7 +315,7 @@ def emc_gid_to_front_center_z(gid: IntLike) -> FloatLike:
     Returns:
         The z coordinate of the crystal's front center.
     """
-    return _front_center_z[gid]
+    return _ufuncs.emc_idx_to_front_center_z(gid)
 
 
 def parse_emc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, Any]:

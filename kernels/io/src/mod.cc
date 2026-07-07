@@ -9,7 +9,7 @@
 #include "raw_io.hh"
 #include "root_io.hh"
 
-PYBIND11_MODULE( besio_cpp, m ) {
+PYBIND11_MODULE( _io, m ) {
     IMPORT_UPROOT_CUSTOM_CPP;
 
     m.doc() = "Binary Event Structure I/O";

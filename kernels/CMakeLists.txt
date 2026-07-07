@@ -9,11 +9,12 @@ set(CMAKE_CXX_STANDARD 20)
 
 project(${SKBUILD_PROJECT_NAME}
     VERSION ${SKBUILD_PROJECT_VERSION}
-    LANGUAGES CXX
+    LANGUAGES CXX C
 )
 
 set(PYBIND11_NEWPYTHON ON)
 find_package(pybind11 REQUIRED)
 find_package(uproot-custom REQUIRED)
 
-add_subdirectory(src/pybes3/besio/cpp)
+add_subdirectory(io)
+add_subdirectory(ufuncs)

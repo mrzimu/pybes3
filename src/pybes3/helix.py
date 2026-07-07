@@ -6,13 +6,13 @@ from operator import xor
 from typing import Literal, Union, overload
 
 import awkward as ak
-import numba as nb
 import numpy as np
 import vector
 import vector.backends.awkward as vec_ak
 
 vector.register_awkward()
 
+import pybes3._kernels._ufuncs as _ufuncs
 from pybes3._utils import _extract_index, _flat_to_numpy
 from pybes3.typing import FloatLike, IntLike
 
@@ -470,7 +470,6 @@ def helix_obj(*args, **kwargs) -> HelixObject:
 
 
 ###############################################################################################
-@nb.vectorize(cache=True)
 def dr_phi0_to_x(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     """
     Convert helix parameters to x location.
@@ -482,10 +481,9 @@ def dr_phi0_to_x(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     Returns:
         x location of the helix.
     """
-    return dr * np.cos(phi0)
+    return _ufuncs.dr_phi0_to_x(dr, phi0)
 
 
-@nb.vectorize(cache=True)
 def dr_phi0_to_y(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     """
     Convert helix parameters to y location.
@@ -497,10 +495,9 @@ def dr_phi0_to_y(dr: FloatLike, phi0: FloatLike) -> FloatLike:
     Returns:
         y location of the helix.
     """
-    return dr * np.sin(phi0)
+    return _ufuncs.dr_phi0_to_y(dr, phi0)
 
 
-@nb.vectorize(cache=True)
 def phi0_to_phi(phi0: FloatLike) -> FloatLike:
     """
     Convert helix parameter phi0 to momentum phi.
@@ -511,10 +508,9 @@ def phi0_to_phi(phi0: FloatLike) -> FloatLike:
     Returns:
         phi of the momentum vector.
     """
-    return (phi0 + np.pi / 2) % (2 * np.pi)
+    return _ufuncs.phi0_to_phi(phi0)
 
 
-@nb.vectorize(cache=True)
 def kappa_to_pt(kappa: FloatLike) -> FloatLike:
     """
     Convert helix parameter to pt.
@@ -525,10 +521,9 @@ def kappa_to_pt(kappa: FloatLike) -> FloatLike:
     Returns:
         pt of the helix.
     """
-    return 1 / np.abs(kappa)
+    return _ufuncs.kappa_to_pt(kappa)
 
 
-@nb.vectorize(cache=True)
 def kappa_to_charge(kappa: FloatLike) -> IntLike:
     """
     Convert helix parameter to charge.
@@ -539,10 +534,9 @@ def kappa_to_charge(kappa: FloatLike) -> IntLike:
     Returns:
         charge of the helix.
     """
-    return 1 if kappa > 1e-10 else -1 if kappa < -1e-10 else 0
+    return _ufuncs.kappa_to_charge(kappa)
 
 
-@nb.vectorize(cache=True)
 def kappa_to_radius(kappa: FloatLike) -> FloatLike:
     """
     Convert helix parameter kappa to circular radius.
@@ -553,7 +547,7 @@ def kappa_to_radius(kappa: FloatLike) -> FloatLike:
     Returns:
         circular radius of the helix in cm.
     """
-    return 1000 / 2.99792458 / np.abs(kappa)
+    return _ufuncs.kappa_to_radius(kappa)
 
 
 ###############################################################################################
@@ -912,7 +906,6 @@ def helix_awk(
 ) -> HelixAwkwardArray: ...
 
 
-@nb.vectorize(cache=True)
 def _fix_dr_sign(dr: FloatLike, phi0: FloatLike, dist_phi: FloatLike) -> FloatLike:
     """
     Fix the sign of dr based on the azimuthal angle.
@@ -925,9 +918,7 @@ def _fix_dr_sign(dr: FloatLike, phi0: FloatLike, dist_phi: FloatLike) -> FloatLi
     Returns:
         The corrected radial distance.
     """
-    if not np.isclose(dist_phi % (2 * np.pi), phi0):
-        return -dr
-    return dr
+    return _ufuncs._fix_dr_sign(dr, phi0, dist_phi)
 
 
 _SENTINEL = object()

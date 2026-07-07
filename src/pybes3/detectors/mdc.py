@@ -3,45 +3,35 @@ from __future__ import annotations
 from typing import Any, Literal
 
 import awkward as ak
-import numba as nb
 import numpy as np
 
+import pybes3._kernels._ufuncs as _ufuncs
 from pybes3.data import MDC_GEOM
 from pybes3.typing import BoolLike, FloatLike, IntLike
 
 N_WIRES = 6796
+N_LAYERS = 43
+N_SUPERLAYERS = 12
 
 with np.load(MDC_GEOM) as f:
     _mdc_geom_table = dict(f)
+
+for v in _mdc_geom_table.values():
+    v.setflags(write=False)
 
 _mdc_geom_table["superlayer"] = _mdc_geom_table["superlayer"].astype(np.int16)
 _mdc_geom_table["layer"] = _mdc_geom_table["layer"].astype(np.int16)
 _mdc_geom_table["wire"] = _mdc_geom_table["wire"].astype(np.int32)
 _mdc_geom_table["stereo"] = _mdc_geom_table["stereo"].astype(np.int8)
 
-_superlayer = _mdc_geom_table["superlayer"]
-_layer = _mdc_geom_table["layer"]
-_wire = _mdc_geom_table["wire"]
-_stereo = _mdc_geom_table["stereo"]
-_is_stereo = _mdc_geom_table["is_stereo"]
-_east_x = _mdc_geom_table["east_x"]
-_east_y = _mdc_geom_table["east_y"]
-_east_z = _mdc_geom_table["east_z"]
-_west_x = _mdc_geom_table["west_x"]
-_west_y = _mdc_geom_table["west_y"]
-_west_z = _mdc_geom_table["west_z"]
-
-_layer_start_gid = np.zeros(44, dtype=np.int32)
-_layer_start_gid[1:] = np.cumsum(np.bincount(_layer, minlength=43))
-
-_dx_dz = (_east_x - _west_x) / (_east_z - _west_z)
-_dy_dz = (_east_y - _west_y) / (_east_z - _west_z)
-
-
-_first_wire_idx = np.searchsorted(_layer, np.arange(43))
-_is_layer_stereo = _is_stereo[_first_wire_idx].copy()
-
-_superlayer_splits = np.array([0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 43])
+_ufuncs._init_mdc_geom(
+    _mdc_geom_table["east_x"],
+    _mdc_geom_table["east_y"],
+    _mdc_geom_table["east_z"],
+    _mdc_geom_table["west_x"],
+    _mdc_geom_table["west_y"],
+    _mdc_geom_table["west_z"],
+)
 
 
 def get_mdc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
@@ -58,18 +48,16 @@ def get_mdc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
         ValueError: If the library is not 'ak', 'np', or 'pd'.
         ImportError: If the library is 'pd' but pandas is not installed.
     """
-    cp: dict[str, np.ndarray] = {k: v.copy() for k, v in _mdc_geom_table.items()}
-
     if library == "ak":
-        return ak.Array(cp)
+        return ak.Array(_mdc_geom_table)
     elif library == "np":
-        return cp
+        return {k: v for k, v in _mdc_geom_table.items()}
     elif library == "pd":
         try:
             import pandas as pd  # type: ignore
         except ImportError:
             raise ImportError("Pandas is not installed. Run `pip install pandas`.")
-        return pd.DataFrame(cp)
+        return pd.DataFrame(_mdc_geom_table)
     else:
         raise ValueError(f"Invalid library {library}. Choose from 'ak', 'np', 'pd'.")
 
@@ -90,7 +78,6 @@ def get_mdc_wire_position(library: Literal["np", "ak", "pd"] = "np"):
     return get_mdc_geom_table(library)
 
 
-@nb.vectorize(cache=True)
 def get_mdc_gid(layer: IntLike, wire: IntLike) -> IntLike:
     """
     Get MDC gid of given layer and wire.
@@ -102,10 +89,9 @@ def get_mdc_gid(layer: IntLike, wire: IntLike) -> IntLike:
     Returns:
         The gid of the wire.
     """
-    return _layer_start_gid[layer] + wire
+    return _ufuncs.get_mdc_idx(layer, wire)
 
 
-@nb.vectorize(cache=True)
 def mdc_gid_to_superlayer(gid: IntLike) -> IntLike:
     """
     Convert gid to superlayer.
@@ -116,10 +102,9 @@ def mdc_gid_to_superlayer(gid: IntLike) -> IntLike:
     Returns:
         The superlayer number of the wire.
     """
-    return _superlayer[gid]
+    return _ufuncs.mdc_idx_to_superlayer(gid)
 
 
-@nb.vectorize(cache=True)
 def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
     """
     Convert layer to superlayer.
@@ -130,10 +115,9 @@ def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
     Returns:
         The superlayer number of the layer.
     """
-    return np.digitize(layer, _superlayer_splits, right=False) - 1
+    return _ufuncs.mdc_layer_to_superlayer(layer)
 
 
-@nb.vectorize(cache=True)
 def mdc_gid_to_layer(gid: IntLike) -> IntLike:
     """
     Convert gid to layer.
@@ -144,10 +128,9 @@ def mdc_gid_to_layer(gid: IntLike) -> IntLike:
     Returns:
         The layer number of the wire.
     """
-    return _layer[gid]
+    return _ufuncs.mdc_idx_to_layer(gid)
 
 
-@nb.vectorize(cache=True)
 def mdc_gid_to_wire(gid: IntLike) -> IntLike:
     """
     Convert gid to wire.
@@ -158,10 +141,9 @@ def mdc_gid_to_wire(gid: IntLike) -> IntLike:
     Returns:
         The wire number of the wire.
     """
-    return _wire[gid]
+    return _ufuncs.mdc_idx_to_wire(gid)
 
 
-@nb.vectorize(cache=True)
 def mdc_gid_to_stereo(gid: IntLike) -> IntLike:
     """
     Convert gid to stereo.
@@ -175,10 +157,9 @@ def mdc_gid_to_stereo(gid: IntLike) -> IntLike:
     Returns:
         The stereo of the wire.
     """
-    return _stereo[gid]
+    return _ufuncs.mdc_idx_to_stereo(gid)
 
 
-@nb.vectorize(cache=True)
 def mdc_layer_to_is_stereo(layer: IntLike) -> BoolLike:
     """
     Convert layer to is_stereo.
@@ -189,10 +170,9 @@ def mdc_layer_to_is_stereo(layer: IntLike) -> BoolLike:
     Returns:
         The is_stereo of the layer.
     """
-    return _is_layer_stereo[layer]
+    return _ufuncs.mdc_layer_to_is_stereo(layer)
 
 
-@nb.vectorize(cache=True)
 def mdc_gid_to_is_stereo(gid: IntLike) -> BoolLike:
     """
     Convert gid to is_stereo.
@@ -203,10 +183,9 @@ def mdc_gid_to_is_stereo(gid: IntLike) -> BoolLike:
     Returns:
         The is_stereo of the wire.
     """
-    return _is_stereo[gid]
+    return _ufuncs.mdc_idx_to_is_stereo(gid)
 
 
-@nb.vectorize(cache=True)
 def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_x (cm).
@@ -217,10 +196,9 @@ def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
     Returns:
         The west_x (cm) of the wire.
     """
-    return _west_x[gid]
+    return _ufuncs.mdc_idx_to_west_x(gid)
 
 
-@nb.vectorize(cache=True)
 def mdc_gid_to_west_y(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_y (cm).
@@ -231,10 +209,9 @@ def mdc_gid_to_west_y(gid: IntLike) -> FloatLike:
     Returns:
         The west_y (cm) of the wire.
     """
-    return _west_y[gid]
+    return _ufuncs.mdc_idx_to_west_y(gid)
 
 
-@nb.vectorize(cache=True)
 def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
     """
     Convert gid to west_z (cm).
@@ -245,10 +222,9 @@ def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
     Returns:
         The west_z (cm) of the wire.
     """
-    return _west_z[gid]
+    return _ufuncs.mdc_idx_to_west_z(gid)
 
 
-@nb.vectorize(cache=True)
 def mdc_gid_to_east_x(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_x (cm).
@@ -259,10 +235,9 @@ def mdc_gid_to_east_x(gid: IntLike) -> FloatLike:
     Returns:
         The east_x (cm) of the wire.
     """
-    return _east_x[gid]
+    return _ufuncs.mdc_idx_to_east_x(gid)
 
 
-@nb.vectorize(cache=True)
 def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_y (cm).
@@ -273,10 +248,9 @@ def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
     Returns:
         The east_y (cm) of the wire.
     """
-    return _east_y[gid]
+    return _ufuncs.mdc_idx_to_east_y(gid)
 
 
-@nb.vectorize(cache=True)
 def mdc_gid_to_east_z(gid: IntLike) -> FloatLike:
     """
     Convert gid to east_z (cm).
@@ -287,10 +261,9 @@ def mdc_gid_to_east_z(gid: IntLike) -> FloatLike:
     Returns:
         The east_z (cm) of the wire.
     """
-    return _east_z[gid]
+    return _ufuncs.mdc_idx_to_east_z(gid)
 
 
-@nb.vectorize(cache=True)
 def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
     """
     Get the x (cm) position of the wire at z (cm).
@@ -302,10 +275,9 @@ def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
     Returns:
         The x (cm) position of the wire at z (cm).
     """
-    return _west_x[gid] + _dx_dz[gid] * (z - _west_z[gid])
+    return _ufuncs.mdc_idx_z_to_x(gid, z)
 
 
-@nb.vectorize(cache=True)
 def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
     """
     Get the y (cm) position of the wire at z (cm).
@@ -317,7 +289,7 @@ def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
     Returns:
         The y (cm) position of the wire at z (cm).
     """
-    return _west_y[gid] + _dy_dz[gid] * (z - _west_z[gid])
+    return _ufuncs.mdc_idx_z_to_y(gid, z)
 
 
 def parse_mdc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, Any]:

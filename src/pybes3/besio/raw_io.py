@@ -13,7 +13,7 @@ from numpy.typing import NDArray
 from uproot._util import regularize_filter
 
 import pybes3.besio._reid as _reid
-from pybes3.besio.besio_cpp import read_bes_raw
+from pybes3._kernels._io import read_bes_raw
 from pybes3.data import CGEM_ELEC_TABLE
 
 _info_tables: dict[str, np.ndarray] = None
@@ -413,7 +413,11 @@ def concatenate(
     try:
         res = []
         n_cum_read = 0
-        for reader, entry_start_for_reader, entry_stop_for_reader in readers_with_entry_range:
+        for (
+            reader,
+            entry_start_for_reader,
+            entry_stop_for_reader,
+        ) in readers_with_entry_range:
             n_read = (
                 entry_stop_for_reader - entry_start_for_reader
                 if entry_stop_for_reader >= 0

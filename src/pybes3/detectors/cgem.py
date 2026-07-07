@@ -3,9 +3,9 @@ from __future__ import annotations
 from typing import Any
 
 import awkward as ak
-import numba as nb
 import numpy as np
 
+import pybes3._kernels._ufuncs as _ufuncs
 from pybes3.typing import BoolLike, IntLike
 
 N_LAYER = np.int8(3)
@@ -62,7 +62,6 @@ def _init():
 _layer, _sheet, _strip_type, _strip = _init()
 
 
-@nb.vectorize(cache=True)
 def get_cgem_gid(
     layer: IntLike, sheet: IntLike, strip_type: IntLike, strip: IntLike
 ) -> IntLike:
@@ -78,14 +77,9 @@ def get_cgem_gid(
     Returns:
         The global strip ID of the CGEM strip, ranging from 0 to 9896.
     """
-    gid = (N_SHEETS[:layer] * (N_XSTRIPS[:layer] + N_VSTRIPS[:layer])).sum()
-    gid += sheet * (N_XSTRIPS[layer] + N_VSTRIPS[layer])
-    gid += strip_type * N_XSTRIPS[layer]
-    gid += strip
-    return np.int32(gid)
+    return _ufuncs.get_cgem_idx(layer, sheet, strip_type, strip)
 
 
-@nb.vectorize(cache=True)
 def cgem_gid_to_layer(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to layer.
@@ -96,10 +90,9 @@ def cgem_gid_to_layer(gid: IntLike) -> IntLike:
     Returns:
         The layer number of the strip.
     """
-    return _layer[gid]
+    return _ufuncs.cgem_idx_to_layer(gid)
 
 
-@nb.vectorize(cache=True)
 def cgem_gid_to_sheet(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to sheet.
@@ -110,10 +103,9 @@ def cgem_gid_to_sheet(gid: IntLike) -> IntLike:
     Returns:
         The sheet number of the strip.
     """
-    return _sheet[gid]
+    return _ufuncs.cgem_idx_to_sheet(gid)
 
 
-@nb.vectorize(cache=True)
 def cgem_gid_to_strip_type(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to strip type.
@@ -124,10 +116,9 @@ def cgem_gid_to_strip_type(gid: IntLike) -> IntLike:
     Returns:
         The strip type of the strip, 0 for x-strip and 1 for v-strip.
     """
-    return _strip_type[gid]
+    return _ufuncs.cgem_idx_to_strip_type(gid)
 
 
-@nb.vectorize(cache=True)
 def cgem_gid_to_strip(gid: IntLike) -> IntLike:
     """
     Convert CGEM gid to strip number.
@@ -138,7 +129,7 @@ def cgem_gid_to_strip(gid: IntLike) -> IntLike:
     Returns:
         The strip number within the corresponding strip type.
     """
-    return _strip[gid]
+    return _ufuncs.cgem_idx_to_strip(gid)
 
 
 def cgem_gid_to_is_xstrip(gid: IntLike) -> BoolLike:

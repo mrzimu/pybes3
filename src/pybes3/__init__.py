@@ -1,11 +1,5 @@
 from __future__ import annotations
 
-# fmt: off
-from pybes3._cache_numba import check_numba_cache
-
-check_numba_cache()
-# fmt: on
-
 from pybes3._version import __version__, version
 from pybes3.besio import concatenate, concatenate_raw, open, open_raw
 from pybes3.detectors import (
