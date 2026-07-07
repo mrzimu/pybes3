@@ -1,3 +1,6 @@
+#include <cmath>
+#include <numbers>
+
 #include "mod.hh"
 #include "ufunc.hh"
 
