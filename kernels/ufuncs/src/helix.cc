@@ -46,8 +46,9 @@ inline void kappa_to_radius( T* kappa, T* radius ) noexcept {
 
 template <typename T>
 inline void _fix_dr_sign( T* dr, T* phi0, T* dist_phi, T* result ) noexcept {
-    T a = std::fmod( *dist_phi, T( 2.0 * M_PI ) );
-    if ( a < T( 0.0 ) ) a += T( 2.0 * M_PI );
+    const T two_pi = T( 2.0 ) * std::numbers::pi_v<T>;
+    T a = std::fmod( *dist_phi, two_pi );
+    if ( a < T( 0.0 ) ) a += two_pi;
     T tol = T( 1e-8 ) + T( 1e-5 ) * std::abs( *phi0 );
     if ( std::abs( a - *phi0 ) > tol ) *result = -( *dr );
     else *result = *dr;
