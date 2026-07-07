@@ -61,7 +61,7 @@
 
 ## Performance
 
-`pybes3` is designed to be fast and efficient. It uses `numba` to accelerate some of the operations, such as helix operations and detector identifier conversion. When `numba` is not available, `pybes3` falls back to C++ extensions.
+`pybes3` is designed to be fast and efficient. It uses C++ to accelerate some of the operations, such as helix operations, detector identifier conversion, etc.
 
 ### Data reading
 

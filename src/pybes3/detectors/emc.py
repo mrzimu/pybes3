@@ -27,25 +27,27 @@ BARREL_H3 = 5.2466
 BARREL_L = 28.0
 
 with np.load(EMC_GEOM) as f:
-    _emc_geom = dict(f)
+    _emc_geom_table = dict(f)
 
-_emc_geom["part"] = _emc_geom["part"].astype(np.int16)
-_emc_geom["theta"] = _emc_geom["theta"].astype(np.int32)
-_emc_geom["phi"] = _emc_geom["phi"].astype(np.int32)
+_emc_geom_table["part"] = _emc_geom_table["part"].astype(np.int16)
+_emc_geom_table["theta"] = _emc_geom_table["theta"].astype(np.int32)
+_emc_geom_table["phi"] = _emc_geom_table["phi"].astype(np.int32)
 
+for v in _emc_geom_table.values():
+    v.setflags(write=False)
 
-_part = _emc_geom["part"]
-_theta = _emc_geom["theta"]
-_phi = _emc_geom["phi"]
-_points_x = _emc_geom["points_x"]
-_points_y = _emc_geom["points_y"]
-_points_z = _emc_geom["points_z"]
-_center_x = _emc_geom["center_x"]
-_center_y = _emc_geom["center_y"]
-_center_z = _emc_geom["center_z"]
-_front_center_x = _emc_geom["front_center_x"]
-_front_center_y = _emc_geom["front_center_y"]
-_front_center_z = _emc_geom["front_center_z"]
+_part = _emc_geom_table["part"]
+_theta = _emc_geom_table["theta"]
+_phi = _emc_geom_table["phi"]
+_points_x = _emc_geom_table["points_x"]
+_points_y = _emc_geom_table["points_y"]
+_points_z = _emc_geom_table["points_z"]
+_center_x = _emc_geom_table["center_x"]
+_center_y = _emc_geom_table["center_y"]
+_center_z = _emc_geom_table["center_z"]
+_front_center_x = _emc_geom_table["front_center_x"]
+_front_center_y = _emc_geom_table["front_center_y"]
+_front_center_z = _emc_geom_table["front_center_z"]
 
 _ufuncs._init_emc_geom(
     _points_x,
@@ -74,7 +76,7 @@ def get_emc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
         ValueError: If the library is not 'ak', 'np', or 'pd'.
         ImportError: If the library is 'pd' but pandas is not installed.
     """
-    cp: dict[str, np.ndarray] = {k: v.copy() for k, v in _emc_geom.items()}
+    cp: dict[str, np.ndarray] = {k: v.copy() for k, v in _emc_geom_table.items()}
 
     res: dict[str, np.ndarray] = {}
 

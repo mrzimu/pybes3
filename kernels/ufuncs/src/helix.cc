@@ -9,6 +9,9 @@
 // ---------------------------------------------------------------------------
 static constexpr double kKappaToRadiusFactor = 1000.0 / 2.99792458;
 
+constexpr double TWO_PI  = 2.0 * std::numbers::pi_v<double>;
+constexpr double HALF_PI = std::numbers::pi_v<double> / 2.0;
+
 template <typename T>
 inline void dr_phi0_to_x( T* dr, T* phi0, T* x ) noexcept {
     *x = *dr * std::cos( *phi0 );
@@ -21,9 +24,8 @@ inline void dr_phi0_to_y( T* dr, T* phi0, T* y ) noexcept {
 
 template <typename T>
 inline void phi0_to_phi( T* phi0, T* phi ) noexcept {
-    const T two_pi = T( 2.0 ) * std::numbers::pi_v<T>;
-    T result = std::fmod( *phi0 + std::numbers::pi_v<T> / T( 2.0 ), two_pi );
-    if ( result < T( 0.0 ) ) result += two_pi;
+    T result = std::fmod( *phi0 + HALF_PI, TWO_PI );
+    if ( result < T( 0.0 ) ) result += TWO_PI;
     *phi = result;
 }
 
@@ -46,9 +48,8 @@ inline void kappa_to_radius( T* kappa, T* radius ) noexcept {
 
 template <typename T>
 inline void _fix_dr_sign( T* dr, T* phi0, T* dist_phi, T* result ) noexcept {
-    const T two_pi = T( 2.0 ) * std::numbers::pi_v<T>;
-    T a = std::fmod( *dist_phi, two_pi );
-    if ( a < T( 0.0 ) ) a += two_pi;
+    T a = std::fmod( *dist_phi, TWO_PI );
+    if ( a < T( 0.0 ) ) a += TWO_PI;
     T tol = T( 1e-8 ) + T( 1e-5 ) * std::abs( *phi0 );
     if ( std::abs( a - *phi0 ) > tol ) *result = -( *dr );
     else *result = *dr;

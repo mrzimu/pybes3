@@ -16,13 +16,13 @@ N_SUPERLAYERS = 12
 with np.load(MDC_GEOM) as f:
     _mdc_geom_table = dict(f)
 
-for v in _mdc_geom_table.values():
-    v.setflags(write=False)
-
 _mdc_geom_table["superlayer"] = _mdc_geom_table["superlayer"].astype(np.int16)
 _mdc_geom_table["layer"] = _mdc_geom_table["layer"].astype(np.int16)
 _mdc_geom_table["wire"] = _mdc_geom_table["wire"].astype(np.int32)
 _mdc_geom_table["stereo"] = _mdc_geom_table["stereo"].astype(np.int8)
+
+for v in _mdc_geom_table.values():
+    v.setflags(write=False)
 
 _ufuncs._init_mdc_geom(
     _mdc_geom_table["east_x"],
