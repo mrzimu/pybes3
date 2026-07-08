@@ -667,8 +667,6 @@ void RawBinaryParser::read_cgem_buffer() {
                                  to_string( pack_header ) );
         }
 
-        auto status = ( *cursor >> 26 ) & 0x7;
-        // auto n_hits = ( cursor[1] >> 16 ) & 0xFF; // no need to read this
         auto local_l1_timestamp = cursor[1] & 0xFFFF;
 
         // hits
@@ -716,8 +714,6 @@ void RawBinaryParser::read_cgem_buffer() {
                 "Invalid CGEM UDPSeqCounter[1]: expecting 0xA0000000 but get " +
                 to_string( trailer3 & 0xF0000000 ) );
         }
-
-        status |= ( trailer2 >> 22 ) & 0x38;
 
         if ( ( ( trailer2 >> 20 ) & 0x1F ) != gemroc )
         {
