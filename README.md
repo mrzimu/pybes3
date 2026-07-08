@@ -65,7 +65,7 @@ At the moment, `pybes3` provides:
 
 - **Identifier**: Convert BOSS detector identifier number to a human-readable format.
 
-- **Global ID**: Numbers for each detector element in `pybes3`, starting from `0` and increasing by `1` for each element. This is useful for indexing and mapping detector elements.
+- **Indexing**: Each detector element in `pybes3` is assigned a zero-based index, useful for array indexing and mapping detector elements.
 
 - **Geometry**: Retrieve and compute geometry information of detectors.
 
