@@ -226,7 +226,7 @@ uint32_t RawBinaryParser::read_ROB( const uint32_t field_id ) {
     auto rob_total_size  = read();
     auto rob_header_size = read();
     skip(); // rob_format_version
-    skip(); // rob_source_idenfitier
+    skip(); // rob_source_identifier
 
     auto rob_n_status = read();
     skip( rob_n_status );
