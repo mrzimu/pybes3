@@ -10,7 +10,7 @@ from pybes3.detectors import tof
 
 
 def test_tof_idx_conversion(tof_idx_dict):
-    ref_idx = tof_idx_dict["gid"]
+    ref_idx = tof_idx_dict["idx"]
     ref_part = tof_idx_dict["part"]
     ref_layer_or_module = tof_idx_dict["layer_or_module"]
     ref_phi_or_strip = tof_idx_dict["phi_or_strip"]

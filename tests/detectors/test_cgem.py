@@ -7,7 +7,7 @@ from pybes3.detectors import cgem
 
 
 def test_cgem_idx_conversion(cgem_idx_dict):
-    ref_idx = cgem_idx_dict["gid"]
+    ref_idx = cgem_idx_dict["idx"]
     ref_layer = cgem_idx_dict["layer"]
     ref_sheet = cgem_idx_dict["sheet"]
     ref_strip_type = cgem_idx_dict["strip_type"]
