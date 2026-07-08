@@ -87,7 +87,7 @@ class Bes3SymMatrixArrayReader : public IReader {
         }
     }
 
-    const uint32_t get_symmetric_matrix_index( uint32_t i, uint32_t j ) const {
+    uint32_t get_symmetric_matrix_index( uint32_t i, uint32_t j ) const {
         return i < j ? j * ( j + 1 ) / 2 + i : i * ( i + 1 ) / 2 + j;
     }
 
