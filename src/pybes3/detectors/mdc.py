@@ -18,6 +18,7 @@ N_SUPERLAYERS = 12
 with np.load(MDC_GEOM) as f:
     _mdc_geom_table = dict(f)
 
+_mdc_geom_table["idx"] = _mdc_geom_table.pop("gid")
 _mdc_geom_table["superlayer"] = _mdc_geom_table["superlayer"].astype(np.int16)
 _mdc_geom_table["layer"] = _mdc_geom_table["layer"].astype(np.int16)
 _mdc_geom_table["wire"] = _mdc_geom_table["wire"].astype(np.int32)
@@ -36,8 +37,8 @@ _ufuncs._init_mdc_geom(
 )
 
 
-def _check_gid(gid: IntLike) -> None:
-    _check_range(gid, 0, N_WIRES, "gid")
+def _check_idx(idx: IntLike) -> None:
+    _check_range(idx, 0, N_WIRES, "idx")
 
 
 def _check_layer(layer: IntLike) -> None:
@@ -88,32 +89,62 @@ def get_mdc_wire_position(library: Literal["np", "ak", "pd"] = "np"):
     return get_mdc_geom_table(library)
 
 
-def get_mdc_gid(layer: IntLike, wire: IntLike) -> IntLike:
+def get_mdc_idx(layer: IntLike, wire: IntLike) -> IntLike:
     """
-    Get MDC gid of given layer and wire.
+    Get the MDC wire index for the given layer and local wire number.
 
     Parameters:
         layer: The layer number.
-        wire: The wire number.
+        wire: The local wire number within the layer.
 
     Returns:
-        The gid of the wire.
+        The index of the wire.
     """
     return _ufuncs.get_mdc_idx(layer, wire)
 
 
-def mdc_gid_to_superlayer(gid: IntLike) -> IntLike:
+def get_mdc_gid(layer: IntLike, wire: IntLike) -> IntLike:
     """
-    Convert gid to superlayer.
+    !!! warning "Deprecated"
+        This function is deprecated, use `get_mdc_idx` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "get_mdc_gid is deprecated, use get_mdc_idx instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return get_mdc_idx(layer, wire)
+
+
+def mdc_idx_to_superlayer(idx: IntLike) -> IntLike:
+    """
+    Convert index to superlayer.
 
     Parameters:
-        gid: The gid of the wire.
+        idx: The index of the wire.
 
     Returns:
         The superlayer number of the wire.
     """
-    _check_gid(gid)
-    return _ufuncs.mdc_idx_to_superlayer(gid)
+    _check_idx(idx)
+    return _ufuncs.mdc_idx_to_superlayer(idx)
+
+
+def mdc_gid_to_superlayer(gid: IntLike) -> IntLike:
+    """
+    !!! warning "Deprecated"
+        This function is deprecated, use `mdc_idx_to_superlayer` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "mdc_gid_to_superlayer is deprecated, use mdc_idx_to_superlayer instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return mdc_idx_to_superlayer(gid)
 
 
 def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
@@ -130,49 +161,94 @@ def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
     return _ufuncs.mdc_layer_to_superlayer(layer)
 
 
-def mdc_gid_to_layer(gid: IntLike) -> IntLike:
+def mdc_idx_to_layer(idx: IntLike) -> IntLike:
     """
-    Convert gid to layer.
+    Convert index to layer.
 
     Parameters:
-        gid: The gid of the wire.
+        idx: The index of the wire.
 
     Returns:
         The layer number of the wire.
     """
-    _check_gid(gid)
-    return _ufuncs.mdc_idx_to_layer(gid)
+    _check_idx(idx)
+    return _ufuncs.mdc_idx_to_layer(idx)
 
 
-def mdc_gid_to_wire(gid: IntLike) -> IntLike:
+def mdc_gid_to_layer(gid: IntLike) -> IntLike:
     """
-    Convert gid to wire.
+    !!! warning "Deprecated"
+        This function is deprecated, use `mdc_idx_to_layer` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "mdc_gid_to_layer is deprecated, use mdc_idx_to_layer instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return mdc_idx_to_layer(gid)
+
+
+def mdc_idx_to_wire(idx: IntLike) -> IntLike:
+    """
+    Convert index to wire.
 
     Parameters:
-        gid: The gid of the wire.
+        idx: The index of the wire.
 
     Returns:
         The wire number of the wire.
     """
-    _check_gid(gid)
-    return _ufuncs.mdc_idx_to_wire(gid)
+    _check_idx(idx)
+    return _ufuncs.mdc_idx_to_wire(idx)
 
 
-def mdc_gid_to_stereo(gid: IntLike) -> IntLike:
+def mdc_gid_to_wire(gid: IntLike) -> IntLike:
     """
-    Convert gid to stereo.
+    !!! warning "Deprecated"
+        This function is deprecated, use `mdc_idx_to_wire` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "mdc_gid_to_wire is deprecated, use mdc_idx_to_wire instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return mdc_idx_to_wire(gid)
+
+
+def mdc_idx_to_stereo(idx: IntLike) -> IntLike:
+    """
+    Convert index to stereo.
     `0` for `axial`,
     `-1` for stereo that `phi_west < phi_east`,
     `1` for stereo that `phi_west > phi_east`.
 
     Parameters:
-        gid: The gid of the wire.
+        idx: The index of the wire.
 
     Returns:
         The stereo of the wire.
     """
-    _check_gid(gid)
-    return _ufuncs.mdc_idx_to_stereo(gid)
+    _check_idx(idx)
+    return _ufuncs.mdc_idx_to_stereo(idx)
+
+
+def mdc_gid_to_stereo(gid: IntLike) -> IntLike:
+    """
+    !!! warning "Deprecated"
+        This function is deprecated, use `mdc_idx_to_stereo` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "mdc_gid_to_stereo is deprecated, use mdc_idx_to_stereo instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return mdc_idx_to_stereo(gid)
 
 
 def mdc_layer_to_is_stereo(layer: IntLike) -> BoolLike:
@@ -189,142 +265,277 @@ def mdc_layer_to_is_stereo(layer: IntLike) -> BoolLike:
     return _ufuncs.mdc_layer_to_is_stereo(layer)
 
 
-def mdc_gid_to_is_stereo(gid: IntLike) -> BoolLike:
+def mdc_idx_to_is_stereo(idx: IntLike) -> BoolLike:
     """
-    Convert gid to is_stereo.
+    Convert index to is_stereo.
 
     Parameters:
-        gid: The gid of the wire.
+        idx: The index of the wire.
 
     Returns:
         The is_stereo of the wire.
     """
-    _check_gid(gid)
-    return _ufuncs.mdc_idx_to_is_stereo(gid)
+    _check_idx(idx)
+    return _ufuncs.mdc_idx_to_is_stereo(idx)
 
 
-def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
+def mdc_gid_to_is_stereo(gid: IntLike) -> BoolLike:
     """
-    Convert gid to west_x (cm).
+    !!! warning "Deprecated"
+        This function is deprecated, use `mdc_idx_to_is_stereo` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "mdc_gid_to_is_stereo is deprecated, use mdc_idx_to_is_stereo instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return mdc_idx_to_is_stereo(gid)
+
+
+def mdc_idx_to_west_x(idx: IntLike) -> FloatLike:
+    """
+    Convert index to west_x (cm).
 
     Parameters:
-        gid: The gid of the wire.
+        idx: The index of the wire.
 
     Returns:
         The west_x (cm) of the wire.
     """
-    _check_gid(gid)
-    return _ufuncs.mdc_idx_to_west_x(gid)
+    _check_idx(idx)
+    return _ufuncs.mdc_idx_to_west_x(idx)
 
 
-def mdc_gid_to_west_y(gid: IntLike) -> FloatLike:
+def mdc_gid_to_west_x(gid: IntLike) -> FloatLike:
     """
-    Convert gid to west_y (cm).
+    !!! warning "Deprecated"
+        This function is deprecated, use `mdc_idx_to_west_x` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "mdc_gid_to_west_x is deprecated, use mdc_idx_to_west_x instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return mdc_idx_to_west_x(gid)
+
+
+def mdc_idx_to_west_y(idx: IntLike) -> FloatLike:
+    """
+    Convert index to west_y (cm).
 
     Parameters:
-        gid: The gid of the wire.
+        idx: The index of the wire.
 
     Returns:
         The west_y (cm) of the wire.
     """
-    _check_gid(gid)
-    return _ufuncs.mdc_idx_to_west_y(gid)
+    _check_idx(idx)
+    return _ufuncs.mdc_idx_to_west_y(idx)
 
 
-def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
+def mdc_gid_to_west_y(gid: IntLike) -> FloatLike:
     """
-    Convert gid to west_z (cm).
+    !!! warning "Deprecated"
+        This function is deprecated, use `mdc_idx_to_west_y` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "mdc_gid_to_west_y is deprecated, use mdc_idx_to_west_y instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return mdc_idx_to_west_y(gid)
+
+
+def mdc_idx_to_west_z(idx: IntLike) -> FloatLike:
+    """
+    Convert index to west_z (cm).
 
     Parameters:
-        gid: The gid of the wire.
+        idx: The index of the wire.
 
     Returns:
         The west_z (cm) of the wire.
     """
-    _check_gid(gid)
-    return _ufuncs.mdc_idx_to_west_z(gid)
+    _check_idx(idx)
+    return _ufuncs.mdc_idx_to_west_z(idx)
 
 
-def mdc_gid_to_east_x(gid: IntLike) -> FloatLike:
+def mdc_gid_to_west_z(gid: IntLike) -> FloatLike:
     """
-    Convert gid to east_x (cm).
+    !!! warning "Deprecated"
+        This function is deprecated, use `mdc_idx_to_west_z` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "mdc_gid_to_west_z is deprecated, use mdc_idx_to_west_z instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return mdc_idx_to_west_z(gid)
+
+
+def mdc_idx_to_east_x(idx: IntLike) -> FloatLike:
+    """
+    Convert index to east_x (cm).
 
     Parameters:
-        gid: The gid of the wire.
+        idx: The index of the wire.
 
     Returns:
         The east_x (cm) of the wire.
     """
-    _check_gid(gid)
-    return _ufuncs.mdc_idx_to_east_x(gid)
+    _check_idx(idx)
+    return _ufuncs.mdc_idx_to_east_x(idx)
 
 
-def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
+def mdc_gid_to_east_x(gid: IntLike) -> FloatLike:
     """
-    Convert gid to east_y (cm).
+    !!! warning "Deprecated"
+        This function is deprecated, use `mdc_idx_to_east_x` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "mdc_gid_to_east_x is deprecated, use mdc_idx_to_east_x instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return mdc_idx_to_east_x(gid)
+
+
+def mdc_idx_to_east_y(idx: IntLike) -> FloatLike:
+    """
+    Convert index to east_y (cm).
 
     Parameters:
-        gid: The gid of the wire.
+        idx: The index of the wire.
 
     Returns:
         The east_y (cm) of the wire.
     """
-    _check_gid(gid)
-    return _ufuncs.mdc_idx_to_east_y(gid)
+    _check_idx(idx)
+    return _ufuncs.mdc_idx_to_east_y(idx)
 
 
-def mdc_gid_to_east_z(gid: IntLike) -> FloatLike:
+def mdc_gid_to_east_y(gid: IntLike) -> FloatLike:
     """
-    Convert gid to east_z (cm).
+    !!! warning "Deprecated"
+        This function is deprecated, use `mdc_idx_to_east_y` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "mdc_gid_to_east_y is deprecated, use mdc_idx_to_east_y instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return mdc_idx_to_east_y(gid)
+
+
+def mdc_idx_to_east_z(idx: IntLike) -> FloatLike:
+    """
+    Convert index to east_z (cm).
 
     Parameters:
-        gid: The gid of the wire.
+        idx: The index of the wire.
 
     Returns:
         The east_z (cm) of the wire.
     """
-    _check_gid(gid)
-    return _ufuncs.mdc_idx_to_east_z(gid)
+    _check_idx(idx)
+    return _ufuncs.mdc_idx_to_east_z(idx)
 
 
-def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
+def mdc_gid_to_east_z(gid: IntLike) -> FloatLike:
+    """
+    !!! warning "Deprecated"
+        This function is deprecated, use `mdc_idx_to_east_z` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "mdc_gid_to_east_z is deprecated, use mdc_idx_to_east_z instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return mdc_idx_to_east_z(gid)
+
+
+def mdc_idx_z_to_x(idx: IntLike, z: FloatLike) -> FloatLike:
     """
     Get the x (cm) position of the wire at z (cm).
 
     Parameters:
-        gid: The gid of the wire.
+        idx: The index of the wire.
         z: The z (cm) position.
 
     Returns:
         The x (cm) position of the wire at z (cm).
     """
-    _check_gid(gid)
-    return _ufuncs.mdc_idx_z_to_x(gid, z)
+    _check_idx(idx)
+    return _ufuncs.mdc_idx_z_to_x(idx, z)
 
 
-def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
+def mdc_gid_z_to_x(gid: IntLike, z: FloatLike) -> FloatLike:
+    """
+    !!! warning "Deprecated"
+        This function is deprecated, use `mdc_idx_z_to_x` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "mdc_gid_z_to_x is deprecated, use mdc_idx_z_to_x instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return mdc_idx_z_to_x(gid, z)
+
+
+def mdc_idx_z_to_y(idx: IntLike, z: FloatLike) -> FloatLike:
     """
     Get the y (cm) position of the wire at z (cm).
 
     Parameters:
-        gid: The gid of the wire.
+        idx: The index of the wire.
         z: The z (cm) position.
 
     Returns:
         The y (cm) position of the wire at z (cm).
     """
-    _check_gid(gid)
-    return _ufuncs.mdc_idx_z_to_y(gid, z)
+    _check_idx(idx)
+    return _ufuncs.mdc_idx_z_to_y(idx, z)
 
 
-def parse_mdc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, Any]:
+def mdc_gid_z_to_y(gid: IntLike, z: FloatLike) -> FloatLike:
     """
-    Parse the gid of MDC wires. "gid" is the global ID of the wire, ranges from 0 to 6795.
-    When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
+    !!! warning "Deprecated"
+        This function is deprecated, use `mdc_idx_z_to_y` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "mdc_gid_z_to_y is deprecated, use mdc_idx_z_to_y instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return mdc_idx_z_to_y(gid, z)
+
+
+def parse_mdc_idx(idx: IntLike, geometry: bool = False) -> ak.Array | dict[str, Any]:
+    """
+    Parse the index of MDC wires. The index ranges from 0 to 6795.
+    When `idx` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
 
     Keys of the output:
 
-    - `gid`: Global ID of the wire.
+    - `idx`: Index of the wire.
     - `layer`: Layer number.
     - `wire`: Local wire number.
     - `stereo`: Stereo type. 0 for axial, -1 for `phi_west < phi_east`, 1 for `phi_west > phi_east`.
@@ -343,40 +554,55 @@ def parse_mdc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, 
     - `east_z`: z position of the east end of the wire.
 
     Parameters:
-        gid: The gid of the wire.
+        idx: The index of the wire.
         geometry: Whether to include the geometry information.
 
     Returns:
         The parsed result.
     """
-    _check_gid(gid)
-    layer = _ufuncs.mdc_idx_to_layer(gid)
-    wire = _ufuncs.mdc_idx_to_wire(gid)
+    _check_idx(idx)
+    layer = _ufuncs.mdc_idx_to_layer(idx)
+    wire = _ufuncs.mdc_idx_to_wire(idx)
 
     res = {
-        "gid": gid,
+        "idx": idx,
         "layer": layer,
         "wire": wire,
-        "stereo": _ufuncs.mdc_idx_to_stereo(gid),
-        "is_stereo": _ufuncs.mdc_idx_to_is_stereo(gid),
-        "superlayer": _ufuncs.mdc_idx_to_superlayer(gid),
+        "stereo": _ufuncs.mdc_idx_to_stereo(idx),
+        "is_stereo": _ufuncs.mdc_idx_to_is_stereo(idx),
+        "superlayer": _ufuncs.mdc_idx_to_superlayer(idx),
     }
 
     if geometry:
-        west_x = _ufuncs.mdc_idx_to_west_x(gid)
-        west_y = _ufuncs.mdc_idx_to_west_y(gid)
-        east_x = _ufuncs.mdc_idx_to_east_x(gid)
-        east_y = _ufuncs.mdc_idx_to_east_y(gid)
+        west_x = _ufuncs.mdc_idx_to_west_x(idx)
+        west_y = _ufuncs.mdc_idx_to_west_y(idx)
+        east_x = _ufuncs.mdc_idx_to_east_x(idx)
+        east_y = _ufuncs.mdc_idx_to_east_y(idx)
         res["mid_x"] = (west_x + east_x) / 2
         res["mid_y"] = (west_y + east_y) / 2
         res["west_x"] = west_x
         res["west_y"] = west_y
-        res["west_z"] = _ufuncs.mdc_idx_to_west_z(gid)
+        res["west_z"] = _ufuncs.mdc_idx_to_west_z(idx)
         res["east_x"] = east_x
         res["east_y"] = east_y
-        res["east_z"] = _ufuncs.mdc_idx_to_east_z(gid)
+        res["east_z"] = _ufuncs.mdc_idx_to_east_z(idx)
 
-    if isinstance(gid, ak.Array):
+    if isinstance(idx, ak.Array):
         return ak.zip(res)
     else:
         return res
+
+
+def parse_mdc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, Any]:
+    """
+    !!! warning "Deprecated"
+        This function is deprecated, use `parse_mdc_idx` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "parse_mdc_gid is deprecated, use parse_mdc_idx instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return parse_mdc_idx(gid, geometry)

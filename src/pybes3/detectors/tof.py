@@ -18,13 +18,13 @@ N_LAYER_OR_MODULE.setflags(write=False)
 N_PHI_OR_STRIP.setflags(write=False)
 
 
-def _check_gid(gid: IntLike) -> None:
-    _check_range(gid, 0, N_STRIPS, "gid")
+def _check_idx(idx: IntLike) -> None:
+    _check_range(idx, 0, N_STRIPS, "idx")
 
 
-def get_tof_gid(part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike) -> IntLike:
+def get_tof_idx(part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike) -> IntLike:
     """
-    Get TOF gid of given part, layer_or_module and phi_or_strip.
+    Get the TOF strip index for the given part, layer_or_module and phi_or_strip.
 
     Parameters:
         part: The part of the TOF, 0-2 for scintillator, 3-4 for MRPC.
@@ -32,44 +32,104 @@ def get_tof_gid(part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike) 
         phi_or_strip: The phi (for scintillator) or strip (for MRPC) number, starting from 0.
 
     Returns:
-        The global strip ID of the TOF strip, ranging from 0 to 1135.
+        The strip index of the TOF strip, ranging from 0 to 1135.
     """
     return _ufuncs.get_tof_idx(part, layer_or_module, phi_or_strip)
 
 
+def get_tof_gid(part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike) -> IntLike:
+    """
+    !!! warning "Deprecated"
+        This function is deprecated, use `get_tof_idx` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "get_tof_gid is deprecated, use get_tof_idx instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return get_tof_idx(part, layer_or_module, phi_or_strip)
+
+
+def tof_idx_to_part(idx: IntLike) -> IntLike:
+    """Get TOF part from index."""
+    _check_idx(idx)
+    return _ufuncs.tof_idx_to_part(idx)
+
+
 def tof_gid_to_part(gid: IntLike) -> IntLike:
-    """Get TOF part from gid."""
-    _check_gid(gid)
-    return _ufuncs.tof_idx_to_part(gid)
+    """
+    !!! warning "Deprecated"
+        This function is deprecated, use `tof_idx_to_part` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "tof_gid_to_part is deprecated, use tof_idx_to_part instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return tof_idx_to_part(gid)
+
+
+def tof_idx_to_layer_or_module(idx: IntLike) -> IntLike:
+    """Get TOF layer_or_module from index."""
+    _check_idx(idx)
+    return _ufuncs.tof_idx_to_layer_or_module(idx)
 
 
 def tof_gid_to_layer_or_module(gid: IntLike) -> IntLike:
-    """Get TOF layer_or_module from gid."""
-    _check_gid(gid)
-    return _ufuncs.tof_idx_to_layer_or_module(gid)
+    """
+    !!! warning "Deprecated"
+        This function is deprecated, use `tof_idx_to_layer_or_module` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "tof_gid_to_layer_or_module is deprecated, use tof_idx_to_layer_or_module instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return tof_idx_to_layer_or_module(gid)
+
+
+def tof_idx_to_phi_or_strip(idx: IntLike) -> IntLike:
+    """Get TOF phi_or_strip from index."""
+    _check_idx(idx)
+    return _ufuncs.tof_idx_to_phi_or_strip(idx)
 
 
 def tof_gid_to_phi_or_strip(gid: IntLike) -> IntLike:
-    """Get TOF phi_or_strip from gid."""
-    _check_gid(gid)
-    return _ufuncs.tof_idx_to_phi_or_strip(gid)
-
-
-def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
     """
-    Parse TOF gid into part, layer_or_module and phi_or_strip.
+    !!! warning "Deprecated"
+        This function is deprecated, use `tof_idx_to_phi_or_strip` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "tof_gid_to_phi_or_strip is deprecated, use tof_idx_to_phi_or_strip instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return tof_idx_to_phi_or_strip(gid)
+
+
+def parse_tof_idx(idx: IntLike) -> ak.Array | dict[str, Any]:
+    """
+    Parse TOF strip index into part, layer_or_module and phi_or_strip.
 
     Parameters:
-        gid: The global strip ID of the TOF strip, ranging from 0 to 1135.
+        idx: The strip index of the TOF strip, ranging from 0 to 1135.
 
     Returns:
-        If gid is a ak.Array, returns an ak.Array with fields "part", "layer_or_module" and "phi_or_strip".
+        If idx is a ak.Array, returns an ak.Array with fields "part", "layer_or_module" and "phi_or_strip".
         Otherwise, returns a dictionary with keys "part", "layer_or_module" and "phi_or_strip".
     """
-    _check_gid(gid)
-    part = _ufuncs.tof_idx_to_part(gid)
-    layer_or_module = _ufuncs.tof_idx_to_layer_or_module(gid)
-    phi_or_strip = _ufuncs.tof_idx_to_phi_or_strip(gid)
+    _check_idx(idx)
+    part = _ufuncs.tof_idx_to_part(idx)
+    layer_or_module = _ufuncs.tof_idx_to_layer_or_module(idx)
+    phi_or_strip = _ufuncs.tof_idx_to_phi_or_strip(idx)
 
     res = {
         "part": part,
@@ -77,10 +137,25 @@ def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
         "phi_or_strip": phi_or_strip,
     }
 
-    if isinstance(gid, ak.Array):
+    if isinstance(idx, ak.Array):
         return ak.zip(res)
     else:
         return res
+
+
+def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
+    """
+    !!! warning "Deprecated"
+        This function is deprecated, use `parse_tof_idx` instead.
+    """
+    import warnings
+
+    warnings.warn(
+        "parse_tof_gid is deprecated, use parse_tof_idx instead.",
+        DeprecationWarning,
+        stacklevel=2,
+    )
+    return parse_tof_idx(gid)
 
 
 def tof_hit_status_to_is_raw(status: IntLike) -> BoolLike:

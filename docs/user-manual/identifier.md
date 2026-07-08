@@ -49,8 +49,8 @@ tof_part = p3id.tof_id_to_part(tof_digi["m_intId"])
 # get EMC theta number
 emc_theta = p3id.emc_id_to_theta(emc_digi["m_intId"])
 
-# get detector gid from electronics ID
-tof_gid = p3id.tof_id_to_gid(tof_digi["m_intId"])
+# get detector index from electronics ID
+tof_idx = p3id.tof_id_to_idx(tof_digi["m_intId"])
 ```
 
 See the [Identifier API](../api/pybes3.identifier.md) for all available methods.

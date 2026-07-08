@@ -4,9 +4,9 @@ project(pybes3-dev)
 
 find_package(BOSS REQUIRED)
 
-gaudi_add_executable(ExportGid
+gaudi_add_executable(ExportIdx
     SOURCES
-        src/ExportGid.cc
+        src/ExportIdx.cc
     LINK
         ROOT::Core
         ROOT::Tree

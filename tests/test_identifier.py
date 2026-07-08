@@ -1,5 +1,6 @@
 import awkward as ak
 import numpy as np
+import pytest
 import uproot
 
 from pybes3 import identifier
@@ -56,7 +57,7 @@ def test_mdc_id(digi_event):
 
 def test_parse_mdc_id(digi_event):
     mdc_id_ak: ak.Array = digi_event["m_mdcDigiCol"]["m_intId"]
-    mdc_fields = ["gid", "layer", "wire", "is_stereo"]
+    mdc_fields = ["idx", "layer", "wire", "is_stereo"]
 
     wire_ak = identifier.mdc_id_to_wire(mdc_id_ak)
     layer_ak = identifier.mdc_id_to_layer(mdc_id_ak)
@@ -93,7 +94,7 @@ def test_parse_mdc_id(digi_event):
 def test_parse_mdc_digi_rtraw(digi_event):
     digi_ak: ak.Array = digi_event["m_mdcDigiCol"]
     fields = [
-        "gid",
+        "idx",
         "wire",
         "layer",
         "is_stereo",
@@ -119,7 +120,7 @@ def test_parse_mdc_digi_rtraw(digi_event):
 def test_parse_mdc_digi_raw(raw_event):
     digi_ak: ak.Array = raw_event["mdc"]
     fields = [
-        "gid",
+        "idx",
         "wire",
         "layer",
         "is_stereo",
@@ -192,7 +193,7 @@ def test_emc_id(digi_event):
 
 def test_parse_emc_id(digi_event):
     emc_id_ak: ak.Array = digi_event["m_emcDigiCol"]["m_intId"]
-    emc_fields = ["gid", "part", "theta", "phi"]
+    emc_fields = ["idx", "part", "theta", "phi"]
 
     module_ak = identifier.emc_id_to_module(emc_id_ak)
     theta_ak = identifier.emc_id_to_theta(emc_id_ak)
@@ -229,7 +230,7 @@ def test_parse_emc_id(digi_event):
 def test_parse_emc_digi_rtraw(digi_event):
     emc_digi_ak: ak.Array = digi_event["m_emcDigiCol"]
     fields = [
-        "gid",
+        "idx",
         "part",
         "theta",
         "phi",
@@ -254,7 +255,7 @@ def test_parse_emc_digi_rtraw(digi_event):
 def test_parse_emc_digi_raw(raw_event):
     digi_ak: ak.Array = raw_event["emc"]
     fields = [
-        "gid",
+        "idx",
         "part",
         "theta",
         "phi",
@@ -354,7 +355,7 @@ def test_parse_tof_id(test_data_dir):
 
     # Test awkward
     ak_res1 = identifier.parse_tof_id(tof_id_ak)
-    assert ak_res1.fields == ["gid", "part", "layer_or_module", "phi_or_strip", "end"]
+    assert ak_res1.fields == ["idx", "part", "layer_or_module", "phi_or_strip", "end"]
     assert len(ak_res1.positional_axis) == 2
     assert ak.all(ak_res1["part"] == part_ak)
     assert ak.all(ak_res1["layer_or_module"] == layer_or_module_ak)
@@ -369,7 +370,7 @@ def test_parse_tof_id(test_data_dir):
 
     # Test numpy
     np_res = identifier.parse_tof_id(tof_id_np)
-    assert list(np_res.keys()) == ["gid", "part", "layer_or_module", "phi_or_strip", "end"]
+    assert list(np_res.keys()) == ["idx", "part", "layer_or_module", "phi_or_strip", "end"]
     assert np.all(np_res["part"] == part_np)
     assert np.all(np_res["layer_or_module"] == layer_or_module_np)
     assert np.all(np_res["phi_or_strip"] == phi_or_strip_np)
@@ -378,7 +379,7 @@ def test_parse_tof_id(test_data_dir):
     # Test int
     tof_id_int = int(tof_id_np[0])
     int_res = identifier.parse_tof_id(tof_id_int)
-    assert list(int_res.keys()) == ["gid", "part", "layer_or_module", "phi_or_strip", "end"]
+    assert list(int_res.keys()) == ["idx", "part", "layer_or_module", "phi_or_strip", "end"]
     assert int_res["part"] == part_np[0]
     assert int_res["layer_or_module"] == layer_or_module_np[0]
     assert int_res["phi_or_strip"] == phi_or_strip_np[0]
@@ -388,7 +389,7 @@ def test_parse_tof_id(test_data_dir):
 def test_parse_tof_digi_rtraw(digi_event):
     tof_digi_ak: ak.Array = digi_event["m_tofDigiCol"]
     fields = [
-        "gid",
+        "idx",
         "part",
         "layer_or_module",
         "phi_or_strip",
@@ -414,7 +415,7 @@ def test_parse_tof_digi_rtraw(digi_event):
 def test_parse_tof_digi_raw(raw_event):
     digi_ak: ak.Array = raw_event["tof"]
     fields = [
-        "gid",
+        "idx",
         "part",
         "layer_or_module",
         "phi_or_strip",
@@ -652,7 +653,7 @@ def test_parse_cgem_id(cgem_digi_event):
 
     # Test awkward, flat=False, library='ak'
     ak_res1 = identifier.parse_cgem_id(cgem_id_ak)
-    assert ak_res1.fields == ["gid", "layer", "sheet", "strip_type", "strip"]
+    assert ak_res1.fields == ["idx", "layer", "sheet", "strip_type", "strip"]
     assert len(ak_res1.positional_axis) == 2
     assert ak.all(ak_res1["layer"] == layer_ak)
     assert ak.all(ak_res1["sheet"] == sheet_ak)
@@ -667,7 +668,7 @@ def test_parse_cgem_id(cgem_digi_event):
 
     # Test numpy
     np_res = identifier.parse_cgem_id(cgem_id_np)
-    assert list(np_res.keys()) == ["gid", "layer", "sheet", "strip_type", "strip"]
+    assert list(np_res.keys()) == ["idx", "layer", "sheet", "strip_type", "strip"]
     assert np.all(np_res["layer"] == layer_np)
     assert np.all(np_res["sheet"] == sheet_np)
     assert np.all(np_res["strip_type"] == strip_type_np)
@@ -676,56 +677,64 @@ def test_parse_cgem_id(cgem_digi_event):
     # Test int
     cgem_id_int = int(cgem_id_np[0])
     int_res = identifier.parse_cgem_id(cgem_id_int)
-    assert list(int_res.keys()) == ["gid", "layer", "sheet", "strip_type", "strip"]
+    assert list(int_res.keys()) == ["idx", "layer", "sheet", "strip_type", "strip"]
     assert int_res["layer"] == layer_np[0]
     assert int_res["sheet"] == sheet_np[0]
     assert int_res["strip_type"] == strip_type_np[0]
     assert int_res["strip"] == strip_np[0]
 
 
-def test_mdc_id_to_gid(digi_event):
+def test_mdc_id_to_idx(digi_event):
     from pybes3 import detectors as det
 
     mdc_id_ak: ak.Array = digi_event["m_mdcDigiCol"]["m_intId"]
 
-    # gid should equal det.get_mdc_gid(layer, wire)
-    expected_gid = det.get_mdc_gid(
+    # idx should equal det.get_mdc_idx(layer, wire)
+    expected_idx = det.get_mdc_idx(
         identifier.mdc_id_to_layer(mdc_id_ak),
         identifier.mdc_id_to_wire(mdc_id_ak),
     )
-    assert ak.all(identifier.mdc_id_to_gid(mdc_id_ak) == expected_gid)
+    assert ak.all(identifier.mdc_id_to_idx(mdc_id_ak) == expected_idx)
 
     mdc_id_np = ak.flatten(mdc_id_ak).to_numpy()
-    expected_gid_np = ak.flatten(expected_gid).to_numpy()
-    assert np.all(identifier.mdc_id_to_gid(mdc_id_np) == expected_gid_np)
+    expected_idx_np = ak.flatten(expected_idx).to_numpy()
+    assert np.all(identifier.mdc_id_to_idx(mdc_id_np) == expected_idx_np)
 
     tmp_id = mdc_id_np[0]
-    assert identifier.mdc_id_to_gid(tmp_id) == expected_gid_np[0]
-    assert identifier.mdc_id_to_gid(int(tmp_id)) == expected_gid_np[0]
+    assert identifier.mdc_id_to_idx(tmp_id) == expected_idx_np[0]
+    assert identifier.mdc_id_to_idx(int(tmp_id)) == expected_idx_np[0]
+
+    # deprecated alias
+    with pytest.deprecated_call():
+        assert identifier.mdc_id_to_gid(tmp_id) == expected_idx_np[0]
 
 
-def test_emc_id_to_gid(digi_event):
+def test_emc_id_to_idx(digi_event):
     from pybes3 import detectors as det
 
     emc_id_ak: ak.Array = digi_event["m_emcDigiCol"]["m_intId"]
 
-    expected_gid = det.get_emc_gid(
+    expected_idx = det.get_emc_idx(
         identifier.emc_id_to_module(emc_id_ak),
         identifier.emc_id_to_theta(emc_id_ak),
         identifier.emc_id_to_phi(emc_id_ak),
     )
-    assert ak.all(identifier.emc_id_to_gid(emc_id_ak) == expected_gid)
+    assert ak.all(identifier.emc_id_to_idx(emc_id_ak) == expected_idx)
 
     emc_id_np = ak.flatten(emc_id_ak).to_numpy()
-    expected_gid_np = ak.flatten(expected_gid).to_numpy()
-    assert np.all(identifier.emc_id_to_gid(emc_id_np) == expected_gid_np)
+    expected_idx_np = ak.flatten(expected_idx).to_numpy()
+    assert np.all(identifier.emc_id_to_idx(emc_id_np) == expected_idx_np)
 
     tmp_id = emc_id_np[0]
-    assert identifier.emc_id_to_gid(tmp_id) == expected_gid_np[0]
-    assert identifier.emc_id_to_gid(int(tmp_id)) == expected_gid_np[0]
+    assert identifier.emc_id_to_idx(tmp_id) == expected_idx_np[0]
+    assert identifier.emc_id_to_idx(int(tmp_id)) == expected_idx_np[0]
+
+    # deprecated alias
+    with pytest.deprecated_call():
+        assert identifier.emc_id_to_gid(tmp_id) == expected_idx_np[0]
 
 
-def test_tof_id_to_gid(test_data_dir):
+def test_tof_id_to_idx(test_data_dir):
     from pybes3 import detectors as det
 
     tof_id_ak: ak.Array = uproot.open(test_data_dir / "test_mrpc.rtraw")[
@@ -733,48 +742,56 @@ def test_tof_id_to_gid(test_data_dir):
     ].array()["m_intId"]
 
     part_ak = identifier.tof_id_to_part(tof_id_ak)
-    expected_gid = det.get_tof_gid(
+    expected_idx = det.get_tof_idx(
         part_ak,
         identifier.tof_id_to_layer_or_module(tof_id_ak, part_ak),
         identifier.tof_id_to_phi_or_strip(tof_id_ak, part_ak),
     )
-    assert ak.all(identifier.tof_id_to_gid(tof_id_ak) == expected_gid)
+    assert ak.all(identifier.tof_id_to_idx(tof_id_ak) == expected_idx)
 
     tof_id_np = ak.flatten(tof_id_ak).to_numpy()
-    expected_gid_np = ak.flatten(expected_gid).to_numpy()
-    assert np.all(identifier.tof_id_to_gid(tof_id_np) == expected_gid_np)
+    expected_idx_np = ak.flatten(expected_idx).to_numpy()
+    assert np.all(identifier.tof_id_to_idx(tof_id_np) == expected_idx_np)
 
     tmp_id = tof_id_np[0]
-    assert identifier.tof_id_to_gid(tmp_id) == expected_gid_np[0]
-    assert identifier.tof_id_to_gid(int(tmp_id)) == expected_gid_np[0]
+    assert identifier.tof_id_to_idx(tmp_id) == expected_idx_np[0]
+    assert identifier.tof_id_to_idx(int(tmp_id)) == expected_idx_np[0]
+
+    # deprecated alias
+    with pytest.deprecated_call():
+        assert identifier.tof_id_to_gid(tmp_id) == expected_idx_np[0]
 
 
-def test_cgem_id_to_gid(cgem_digi_event):
+def test_cgem_id_to_idx(cgem_digi_event):
     from pybes3 import detectors as det
 
     cgem_id_ak: ak.Array = cgem_digi_event["m_cgemDigiCol"]["m_intId"]
 
-    expected_gid = det.get_cgem_gid(
+    expected_idx = det.get_cgem_idx(
         identifier.cgem_id_to_layer(cgem_id_ak),
         identifier.cgem_id_to_sheet(cgem_id_ak),
         identifier.cgem_id_to_strip_type(cgem_id_ak),
         identifier.cgem_id_to_strip(cgem_id_ak),
     )
-    assert ak.all(identifier.cgem_id_to_gid(cgem_id_ak) == expected_gid)
+    assert ak.all(identifier.cgem_id_to_idx(cgem_id_ak) == expected_idx)
 
     cgem_id_np = ak.flatten(cgem_id_ak).to_numpy()
-    expected_gid_np = ak.flatten(expected_gid).to_numpy()
-    assert np.all(identifier.cgem_id_to_gid(cgem_id_np) == expected_gid_np)
+    expected_idx_np = ak.flatten(expected_idx).to_numpy()
+    assert np.all(identifier.cgem_id_to_idx(cgem_id_np) == expected_idx_np)
 
     tmp_id = cgem_id_np[0]
-    assert identifier.cgem_id_to_gid(tmp_id) == expected_gid_np[0]
-    assert identifier.cgem_id_to_gid(int(tmp_id)) == expected_gid_np[0]
+    assert identifier.cgem_id_to_idx(tmp_id) == expected_idx_np[0]
+    assert identifier.cgem_id_to_idx(int(tmp_id)) == expected_idx_np[0]
+
+    # deprecated alias
+    with pytest.deprecated_call():
+        assert identifier.cgem_id_to_gid(tmp_id) == expected_idx_np[0]
 
 
 def test_parse_cgem_digi_rtraw(cgem_digi_event):
     digi_ak: ak.Array = cgem_digi_event["m_cgemDigiCol"]
     fields = [
-        "gid",
+        "idx",
         "layer",
         "sheet",
         "strip_type",
@@ -800,7 +817,7 @@ def test_parse_cgem_digi_rtraw(cgem_digi_event):
 def test_parse_cgem_digi_raw(raw_event):
     digi_ak: ak.Array = raw_event["cgem"]
     fields = [
-        "gid",
+        "idx",
         "layer",
         "sheet",
         "strip_type",
