@@ -5,9 +5,7 @@ constexpr uint32_t DIGI_MDC_FLAG    = 0x10;
 constexpr uint32_t DIGI_TOF_FLAG    = 0x20;
 constexpr uint32_t DIGI_EMC_FLAG    = 0x30;
 constexpr uint32_t DIGI_MUC_FLAG    = 0x40;
-constexpr uint32_t DIGI_HLT_FLAG    = 0x50;
 constexpr uint32_t DIGI_CGEM_FLAG   = 0x60;
-constexpr uint32_t DIGI_MRPC_FLAG   = 0x70;
 constexpr uint32_t DIGI_FLAG_OFFSET = 24;
 constexpr uint32_t DIGI_FLAG_MASK   = 0xFF000000;
 

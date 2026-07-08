@@ -12,6 +12,10 @@ project(${SKBUILD_PROJECT_NAME}
     LANGUAGES CXX C
 )
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
+    add_compile_options($<$<COMPILE_LANGUAGE:CXX>:-Wall> $<$<COMPILE_LANGUAGE:CXX>:-Werror>)
+endif()
+
 set(PYBIND11_NEWPYTHON ON)
 find_package(pybind11 REQUIRED)
 find_package(uproot-custom REQUIRED)

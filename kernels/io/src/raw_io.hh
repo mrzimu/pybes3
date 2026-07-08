@@ -18,7 +18,7 @@ namespace py = pybind11;
 using namespace std;
 
 class RawBinaryParser {
-    enum RawFlag : const uint32_t {
+    enum RawFlag : uint32_t {
         FILE_START      = 0x1234AAAA,
         FILE_NAME       = 0x1234AABB,
         RUN_PARAMS      = 0x1234BBBB,
@@ -33,7 +33,7 @@ class RawBinaryParser {
         ROD          = 0xEE1234EE,
     };
 
-    enum FieldID : const uint32_t {
+    enum FieldID : uint32_t {
         MDC     = 0xA1,
         TOF     = 0xA2,
         EMC     = 0xA3,

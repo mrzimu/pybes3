@@ -93,7 +93,7 @@ PyObject* _init_mdc_geom( PyObject* self, PyObject* args ) {
     memcpy( _west_y.data(), PyArray_DATA( west_y ), _west_y.size() * sizeof( double ) );
     memcpy( _west_z.data(), PyArray_DATA( west_z ), _west_z.size() * sizeof( double ) );
 
-    for ( int i = 0; i < N_WIRES; i++ )
+    for ( size_t i = 0; i < N_WIRES; i++ )
     {
         _dx_dz[i] = ( _east_x[i] - _west_x[i] ) / ( _east_z[i] - _west_z[i] );
         _dy_dz[i] = ( _east_y[i] - _west_y[i] ) / ( _east_z[i] - _west_z[i] );

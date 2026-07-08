@@ -71,9 +71,9 @@ class Bes3SymMatrixArrayReader : public IReader {
         , m_data( make_shared_vector<T>() )
         , m_flat_size( flat_size )
         , m_full_dim( full_dim ) {
-        for ( auto i = 0; i < full_dim; i++ )
+        for ( uint32_t i = 0; i < full_dim; i++ )
         {
-            for ( auto j = 0; j < full_dim; j++ )
+            for ( uint32_t j = 0; j < full_dim; j++ )
             {
                 auto idx = get_symmetric_matrix_index( i, j );
                 if ( idx >= flat_size )
@@ -87,19 +87,19 @@ class Bes3SymMatrixArrayReader : public IReader {
         }
     }
 
-    const int get_symmetric_matrix_index( int i, int j ) const {
+    uint32_t get_symmetric_matrix_index( uint32_t i, uint32_t j ) const {
         return i < j ? j * ( j + 1 ) / 2 + i : i * ( i + 1 ) / 2 + j;
     }
 
     void read( BinaryStream& stream ) override {
         // temporary flat array to hold the data
         std::vector<T> flat_array( m_flat_size );
-        for ( int i = 0; i < m_flat_size; i++ ) flat_array[i] = stream.read<T>();
+        for ( uint32_t i = 0; i < m_flat_size; i++ ) flat_array[i] = stream.read<T>();
 
         // fill the m_data with the symmetric matrix data
-        for ( int i = 0; i < m_full_dim; i++ )
+        for ( uint32_t i = 0; i < m_full_dim; i++ )
         {
-            for ( int j = 0; j < m_full_dim; j++ )
+            for ( uint32_t j = 0; j < m_full_dim; j++ )
             {
                 auto idx = get_symmetric_matrix_index( i, j );
                 m_data->push_back( flat_array[idx] );

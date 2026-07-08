@@ -150,9 +150,9 @@ uint32_t RawBinaryParser::read_field() {
     auto flag = read();
     if ( flag != RawFlag::SUB_DETECTOR ) { throw runtime_error( "Invalid field flag" ); }
 
-    auto total_size        = read();
-    auto header_size       = read();
-    auto format_version    = read();
+    auto total_size  = read();
+    auto header_size = read();
+    skip(); // format-version
     auto source_identifier = read();
 
     auto field_id = ( source_identifier >> 16 ) & 0xFFFF;
@@ -188,10 +188,10 @@ uint32_t RawBinaryParser::read_ROS( const uint32_t field_id ) {
     auto flag = read();
     if ( flag != RawFlag::ROS ) { throw runtime_error( "Invalid ROS flag" ); }
 
-    auto total_size        = read();
-    auto header_size       = read();
-    auto format_version    = read();
-    auto source_idenfitier = read();
+    auto total_size  = read();
+    auto header_size = read();
+    skip(); // format-version
+    skip(); // source_idenfitier
 
     auto n_status = read();
     skip( n_status );
@@ -223,10 +223,10 @@ uint32_t RawBinaryParser::read_ROB( const uint32_t field_id ) {
     auto flag = read();
     if ( flag != RawFlag::ROB ) { throw runtime_error( "Invalid ROB flag" ); }
 
-    auto rob_total_size        = read();
-    auto rob_header_size       = read();
-    auto rob_format_version    = read();
-    auto rob_source_idenfitier = read();
+    auto rob_total_size  = read();
+    auto rob_header_size = read();
+    skip(); // rob_format_version
+    skip(); // rob_source_identifier
 
     auto rob_n_status = read();
     skip( rob_n_status );
@@ -667,8 +667,6 @@ void RawBinaryParser::read_cgem_buffer() {
                                  to_string( pack_header ) );
         }
 
-        auto status = ( *cursor >> 26 ) & 0x7;
-        // auto n_hits = ( cursor[1] >> 16 ) & 0xFF; // no need to read this
         auto local_l1_timestamp = cursor[1] & 0xFFFF;
 
         // hits
@@ -695,7 +693,7 @@ void RawBinaryParser::read_cgem_buffer() {
         }
 
         auto trailer0 = cursor[0];
-        auto trailer1 = cursor[1];
+        // auto trailer1 = cursor[1];
         auto trailer2 = cursor[2];
         auto trailer3 = cursor[3];
         cursor += 4;
@@ -716,8 +714,6 @@ void RawBinaryParser::read_cgem_buffer() {
                 "Invalid CGEM UDPSeqCounter[1]: expecting 0xA0000000 but get " +
                 to_string( trailer3 & 0xF0000000 ) );
         }
-
-        status |= ( trailer2 >> 22 ) & 0x38;
 
         if ( ( ( trailer2 >> 20 ) & 0x1F ) != gemroc )
         {
