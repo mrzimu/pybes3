@@ -209,18 +209,18 @@ class Bes3CgemClusterColReader : public IReader {
     py::object data() const override {
         py::dict result;
         result["offsets"]         = make_array( m_offsets );
-        result["m_clusterID"]     = make_array( m_clusterid );
-        result["m_trkID"]         = make_array( m_trkid );
-        result["m_layerID"]       = make_array( m_layerid );
-        result["m_sheetID"]       = make_array( m_sheetid );
+        result["m_clusterid"]     = make_array( m_clusterid );
+        result["m_trkid"]         = make_array( m_trkid );
+        result["m_layerid"]       = make_array( m_layerid );
+        result["m_sheetid"]       = make_array( m_sheetid );
         result["m_flag"]          = make_array( m_flag );
-        result["m_energyDeposit"] = make_array( m_energydeposit );
-        result["m_recPhi"]        = make_array( m_recphi );
-        if ( m_version == 0 ) result["m_recPositionY"] = make_array( m_recpositiony );
-        result["m_recV"]        = make_array( m_recv );
+        result["m_energydeposit"] = make_array( m_energydeposit );
+        result["m_recphi"]        = make_array( m_recphi );
+        if ( m_version == 0 ) result["m_recpositiony"] = make_array( m_recpositiony );
+        result["m_recv"]        = make_array( m_recv );
         result["m_recZ"]        = make_array( m_recZ );
-        result["m_clusterFlag"] = make_array( m_clusterflag );
-        result["m_stripID"]     = make_array( m_stripid );
+        result["m_clusterflag"] = make_array( m_clusterflag );
+        result["m_stripid"]     = make_array( m_stripid );
         return result;
     }
 };
