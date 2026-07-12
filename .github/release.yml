@@ -6,6 +6,7 @@ changelog:
     - title: Bug Fixes and Performance Improvements
       labels:
         - bug
+        - fix
         - performance
     - title: Refactorings
       labels:
