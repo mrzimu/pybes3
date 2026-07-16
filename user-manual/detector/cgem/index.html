@@ -408,14 +408,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../convention/global-id/" class="md-nav__link">
+      <a href="../../../convention/indexing/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Global ID (gid)
+    Indexing
   
 
     
@@ -748,10 +748,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gid-conversion" class="md-nav__link">
+  <a href="#index-conversion" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GID conversion
+        Index conversion
       
     </span>
   </a>
@@ -759,10 +759,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gid-parser" class="md-nav__link">
+  <a href="#index-parser" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GID parser
+        Index parser
       
     </span>
   </a>
@@ -1075,10 +1075,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#gid-conversion" class="md-nav__link">
+  <a href="#index-conversion" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GID conversion
+        Index conversion
       
     </span>
   </a>
@@ -1086,10 +1086,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#gid-parser" class="md-nav__link">
+  <a href="#index-parser" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GID parser
+        Index parser
       
     </span>
   </a>
@@ -1117,56 +1117,56 @@
 
 
 <h1 id="cgem">CGEM</h1>
-<h2 id="gid-conversion">GID conversion</h2>
-<p>All <code>cgem_gid_to_*</code> and <code>get_cgem_gid</code> are decorated with <code>@nb.vectorize</code>.
+<h2 id="index-conversion">Index conversion</h2>
+<p>All <code>cgem_idx_to_*</code> and <code>get_cgem_idx</code> are decorated with <code>@nb.vectorize</code>.
 The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Scalar</label><label for="__tabbed_1_2">NumPy array</label><label for="__tabbed_1_3">Awkward Array</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
 
-<span class="n">gid</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">layer</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_layer</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>       <span class="c1"># 0</span>
-<span class="n">sheet</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_sheet</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">strip_type</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_strip_type</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">strip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_strip</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">layer</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_layer</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>       <span class="c1"># 0</span>
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_sheet</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="n">strip_type</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_strip_type</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="n">strip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_strip</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
-<span class="n">is_xstrip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_is_xstrip</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">is_vstrip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_is_vstrip</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">is_xstrip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_is_xstrip</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="n">is_vstrip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_is_vstrip</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
-<span class="n">gid</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_cgem_gid</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">sheet</span><span class="p">,</span> <span class="n">strip_type</span><span class="p">,</span> <span class="n">strip</span><span class="p">)</span>
+<span class="n">idx</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_cgem_idx</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">sheet</span><span class="p">,</span> <span class="n">strip_type</span><span class="p">,</span> <span class="n">strip</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
 
-<span class="n">gid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">5000</span><span class="p">])</span>
-<span class="n">layer</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_layer</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>       <span class="c1"># array([0, 0, 1])</span>
-<span class="n">sheet</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_sheet</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">strip_type</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_strip_type</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">strip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_strip</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">5000</span><span class="p">])</span>
+<span class="n">layer</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_layer</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>       <span class="c1"># array([0, 0, 1])</span>
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_sheet</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="n">strip_type</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_strip_type</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="n">strip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_strip</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
-<span class="n">is_xstrip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_is_xstrip</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">is_vstrip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_is_vstrip</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">is_xstrip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_is_xstrip</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="n">is_vstrip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_is_vstrip</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
-<span class="n">gid</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_cgem_gid</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">sheet</span><span class="p">,</span> <span class="n">strip_type</span><span class="p">,</span> <span class="n">strip</span><span class="p">)</span>
+<span class="n">idx</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_cgem_idx</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">sheet</span><span class="p">,</span> <span class="n">strip_type</span><span class="p">,</span> <span class="n">strip</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">awkward</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ak</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
 
-<span class="n">gid</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="p">[</span><span class="mi">5000</span><span class="p">]])</span>
-<span class="n">layer</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_layer</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>       <span class="c1"># &lt;Array [[0, 0], [1]] type=&#39;...&#39;&gt;</span>
-<span class="n">sheet</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_sheet</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">strip_type</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_strip_type</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">strip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_strip</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">idx</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="p">[</span><span class="mi">5000</span><span class="p">]])</span>
+<span class="n">layer</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_layer</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>       <span class="c1"># &lt;Array [[0, 0], [1]] type=&#39;...&#39;&gt;</span>
+<span class="n">sheet</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_sheet</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="n">strip_type</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_strip_type</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="n">strip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_strip</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
-<span class="n">is_xstrip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_is_xstrip</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
-<span class="n">is_vstrip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_is_vstrip</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">is_xstrip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_is_xstrip</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="n">is_vstrip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_idx_to_is_vstrip</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 
-<span class="n">gid</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_cgem_gid</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">sheet</span><span class="p">,</span> <span class="n">strip_type</span><span class="p">,</span> <span class="n">strip</span><span class="p">)</span>
+<span class="n">idx</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_cgem_idx</span><span class="p">(</span><span class="n">layer</span><span class="p">,</span> <span class="n">sheet</span><span class="p">,</span> <span class="n">strip_type</span><span class="p">,</span> <span class="n">strip</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1175,10 +1175,10 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
 <p class="admonition-title">Info</p>
 <p><code>strip_type=0</code> for x-strips and <code>strip_type=1</code> for v-strips.</p>
 </div>
-<h2 id="gid-parser">GID parser</h2>
-<p>Use <code>parse_cgem_gid</code> to parse all fields from a gid at once:</p>
-<div class="highlight"><pre><span></span><code><span class="c1"># parse all fields; returns a dict (or ak.Array when gid is an ak.Array)</span>
-<span class="n">res</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">parse_cgem_gid</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<h2 id="index-parser">Index parser</h2>
+<p>Use <code>parse_cgem_idx</code> to parse all fields from an index at once:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># parse all fields; returns a dict (or ak.Array when the input is an ak.Array)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">parse_cgem_idx</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
 <span class="n">layer</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;layer&quot;</span><span class="p">]</span>
 <span class="n">sheet</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;sheet&quot;</span><span class="p">]</span>
 <span class="n">strip_type</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;strip_type&quot;</span><span class="p">]</span>

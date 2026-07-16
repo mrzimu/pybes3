@@ -492,14 +492,14 @@
   
   
     <li class="md-nav__item">
-      <a href="convention/global-id/" class="md-nav__link">
+      <a href="convention/indexing/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Global ID (gid)
+    Indexing
   
 
     
@@ -1182,9 +1182,9 @@
   </a></p>
 </li>
 <li>
-<p><a href="convention/global-id" style="text-decoration: none; color: inherit;">
-    <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 7v2H9v6h1v2H6v-2h1V9H6V7zm6 0a2 2 0 0 1 2 2v6c0 1.11-.89 2-2 2h-4V7m4 2h-2v6h2z"/></svg></span> <strong>Global ID</strong></p>
-<p>Global ID numbers for each detector element in <code>pybes3</code>.
+<p><a href="convention/indexing" style="text-decoration: none; color: inherit;">
+    <span class="twemoji"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M10 7v2H9v6h1v2H6v-2h1V9H6V7zm6 0a2 2 0 0 1 2 2v6c0 1.11-.89 2-2 2h-4V7m4 2h-2v6h2z"/></svg></span> <strong>Indexing</strong></p>
+<p>Zero-based indices for detector elements in <code>pybes3</code>.
   </a></p>
 </li>
 <li>
@@ -1208,7 +1208,7 @@
 </ul>
 </div>
 <h2 id="performance">Performance</h2>
-<p><code>pybes3</code> is designed to be fast and efficient. It uses <code>numba</code> to accelerate some of the operations, such as helix operations and detector identifier conversion. When <code>numba</code> is not available, <code>pybes3</code> falls back to C++ extensions.</p>
+<p><code>pybes3</code> is designed to be fast and efficient. It uses C++ to accelerate some of the operations, such as helix operations, detector identifier conversion, etc.</p>
 <h3 id="data-reading">Data reading</h3>
 <p>A simple benchmark compares the performance of <code>pybes3</code> and <code>BOSS8</code> in reading <code>dst</code> files:</p>
 <ul>
