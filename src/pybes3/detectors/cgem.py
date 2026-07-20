@@ -6,7 +6,6 @@ import awkward as ak
 import numpy as np
 
 import pybes3._kernels._ufuncs as _ufuncs
-from pybes3._utils import _check_range
 from pybes3.typing import BoolLike, IntLike
 
 N_LAYER = 3
@@ -21,10 +20,6 @@ N_VSTRIPS = np.array([1173, 1077, 1395])
 N_SHEETS.setflags(write=False)
 N_XSTRIPS.setflags(write=False)
 N_VSTRIPS.setflags(write=False)
-
-
-def _check_idx(idx: IntLike) -> None:
-    _check_range(idx, 0, N_STRIPS, "idx")
 
 
 def get_cgem_idx(
@@ -72,7 +67,6 @@ def cgem_idx_to_layer(idx: IntLike) -> IntLike:
     Returns:
         The layer number of the strip.
     """
-    _check_idx(idx)
     return _ufuncs.cgem_idx_to_layer(idx)
 
 
@@ -101,7 +95,6 @@ def cgem_idx_to_sheet(idx: IntLike) -> IntLike:
     Returns:
         The sheet number of the strip.
     """
-    _check_idx(idx)
     return _ufuncs.cgem_idx_to_sheet(idx)
 
 
@@ -130,7 +123,6 @@ def cgem_idx_to_strip_type(idx: IntLike) -> IntLike:
     Returns:
         The strip type of the strip, 0 for x-strip and 1 for v-strip.
     """
-    _check_idx(idx)
     return _ufuncs.cgem_idx_to_strip_type(idx)
 
 
@@ -159,7 +151,6 @@ def cgem_idx_to_strip(idx: IntLike) -> IntLike:
     Returns:
         The strip number within the corresponding strip type.
     """
-    _check_idx(idx)
     return _ufuncs.cgem_idx_to_strip(idx)
 
 
@@ -188,7 +179,6 @@ def cgem_idx_to_is_xstrip(idx: IntLike) -> BoolLike:
     Returns:
         True if the strip is an x-strip, otherwise False.
     """
-    _check_idx(idx)
     return _ufuncs.cgem_idx_to_is_xstrip(idx)
 
 
@@ -217,7 +207,6 @@ def cgem_idx_to_is_vstrip(idx: IntLike) -> BoolLike:
     Returns:
         True if the strip is a v-strip, otherwise False.
     """
-    _check_idx(idx)
     return _ufuncs.cgem_idx_to_is_vstrip(idx)
 
 
@@ -249,7 +238,6 @@ def parse_cgem_idx(idx: IntLike) -> ak.Array | dict[str, Any]:
         Otherwise, returns a dictionary with keys "layer", "sheet", "strip_type", "strip",
         "is_xstrip" and "is_vstrip".
     """
-    _check_idx(idx)
     layer = _ufuncs.cgem_idx_to_layer(idx)
     sheet = _ufuncs.cgem_idx_to_sheet(idx)
     strip_type = _ufuncs.cgem_idx_to_strip_type(idx)

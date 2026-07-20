@@ -6,7 +6,6 @@ import awkward as ak
 import numpy as np
 
 import pybes3._kernels._ufuncs as _ufuncs
-from pybes3._utils import _check_range
 from pybes3.data import MDC_GEOM
 from pybes3.typing import BoolLike, FloatLike, IntLike
 
@@ -35,14 +34,6 @@ _ufuncs._init_mdc_geom(
     _mdc_geom_table["west_y"],
     _mdc_geom_table["west_z"],
 )
-
-
-def _check_idx(idx: IntLike) -> None:
-    _check_range(idx, 0, N_WIRES, "idx")
-
-
-def _check_layer(layer: IntLike) -> None:
-    _check_range(layer, 0, N_LAYERS, "layer")
 
 
 def get_mdc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
@@ -128,7 +119,6 @@ def mdc_idx_to_superlayer(idx: IntLike) -> IntLike:
     Returns:
         The superlayer number of the wire.
     """
-    _check_idx(idx)
     return _ufuncs.mdc_idx_to_superlayer(idx)
 
 
@@ -157,7 +147,6 @@ def mdc_layer_to_superlayer(layer: IntLike) -> IntLike:
     Returns:
         The superlayer number of the layer.
     """
-    _check_layer(layer)
     return _ufuncs.mdc_layer_to_superlayer(layer)
 
 
@@ -171,7 +160,6 @@ def mdc_idx_to_layer(idx: IntLike) -> IntLike:
     Returns:
         The layer number of the wire.
     """
-    _check_idx(idx)
     return _ufuncs.mdc_idx_to_layer(idx)
 
 
@@ -200,7 +188,6 @@ def mdc_idx_to_wire(idx: IntLike) -> IntLike:
     Returns:
         The wire number of the wire.
     """
-    _check_idx(idx)
     return _ufuncs.mdc_idx_to_wire(idx)
 
 
@@ -232,7 +219,6 @@ def mdc_idx_to_stereo(idx: IntLike) -> IntLike:
     Returns:
         The stereo of the wire.
     """
-    _check_idx(idx)
     return _ufuncs.mdc_idx_to_stereo(idx)
 
 
@@ -261,7 +247,6 @@ def mdc_layer_to_is_stereo(layer: IntLike) -> BoolLike:
     Returns:
         The is_stereo of the layer.
     """
-    _check_layer(layer)
     return _ufuncs.mdc_layer_to_is_stereo(layer)
 
 
@@ -275,7 +260,6 @@ def mdc_idx_to_is_stereo(idx: IntLike) -> BoolLike:
     Returns:
         The is_stereo of the wire.
     """
-    _check_idx(idx)
     return _ufuncs.mdc_idx_to_is_stereo(idx)
 
 
@@ -304,7 +288,6 @@ def mdc_idx_to_west_x(idx: IntLike) -> FloatLike:
     Returns:
         The west_x (cm) of the wire.
     """
-    _check_idx(idx)
     return _ufuncs.mdc_idx_to_west_x(idx)
 
 
@@ -333,7 +316,6 @@ def mdc_idx_to_west_y(idx: IntLike) -> FloatLike:
     Returns:
         The west_y (cm) of the wire.
     """
-    _check_idx(idx)
     return _ufuncs.mdc_idx_to_west_y(idx)
 
 
@@ -362,7 +344,6 @@ def mdc_idx_to_west_z(idx: IntLike) -> FloatLike:
     Returns:
         The west_z (cm) of the wire.
     """
-    _check_idx(idx)
     return _ufuncs.mdc_idx_to_west_z(idx)
 
 
@@ -391,7 +372,6 @@ def mdc_idx_to_east_x(idx: IntLike) -> FloatLike:
     Returns:
         The east_x (cm) of the wire.
     """
-    _check_idx(idx)
     return _ufuncs.mdc_idx_to_east_x(idx)
 
 
@@ -420,7 +400,6 @@ def mdc_idx_to_east_y(idx: IntLike) -> FloatLike:
     Returns:
         The east_y (cm) of the wire.
     """
-    _check_idx(idx)
     return _ufuncs.mdc_idx_to_east_y(idx)
 
 
@@ -449,7 +428,6 @@ def mdc_idx_to_east_z(idx: IntLike) -> FloatLike:
     Returns:
         The east_z (cm) of the wire.
     """
-    _check_idx(idx)
     return _ufuncs.mdc_idx_to_east_z(idx)
 
 
@@ -479,7 +457,6 @@ def mdc_idx_z_to_x(idx: IntLike, z: FloatLike) -> FloatLike:
     Returns:
         The x (cm) position of the wire at z (cm).
     """
-    _check_idx(idx)
     return _ufuncs.mdc_idx_z_to_x(idx, z)
 
 
@@ -509,7 +486,6 @@ def mdc_idx_z_to_y(idx: IntLike, z: FloatLike) -> FloatLike:
     Returns:
         The y (cm) position of the wire at z (cm).
     """
-    _check_idx(idx)
     return _ufuncs.mdc_idx_z_to_y(idx, z)
 
 
@@ -560,7 +536,6 @@ def parse_mdc_idx(idx: IntLike, geometry: bool = False) -> ak.Array | dict[str, 
     Returns:
         The parsed result.
     """
-    _check_idx(idx)
     layer = _ufuncs.mdc_idx_to_layer(idx)
     wire = _ufuncs.mdc_idx_to_wire(idx)
 
