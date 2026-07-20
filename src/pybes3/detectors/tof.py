@@ -6,7 +6,6 @@ import awkward as ak
 import numpy as np
 
 import pybes3._kernels._ufuncs as _ufuncs
-from pybes3._utils import _check_range
 from pybes3.typing import BoolLike, IntLike
 
 N_PARTS = 5
@@ -16,10 +15,6 @@ N_STRIPS = (N_LAYER_OR_MODULE * N_PHI_OR_STRIP).sum()
 
 N_LAYER_OR_MODULE.setflags(write=False)
 N_PHI_OR_STRIP.setflags(write=False)
-
-
-def _check_idx(idx: IntLike) -> None:
-    _check_range(idx, 0, N_STRIPS, "idx")
 
 
 def get_tof_idx(part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike) -> IntLike:
@@ -53,8 +48,15 @@ def get_tof_gid(part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike) 
 
 
 def tof_idx_to_part(idx: IntLike) -> IntLike:
-    """Get TOF part from index."""
-    _check_idx(idx)
+    """
+    Get TOF part from index.
+
+    Parameters:
+        idx: The strip index of the TOF strip, ranging from 0 to 1135.
+
+    Returns:
+        The part of the TOF strip.
+    """
     return _ufuncs.tof_idx_to_part(idx)
 
 
@@ -74,8 +76,15 @@ def tof_gid_to_part(gid: IntLike) -> IntLike:
 
 
 def tof_idx_to_layer_or_module(idx: IntLike) -> IntLike:
-    """Get TOF layer_or_module from index."""
-    _check_idx(idx)
+    """
+    Get TOF layer_or_module from index.
+
+    Parameters:
+        idx: The strip index of the TOF strip, ranging from 0 to 1135.
+
+    Returns:
+        The layer (for scintillator) or module (for MRPC) number of the TOF strip.
+    """
     return _ufuncs.tof_idx_to_layer_or_module(idx)
 
 
@@ -95,8 +104,15 @@ def tof_gid_to_layer_or_module(gid: IntLike) -> IntLike:
 
 
 def tof_idx_to_phi_or_strip(idx: IntLike) -> IntLike:
-    """Get TOF phi_or_strip from index."""
-    _check_idx(idx)
+    """
+    Get TOF phi_or_strip from index.
+
+    Parameters:
+        idx: The strip index of the TOF strip, ranging from 0 to 1135.
+
+    Returns:
+        The phi (for scintillator) or strip (for MRPC) number of the TOF strip.
+    """
     return _ufuncs.tof_idx_to_phi_or_strip(idx)
 
 
@@ -126,7 +142,6 @@ def parse_tof_idx(idx: IntLike) -> ak.Array | dict[str, Any]:
         If idx is a ak.Array, returns an ak.Array with fields "part", "layer_or_module" and "phi_or_strip".
         Otherwise, returns a dictionary with keys "part", "layer_or_module" and "phi_or_strip".
     """
-    _check_idx(idx)
     part = _ufuncs.tof_idx_to_part(idx)
     layer_or_module = _ufuncs.tof_idx_to_layer_or_module(idx)
     phi_or_strip = _ufuncs.tof_idx_to_phi_or_strip(idx)

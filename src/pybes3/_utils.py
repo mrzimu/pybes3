@@ -50,21 +50,3 @@ def _flat_to_numpy(array: ak.Array | ak.Record | np.ndarray | float) -> np.ndarr
         return ak.flatten(array, axis=None).to_numpy()
     else:
         return array
-
-
-def _check_range(value, min_value, max_value, name: str) -> None:
-    """
-    Check if the value is within the specified range.
-
-    Parameters:
-        value: The value to check.
-        min_value: The minimum allowed value.
-        max_value: The maximum allowed value.
-        name: The name of the parameter (for error messages).
-    """
-    if isinstance(value, (ak.Array, np.ndarray)):
-        if ak.any((value < min_value) | (value >= max_value)):
-            raise ValueError(f"Invalid {name} {value}. Must be in [{min_value}, {max_value}).")
-    else:
-        if value < min_value or value >= max_value:
-            raise ValueError(f"Invalid {name} {value}. Must be in [{min_value}, {max_value}).")

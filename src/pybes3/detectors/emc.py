@@ -6,7 +6,6 @@ import awkward as ak
 import numpy as np
 
 import pybes3._kernels._ufuncs as _ufuncs
-from pybes3._utils import _check_range
 from pybes3.data import EMC_GEOM
 from pybes3.typing import FloatLike, IntLike
 
@@ -62,14 +61,6 @@ _ufuncs._init_emc_geom(
     _front_center_y,
     _front_center_z,
 )
-
-
-def _check_idx(idx: IntLike) -> None:
-    _check_range(idx, 0, N_CRYSTALS, "idx")
-
-
-def _check_point(p: IntLike) -> None:
-    _check_range(p, 0, 8, "point")
 
 
 def get_emc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
@@ -196,7 +187,6 @@ def emc_idx_to_part(idx: IntLike) -> IntLike:
     Returns:
         The part number of the crystal.
     """
-    _check_idx(idx)
     return _ufuncs.emc_idx_to_part(idx)
 
 
@@ -225,7 +215,6 @@ def emc_idx_to_theta(idx: IntLike) -> IntLike:
     Returns:
         The theta number of the crystal.
     """
-    _check_idx(idx)
     return _ufuncs.emc_idx_to_theta(idx)
 
 
@@ -254,7 +243,6 @@ def emc_idx_to_phi(idx: IntLike) -> IntLike:
     Returns:
         The phi number of the crystal.
     """
-    _check_idx(idx)
     return _ufuncs.emc_idx_to_phi(idx)
 
 
@@ -284,8 +272,6 @@ def emc_idx_to_point_x(idx: IntLike, point: IntLike) -> FloatLike:
     Returns:
         The x coordinate of the point.
     """
-    _check_idx(idx)
-    _check_point(point)
     return _ufuncs.emc_idx_to_point_x(idx, point)
 
 
@@ -315,8 +301,6 @@ def emc_idx_to_point_y(idx: IntLike, point: IntLike) -> FloatLike:
     Returns:
         The y coordinate of the point.
     """
-    _check_idx(idx)
-    _check_point(point)
     return _ufuncs.emc_idx_to_point_y(idx, point)
 
 
@@ -346,8 +330,6 @@ def emc_idx_to_point_z(idx: IntLike, point: IntLike) -> FloatLike:
     Returns:
         The z coordinate of the point.
     """
-    _check_idx(idx)
-    _check_point(point)
     return _ufuncs.emc_idx_to_point_z(idx, point)
 
 
@@ -376,7 +358,6 @@ def emc_idx_to_center_x(idx: IntLike) -> FloatLike:
     Returns:
         The x coordinate of the crystal's center.
     """
-    _check_idx(idx)
     return _ufuncs.emc_idx_to_center_x(idx)
 
 
@@ -405,7 +386,6 @@ def emc_idx_to_center_y(idx: IntLike) -> FloatLike:
     Returns:
         The y coordinate of the crystal's center.
     """
-    _check_idx(idx)
     return _ufuncs.emc_idx_to_center_y(idx)
 
 
@@ -434,7 +414,6 @@ def emc_idx_to_center_z(idx: IntLike) -> FloatLike:
     Returns:
         The z coordinate of the crystal's center.
     """
-    _check_idx(idx)
     return _ufuncs.emc_idx_to_center_z(idx)
 
 
@@ -463,7 +442,6 @@ def emc_idx_to_front_center_x(idx: IntLike) -> FloatLike:
     Returns:
         The x coordinate of the crystal's front center.
     """
-    _check_idx(idx)
     return _ufuncs.emc_idx_to_front_center_x(idx)
 
 
@@ -492,7 +470,6 @@ def emc_idx_to_front_center_y(idx: IntLike) -> FloatLike:
     Returns:
         The y coordinate of the crystal's front center.
     """
-    _check_idx(idx)
     return _ufuncs.emc_idx_to_front_center_y(idx)
 
 
@@ -521,7 +498,6 @@ def emc_idx_to_front_center_z(idx: IntLike) -> FloatLike:
     Returns:
         The z coordinate of the crystal's front center.
     """
-    _check_idx(idx)
     return _ufuncs.emc_idx_to_front_center_z(idx)
 
 
@@ -573,7 +549,6 @@ def parse_emc_idx(idx: IntLike, geometry: bool = False) -> ak.Array | dict[str, 
     Returns:
         The parsed result.
     """
-    _check_idx(idx)
     part = _ufuncs.emc_idx_to_part(idx)
     theta = _ufuncs.emc_idx_to_theta(idx)
     phi = _ufuncs.emc_idx_to_phi(idx)
