@@ -408,14 +408,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../convention/indexing/" class="md-nav__link">
+      <a href="../../../convention/gid/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Indexing
+    Global ID (gid)
   
 
     
@@ -692,10 +692,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#index-conversion" class="md-nav__link">
+  <a href="#gid-conversion" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Index conversion
+        GID conversion
       
     </span>
   </a>
@@ -703,10 +703,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#index-parser" class="md-nav__link">
+  <a href="#gid-parser" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Index parser
+        GID parser
       
     </span>
   </a>
@@ -1086,10 +1086,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#index-conversion" class="md-nav__link">
+  <a href="#gid-conversion" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Index conversion
+        GID conversion
       
     </span>
   </a>
@@ -1097,10 +1097,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#index-parser" class="md-nav__link">
+  <a href="#gid-parser" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Index parser
+        GID parser
       
     </span>
   </a>
@@ -1139,44 +1139,44 @@
 
 
 <h1 id="tof">TOF</h1>
-<h2 id="index-conversion">Index conversion</h2>
-<p>All <code>tof_idx_to_*</code> and <code>get_tof_idx</code> are decorated with <code>@nb.vectorize</code>.
+<h2 id="gid-conversion">GID conversion</h2>
+<p>All <code>tof_gid_to_*</code> and <code>get_tof_gid</code> are backed by compiled NumPy ufuncs.
 The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="1:3"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Scalar</label><label for="__tabbed_1_2">NumPy array</label><label for="__tabbed_1_3">Awkward Array</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
 
-<span class="n">idx</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">part</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_idx_to_part</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>          <span class="c1"># 0</span>
-<span class="n">layer_or_module</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_idx_to_layer_or_module</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-<span class="n">phi_or_strip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_idx_to_phi_or_strip</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="n">gid</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">part</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_gid_to_part</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>          <span class="c1"># 0</span>
+<span class="n">layer_or_module</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_gid_to_layer_or_module</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">phi_or_strip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_gid_to_phi_or_strip</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
 
-<span class="n">idx</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_tof_idx</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">layer_or_module</span><span class="p">,</span> <span class="n">phi_or_strip</span><span class="p">)</span>
+<span class="n">gid</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_tof_gid</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">layer_or_module</span><span class="p">,</span> <span class="n">phi_or_strip</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
 
-<span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">])</span>
-<span class="n">part</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_idx_to_part</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>          <span class="c1"># array([0, 1, 3])</span>
-<span class="n">layer_or_module</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_idx_to_layer_or_module</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-<span class="n">phi_or_strip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_idx_to_phi_or_strip</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="n">gid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">,</span> <span class="mi">500</span><span class="p">])</span>
+<span class="n">part</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_gid_to_part</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>          <span class="c1"># array([0, 1, 3])</span>
+<span class="n">layer_or_module</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_gid_to_layer_or_module</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">phi_or_strip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_gid_to_phi_or_strip</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
 
-<span class="n">idx</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_tof_idx</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">layer_or_module</span><span class="p">,</span> <span class="n">phi_or_strip</span><span class="p">)</span>
+<span class="n">gid</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_tof_gid</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">layer_or_module</span><span class="p">,</span> <span class="n">phi_or_strip</span><span class="p">)</span>
 </code></pre></div>
 </div>
 <div class="tabbed-block">
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">awkward</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ak</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
 
-<span class="n">idx</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="p">[</span><span class="mi">500</span><span class="p">]])</span>
-<span class="n">part</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_idx_to_part</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>          <span class="c1"># &lt;Array [[0, 1], [3]] type=&#39;...&#39;&gt;</span>
-<span class="n">layer_or_module</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_idx_to_layer_or_module</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
-<span class="n">phi_or_strip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_idx_to_phi_or_strip</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="n">gid</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="p">[</span><span class="mi">500</span><span class="p">]])</span>
+<span class="n">part</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_gid_to_part</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>          <span class="c1"># &lt;Array [[0, 1], [3]] type=&#39;...&#39;&gt;</span>
+<span class="n">layer_or_module</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_gid_to_layer_or_module</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">phi_or_strip</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">tof_gid_to_phi_or_strip</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
 
-<span class="n">idx</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_tof_idx</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">layer_or_module</span><span class="p">,</span> <span class="n">phi_or_strip</span><span class="p">)</span>
+<span class="n">gid</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_tof_gid</span><span class="p">(</span><span class="n">part</span><span class="p">,</span> <span class="n">layer_or_module</span><span class="p">,</span> <span class="n">phi_or_strip</span><span class="p">)</span>
 </code></pre></div>
 </div>
 </div>
@@ -1190,17 +1190,17 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
 </ul>
 <p>The scintillator <code>layer</code> and MRPC <code>module</code> share the same axis, and the <code>phi</code> and <code>strip</code> fields also share the same axis.</p>
 </div>
-<h2 id="index-parser">Index parser</h2>
-<p>Use <code>parse_tof_idx</code> to parse all fields from an index at once:</p>
+<h2 id="gid-parser">GID parser</h2>
+<p>Use <code>parse_tof_gid</code> to parse all fields from a gid at once:</p>
 <div class="highlight"><pre><span></span><code><span class="c1"># parse all fields; returns a dict (or ak.Array when the input is an ak.Array)</span>
-<span class="n">res</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">parse_tof_idx</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">parse_tof_gid</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
 <span class="n">part</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;part&quot;</span><span class="p">]</span>
 <span class="n">layer_or_module</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;layer_or_module&quot;</span><span class="p">]</span>
 <span class="n">phi_or_strip</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;phi_or_strip&quot;</span><span class="p">]</span>
 </code></pre></div>
 <p>When the input is an <code>ak.Array</code>, the result is also an <code>ak.Array</code> with record fields.</p>
 <h2 id="hit-status">Hit status</h2>
-<p><code>pybes3</code> provides implementation of <code>TofHitStatus</code> functions. They are defined as <code>tof_hit_status_to_*</code>. All these functions are decorated with <code>@nb.vectorize</code>. The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:</p>
+<p><code>pybes3</code> provides implementation of <code>TofHitStatus</code> functions. They are defined as <code>tof_hit_status_to_*</code>. All these functions are backed by compiled NumPy ufuncs. The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:</p>
 <div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Scalar</label><label for="__tabbed_2_2">NumPy array</label><label for="__tabbed_2_3">Awkward Array</label></div>
 <div class="tabbed-content">
 <div class="tabbed-block">

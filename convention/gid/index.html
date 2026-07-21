@@ -25,7 +25,7 @@
     
     
       
-        <title>Indexing - Documentation for pybes3</title>
+        <title>Global ID (gid) - Documentation for pybes3</title>
       
     
     
@@ -80,7 +80,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#indexing" class="md-skip">
+        <a href="#global-id-gid" class="md-skip">
           Skip to content
         </a>
       
@@ -116,7 +116,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Indexing
+              Global ID (gid)
             
           </span>
         </div>
@@ -426,7 +426,7 @@
   <span class="md-ellipsis">
     
   
-    Indexing
+    Global ID (gid)
   
 
     
@@ -444,7 +444,7 @@
   <span class="md-ellipsis">
     
   
-    Indexing
+    Global ID (gid)
   
 
     
@@ -1180,20 +1180,20 @@
   
 
 
-<h1 id="indexing">Indexing</h1>
-<p>To uniquely locate each detector element, <code>pybes3</code> assigns it a zero-based index. The index starts from 0 and increases sequentially along the detector elements. This is very useful when indexing and mapping detector elements in arrays (e.g. defining an array to store some information for each MDC wire).</p>
-<p>The increasing order is described by a tuple-like structure. For example, the MDC index follows the order <code>(layer, wire)</code>, meaning it increases first along <code>wire</code>, then along <code>layer</code>:</p>
-<div class="highlight"><pre><span></span><code>(layer=0, wire=0) =&gt; idx=0
-(layer=0, wire=1) =&gt; idx=1
+<h1 id="global-id-gid">Global ID (gid)</h1>
+<p>To uniquely locate each detector element, <code>pybes3</code> defines a global ID (gid). The gid starts from 0 and increases sequentially along the detector elements. The increasing order is described by a tuple-like structure.</p>
+<p>For example, the MDC gid follows the order <code>(layer, wire)</code>, meaning it increases first along <code>wire</code>, then along <code>layer</code>:</p>
+<div class="highlight"><pre><span></span><code>(layer=0, wire=0) =&gt; gid=0
+(layer=0, wire=1) =&gt; gid=1
 ...
-(layer=0, wire=39) =&gt; idx=39
-(layer=1, wire=0) =&gt; idx=40
-(layer=1, wire=1) =&gt; idx=41
+(layer=0, wire=39) =&gt; gid=39
+(layer=1, wire=0) =&gt; gid=40
+(layer=1, wire=1) =&gt; gid=41
 ...
 </code></pre></div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>This section only describes the index numbering scheme for each detector. In APIs and code examples, the index is abbreviated as <code>idx</code>. For how to parse and calculate indices, see the <a href="../../user-manual/detector/mdc/">MDC</a>, <a href="../../user-manual/detector/tof/">TOF</a>, <a href="../../user-manual/detector/emc/">EMC</a>, <a href="../../user-manual/detector/cgem/">CGEM</a> pages and the <a href="../../api/pybes3.detectors/">Detector API</a>.</p>
+<p>This section only describes the numbering scheme of global ID (gid) for each detector. For how to parse and calculate gid, see the <a href="../../user-manual/detector/mdc/">MDC</a>, <a href="../../user-manual/detector/tof/">TOF</a>, <a href="../../user-manual/detector/emc/">EMC</a>, <a href="../../user-manual/detector/cgem/">CGEM</a> pages and the <a href="../../api/pybes3.detectors/">Detector API</a>.</p>
 </div>
 <h2 id="mdc">MDC</h2>
 <table>
@@ -1212,7 +1212,7 @@
 </table>
 <div class="admonition success">
 <p class="admonition-title">Same as BOSS</p>
-<p>The MDC index is the same as the one given by <code>MdcGeomSvc</code> in <code>BOSS</code>.</p>
+<p>MDC gid is the same as the one given by <code>MdcGeomSvc</code> in <code>BOSS</code>.</p>
 </div>
 <h2 id="tof">TOF</h2>
 <table>
@@ -1262,7 +1262,7 @@
 </tr>
 </tbody>
 </table>
-<p>The concrete relationship between the index and <code>(theta, phi)</code> for EMC endcap 0 is:</p>
+<p>The concrete relationship between gid and <code>(theta, phi)</code> for EMC endcap 0 is:</p>
 <table>
 <thead>
 <tr>
@@ -1311,7 +1311,7 @@
 </tr>
 </tbody>
 </table>
-<p>The concrete relationship between the index and <code>(theta, phi)</code> for EMC endcap 1 is:</p>
+<p>The concrete relationship between gid and <code>(theta, phi)</code> for EMC endcap 1 is:</p>
 <table>
 <thead>
 <tr>
@@ -1362,7 +1362,7 @@
 </table>
 <div class="admonition success">
 <p class="admonition-title">Same as BOSS</p>
-<p>The EMC index is the same as the one given by <code>EmcCalibSvc</code> in <code>BOSS</code>.</p>
+<p>EMC gid is the same as the one given by <code>EmcCalibSvc</code> in <code>BOSS</code>.</p>
 </div>
 <h2 id="muc">MUC</h2>
 <div class="admonition note">

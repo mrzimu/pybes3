@@ -408,14 +408,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../../convention/indexing/" class="md-nav__link">
+      <a href="../../convention/gid/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Indexing
+    Global ID (gid)
   
 
     
@@ -1200,8 +1200,8 @@
 <span class="c1"># get EMC theta number</span>
 <span class="n">emc_theta</span> <span class="o">=</span> <span class="n">p3id</span><span class="o">.</span><span class="n">emc_id_to_theta</span><span class="p">(</span><span class="n">emc_digi</span><span class="p">[</span><span class="s2">&quot;m_intId&quot;</span><span class="p">])</span>
 
-<span class="c1"># get detector index from electronics ID</span>
-<span class="n">tof_idx</span> <span class="o">=</span> <span class="n">p3id</span><span class="o">.</span><span class="n">tof_id_to_idx</span><span class="p">(</span><span class="n">tof_digi</span><span class="p">[</span><span class="s2">&quot;m_intId&quot;</span><span class="p">])</span>
+<span class="c1"># get detector gid from electronics ID</span>
+<span class="n">tof_gid</span> <span class="o">=</span> <span class="n">p3id</span><span class="o">.</span><span class="n">tof_id_to_gid</span><span class="p">(</span><span class="n">tof_digi</span><span class="p">[</span><span class="s2">&quot;m_intId&quot;</span><span class="p">])</span>
 </code></pre></div>
 <p>See the <a href="../../api/pybes3.identifier/">Identifier API</a> for all available methods.</p>
 <h2 id="identifier-calculation">Identifier calculation</h2>
