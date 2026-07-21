@@ -87,32 +87,17 @@ def get_mdc_id(wire: IntLike, layer: IntLike, wire_type: IntLike) -> IntLike:
     return _ufuncs.get_mdc_id(wire, layer, wire_type)
 
 
-def mdc_id_to_idx(mdc_id: IntLike) -> IntLike:
+def mdc_id_to_gid(mdc_id: IntLike) -> IntLike:
     """
-    Convert MDC digi ID to wire index (idx).
+    Convert MDC digi ID to wire global ID (gid).
 
     Parameters:
         mdc_id: The MDC digi ID array or value.
 
     Returns:
-        The wire index.
+        The wire global ID.
     """
-    return det.get_mdc_idx(mdc_id_to_layer(mdc_id), mdc_id_to_wire(mdc_id))
-
-
-def mdc_id_to_gid(mdc_id: IntLike) -> IntLike:
-    """
-    !!! warning "Deprecated"
-        This function is deprecated, use `mdc_id_to_idx` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "mdc_id_to_gid is deprecated, use mdc_id_to_idx instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return mdc_id_to_idx(mdc_id)
+    return det.get_mdc_gid(mdc_id_to_layer(mdc_id), mdc_id_to_wire(mdc_id))
 
 
 def parse_mdc_id(mdc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
@@ -121,7 +106,7 @@ def parse_mdc_id(mdc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
 
     Available keys of the output:
 
-    - `idx`: Index of the wire.
+    - `gid`: Global ID of the wire.
     - `layer`: Layer number.
     - `wire`: Local wire number.
     - `is_stereo`: Whether the wire is a stereo wire.
@@ -134,7 +119,7 @@ def parse_mdc_id(mdc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     """
 
     res = {
-        "idx": mdc_id_to_idx(mdc_id),
+        "gid": mdc_id_to_gid(mdc_id),
         "layer": mdc_id_to_layer(mdc_id),
         "wire": mdc_id_to_wire(mdc_id),
         "is_stereo": mdc_id_to_is_stereo(mdc_id),
@@ -155,7 +140,7 @@ def parse_mdc_digi(
 
     Fields of the output:
 
-    - `idx`: Index of the wire.
+    - `gid`: Global ID of the wire.
     - `wire`: Local wire number.
     - `layer`: Layer number.
     - `is_stereo`: Whether the wire is a stereo wire.
@@ -177,7 +162,7 @@ def parse_mdc_digi(
     overflow = mdc_digi["m_overflow"]
 
     res = {
-        "idx": parsed_id["idx"],
+        "gid": parsed_id["gid"],
         "wire": parsed_id["wire"],
         "layer": parsed_id["layer"],
         "is_stereo": parsed_id["is_stereo"],
@@ -365,37 +350,22 @@ def get_tof_id(
     return _ufuncs.get_tof_id(part, layer_or_module, phi_or_strip, end)
 
 
-def tof_id_to_idx(tof_id: IntLike) -> IntLike:
+def tof_id_to_gid(tof_id: IntLike) -> IntLike:
     """
-    Convert TOF digi ID to strip index (idx).
+    Convert TOF digi ID to strip global ID (gid).
 
     Parameters:
         tof_id: The TOF digi ID array or value.
 
     Returns:
-        The strip index.
+        The strip global ID.
     """
     part = tof_id_to_part(tof_id)
-    return det.get_tof_idx(
+    return det.get_tof_gid(
         part,
         tof_id_to_layer_or_module(tof_id, part),
         tof_id_to_phi_or_strip(tof_id, part),
     )
-
-
-def tof_id_to_gid(tof_id: IntLike) -> IntLike:
-    """
-    !!! warning "Deprecated"
-        This function is deprecated, use `tof_id_to_idx` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "tof_id_to_gid is deprecated, use tof_id_to_idx instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return tof_id_to_idx(tof_id)
 
 
 def parse_tof_id(tof_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
@@ -404,7 +374,7 @@ def parse_tof_id(tof_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
 
     Available keys of the output:
 
-    - `idx`: Index of the strip. Note that it corresponds to the strip instead of readout end, so it is the same for both ends of the strip.
+    - `gid`: Global ID of the strip. Note that it corresponds to the strip instead of readout end, so it is the same for both ends of the strip.
     - `part`: The part number. `0,1,2` for scintillator endcap0, barrel, endcap1; `3,4` for MRPC endcap0, endcap1.
     - `layer_or_module`: The scintillator layer or MRPC module number, based on the part number.
     - `phi_or_strip`: The scintillator phi or MRPC strip ID, based on the part number.
@@ -428,10 +398,10 @@ def parse_tof_id(tof_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     layer_or_module = tof_id_to_layer_or_module(tof_id, part)
     phi_or_strip = tof_id_to_phi_or_strip(tof_id, part)
     end = tof_id_to_end(tof_id)
-    idx = det.get_tof_idx(part, layer_or_module, phi_or_strip)
+    gid = det.get_tof_gid(part, layer_or_module, phi_or_strip)
 
     res = {
-        "idx": idx,
+        "gid": gid,
         "part": part,
         "layer_or_module": layer_or_module,
         "phi_or_strip": phi_or_strip,
@@ -453,7 +423,7 @@ def parse_tof_digi(
 
     Fields of the output:
 
-    - `idx`: Index of the strip. Note that it corresponds to the strip instead of readout end, so it is the same for both ends of the strip.
+    - `gid`: Global ID of the strip. Note that it corresponds to the strip instead of readout end, so it is the same for both ends of the strip.
     - `part`: The part number. `0,1,2` for scintillator endcap0, barrel, endcap1; `3,4` for MRPC endcap0, endcap1.
     - `layer_or_module`: The scintillator layer or MRPC module number, based on the part number.
     - `phi_or_strip`: The scintillator phi or MRPC strip ID, based on the part number.
@@ -474,7 +444,7 @@ def parse_tof_digi(
     time_channel = tof_digi["m_timeChannel"]
 
     res = {
-        "idx": parsed_id["idx"],
+        "gid": parsed_id["gid"],
         "part": parsed_id["part"],
         "layer_or_module": parsed_id["layer_or_module"],
         "phi_or_strip": parsed_id["phi_or_strip"],
@@ -564,36 +534,21 @@ def get_emc_id(module: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
     return _ufuncs.get_emc_id(module, theta, phi)
 
 
-def emc_id_to_idx(emc_id: IntLike) -> IntLike:
+def emc_id_to_gid(emc_id: IntLike) -> IntLike:
     """
-    Convert EMC digi ID to crystal index (idx).
+    Convert EMC digi ID to crystal global ID (gid).
 
     Parameters:
         emc_id: The EMC digi ID array or value.
 
     Returns:
-        The crystal index.
+        The crystal global ID.
     """
-    return det.get_emc_idx(
+    return det.get_emc_gid(
         emc_id_to_module(emc_id),
         emc_id_to_theta(emc_id),
         emc_id_to_phi(emc_id),
     )
-
-
-def emc_id_to_gid(emc_id: IntLike) -> IntLike:
-    """
-    !!! warning "Deprecated"
-        This function is deprecated, use `emc_id_to_idx` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "emc_id_to_gid is deprecated, use emc_id_to_idx instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return emc_id_to_idx(emc_id)
 
 
 def parse_emc_id(emc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
@@ -602,7 +557,7 @@ def parse_emc_id(emc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
 
     Available keys of the output:
 
-    - `idx`: Index of the crystal.
+    - `gid`: Global ID of the crystal.
     - `part`: Part number, 0 for endcap0, 1 for barrel, 2 for endcap1.
     - `theta`: Theta number.
     - `phi`: Phi number.
@@ -617,7 +572,7 @@ def parse_emc_id(emc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     theta = emc_id_to_theta(emc_id)
     phi = emc_id_to_phi(emc_id)
     res = {
-        "idx": det.get_emc_idx(module, theta, phi),
+        "gid": det.get_emc_gid(module, theta, phi),
         "part": module,
         "theta": theta,
         "phi": phi,
@@ -638,7 +593,7 @@ def parse_emc_digi(
 
     Fields of the output:
 
-    - `idx`: Index of the crystal.
+    - `gid`: Global ID of the crystal.
     - `part`: Part number, 0 for endcap0, 1 for barrel, 2 for endcap1.
     - `theta`: Theta number.
     - `phi`: Phi number.
@@ -660,7 +615,7 @@ def parse_emc_digi(
     measure = emc_digi["m_measure"]
 
     res = {
-        "idx": parsed_id["idx"],
+        "gid": parsed_id["gid"],
         "part": parsed_id["part"],
         "theta": parsed_id["theta"],
         "phi": parsed_id["phi"],
@@ -916,37 +871,22 @@ def get_cgem_id(
     return _ufuncs.get_cgem_id(layer, sheet, strip_type, strip)
 
 
-def cgem_id_to_idx(cgem_id: IntLike) -> IntLike:
+def cgem_id_to_gid(cgem_id: IntLike) -> IntLike:
     """
-    Convert CGEM digi ID to strip index (idx).
+    Convert CGEM digi ID to strip global ID (gid).
 
     Parameters:
         cgem_id: The CGEM digi ID array or value.
 
     Returns:
-        The strip index.
+        The strip global ID.
     """
-    return det.get_cgem_idx(
+    return det.get_cgem_gid(
         cgem_id_to_layer(cgem_id),
         cgem_id_to_sheet(cgem_id),
         cgem_id_to_strip_type(cgem_id),
         cgem_id_to_strip(cgem_id),
     )
-
-
-def cgem_id_to_gid(cgem_id: IntLike) -> IntLike:
-    """
-    !!! warning "Deprecated"
-        This function is deprecated, use `cgem_id_to_idx` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "cgem_id_to_gid is deprecated, use cgem_id_to_idx instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return cgem_id_to_idx(cgem_id)
 
 
 def parse_cgem_id(cgem_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
@@ -955,7 +895,7 @@ def parse_cgem_id(cgem_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
 
     Available keys of the output:
 
-    - `idx`: The strip index.
+    - `gid`: The strip global ID.
     - `layer`: The layer number.
     - `sheet`: The sheet ID.
     - `strip_type`: The strip type. 0 for X-strip, 1 for V-strip.
@@ -971,10 +911,10 @@ def parse_cgem_id(cgem_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     sheet = cgem_id_to_sheet(cgem_id)
     strip_type = cgem_id_to_strip_type(cgem_id)
     strip = cgem_id_to_strip(cgem_id)
-    idx = det.get_cgem_idx(layer, sheet, strip_type, strip)
+    gid = det.get_cgem_gid(layer, sheet, strip_type, strip)
 
     res = {
-        "idx": idx,
+        "gid": gid,
         "layer": layer,
         "sheet": sheet,
         "strip_type": strip_type,
@@ -996,7 +936,7 @@ def parse_cgem_digi(
 
     Fields of the output:
 
-    - `idx`: The strip index.
+    - `gid`: The strip global ID.
     - `layer`: The layer number.
     - `sheet`: The sheet ID.
     - `strip_type`: The strip type. 0 for X-strip, 1 for V-strip.
@@ -1018,7 +958,7 @@ def parse_cgem_digi(
     time_channel = cgem_digi["m_timeChannel"]
 
     res = {
-        "idx": parsed_id["idx"],
+        "gid": parsed_id["gid"],
         "layer": parsed_id["layer"],
         "sheet": parsed_id["sheet"],
         "strip_type": parsed_id["strip_type"],

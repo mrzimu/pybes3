@@ -1,8 +1,8 @@
 # CGEM
 
-## Index conversion
+## GID conversion
 
-All `cgem_idx_to_*` and `get_cgem_idx` are decorated with `@nb.vectorize`.
+All `cgem_gid_to_*` and `get_cgem_gid` are decorated with `@nb.vectorize`.
 The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
 
 === "Scalar"
@@ -10,16 +10,16 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
     ```python
     import pybes3 as p3
 
-    idx = 0
-    layer = p3.cgem_idx_to_layer(idx)       # 0
-    sheet = p3.cgem_idx_to_sheet(idx)
-    strip_type = p3.cgem_idx_to_strip_type(idx)
-    strip = p3.cgem_idx_to_strip(idx)
+    gid = 0
+    layer = p3.cgem_gid_to_layer(gid)       # 0
+    sheet = p3.cgem_gid_to_sheet(gid)
+    strip_type = p3.cgem_gid_to_strip_type(gid)
+    strip = p3.cgem_gid_to_strip(gid)
 
-    is_xstrip = p3.cgem_idx_to_is_xstrip(idx)
-    is_vstrip = p3.cgem_idx_to_is_vstrip(idx)
+    is_xstrip = p3.cgem_gid_to_is_xstrip(gid)
+    is_vstrip = p3.cgem_gid_to_is_vstrip(gid)
 
-    idx = p3.get_cgem_idx(layer, sheet, strip_type, strip)
+    gid = p3.get_cgem_gid(layer, sheet, strip_type, strip)
     ```
 
 === "NumPy array"
@@ -28,16 +28,16 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
     import numpy as np
     import pybes3 as p3
 
-    idx = np.array([0, 100, 5000])
-    layer = p3.cgem_idx_to_layer(idx)       # array([0, 0, 1])
-    sheet = p3.cgem_idx_to_sheet(idx)
-    strip_type = p3.cgem_idx_to_strip_type(idx)
-    strip = p3.cgem_idx_to_strip(idx)
+    gid = np.array([0, 100, 5000])
+    layer = p3.cgem_gid_to_layer(gid)       # array([0, 0, 1])
+    sheet = p3.cgem_gid_to_sheet(gid)
+    strip_type = p3.cgem_gid_to_strip_type(gid)
+    strip = p3.cgem_gid_to_strip(gid)
 
-    is_xstrip = p3.cgem_idx_to_is_xstrip(idx)
-    is_vstrip = p3.cgem_idx_to_is_vstrip(idx)
+    is_xstrip = p3.cgem_gid_to_is_xstrip(gid)
+    is_vstrip = p3.cgem_gid_to_is_vstrip(gid)
 
-    idx = p3.get_cgem_idx(layer, sheet, strip_type, strip)
+    gid = p3.get_cgem_gid(layer, sheet, strip_type, strip)
     ```
 
 === "Awkward Array"
@@ -46,28 +46,28 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
     import awkward as ak
     import pybes3 as p3
 
-    idx = ak.Array([[0, 100], [5000]])
-    layer = p3.cgem_idx_to_layer(idx)       # <Array [[0, 0], [1]] type='...'>
-    sheet = p3.cgem_idx_to_sheet(idx)
-    strip_type = p3.cgem_idx_to_strip_type(idx)
-    strip = p3.cgem_idx_to_strip(idx)
+    gid = ak.Array([[0, 100], [5000]])
+    layer = p3.cgem_gid_to_layer(gid)       # <Array [[0, 0], [1]] type='...'>
+    sheet = p3.cgem_gid_to_sheet(gid)
+    strip_type = p3.cgem_gid_to_strip_type(gid)
+    strip = p3.cgem_gid_to_strip(gid)
 
-    is_xstrip = p3.cgem_idx_to_is_xstrip(idx)
-    is_vstrip = p3.cgem_idx_to_is_vstrip(idx)
+    is_xstrip = p3.cgem_gid_to_is_xstrip(gid)
+    is_vstrip = p3.cgem_gid_to_is_vstrip(gid)
 
-    idx = p3.get_cgem_idx(layer, sheet, strip_type, strip)
+    gid = p3.get_cgem_gid(layer, sheet, strip_type, strip)
     ```
 
 !!! info
     `strip_type=0` for x-strips and `strip_type=1` for v-strips.
 
-## Index parser
+## GID parser
 
-Use `parse_cgem_idx` to parse all fields from an index at once:
+Use `parse_cgem_gid` to parse all fields from a gid at once:
 
 ```python
 # parse all fields; returns a dict (or ak.Array when the input is an ak.Array)
-res = p3.parse_cgem_idx(idx)
+res = p3.parse_cgem_gid(gid)
 layer = res["layer"]
 sheet = res["sheet"]
 strip_type = res["strip_type"]

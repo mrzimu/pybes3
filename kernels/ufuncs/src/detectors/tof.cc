@@ -18,21 +18,21 @@ consteval auto _init() {
     std::array<uint8_t, N_STRIPS> _phi_or_strip{};
     std::array<uint16_t, N_PARTS> _part_offset{};
 
-    size_t idx = 0;
+    size_t gid = 0;
     for ( size_t part = 0; part < N_PARTS; ++part )
     {
         auto n_layer_or_module = N_LAYER_OR_MODULE[part];
         auto n_phi_or_strip    = N_PHI_OR_STRIP[part];
 
-        _part_offset[part] = idx;
+        _part_offset[part] = gid;
         for ( size_t i = 0; i < n_layer_or_module; ++i )
         {
             for ( size_t j = 0; j < n_phi_or_strip; ++j )
             {
-                _part[idx]            = part;
-                _layer_or_module[idx] = i;
-                _phi_or_strip[idx]    = j;
-                idx++;
+                _part[gid]            = part;
+                _layer_or_module[gid] = i;
+                _phi_or_strip[gid]    = j;
+                gid++;
             }
         }
     }
@@ -46,25 +46,25 @@ constexpr auto _phi_or_strip    = std::get<2>( _init_tuple );
 constexpr auto _part_offset     = std::get<3>( _init_tuple );
 
 template <typename T>
-inline void get_tof_idx( T* part, T* layer_or_module, T* phi_or_strip, T* out ) noexcept {
+inline void get_tof_gid( T* part, T* layer_or_module, T* phi_or_strip, T* out ) noexcept {
     *out = _part_offset[*part];
     *out += *layer_or_module * N_PHI_OR_STRIP[*part];
     *out += *phi_or_strip;
 }
 
 template <typename T>
-inline void tof_idx_to_part( T* idx, T* part ) noexcept {
-    *part = _part[*idx];
+inline void tof_gid_to_part( T* gid, T* part ) noexcept {
+    *part = _part[*gid];
 }
 
 template <typename T>
-inline void tof_idx_to_layer_or_module( T* idx, T* layer_or_module ) noexcept {
-    *layer_or_module = _layer_or_module[*idx];
+inline void tof_gid_to_layer_or_module( T* gid, T* layer_or_module ) noexcept {
+    *layer_or_module = _layer_or_module[*gid];
 }
 
 template <typename T>
-inline void tof_idx_to_phi_or_strip( T* idx, T* phi_or_strip ) noexcept {
-    *phi_or_strip = _phi_or_strip[*idx];
+inline void tof_gid_to_phi_or_strip( T* gid, T* phi_or_strip ) noexcept {
+    *phi_or_strip = _phi_or_strip[*gid];
 }
 
 /* ------ Hit Status ------*/
@@ -139,36 +139,36 @@ void declare_tof( PyObject* d ) {
     if ( _import_umath() < 0 ) return;
 
     decl_ufunc_31<             //
-        get_tof_idx<uint16_t>, //
-        get_tof_idx<int16_t>,  //
-        get_tof_idx<uint32_t>, //
-        get_tof_idx<int32_t>,  //
-        get_tof_idx<uint64_t>, //
-        get_tof_idx<int64_t>>( d, "get_tof_idx" );
+        get_tof_gid<uint16_t>, //
+        get_tof_gid<int16_t>,  //
+        get_tof_gid<uint32_t>, //
+        get_tof_gid<int32_t>,  //
+        get_tof_gid<uint64_t>, //
+        get_tof_gid<int64_t>>( d, "get_tof_gid" );
 
     decl_ufunc_11<                 //
-        tof_idx_to_part<uint16_t>, //
-        tof_idx_to_part<int16_t>,  //
-        tof_idx_to_part<uint32_t>, //
-        tof_idx_to_part<int32_t>,  //
-        tof_idx_to_part<uint64_t>, //
-        tof_idx_to_part<int64_t>>( d, "tof_idx_to_part" );
+        tof_gid_to_part<uint16_t>, //
+        tof_gid_to_part<int16_t>,  //
+        tof_gid_to_part<uint32_t>, //
+        tof_gid_to_part<int32_t>,  //
+        tof_gid_to_part<uint64_t>, //
+        tof_gid_to_part<int64_t>>( d, "tof_gid_to_part" );
 
     decl_ufunc_11<                            //
-        tof_idx_to_layer_or_module<uint16_t>, //
-        tof_idx_to_layer_or_module<int16_t>,  //
-        tof_idx_to_layer_or_module<uint32_t>, //
-        tof_idx_to_layer_or_module<int32_t>,  //
-        tof_idx_to_layer_or_module<uint64_t>, //
-        tof_idx_to_layer_or_module<int64_t>>( d, "tof_idx_to_layer_or_module" );
+        tof_gid_to_layer_or_module<uint16_t>, //
+        tof_gid_to_layer_or_module<int16_t>,  //
+        tof_gid_to_layer_or_module<uint32_t>, //
+        tof_gid_to_layer_or_module<int32_t>,  //
+        tof_gid_to_layer_or_module<uint64_t>, //
+        tof_gid_to_layer_or_module<int64_t>>( d, "tof_gid_to_layer_or_module" );
 
     decl_ufunc_11<                         //
-        tof_idx_to_phi_or_strip<uint16_t>, //
-        tof_idx_to_phi_or_strip<int16_t>,  //
-        tof_idx_to_phi_or_strip<uint32_t>, //
-        tof_idx_to_phi_or_strip<int32_t>,  //
-        tof_idx_to_phi_or_strip<uint64_t>, //
-        tof_idx_to_phi_or_strip<int64_t>>( d, "tof_idx_to_phi_or_strip" );
+        tof_gid_to_phi_or_strip<uint16_t>, //
+        tof_gid_to_phi_or_strip<int16_t>,  //
+        tof_gid_to_phi_or_strip<uint32_t>, //
+        tof_gid_to_phi_or_strip<int32_t>,  //
+        tof_gid_to_phi_or_strip<uint64_t>, //
+        tof_gid_to_phi_or_strip<int64_t>>( d, "tof_gid_to_phi_or_strip" );
 
     /* ------ Hit Status ------ */
 

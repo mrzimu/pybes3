@@ -23,14 +23,14 @@ consteval auto _init_index() {
     std::array<bool, N_WIRES> _is_stereo{};
     std::array<uint8_t, N_WIRES> _superlayer{};
 
-    std::array<uint16_t, N_LAYERS> _layer_start_idx{};
+    std::array<uint16_t, N_LAYERS> _layer_start_gid{};
     std::array<bool, N_LAYERS> _is_layer_stereo{};
 
-    size_t idx         = 0;
+    size_t gid         = 0;
     uint8_t superlayer = 0;
     for ( uint16_t layer = 0; layer < N_LAYERS; ++layer )
     {
-        _layer_start_idx[layer] = idx;
+        _layer_start_gid[layer] = gid;
         _is_layer_stereo[layer] = _layer_stereo[layer] != 0;
 
         if ( superlayer < _superlayer_splits.size() - 1 &&
@@ -40,15 +40,15 @@ consteval auto _init_index() {
         auto n_wires = _layer_nwires[layer];
         for ( uint16_t wire = 0; wire < n_wires; ++wire )
         {
-            _superlayer[idx] = superlayer;
-            _layer[idx]      = layer;
-            _wire[idx]       = wire;
-            _stereo[idx]     = _layer_stereo[layer];
-            _is_stereo[idx]  = _stereo[idx] != 0;
-            idx++;
+            _superlayer[gid] = superlayer;
+            _layer[gid]      = layer;
+            _wire[gid]       = wire;
+            _stereo[gid]     = _layer_stereo[layer];
+            _is_stereo[gid]  = _stereo[gid] != 0;
+            gid++;
         }
     }
-    return std::make_tuple( _layer, _wire, _stereo, _is_stereo, _superlayer, _layer_start_idx,
+    return std::make_tuple( _layer, _wire, _stereo, _is_stereo, _superlayer, _layer_start_gid,
                             _is_layer_stereo );
 }
 
@@ -59,7 +59,7 @@ constexpr auto _stereo           = std::get<2>( _init_index_tuple );
 constexpr auto _is_stereo        = std::get<3>( _init_index_tuple );
 constexpr auto _superlayer       = std::get<4>( _init_index_tuple );
 
-constexpr auto _layer_start_idx = std::get<5>( _init_index_tuple );
+constexpr auto _layer_start_gid = std::get<5>( _init_index_tuple );
 constexpr auto _is_layer_stereo = std::get<6>( _init_index_tuple );
 
 /* Geometry arrays */
@@ -103,13 +103,13 @@ PyObject* _init_mdc_geom( PyObject* self, PyObject* args ) {
 }
 
 template <typename T>
-inline void get_mdc_idx( T* layer, T* wire, T* out ) noexcept {
-    *out = _layer_start_idx[*layer] + *wire;
+inline void get_mdc_gid( T* layer, T* wire, T* out ) noexcept {
+    *out = _layer_start_gid[*layer] + *wire;
 }
 
 template <typename T>
-inline void mdc_idx_to_superlayer( T* idx, T* out ) noexcept {
-    *out = _superlayer[*idx];
+inline void mdc_gid_to_superlayer( T* gid, T* out ) noexcept {
+    *out = _superlayer[*gid];
 }
 
 template <typename T>
@@ -124,18 +124,18 @@ inline void mdc_layer_to_superlayer( T* layer, T* out ) noexcept {
 }
 
 template <typename T>
-inline void mdc_idx_to_layer( T* idx, T* out ) noexcept {
-    *out = _layer[*idx];
+inline void mdc_gid_to_layer( T* gid, T* out ) noexcept {
+    *out = _layer[*gid];
 }
 
 template <typename T>
-inline void mdc_idx_to_wire( T* idx, T* out ) noexcept {
-    *out = _wire[*idx];
+inline void mdc_gid_to_wire( T* gid, T* out ) noexcept {
+    *out = _wire[*gid];
 }
 
 template <typename TIN, typename TOUT>
-inline void mdc_idx_to_stereo( TIN* idx, TOUT* out ) noexcept {
-    *out = _stereo[*idx];
+inline void mdc_gid_to_stereo( TIN* gid, TOUT* out ) noexcept {
+    *out = _stereo[*gid];
 }
 
 template <typename TIN>
@@ -144,48 +144,48 @@ inline void mdc_layer_to_is_stereo( TIN* layer, bool* out ) noexcept {
 }
 
 template <typename TIN>
-inline void mdc_idx_to_is_stereo( TIN* idx, bool* out ) noexcept {
-    *out = _is_stereo[*idx];
+inline void mdc_gid_to_is_stereo( TIN* gid, bool* out ) noexcept {
+    *out = _is_stereo[*gid];
 }
 
 template <typename T>
-inline void mdc_idx_to_west_x( T* idx, double* out ) noexcept {
-    *out = _west_x[*idx];
+inline void mdc_gid_to_west_x( T* gid, double* out ) noexcept {
+    *out = _west_x[*gid];
 }
 
 template <typename T>
-inline void mdc_idx_to_west_y( T* idx, double* out ) noexcept {
-    *out = _west_y[*idx];
+inline void mdc_gid_to_west_y( T* gid, double* out ) noexcept {
+    *out = _west_y[*gid];
 }
 
 template <typename T>
-inline void mdc_idx_to_west_z( T* idx, double* out ) noexcept {
-    *out = _west_z[*idx];
+inline void mdc_gid_to_west_z( T* gid, double* out ) noexcept {
+    *out = _west_z[*gid];
 }
 
 template <typename T>
-inline void mdc_idx_to_east_x( T* idx, double* out ) noexcept {
-    *out = _east_x[*idx];
+inline void mdc_gid_to_east_x( T* gid, double* out ) noexcept {
+    *out = _east_x[*gid];
 }
 
 template <typename T>
-inline void mdc_idx_to_east_y( T* idx, double* out ) noexcept {
-    *out = _east_y[*idx];
+inline void mdc_gid_to_east_y( T* gid, double* out ) noexcept {
+    *out = _east_y[*gid];
 }
 
 template <typename T>
-inline void mdc_idx_to_east_z( T* idx, double* out ) noexcept {
-    *out = _east_z[*idx];
+inline void mdc_gid_to_east_z( T* gid, double* out ) noexcept {
+    *out = _east_z[*gid];
 }
 
 template <typename T>
-inline void mdc_idx_z_to_x( T* idx, double* z, double* out ) noexcept {
-    *out = _west_x[*idx] + _dx_dz[*idx] * ( *z - _west_z[*idx] );
+inline void mdc_gid_z_to_x( T* gid, double* z, double* out ) noexcept {
+    *out = _west_x[*gid] + _dx_dz[*gid] * ( *z - _west_z[*gid] );
 }
 
 template <typename T>
-inline void mdc_idx_z_to_y( T* idx, double* z, double* out ) noexcept {
-    *out = _west_y[*idx] + _dy_dz[*idx] * ( *z - _west_z[*idx] );
+inline void mdc_gid_z_to_y( T* gid, double* z, double* out ) noexcept {
+    *out = _west_y[*gid] + _dy_dz[*gid] * ( *z - _west_z[*gid] );
 }
 
 void declare_mdc( PyObject* d ) {
@@ -193,20 +193,20 @@ void declare_mdc( PyObject* d ) {
     if ( _import_umath() < 0 ) return;
 
     decl_ufunc_21<             //
-        get_mdc_idx<uint16_t>, //
-        get_mdc_idx<int16_t>,  //
-        get_mdc_idx<uint32_t>, //
-        get_mdc_idx<int32_t>,  //
-        get_mdc_idx<uint64_t>, //
-        get_mdc_idx<int64_t>>( d, "get_mdc_idx" );
+        get_mdc_gid<uint16_t>, //
+        get_mdc_gid<int16_t>,  //
+        get_mdc_gid<uint32_t>, //
+        get_mdc_gid<int32_t>,  //
+        get_mdc_gid<uint64_t>, //
+        get_mdc_gid<int64_t>>( d, "get_mdc_gid" );
 
     decl_ufunc_11<                       //
-        mdc_idx_to_superlayer<uint16_t>, //
-        mdc_idx_to_superlayer<int16_t>,  //
-        mdc_idx_to_superlayer<uint32_t>, //
-        mdc_idx_to_superlayer<int32_t>,  //
-        mdc_idx_to_superlayer<uint64_t>, //
-        mdc_idx_to_superlayer<int64_t>>( d, "mdc_idx_to_superlayer" );
+        mdc_gid_to_superlayer<uint16_t>, //
+        mdc_gid_to_superlayer<int16_t>,  //
+        mdc_gid_to_superlayer<uint32_t>, //
+        mdc_gid_to_superlayer<int32_t>,  //
+        mdc_gid_to_superlayer<uint64_t>, //
+        mdc_gid_to_superlayer<int64_t>>( d, "mdc_gid_to_superlayer" );
 
     decl_ufunc_11<                         //
         mdc_layer_to_superlayer<uint16_t>, //
@@ -217,28 +217,28 @@ void declare_mdc( PyObject* d ) {
         mdc_layer_to_superlayer<int64_t>>( d, "mdc_layer_to_superlayer" );
 
     decl_ufunc_11<                  //
-        mdc_idx_to_layer<uint16_t>, //
-        mdc_idx_to_layer<int16_t>,  //
-        mdc_idx_to_layer<uint32_t>, //
-        mdc_idx_to_layer<int32_t>,  //
-        mdc_idx_to_layer<uint64_t>, //
-        mdc_idx_to_layer<int64_t>>( d, "mdc_idx_to_layer" );
+        mdc_gid_to_layer<uint16_t>, //
+        mdc_gid_to_layer<int16_t>,  //
+        mdc_gid_to_layer<uint32_t>, //
+        mdc_gid_to_layer<int32_t>,  //
+        mdc_gid_to_layer<uint64_t>, //
+        mdc_gid_to_layer<int64_t>>( d, "mdc_gid_to_layer" );
 
     decl_ufunc_11<                 //
-        mdc_idx_to_wire<uint16_t>, //
-        mdc_idx_to_wire<int16_t>,  //
-        mdc_idx_to_wire<uint32_t>, //
-        mdc_idx_to_wire<int32_t>,  //
-        mdc_idx_to_wire<uint64_t>, //
-        mdc_idx_to_wire<int64_t>>( d, "mdc_idx_to_wire" );
+        mdc_gid_to_wire<uint16_t>, //
+        mdc_gid_to_wire<int16_t>,  //
+        mdc_gid_to_wire<uint32_t>, //
+        mdc_gid_to_wire<int32_t>,  //
+        mdc_gid_to_wire<uint64_t>, //
+        mdc_gid_to_wire<int64_t>>( d, "mdc_gid_to_wire" );
 
     decl_ufunc_11<                            //
-        mdc_idx_to_stereo<uint16_t, int16_t>, //
-        mdc_idx_to_stereo<int16_t, int16_t>,  //
-        mdc_idx_to_stereo<uint32_t, int32_t>, //
-        mdc_idx_to_stereo<int32_t, int32_t>,  //
-        mdc_idx_to_stereo<uint64_t, int64_t>, //
-        mdc_idx_to_stereo<int64_t, int64_t>>( d, "mdc_idx_to_stereo" );
+        mdc_gid_to_stereo<uint16_t, int16_t>, //
+        mdc_gid_to_stereo<int16_t, int16_t>,  //
+        mdc_gid_to_stereo<uint32_t, int32_t>, //
+        mdc_gid_to_stereo<int32_t, int32_t>,  //
+        mdc_gid_to_stereo<uint64_t, int64_t>, //
+        mdc_gid_to_stereo<int64_t, int64_t>>( d, "mdc_gid_to_stereo" );
 
     decl_ufunc_11<                        //
         mdc_layer_to_is_stereo<uint16_t>, //
@@ -249,74 +249,74 @@ void declare_mdc( PyObject* d ) {
         mdc_layer_to_is_stereo<int64_t>>( d, "mdc_layer_to_is_stereo" );
 
     decl_ufunc_11<                      //
-        mdc_idx_to_is_stereo<uint16_t>, //
-        mdc_idx_to_is_stereo<int16_t>,  //
-        mdc_idx_to_is_stereo<uint32_t>, //
-        mdc_idx_to_is_stereo<int32_t>,  //
-        mdc_idx_to_is_stereo<uint64_t>, //
-        mdc_idx_to_is_stereo<int64_t>>( d, "mdc_idx_to_is_stereo" );
+        mdc_gid_to_is_stereo<uint16_t>, //
+        mdc_gid_to_is_stereo<int16_t>,  //
+        mdc_gid_to_is_stereo<uint32_t>, //
+        mdc_gid_to_is_stereo<int32_t>,  //
+        mdc_gid_to_is_stereo<uint64_t>, //
+        mdc_gid_to_is_stereo<int64_t>>( d, "mdc_gid_to_is_stereo" );
 
     decl_ufunc_11<                   //
-        mdc_idx_to_west_x<uint16_t>, //
-        mdc_idx_to_west_x<int16_t>,  //
-        mdc_idx_to_west_x<uint32_t>, //
-        mdc_idx_to_west_x<int32_t>,  //
-        mdc_idx_to_west_x<uint64_t>, //
-        mdc_idx_to_west_x<int64_t>>( d, "mdc_idx_to_west_x" );
+        mdc_gid_to_west_x<uint16_t>, //
+        mdc_gid_to_west_x<int16_t>,  //
+        mdc_gid_to_west_x<uint32_t>, //
+        mdc_gid_to_west_x<int32_t>,  //
+        mdc_gid_to_west_x<uint64_t>, //
+        mdc_gid_to_west_x<int64_t>>( d, "mdc_gid_to_west_x" );
 
     decl_ufunc_11<                   //
-        mdc_idx_to_west_y<uint16_t>, //
-        mdc_idx_to_west_y<int16_t>,  //
-        mdc_idx_to_west_y<uint32_t>, //
-        mdc_idx_to_west_y<int32_t>,  //
-        mdc_idx_to_west_y<uint64_t>, //
-        mdc_idx_to_west_y<int64_t>>( d, "mdc_idx_to_west_y" );
+        mdc_gid_to_west_y<uint16_t>, //
+        mdc_gid_to_west_y<int16_t>,  //
+        mdc_gid_to_west_y<uint32_t>, //
+        mdc_gid_to_west_y<int32_t>,  //
+        mdc_gid_to_west_y<uint64_t>, //
+        mdc_gid_to_west_y<int64_t>>( d, "mdc_gid_to_west_y" );
 
     decl_ufunc_11<                   //
-        mdc_idx_to_west_z<uint16_t>, //
-        mdc_idx_to_west_z<int16_t>,  //
-        mdc_idx_to_west_z<uint32_t>, //
-        mdc_idx_to_west_z<int32_t>,  //
-        mdc_idx_to_west_z<uint64_t>, //
-        mdc_idx_to_west_z<int64_t>>( d, "mdc_idx_to_west_z" );
+        mdc_gid_to_west_z<uint16_t>, //
+        mdc_gid_to_west_z<int16_t>,  //
+        mdc_gid_to_west_z<uint32_t>, //
+        mdc_gid_to_west_z<int32_t>,  //
+        mdc_gid_to_west_z<uint64_t>, //
+        mdc_gid_to_west_z<int64_t>>( d, "mdc_gid_to_west_z" );
 
     decl_ufunc_11<                   //
-        mdc_idx_to_east_x<uint16_t>, //
-        mdc_idx_to_east_x<int16_t>,  //
-        mdc_idx_to_east_x<uint32_t>, //
-        mdc_idx_to_east_x<int32_t>,  //
-        mdc_idx_to_east_x<uint64_t>, //
-        mdc_idx_to_east_x<int64_t>>( d, "mdc_idx_to_east_x" );
+        mdc_gid_to_east_x<uint16_t>, //
+        mdc_gid_to_east_x<int16_t>,  //
+        mdc_gid_to_east_x<uint32_t>, //
+        mdc_gid_to_east_x<int32_t>,  //
+        mdc_gid_to_east_x<uint64_t>, //
+        mdc_gid_to_east_x<int64_t>>( d, "mdc_gid_to_east_x" );
 
     decl_ufunc_11<                   //
-        mdc_idx_to_east_y<uint16_t>, //
-        mdc_idx_to_east_y<int16_t>,  //
-        mdc_idx_to_east_y<uint32_t>, //
-        mdc_idx_to_east_y<int32_t>,  //
-        mdc_idx_to_east_y<uint64_t>, //
-        mdc_idx_to_east_y<int64_t>>( d, "mdc_idx_to_east_y" );
+        mdc_gid_to_east_y<uint16_t>, //
+        mdc_gid_to_east_y<int16_t>,  //
+        mdc_gid_to_east_y<uint32_t>, //
+        mdc_gid_to_east_y<int32_t>,  //
+        mdc_gid_to_east_y<uint64_t>, //
+        mdc_gid_to_east_y<int64_t>>( d, "mdc_gid_to_east_y" );
 
     decl_ufunc_11<                   //
-        mdc_idx_to_east_z<uint16_t>, //
-        mdc_idx_to_east_z<int16_t>,  //
-        mdc_idx_to_east_z<uint32_t>, //
-        mdc_idx_to_east_z<int32_t>,  //
-        mdc_idx_to_east_z<uint64_t>, //
-        mdc_idx_to_east_z<int64_t>>( d, "mdc_idx_to_east_z" );
+        mdc_gid_to_east_z<uint16_t>, //
+        mdc_gid_to_east_z<int16_t>,  //
+        mdc_gid_to_east_z<uint32_t>, //
+        mdc_gid_to_east_z<int32_t>,  //
+        mdc_gid_to_east_z<uint64_t>, //
+        mdc_gid_to_east_z<int64_t>>( d, "mdc_gid_to_east_z" );
 
     decl_ufunc_21<                //
-        mdc_idx_z_to_x<uint16_t>, //
-        mdc_idx_z_to_x<int16_t>,  //
-        mdc_idx_z_to_x<uint32_t>, //
-        mdc_idx_z_to_x<int32_t>,  //
-        mdc_idx_z_to_x<uint64_t>, //
-        mdc_idx_z_to_x<int64_t>>( d, "mdc_idx_z_to_x" );
+        mdc_gid_z_to_x<uint16_t>, //
+        mdc_gid_z_to_x<int16_t>,  //
+        mdc_gid_z_to_x<uint32_t>, //
+        mdc_gid_z_to_x<int32_t>,  //
+        mdc_gid_z_to_x<uint64_t>, //
+        mdc_gid_z_to_x<int64_t>>( d, "mdc_gid_z_to_x" );
 
     decl_ufunc_21<                //
-        mdc_idx_z_to_y<uint16_t>, //
-        mdc_idx_z_to_y<int16_t>,  //
-        mdc_idx_z_to_y<uint32_t>, //
-        mdc_idx_z_to_y<int32_t>,  //
-        mdc_idx_z_to_y<uint64_t>, //
-        mdc_idx_z_to_y<int64_t>>( d, "mdc_idx_z_to_y" );
+        mdc_gid_z_to_y<uint16_t>, //
+        mdc_gid_z_to_y<int16_t>,  //
+        mdc_gid_z_to_y<uint32_t>, //
+        mdc_gid_z_to_y<int32_t>,  //
+        mdc_gid_z_to_y<uint64_t>, //
+        mdc_gid_z_to_y<int64_t>>( d, "mdc_gid_z_to_y" );
 }

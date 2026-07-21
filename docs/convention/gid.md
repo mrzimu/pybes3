@@ -1,21 +1,21 @@
-# Indexing
+# Global ID (gid)
 
-To uniquely locate each detector element, `pybes3` assigns it a zero-based index. The index starts from 0 and increases sequentially along the detector elements. This is very useful when indexing and mapping detector elements in arrays (e.g. defining an array to store some information for each MDC wire).
+To uniquely locate each detector element, `pybes3` defines a global ID (gid). The gid starts from 0 and increases sequentially along the detector elements. The increasing order is described by a tuple-like structure.
 
-The increasing order is described by a tuple-like structure. For example, the MDC index follows the order `(layer, wire)`, meaning it increases first along `wire`, then along `layer`:
+For example, the MDC gid follows the order `(layer, wire)`, meaning it increases first along `wire`, then along `layer`:
 
 ```
-(layer=0, wire=0) => idx=0
-(layer=0, wire=1) => idx=1
+(layer=0, wire=0) => gid=0
+(layer=0, wire=1) => gid=1
 ...
-(layer=0, wire=39) => idx=39
-(layer=1, wire=0) => idx=40
-(layer=1, wire=1) => idx=41
+(layer=0, wire=39) => gid=39
+(layer=1, wire=0) => gid=40
+(layer=1, wire=1) => gid=41
 ...
 ```
 
 !!! note
-    This section only describes the index numbering scheme for each detector. In APIs and code examples, the index is abbreviated as `idx`. For how to parse and calculate indices, see the [MDC](../user-manual/detector/mdc.md), [TOF](../user-manual/detector/tof.md), [EMC](../user-manual/detector/emc.md), [CGEM](../user-manual/detector/cgem.md) pages and the [Detector API](../api/pybes3.detectors.md).
+    This section only describes the numbering scheme of global ID (gid) for each detector. For how to parse and calculate gid, see the [MDC](../user-manual/detector/mdc.md), [TOF](../user-manual/detector/tof.md), [EMC](../user-manual/detector/emc.md), [CGEM](../user-manual/detector/cgem.md) pages and the [Detector API](../api/pybes3.detectors.md).
 
 ## MDC
 
@@ -24,7 +24,7 @@ The increasing order is described by a tuple-like structure. For example, the MD
 | 0-6795 | (layer, wire)    |
 
 !!! success "Same as BOSS"
-    The MDC index is the same as the one given by `MdcGeomSvc` in `BOSS`.
+    MDC gid is the same as the one given by `MdcGeomSvc` in `BOSS`.
 
 ## TOF
 
@@ -47,7 +47,7 @@ The scintillator `layer` and MRPC `module` share the same axis, and the `phi` an
 | 480-5759  |   (theta, phi)   |  Barrel  |
 | 5760-6239 |  (-theta, phi)   | Endcap 1 |
 
-The concrete relationship between the index and `(theta, phi)` for EMC endcap 0 is:
+The concrete relationship between gid and `(theta, phi)` for EMC endcap 0 is:
 
 |  Range  | Number of Crystals | Theta |   Description   |
 | :-----: | :----------------: | :---: | :-------------: |
@@ -58,7 +58,7 @@ The concrete relationship between the index and `(theta, phi)` for EMC endcap 0 
 | 288-383 |         96         |   4   |                 |
 | 384-479 |         96         |   5   | Outermost layer |
 
-The concrete relationship between the index and `(theta, phi)` for EMC endcap 1 is:
+The concrete relationship between gid and `(theta, phi)` for EMC endcap 1 is:
 
 |   Range   | Number of Crystals | Theta |   Description   |
 | :-------: | :----------------: | :---: | :-------------: |
@@ -71,7 +71,7 @@ The concrete relationship between the index and `(theta, phi)` for EMC endcap 1 
 
 
 !!! success "Same as BOSS"
-    The EMC index is the same as the one given by `EmcCalibSvc` in `BOSS`.
+    EMC gid is the same as the one given by `EmcCalibSvc` in `BOSS`.
 
 ## MUC
 

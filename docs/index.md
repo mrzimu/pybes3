@@ -33,10 +33,10 @@
     Read `rtraw`, `rec`, `dst`, and even `raw` files.
   </a>
 
-- <a href="convention/indexing" style="text-decoration: none; color: inherit;">
-    :material-identifier: __Indexing__
+- <a href="convention/gid" style="text-decoration: none; color: inherit;">
+    :material-identifier: __Global ID (gid)__
 
-    Zero-based indices for detector elements in `pybes3`.
+    Zero-based global ID (gid) for detector elements in `pybes3`.
   </a>
 
 - <a href="user-manual/identifier" style="text-decoration: none; color: inherit;">

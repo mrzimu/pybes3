@@ -196,12 +196,8 @@ def parse_mdc_digi_id(
     """
     wire = mdc_id_to_wire(mdc_digi_id)
     layer = mdc_id_to_layer(mdc_digi_id)
-    idx = det.get_mdc_idx(layer, wire)
-    res = det.parse_mdc_idx(idx, with_pos)
-    if isinstance(res, ak.Array):
-        return ak.zip({("gid" if f == "idx" else f): res[f] for f in res.fields})
-    else:
-        return {("gid" if k == "idx" else k): v for k, v in res.items()}
+    gid = det.get_mdc_gid(layer, wire)
+    return det.parse_mdc_gid(gid, with_pos)
 
 
 def parse_mdc_digi(mdc_digi: ak.Record, with_pos: bool = False) -> ak.Record:
@@ -594,8 +590,8 @@ def parse_emc_digi_id(
 
     !!! info
         The 8 points of the crystal will not be returned here.
-        If you need the 8 points of the crystal, use `emc_idx_to_point_x`, `emc_idx_to_point_y`
-        and `emc_idx_to_point_z`.
+        If you need the 8 points of the crystal, use `emc_gid_to_point_x`, `emc_gid_to_point_y`
+        and `emc_gid_to_point_z`.
 
     Parameters:
         emc_digi_id: The EMC digi ID.
@@ -608,12 +604,8 @@ def parse_emc_digi_id(
     part = emc_id_to_module(emc_digi_id)
     theta = emc_id_to_theta(emc_digi_id)
     phi = emc_id_to_phi(emc_digi_id)
-    idx = det.get_emc_idx(part, theta, phi)
-    res = det.parse_emc_idx(idx, with_pos)
-    if isinstance(res, ak.Array):
-        return ak.zip({("gid" if f == "idx" else f): res[f] for f in res.fields})
-    else:
-        return {("gid" if k == "idx" else k): v for k, v in res.items()}
+    gid = det.get_emc_gid(part, theta, phi)
+    return det.parse_emc_gid(gid, with_pos)
 
 
 def parse_emc_digi(emc_digi: ak.Record, with_pos: bool = False) -> ak.Record:

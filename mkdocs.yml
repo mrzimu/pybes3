@@ -80,7 +80,7 @@ nav:
   - Installation: installation.md
   - Convention:
       - Unit: convention/unit.md
-      - Indexing: convention/indexing.md
+      - Global ID (gid): convention/gid.md
   - User manual:
       - Data reading: user-manual/data-reading.md
       - Identifier: user-manual/identifier.md
