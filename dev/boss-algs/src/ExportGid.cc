@@ -5,19 +5,19 @@
 #include <Identifier/CgemID.h>
 #include <Identifier/TofID.h>
 
-void write_tof_idx() {
-    TTree t( "tof", "tof-idx" );
-    uint16_t idx;
+void write_tof_gid() {
+    TTree t( "tof", "tof-gid" );
+    uint16_t gid;
     uint8_t part;
     uint8_t layer_or_module;
     uint8_t phi_or_strip;
 
-    t.Branch( "idx", &idx );
+    t.Branch( "gid", &gid );
     t.Branch( "part", &part );
     t.Branch( "layer_or_module", &layer_or_module );
     t.Branch( "phi_or_strip", &phi_or_strip );
 
-    idx = 0;
+    gid = 0;
 
     // part=0, endcap0
     part = 0;
@@ -27,7 +27,7 @@ void write_tof_idx() {
         for ( phi_or_strip = 0; phi_or_strip <= TofID::getPHI_ENDCAP_MAX(); phi_or_strip++ )
         {
             t.Fill();
-            idx++;
+            gid++;
         }
     }
 
@@ -39,7 +39,7 @@ void write_tof_idx() {
         for ( phi_or_strip = 0; phi_or_strip <= TofID::getPHI_BARREL_MAX(); phi_or_strip++ )
         {
             t.Fill();
-            idx++;
+            gid++;
         }
     }
 
@@ -51,7 +51,7 @@ void write_tof_idx() {
         for ( phi_or_strip = 0; phi_or_strip <= TofID::getPHI_ENDCAP_MAX(); phi_or_strip++ )
         {
             t.Fill();
-            idx++;
+            gid++;
         }
     }
 
@@ -63,7 +63,7 @@ void write_tof_idx() {
         for ( phi_or_strip = 0; phi_or_strip <= TofID::getSTRIP_MRPC_MAX(); phi_or_strip++ )
         {
             t.Fill();
-            idx++;
+            gid++;
         }
     }
 
@@ -75,28 +75,28 @@ void write_tof_idx() {
         for ( phi_or_strip = 0; phi_or_strip <= TofID::getSTRIP_MRPC_MAX(); phi_or_strip++ )
         {
             t.Fill();
-            idx++;
+            gid++;
         }
     }
 
     t.Write();
 }
 
-void write_cgem_idx() {
-    TTree t( "cgem", "cgem-idx" );
-    uint16_t idx;
+void write_cgem_gid() {
+    TTree t( "cgem", "cgem-gid" );
+    uint16_t gid;
     uint16_t layer;
     uint16_t sheet;
     uint8_t strip_type;
     uint16_t strip;
 
-    t.Branch( "idx", &idx );
+    t.Branch( "gid", &gid );
     t.Branch( "layer", &layer );
     t.Branch( "sheet", &sheet );
     t.Branch( "strip_type", &strip_type );
     t.Branch( "strip", &strip );
 
-    idx = 0;
+    gid = 0;
 
     // layer 0
     layer = 0;
@@ -111,7 +111,7 @@ void write_cgem_idx() {
         for ( strip = 0; strip < max_strip; strip++ )
         {
             t.Fill();
-            idx++;
+            gid++;
         }
     }
 
@@ -129,7 +129,7 @@ void write_cgem_idx() {
                 for ( strip = 0; strip < max_strip; strip++ )
                 {
                     t.Fill();
-                    idx++;
+                    gid++;
                 }
             }
         }
@@ -139,10 +139,10 @@ void write_cgem_idx() {
 }
 
 int main() {
-    TFile f( "ref-idx.root", "RECREATE" );
+    TFile f( "ref-gid.root", "RECREATE" );
 
-    write_tof_idx();
-    write_cgem_idx();
+    write_tof_gid();
+    write_cgem_gid();
 
     f.Close();
 }
