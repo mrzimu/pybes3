@@ -2,7 +2,7 @@
 
 ## GID conversion
 
-All `cgem_gid_to_*` and `get_cgem_gid` are decorated with `@nb.vectorize`.
+All `cgem_gid_to_*` and `get_cgem_gid` are backed by compiled NumPy ufuncs.
 The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
 
 === "Scalar"
