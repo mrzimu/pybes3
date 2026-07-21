@@ -2,7 +2,7 @@
 
 ## GID conversion
 
-All `mdc_gid_to_*`, `mdc_layer_to_*` and `get_mdc_gid` are decorated with `@nb.vectorize`.
+All `mdc_gid_to_*`, `mdc_layer_to_*` and `get_mdc_gid` are backed by compiled NumPy ufuncs.
 The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
 
 === "Scalar"
@@ -69,7 +69,7 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
 
 ## Wires position
 
-All `mdc_gid_to_west_*`, `mdc_gid_to_east_*`, `mdc_gid_z_to_*` are also `@nb.vectorize` functions.
+All `mdc_gid_to_west_*`, `mdc_gid_to_east_*`, `mdc_gid_z_to_*` are also backed by compiled NumPy ufuncs.
 
 === "Scalar"
 

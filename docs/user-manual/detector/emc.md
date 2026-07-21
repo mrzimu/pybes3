@@ -48,7 +48,7 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
 
 ## Crystals position
 
-All `emc_gid_to_front_center_*`, `emc_gid_to_center_*`, `emc_gid_to_point_*` are also `@nb.vectorize` functions.
+All `emc_gid_to_front_center_*`, `emc_gid_to_center_*`, `emc_gid_to_point_*` are also backed by compiled NumPy ufuncs.
 
 === "Scalar"
 
