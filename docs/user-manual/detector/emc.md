@@ -2,7 +2,7 @@
 
 ## GID conversion
 
-All `emc_gid_to_*` and `get_emc_gid` are decorated with `@nb.vectorize`.
+All `emc_gid_to_*` and `get_emc_gid` are backed by compiled NumPy ufuncs.
 The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
 
 === "Scalar"
