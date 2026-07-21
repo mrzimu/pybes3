@@ -29,7 +29,6 @@ BARREL_L = 28.0
 with np.load(EMC_GEOM) as f:
     _emc_geom_table = dict(f)
 
-_emc_geom_table["idx"] = _emc_geom_table.pop("gid")
 _emc_geom_table["part"] = _emc_geom_table["part"].astype(np.int16)
 _emc_geom_table["theta"] = _emc_geom_table["theta"].astype(np.int32)
 _emc_geom_table["phi"] = _emc_geom_table["phi"].astype(np.int32)
@@ -82,7 +81,7 @@ def get_emc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
     res: dict[str, np.ndarray] = {}
 
     for k in [
-        "idx",
+        "gid",
         "part",
         "theta",
         "phi",
@@ -131,9 +130,9 @@ def get_emc_crystal_position(library: Literal["np", "ak", "pd"] = "np"):
     return get_emc_geom_table(library)
 
 
-def get_emc_idx(part: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
+def get_emc_gid(part: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
     """
-    Get the EMC crystal index for the given part, theta, and phi.
+    Get the EMC crystal global ID (gid) for the given part, theta, and phi.
 
     - part 0: 0-479
         - theta 0: 0-63
@@ -157,373 +156,178 @@ def get_emc_idx(part: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
         phi: phi number
 
     Returns:
-        index: EMC index
+        The global ID of the EMC crystal.
     """
-    return _ufuncs.get_emc_idx(part, theta, phi)
-
-
-def get_emc_gid(part: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
-    """
-    !!! warning "Deprecated"
-        This function is deprecated, use `get_emc_idx` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "get_emc_gid is deprecated, use get_emc_idx instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return get_emc_idx(part, theta, phi)
-
-
-def emc_idx_to_part(idx: IntLike) -> IntLike:
-    """
-    Convert EMC crystal index to part.
-
-    Parameters:
-        idx: The index of the crystal.
-
-    Returns:
-        The part number of the crystal.
-    """
-    return _ufuncs.emc_idx_to_part(idx)
+    return _ufuncs.get_emc_gid(part, theta, phi)
 
 
 def emc_gid_to_part(gid: IntLike) -> IntLike:
     """
-    !!! warning "Deprecated"
-        This function is deprecated, use `emc_idx_to_part` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "emc_gid_to_part is deprecated, use emc_idx_to_part instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return emc_idx_to_part(gid)
-
-
-def emc_idx_to_theta(idx: IntLike) -> IntLike:
-    """
-    Convert EMC crystal index to theta.
+    Convert EMC crystal gid to part.
 
     Parameters:
-        idx: The index of the crystal.
+        gid: The global ID of the crystal.
 
     Returns:
-        The theta number of the crystal.
+        The part number of the crystal.
     """
-    return _ufuncs.emc_idx_to_theta(idx)
+    return _ufuncs.emc_gid_to_part(gid)
 
 
 def emc_gid_to_theta(gid: IntLike) -> IntLike:
     """
-    !!! warning "Deprecated"
-        This function is deprecated, use `emc_idx_to_theta` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "emc_gid_to_theta is deprecated, use emc_idx_to_theta instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return emc_idx_to_theta(gid)
-
-
-def emc_idx_to_phi(idx: IntLike) -> IntLike:
-    """
-    Convert EMC crystal index to phi.
+    Convert EMC crystal gid to theta.
 
     Parameters:
-        idx: The index of the crystal.
+        gid: The global ID of the crystal.
 
     Returns:
-        The phi number of the crystal.
+        The theta number of the crystal.
     """
-    return _ufuncs.emc_idx_to_phi(idx)
+    return _ufuncs.emc_gid_to_theta(gid)
 
 
 def emc_gid_to_phi(gid: IntLike) -> IntLike:
     """
-    !!! warning "Deprecated"
-        This function is deprecated, use `emc_idx_to_phi` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "emc_gid_to_phi is deprecated, use emc_idx_to_phi instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return emc_idx_to_phi(gid)
-
-
-def emc_idx_to_point_x(idx: IntLike, point: IntLike) -> FloatLike:
-    """
-    Convert EMC crystal index to x coordinate of the point.
+    Convert EMC crystal gid to phi.
 
     Parameters:
-        idx: The index of the crystal.
+        gid: The global ID of the crystal.
+
+    Returns:
+        The phi number of the crystal.
+    """
+    return _ufuncs.emc_gid_to_phi(gid)
+
+
+def emc_gid_to_point_x(gid: IntLike, point: IntLike) -> FloatLike:
+    """
+    Convert EMC crystal gid to x coordinate of the point.
+
+    Parameters:
+        gid: The global ID of the crystal.
         point: The point number, 0-7.
 
     Returns:
         The x coordinate of the point.
     """
-    return _ufuncs.emc_idx_to_point_x(idx, point)
+    return _ufuncs.emc_gid_to_point_x(gid, point)
 
 
-def emc_gid_to_point_x(gid: IntLike, point: IntLike) -> FloatLike:
+def emc_gid_to_point_y(gid: IntLike, point: IntLike) -> FloatLike:
     """
-    !!! warning "Deprecated"
-        This function is deprecated, use `emc_idx_to_point_x` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "emc_gid_to_point_x is deprecated, use emc_idx_to_point_x instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return emc_idx_to_point_x(gid, point)
-
-
-def emc_idx_to_point_y(idx: IntLike, point: IntLike) -> FloatLike:
-    """
-    Convert EMC crystal index to y coordinate of the point.
+    Convert EMC crystal gid to y coordinate of the point.
 
     Parameters:
-        idx: The index of the crystal.
+        gid: The global ID of the crystal.
         point: The point number, 0-7.
 
     Returns:
         The y coordinate of the point.
     """
-    return _ufuncs.emc_idx_to_point_y(idx, point)
+    return _ufuncs.emc_gid_to_point_y(gid, point)
 
 
-def emc_gid_to_point_y(gid: IntLike, point: IntLike) -> FloatLike:
+def emc_gid_to_point_z(gid: IntLike, point: IntLike) -> FloatLike:
     """
-    !!! warning "Deprecated"
-        This function is deprecated, use `emc_idx_to_point_y` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "emc_gid_to_point_y is deprecated, use emc_idx_to_point_y instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return emc_idx_to_point_y(gid, point)
-
-
-def emc_idx_to_point_z(idx: IntLike, point: IntLike) -> FloatLike:
-    """
-    Convert EMC crystal index to z coordinate of the point.
+    Convert EMC crystal gid to z coordinate of the point.
 
     Parameters:
-        idx: The index of the crystal.
+        gid: The global ID of the crystal.
         point: The point number, 0-7.
 
     Returns:
         The z coordinate of the point.
     """
-    return _ufuncs.emc_idx_to_point_z(idx, point)
-
-
-def emc_gid_to_point_z(gid: IntLike, point: IntLike) -> FloatLike:
-    """
-    !!! warning "Deprecated"
-        This function is deprecated, use `emc_idx_to_point_z` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "emc_gid_to_point_z is deprecated, use emc_idx_to_point_z instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return emc_idx_to_point_z(gid, point)
-
-
-def emc_idx_to_center_x(idx: IntLike) -> FloatLike:
-    """
-    Convert EMC crystal index to x coordinate of the crystal's center.
-
-    Parameters:
-        idx: The index of the crystal.
-
-    Returns:
-        The x coordinate of the crystal's center.
-    """
-    return _ufuncs.emc_idx_to_center_x(idx)
+    return _ufuncs.emc_gid_to_point_z(gid, point)
 
 
 def emc_gid_to_center_x(gid: IntLike) -> FloatLike:
     """
-    !!! warning "Deprecated"
-        This function is deprecated, use `emc_idx_to_center_x` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "emc_gid_to_center_x is deprecated, use emc_idx_to_center_x instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return emc_idx_to_center_x(gid)
-
-
-def emc_idx_to_center_y(idx: IntLike) -> FloatLike:
-    """
-    Convert EMC crystal index to y coordinate of the crystal's center.
+    Convert EMC crystal gid to x coordinate of the crystal's center.
 
     Parameters:
-        idx: The index of the crystal.
+        gid: The global ID of the crystal.
 
     Returns:
-        The y coordinate of the crystal's center.
+        The x coordinate of the crystal's center.
     """
-    return _ufuncs.emc_idx_to_center_y(idx)
+    return _ufuncs.emc_gid_to_center_x(gid)
 
 
 def emc_gid_to_center_y(gid: IntLike) -> FloatLike:
     """
-    !!! warning "Deprecated"
-        This function is deprecated, use `emc_idx_to_center_y` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "emc_gid_to_center_y is deprecated, use emc_idx_to_center_y instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return emc_idx_to_center_y(gid)
-
-
-def emc_idx_to_center_z(idx: IntLike) -> FloatLike:
-    """
-    Convert EMC crystal index to z coordinate of the crystal's center.
+    Convert EMC crystal gid to y coordinate of the crystal's center.
 
     Parameters:
-        idx: The index of the crystal.
+        gid: The global ID of the crystal.
 
     Returns:
-        The z coordinate of the crystal's center.
+        The y coordinate of the crystal's center.
     """
-    return _ufuncs.emc_idx_to_center_z(idx)
+    return _ufuncs.emc_gid_to_center_y(gid)
 
 
 def emc_gid_to_center_z(gid: IntLike) -> FloatLike:
     """
-    !!! warning "Deprecated"
-        This function is deprecated, use `emc_idx_to_center_z` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "emc_gid_to_center_z is deprecated, use emc_idx_to_center_z instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return emc_idx_to_center_z(gid)
-
-
-def emc_idx_to_front_center_x(idx: IntLike) -> FloatLike:
-    """
-    Convert EMC crystal index to x coordinate of the crystal's front center.
+    Convert EMC crystal gid to z coordinate of the crystal's center.
 
     Parameters:
-        idx: The index of the crystal.
+        gid: The global ID of the crystal.
 
     Returns:
-        The x coordinate of the crystal's front center.
+        The z coordinate of the crystal's center.
     """
-    return _ufuncs.emc_idx_to_front_center_x(idx)
+    return _ufuncs.emc_gid_to_center_z(gid)
 
 
 def emc_gid_to_front_center_x(gid: IntLike) -> FloatLike:
     """
-    !!! warning "Deprecated"
-        This function is deprecated, use `emc_idx_to_front_center_x` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "emc_gid_to_front_center_x is deprecated, use emc_idx_to_front_center_x instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return emc_idx_to_front_center_x(gid)
-
-
-def emc_idx_to_front_center_y(idx: IntLike) -> FloatLike:
-    """
-    Convert EMC crystal index to y coordinate of the crystal's front center.
+    Convert EMC crystal gid to x coordinate of the crystal's front center.
 
     Parameters:
-        idx: The index of the crystal.
+        gid: The global ID of the crystal.
 
     Returns:
-        The y coordinate of the crystal's front center.
+        The x coordinate of the crystal's front center.
     """
-    return _ufuncs.emc_idx_to_front_center_y(idx)
+    return _ufuncs.emc_gid_to_front_center_x(gid)
 
 
 def emc_gid_to_front_center_y(gid: IntLike) -> FloatLike:
     """
-    !!! warning "Deprecated"
-        This function is deprecated, use `emc_idx_to_front_center_y` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "emc_gid_to_front_center_y is deprecated, use emc_idx_to_front_center_y instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return emc_idx_to_front_center_y(gid)
-
-
-def emc_idx_to_front_center_z(idx: IntLike) -> FloatLike:
-    """
-    Convert EMC crystal index to z coordinate of the crystal's front center.
+    Convert EMC crystal gid to y coordinate of the crystal's front center.
 
     Parameters:
-        idx: The index of the crystal.
+        gid: The global ID of the crystal.
 
     Returns:
-        The z coordinate of the crystal's front center.
+        The y coordinate of the crystal's front center.
     """
-    return _ufuncs.emc_idx_to_front_center_z(idx)
+    return _ufuncs.emc_gid_to_front_center_y(gid)
 
 
 def emc_gid_to_front_center_z(gid: IntLike) -> FloatLike:
     """
-    !!! warning "Deprecated"
-        This function is deprecated, use `emc_idx_to_front_center_z` instead.
+    Convert EMC crystal gid to z coordinate of the crystal's front center.
+
+    Parameters:
+        gid: The global ID of the crystal.
+
+    Returns:
+        The z coordinate of the crystal's front center.
     """
-    import warnings
-
-    warnings.warn(
-        "emc_gid_to_front_center_z is deprecated, use emc_idx_to_front_center_z instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return emc_idx_to_front_center_z(gid)
+    return _ufuncs.emc_gid_to_front_center_z(gid)
 
 
-def parse_emc_idx(idx: IntLike, geometry: bool = False) -> ak.Array | dict[str, Any]:
+def parse_emc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, Any]:
     """
-    Parse the index of EMC crystals. The index ranges from 0 to 6239.
-    When `idx` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
+    Parse the gid of EMC crystals. "gid" is the global ID of the crystal, ranges from 0 to 6239.
+    When `gid` is an `ak.Array`, the result is an `ak.Array`, otherwise it is a `dict`.
 
     Keys of the output:
 
-    - `idx`: Index of the crystal.
+    - `gid`: Global ID of the crystal.
     - `part`: Part number, 0 for endcap0, 1 for barrel, 2 for endcap1.
     - `theta`: Theta number.
     - `phi`: Phi number.
@@ -539,46 +343,31 @@ def parse_emc_idx(idx: IntLike, geometry: bool = False) -> ak.Array | dict[str, 
 
     !!! info
         The 8 points of the crystal will not be returned here.
-        If you need the 8 points of the crystal, use `emc_idx_to_point_x`, `emc_idx_to_point_y`
-        and `emc_idx_to_point_z`.
+        If you need the 8 points of the crystal, use `emc_gid_to_point_x`, `emc_gid_to_point_y`
+        and `emc_gid_to_point_z`.
 
     Parameters:
-        idx: The index of the crystal.
+        gid: The global ID of the crystal.
         geometry: Whether to include the geometry information.
 
     Returns:
         The parsed result.
     """
-    part = _ufuncs.emc_idx_to_part(idx)
-    theta = _ufuncs.emc_idx_to_theta(idx)
-    phi = _ufuncs.emc_idx_to_phi(idx)
+    part = _ufuncs.emc_gid_to_part(gid)
+    theta = _ufuncs.emc_gid_to_theta(gid)
+    phi = _ufuncs.emc_gid_to_phi(gid)
 
-    res = {"idx": idx, "part": part, "theta": theta, "phi": phi}
+    res = {"gid": gid, "part": part, "theta": theta, "phi": phi}
 
     if geometry:
-        res["front_center_x"] = _ufuncs.emc_idx_to_front_center_x(idx)
-        res["front_center_y"] = _ufuncs.emc_idx_to_front_center_y(idx)
-        res["front_center_z"] = _ufuncs.emc_idx_to_front_center_z(idx)
-        res["center_x"] = _ufuncs.emc_idx_to_center_x(idx)
-        res["center_y"] = _ufuncs.emc_idx_to_center_y(idx)
-        res["center_z"] = _ufuncs.emc_idx_to_center_z(idx)
+        res["front_center_x"] = _ufuncs.emc_gid_to_front_center_x(gid)
+        res["front_center_y"] = _ufuncs.emc_gid_to_front_center_y(gid)
+        res["front_center_z"] = _ufuncs.emc_gid_to_front_center_z(gid)
+        res["center_x"] = _ufuncs.emc_gid_to_center_x(gid)
+        res["center_y"] = _ufuncs.emc_gid_to_center_y(gid)
+        res["center_z"] = _ufuncs.emc_gid_to_center_z(gid)
 
-    if isinstance(idx, ak.Array):
+    if isinstance(gid, ak.Array):
         return ak.zip(res)
     else:
         return res
-
-
-def parse_emc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, Any]:
-    """
-    !!! warning "Deprecated"
-        This function is deprecated, use `parse_emc_idx` instead.
-    """
-    import warnings
-
-    warnings.warn(
-        "parse_emc_gid is deprecated, use parse_emc_idx instead.",
-        DeprecationWarning,
-        stacklevel=2,
-    )
-    return parse_emc_idx(gid, geometry)

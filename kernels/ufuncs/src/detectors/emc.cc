@@ -15,7 +15,7 @@ consteval auto _init_index() {
     std::array<uint8_t, N_CRYSTALS> _theta{};
     std::array<uint8_t, N_CRYSTALS> _phi{};
 
-    size_t idx = 0;
+    size_t gid = 0;
     // part 0
     for ( size_t theta = 0; theta < 6; ++theta )
     {
@@ -32,10 +32,10 @@ consteval auto _init_index() {
         }
         for ( size_t phi = 0; phi < n_phi; ++phi )
         {
-            _part[idx]  = 0;
-            _theta[idx] = static_cast<uint8_t>( theta );
-            _phi[idx]   = static_cast<uint8_t>( phi );
-            idx++;
+            _part[gid]  = 0;
+            _theta[gid] = static_cast<uint8_t>( theta );
+            _phi[gid]   = static_cast<uint8_t>( phi );
+            gid++;
         }
     }
 
@@ -44,10 +44,10 @@ consteval auto _init_index() {
     {
         for ( size_t phi = 0; phi < BARREL_PHI; ++phi )
         {
-            _part[idx]  = 1;
-            _theta[idx] = static_cast<uint8_t>( theta );
-            _phi[idx]   = static_cast<uint8_t>( phi );
-            idx++;
+            _part[gid]  = 1;
+            _theta[gid] = static_cast<uint8_t>( theta );
+            _phi[gid]   = static_cast<uint8_t>( phi );
+            gid++;
         }
     }
 
@@ -67,10 +67,10 @@ consteval auto _init_index() {
         }
         for ( size_t phi = 0; phi < n_phi; ++phi )
         {
-            _part[idx]  = 2;
-            _theta[idx] = static_cast<uint8_t>( theta );
-            _phi[idx]   = static_cast<uint8_t>( phi );
-            idx++;
+            _part[gid]  = 2;
+            _theta[gid] = static_cast<uint8_t>( theta );
+            _phi[gid]   = static_cast<uint8_t>( phi );
+            gid++;
         }
     }
 
@@ -129,7 +129,7 @@ PyObject* _init_emc_geom( PyObject* self, PyObject* args ) {
 }
 
 template <typename T>
-inline void get_emc_idx( T* part, T* theta, T* phi, T* out ) noexcept {
+inline void get_emc_gid( T* part, T* theta, T* phi, T* out ) noexcept {
     if ( *part == 0 )
     {
         switch ( *theta )
@@ -172,63 +172,63 @@ inline void get_emc_idx( T* part, T* theta, T* phi, T* out ) noexcept {
 }
 
 template <typename T>
-inline void emc_idx_to_part( T* idx, T* part ) noexcept {
-    *part = _part[*idx];
+inline void emc_gid_to_part( T* gid, T* part ) noexcept {
+    *part = _part[*gid];
 }
 
 template <typename T>
-inline void emc_idx_to_theta( T* idx, T* theta ) noexcept {
-    *theta = _theta[*idx];
+inline void emc_gid_to_theta( T* gid, T* theta ) noexcept {
+    *theta = _theta[*gid];
 }
 
 template <typename T>
-inline void emc_idx_to_phi( T* idx, T* phi ) noexcept {
-    *phi = _phi[*idx];
+inline void emc_gid_to_phi( T* gid, T* phi ) noexcept {
+    *phi = _phi[*gid];
 }
 
 template <typename T>
-inline void emc_idx_to_center_x( T* idx, double* out ) noexcept {
-    *out = _center_x[*idx];
+inline void emc_gid_to_center_x( T* gid, double* out ) noexcept {
+    *out = _center_x[*gid];
 }
 
 template <typename T>
-inline void emc_idx_to_center_y( T* idx, double* out ) noexcept {
-    *out = _center_y[*idx];
+inline void emc_gid_to_center_y( T* gid, double* out ) noexcept {
+    *out = _center_y[*gid];
 }
 
 template <typename T>
-inline void emc_idx_to_center_z( T* idx, double* out ) noexcept {
-    *out = _center_z[*idx];
+inline void emc_gid_to_center_z( T* gid, double* out ) noexcept {
+    *out = _center_z[*gid];
 }
 
 template <typename T>
-inline void emc_idx_to_front_center_x( T* idx, double* out ) noexcept {
-    *out = _front_center_x[*idx];
+inline void emc_gid_to_front_center_x( T* gid, double* out ) noexcept {
+    *out = _front_center_x[*gid];
 }
 
 template <typename T>
-inline void emc_idx_to_front_center_y( T* idx, double* out ) noexcept {
-    *out = _front_center_y[*idx];
+inline void emc_gid_to_front_center_y( T* gid, double* out ) noexcept {
+    *out = _front_center_y[*gid];
 }
 
 template <typename T>
-inline void emc_idx_to_front_center_z( T* idx, double* out ) noexcept {
-    *out = _front_center_z[*idx];
+inline void emc_gid_to_front_center_z( T* gid, double* out ) noexcept {
+    *out = _front_center_z[*gid];
 }
 
 template <typename T>
-inline void emc_idx_to_point_x( T* idx, T* point, double* out ) noexcept {
-    *out = _points_x[*idx * 8 + *point];
+inline void emc_gid_to_point_x( T* gid, T* point, double* out ) noexcept {
+    *out = _points_x[*gid * 8 + *point];
 }
 
 template <typename T>
-inline void emc_idx_to_point_y( T* idx, T* point, double* out ) noexcept {
-    *out = _points_y[*idx * 8 + *point];
+inline void emc_gid_to_point_y( T* gid, T* point, double* out ) noexcept {
+    *out = _points_y[*gid * 8 + *point];
 }
 
 template <typename T>
-inline void emc_idx_to_point_z( T* idx, T* point, double* out ) noexcept {
-    *out = _points_z[*idx * 8 + *point];
+inline void emc_gid_to_point_z( T* gid, T* point, double* out ) noexcept {
+    *out = _points_z[*gid * 8 + *point];
 }
 
 void declare_emc( PyObject* d ) {
@@ -236,119 +236,119 @@ void declare_emc( PyObject* d ) {
     if ( _import_umath() < 0 ) return;
 
     decl_ufunc_31<             //
-        get_emc_idx<uint16_t>, //
-        get_emc_idx<int16_t>,  //
-        get_emc_idx<uint32_t>, //
-        get_emc_idx<int32_t>,  //
-        get_emc_idx<uint64_t>, //
-        get_emc_idx<int64_t>>  //
-        ( d, "get_emc_idx" );
+        get_emc_gid<uint16_t>, //
+        get_emc_gid<int16_t>,  //
+        get_emc_gid<uint32_t>, //
+        get_emc_gid<int32_t>,  //
+        get_emc_gid<uint64_t>, //
+        get_emc_gid<int64_t>>  //
+        ( d, "get_emc_gid" );
 
     decl_ufunc_11<                 //
-        emc_idx_to_part<uint16_t>, //
-        emc_idx_to_part<int16_t>,  //
-        emc_idx_to_part<uint32_t>, //
-        emc_idx_to_part<int32_t>,  //
-        emc_idx_to_part<uint64_t>, //
-        emc_idx_to_part<int64_t>>  //
-        ( d, "emc_idx_to_part" );
+        emc_gid_to_part<uint16_t>, //
+        emc_gid_to_part<int16_t>,  //
+        emc_gid_to_part<uint32_t>, //
+        emc_gid_to_part<int32_t>,  //
+        emc_gid_to_part<uint64_t>, //
+        emc_gid_to_part<int64_t>>  //
+        ( d, "emc_gid_to_part" );
 
     decl_ufunc_11<                  //
-        emc_idx_to_theta<uint16_t>, //
-        emc_idx_to_theta<int16_t>,  //
-        emc_idx_to_theta<uint32_t>, //
-        emc_idx_to_theta<int32_t>,  //
-        emc_idx_to_theta<uint64_t>, //
-        emc_idx_to_theta<int64_t>>  //
-        ( d, "emc_idx_to_theta" );
+        emc_gid_to_theta<uint16_t>, //
+        emc_gid_to_theta<int16_t>,  //
+        emc_gid_to_theta<uint32_t>, //
+        emc_gid_to_theta<int32_t>,  //
+        emc_gid_to_theta<uint64_t>, //
+        emc_gid_to_theta<int64_t>>  //
+        ( d, "emc_gid_to_theta" );
 
     decl_ufunc_11<                //
-        emc_idx_to_phi<uint16_t>, //
-        emc_idx_to_phi<int16_t>,  //
-        emc_idx_to_phi<uint32_t>, //
-        emc_idx_to_phi<int32_t>,  //
-        emc_idx_to_phi<uint64_t>, //
-        emc_idx_to_phi<int64_t>>  //
-        ( d, "emc_idx_to_phi" );
+        emc_gid_to_phi<uint16_t>, //
+        emc_gid_to_phi<int16_t>,  //
+        emc_gid_to_phi<uint32_t>, //
+        emc_gid_to_phi<int32_t>,  //
+        emc_gid_to_phi<uint64_t>, //
+        emc_gid_to_phi<int64_t>>  //
+        ( d, "emc_gid_to_phi" );
 
     decl_ufunc_11<                     //
-        emc_idx_to_center_x<uint16_t>, //
-        emc_idx_to_center_x<int16_t>,  //
-        emc_idx_to_center_x<uint32_t>, //
-        emc_idx_to_center_x<int32_t>,  //
-        emc_idx_to_center_x<uint64_t>, //
-        emc_idx_to_center_x<int64_t>>  //
-        ( d, "emc_idx_to_center_x" );
+        emc_gid_to_center_x<uint16_t>, //
+        emc_gid_to_center_x<int16_t>,  //
+        emc_gid_to_center_x<uint32_t>, //
+        emc_gid_to_center_x<int32_t>,  //
+        emc_gid_to_center_x<uint64_t>, //
+        emc_gid_to_center_x<int64_t>>  //
+        ( d, "emc_gid_to_center_x" );
 
     decl_ufunc_11<                     //
-        emc_idx_to_center_y<uint16_t>, //
-        emc_idx_to_center_y<int16_t>,  //
-        emc_idx_to_center_y<uint32_t>, //
-        emc_idx_to_center_y<int32_t>,  //
-        emc_idx_to_center_y<uint64_t>, //
-        emc_idx_to_center_y<int64_t>>  //
-        ( d, "emc_idx_to_center_y" );
+        emc_gid_to_center_y<uint16_t>, //
+        emc_gid_to_center_y<int16_t>,  //
+        emc_gid_to_center_y<uint32_t>, //
+        emc_gid_to_center_y<int32_t>,  //
+        emc_gid_to_center_y<uint64_t>, //
+        emc_gid_to_center_y<int64_t>>  //
+        ( d, "emc_gid_to_center_y" );
 
     decl_ufunc_11<                     //
-        emc_idx_to_center_z<uint16_t>, //
-        emc_idx_to_center_z<int16_t>,  //
-        emc_idx_to_center_z<uint32_t>, //
-        emc_idx_to_center_z<int32_t>,  //
-        emc_idx_to_center_z<uint64_t>, //
-        emc_idx_to_center_z<int64_t>>  //
-        ( d, "emc_idx_to_center_z" );
+        emc_gid_to_center_z<uint16_t>, //
+        emc_gid_to_center_z<int16_t>,  //
+        emc_gid_to_center_z<uint32_t>, //
+        emc_gid_to_center_z<int32_t>,  //
+        emc_gid_to_center_z<uint64_t>, //
+        emc_gid_to_center_z<int64_t>>  //
+        ( d, "emc_gid_to_center_z" );
 
     decl_ufunc_11<                           //
-        emc_idx_to_front_center_x<uint16_t>, //
-        emc_idx_to_front_center_x<int16_t>,  //
-        emc_idx_to_front_center_x<uint32_t>, //
-        emc_idx_to_front_center_x<int32_t>,  //
-        emc_idx_to_front_center_x<uint64_t>, //
-        emc_idx_to_front_center_x<int64_t>>  //
-        ( d, "emc_idx_to_front_center_x" );
+        emc_gid_to_front_center_x<uint16_t>, //
+        emc_gid_to_front_center_x<int16_t>,  //
+        emc_gid_to_front_center_x<uint32_t>, //
+        emc_gid_to_front_center_x<int32_t>,  //
+        emc_gid_to_front_center_x<uint64_t>, //
+        emc_gid_to_front_center_x<int64_t>>  //
+        ( d, "emc_gid_to_front_center_x" );
 
     decl_ufunc_11<                           //
-        emc_idx_to_front_center_y<uint16_t>, //
-        emc_idx_to_front_center_y<int16_t>,  //
-        emc_idx_to_front_center_y<uint32_t>, //
-        emc_idx_to_front_center_y<int32_t>,  //
-        emc_idx_to_front_center_y<uint64_t>, //
-        emc_idx_to_front_center_y<int64_t>>  //
-        ( d, "emc_idx_to_front_center_y" );
+        emc_gid_to_front_center_y<uint16_t>, //
+        emc_gid_to_front_center_y<int16_t>,  //
+        emc_gid_to_front_center_y<uint32_t>, //
+        emc_gid_to_front_center_y<int32_t>,  //
+        emc_gid_to_front_center_y<uint64_t>, //
+        emc_gid_to_front_center_y<int64_t>>  //
+        ( d, "emc_gid_to_front_center_y" );
 
     decl_ufunc_11<                           //
-        emc_idx_to_front_center_z<uint16_t>, //
-        emc_idx_to_front_center_z<int16_t>,  //
-        emc_idx_to_front_center_z<uint32_t>, //
-        emc_idx_to_front_center_z<int32_t>,  //
-        emc_idx_to_front_center_z<uint64_t>, //
-        emc_idx_to_front_center_z<int64_t>>  //
-        ( d, "emc_idx_to_front_center_z" );
+        emc_gid_to_front_center_z<uint16_t>, //
+        emc_gid_to_front_center_z<int16_t>,  //
+        emc_gid_to_front_center_z<uint32_t>, //
+        emc_gid_to_front_center_z<int32_t>,  //
+        emc_gid_to_front_center_z<uint64_t>, //
+        emc_gid_to_front_center_z<int64_t>>  //
+        ( d, "emc_gid_to_front_center_z" );
 
     decl_ufunc_21<                    //
-        emc_idx_to_point_x<uint16_t>, //
-        emc_idx_to_point_x<int16_t>,  //
-        emc_idx_to_point_x<uint32_t>, //
-        emc_idx_to_point_x<int32_t>,  //
-        emc_idx_to_point_x<uint64_t>, //
-        emc_idx_to_point_x<int64_t>>  //
-        ( d, "emc_idx_to_point_x" );
+        emc_gid_to_point_x<uint16_t>, //
+        emc_gid_to_point_x<int16_t>,  //
+        emc_gid_to_point_x<uint32_t>, //
+        emc_gid_to_point_x<int32_t>,  //
+        emc_gid_to_point_x<uint64_t>, //
+        emc_gid_to_point_x<int64_t>>  //
+        ( d, "emc_gid_to_point_x" );
 
     decl_ufunc_21<                    //
-        emc_idx_to_point_y<uint16_t>, //
-        emc_idx_to_point_y<int16_t>,  //
-        emc_idx_to_point_y<uint32_t>, //
-        emc_idx_to_point_y<int32_t>,  //
-        emc_idx_to_point_y<uint64_t>, //
-        emc_idx_to_point_y<int64_t>>  //
-        ( d, "emc_idx_to_point_y" );
+        emc_gid_to_point_y<uint16_t>, //
+        emc_gid_to_point_y<int16_t>,  //
+        emc_gid_to_point_y<uint32_t>, //
+        emc_gid_to_point_y<int32_t>,  //
+        emc_gid_to_point_y<uint64_t>, //
+        emc_gid_to_point_y<int64_t>>  //
+        ( d, "emc_gid_to_point_y" );
 
     decl_ufunc_21<                    //
-        emc_idx_to_point_z<uint16_t>, //
-        emc_idx_to_point_z<int16_t>,  //
-        emc_idx_to_point_z<uint32_t>, //
-        emc_idx_to_point_z<int32_t>,  //
-        emc_idx_to_point_z<uint64_t>, //
-        emc_idx_to_point_z<int64_t>>  //
-        ( d, "emc_idx_to_point_z" );
+        emc_gid_to_point_z<uint16_t>, //
+        emc_gid_to_point_z<int16_t>,  //
+        emc_gid_to_point_z<uint32_t>, //
+        emc_gid_to_point_z<int32_t>,  //
+        emc_gid_to_point_z<uint64_t>, //
+        emc_gid_to_point_z<int64_t>>  //
+        ( d, "emc_gid_to_point_z" );
 }

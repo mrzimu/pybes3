@@ -4,13 +4,13 @@ import numpy as np
 from numpy._typing._ufunc import _UFunc_Nin1_Nout1, _UFunc_Nin2_Nout1
 
 # detectors/cgem.cc
-get_cgem_idx: np.ufunc
-cgem_idx_to_layer: _UFunc_Nin1_Nout1
-cgem_idx_to_sheet: _UFunc_Nin1_Nout1
-cgem_idx_to_strip_type: _UFunc_Nin1_Nout1
-cgem_idx_to_strip: _UFunc_Nin1_Nout1
-cgem_idx_to_is_xstrip: _UFunc_Nin1_Nout1
-cgem_idx_to_is_vstrip: _UFunc_Nin1_Nout1
+get_cgem_gid: np.ufunc
+cgem_gid_to_layer: _UFunc_Nin1_Nout1
+cgem_gid_to_sheet: _UFunc_Nin1_Nout1
+cgem_gid_to_strip_type: _UFunc_Nin1_Nout1
+cgem_gid_to_strip: _UFunc_Nin1_Nout1
+cgem_gid_to_is_xstrip: _UFunc_Nin1_Nout1
+cgem_gid_to_is_vstrip: _UFunc_Nin1_Nout1
 
 # detectors/mdc.cc
 def _init_mdc_geom(
@@ -23,28 +23,28 @@ def _init_mdc_geom(
     /,
 ): ...
 
-get_mdc_idx: np.ufunc
-mdc_idx_to_superlayer: _UFunc_Nin1_Nout1
+get_mdc_gid: np.ufunc
+mdc_gid_to_superlayer: _UFunc_Nin1_Nout1
 mdc_layer_to_superlayer: _UFunc_Nin1_Nout1
-mdc_idx_to_layer: _UFunc_Nin1_Nout1
-mdc_idx_to_wire: _UFunc_Nin1_Nout1
-mdc_idx_to_stereo: _UFunc_Nin1_Nout1
+mdc_gid_to_layer: _UFunc_Nin1_Nout1
+mdc_gid_to_wire: _UFunc_Nin1_Nout1
+mdc_gid_to_stereo: _UFunc_Nin1_Nout1
 mdc_layer_to_is_stereo: _UFunc_Nin1_Nout1
-mdc_idx_to_is_stereo: _UFunc_Nin1_Nout1
-mdc_idx_to_west_x: _UFunc_Nin1_Nout1
-mdc_idx_to_west_y: _UFunc_Nin1_Nout1
-mdc_idx_to_west_z: _UFunc_Nin1_Nout1
-mdc_idx_to_east_x: _UFunc_Nin1_Nout1
-mdc_idx_to_east_y: _UFunc_Nin1_Nout1
-mdc_idx_to_east_z: _UFunc_Nin1_Nout1
-mdc_idx_z_to_x: _UFunc_Nin2_Nout1
-mdc_idx_z_to_y: _UFunc_Nin2_Nout1
+mdc_gid_to_is_stereo: _UFunc_Nin1_Nout1
+mdc_gid_to_west_x: _UFunc_Nin1_Nout1
+mdc_gid_to_west_y: _UFunc_Nin1_Nout1
+mdc_gid_to_west_z: _UFunc_Nin1_Nout1
+mdc_gid_to_east_x: _UFunc_Nin1_Nout1
+mdc_gid_to_east_y: _UFunc_Nin1_Nout1
+mdc_gid_to_east_z: _UFunc_Nin1_Nout1
+mdc_gid_z_to_x: _UFunc_Nin2_Nout1
+mdc_gid_z_to_y: _UFunc_Nin2_Nout1
 
 # detectors/tof.cc
-get_tof_idx: np.ufunc
-tof_idx_to_part: _UFunc_Nin1_Nout1
-tof_idx_to_layer_or_module: _UFunc_Nin1_Nout1
-tof_idx_to_phi_or_strip: _UFunc_Nin1_Nout1
+get_tof_gid: np.ufunc
+tof_gid_to_part: _UFunc_Nin1_Nout1
+tof_gid_to_layer_or_module: _UFunc_Nin1_Nout1
+tof_gid_to_phi_or_strip: _UFunc_Nin1_Nout1
 tof_hit_status_to_is_raw: _UFunc_Nin1_Nout1
 tof_hit_status_to_is_readout: _UFunc_Nin1_Nout1
 tof_hit_status_to_is_counter: _UFunc_Nin1_Nout1
@@ -73,19 +73,19 @@ def _init_emc_geom(
     /,
 ): ...
 
-get_emc_idx: np.ufunc
-emc_idx_to_part: _UFunc_Nin1_Nout1
-emc_idx_to_theta: _UFunc_Nin1_Nout1
-emc_idx_to_phi: _UFunc_Nin1_Nout1
-emc_idx_to_center_x: _UFunc_Nin1_Nout1
-emc_idx_to_center_y: _UFunc_Nin1_Nout1
-emc_idx_to_center_z: _UFunc_Nin1_Nout1
-emc_idx_to_front_center_x: _UFunc_Nin1_Nout1
-emc_idx_to_front_center_y: _UFunc_Nin1_Nout1
-emc_idx_to_front_center_z: _UFunc_Nin1_Nout1
-emc_idx_to_point_x: _UFunc_Nin2_Nout1
-emc_idx_to_point_y: _UFunc_Nin2_Nout1
-emc_idx_to_point_z: _UFunc_Nin2_Nout1
+get_emc_gid: np.ufunc
+emc_gid_to_part: _UFunc_Nin1_Nout1
+emc_gid_to_theta: _UFunc_Nin1_Nout1
+emc_gid_to_phi: _UFunc_Nin1_Nout1
+emc_gid_to_center_x: _UFunc_Nin1_Nout1
+emc_gid_to_center_y: _UFunc_Nin1_Nout1
+emc_gid_to_center_z: _UFunc_Nin1_Nout1
+emc_gid_to_front_center_x: _UFunc_Nin1_Nout1
+emc_gid_to_front_center_y: _UFunc_Nin1_Nout1
+emc_gid_to_front_center_z: _UFunc_Nin1_Nout1
+emc_gid_to_point_x: _UFunc_Nin2_Nout1
+emc_gid_to_point_y: _UFunc_Nin2_Nout1
+emc_gid_to_point_z: _UFunc_Nin2_Nout1
 
 # helix.cc
 dr_phi0_to_x: _UFunc_Nin2_Nout1

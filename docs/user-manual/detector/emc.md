@@ -1,8 +1,8 @@
 # EMC
 
-## Index conversion
+## GID conversion
 
-All `emc_idx_to_*` and `get_emc_idx` are decorated with `@nb.vectorize`.
+All `emc_gid_to_*` and `get_emc_gid` are backed by compiled NumPy ufuncs.
 The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
 
 === "Scalar"
@@ -10,12 +10,12 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
     ```python
     import pybes3 as p3
 
-    idx = 0
-    part = p3.emc_idx_to_part(idx)          # 0
-    theta = p3.emc_idx_to_theta(idx)
-    phi = p3.emc_idx_to_phi(idx)
+    gid = 0
+    part = p3.emc_gid_to_part(gid)          # 0
+    theta = p3.emc_gid_to_theta(gid)
+    phi = p3.emc_gid_to_phi(gid)
 
-    idx = p3.get_emc_idx(part, theta, phi)
+    gid = p3.get_emc_gid(part, theta, phi)
     ```
 
 === "NumPy array"
@@ -24,12 +24,12 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
     import numpy as np
     import pybes3 as p3
 
-    idx = np.array([0, 100, 5000])
-    part = p3.emc_idx_to_part(idx)          # array([0, 0, 1])
-    theta = p3.emc_idx_to_theta(idx)
-    phi = p3.emc_idx_to_phi(idx)
+    gid = np.array([0, 100, 5000])
+    part = p3.emc_gid_to_part(gid)          # array([0, 0, 1])
+    theta = p3.emc_gid_to_theta(gid)
+    phi = p3.emc_gid_to_phi(gid)
 
-    idx = p3.get_emc_idx(part, theta, phi)
+    gid = p3.get_emc_gid(part, theta, phi)
     ```
 
 === "Awkward Array"
@@ -38,31 +38,31 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
     import awkward as ak
     import pybes3 as p3
 
-    idx = ak.Array([[0, 100], [5000]])
-    part = p3.emc_idx_to_part(idx)          # <Array [[0, 0], [1]] type='...'>
-    theta = p3.emc_idx_to_theta(idx)
-    phi = p3.emc_idx_to_phi(idx)
+    gid = ak.Array([[0, 100], [5000]])
+    part = p3.emc_gid_to_part(gid)          # <Array [[0, 0], [1]] type='...'>
+    theta = p3.emc_gid_to_theta(gid)
+    phi = p3.emc_gid_to_phi(gid)
 
-    idx = p3.get_emc_idx(part, theta, phi)
+    gid = p3.get_emc_gid(part, theta, phi)
     ```
 
 ## Crystals position
 
-All `emc_idx_to_front_center_*`, `emc_idx_to_center_*`, `emc_idx_to_point_*` are also `@nb.vectorize` functions.
+All `emc_gid_to_front_center_*`, `emc_gid_to_center_*`, `emc_gid_to_point_*` are also backed by compiled NumPy ufuncs.
 
 === "Scalar"
 
     ```python
     import pybes3 as p3
 
-    idx = 0
-    front_center_x = p3.emc_idx_to_front_center_x(idx)
-    front_center_y = p3.emc_idx_to_front_center_y(idx)
-    front_center_z = p3.emc_idx_to_front_center_z(idx)
+    gid = 0
+    front_center_x = p3.emc_gid_to_front_center_x(gid)
+    front_center_y = p3.emc_gid_to_front_center_y(gid)
+    front_center_z = p3.emc_gid_to_front_center_z(gid)
 
-    center_x = p3.emc_idx_to_center_x(idx)
-    center_y = p3.emc_idx_to_center_y(idx)
-    center_z = p3.emc_idx_to_center_z(idx)
+    center_x = p3.emc_gid_to_center_x(gid)
+    center_y = p3.emc_gid_to_center_y(gid)
+    center_z = p3.emc_gid_to_center_z(gid)
     ```
 
 === "NumPy array"
@@ -71,14 +71,14 @@ All `emc_idx_to_front_center_*`, `emc_idx_to_center_*`, `emc_idx_to_point_*` are
     import numpy as np
     import pybes3 as p3
 
-    idx = np.array([0, 100, 5000])
-    front_center_x = p3.emc_idx_to_front_center_x(idx)
-    front_center_y = p3.emc_idx_to_front_center_y(idx)
-    front_center_z = p3.emc_idx_to_front_center_z(idx)
+    gid = np.array([0, 100, 5000])
+    front_center_x = p3.emc_gid_to_front_center_x(gid)
+    front_center_y = p3.emc_gid_to_front_center_y(gid)
+    front_center_z = p3.emc_gid_to_front_center_z(gid)
 
-    center_x = p3.emc_idx_to_center_x(idx)
-    center_y = p3.emc_idx_to_center_y(idx)
-    center_z = p3.emc_idx_to_center_z(idx)
+    center_x = p3.emc_gid_to_center_x(gid)
+    center_y = p3.emc_gid_to_center_y(gid)
+    center_z = p3.emc_gid_to_center_z(gid)
     ```
 
 === "Awkward Array"
@@ -87,19 +87,19 @@ All `emc_idx_to_front_center_*`, `emc_idx_to_center_*`, `emc_idx_to_point_*` are
     import awkward as ak
     import pybes3 as p3
 
-    idx = ak.Array([[0, 100], [5000]])
-    front_center_x = p3.emc_idx_to_front_center_x(idx)
-    front_center_y = p3.emc_idx_to_front_center_y(idx)
-    front_center_z = p3.emc_idx_to_front_center_z(idx)
+    gid = ak.Array([[0, 100], [5000]])
+    front_center_x = p3.emc_gid_to_front_center_x(gid)
+    front_center_y = p3.emc_gid_to_front_center_y(gid)
+    front_center_z = p3.emc_gid_to_front_center_z(gid)
 
-    center_x = p3.emc_idx_to_center_x(idx)
-    center_y = p3.emc_idx_to_center_y(idx)
-    center_z = p3.emc_idx_to_center_z(idx)
+    center_x = p3.emc_gid_to_center_x(gid)
+    center_y = p3.emc_gid_to_center_y(gid)
+    center_z = p3.emc_gid_to_center_z(gid)
     ```
 
 ---
 
-Each crystal has 8 corner points. `emc_idx_to_point_*` take two arguments (`idx` and `point`),
+Each crystal has 8 corner points. `emc_gid_to_point_*` take two arguments (`gid` and `point`),
 both support scalar/array inputs independently:
 
 === "Scalar"
@@ -107,14 +107,14 @@ both support scalar/array inputs independently:
     ```python
     import pybes3 as p3
 
-    idx = 0
-    x = p3.emc_idx_to_point_x(idx, 0)   # crystal 0, point 0
-    y = p3.emc_idx_to_point_y(idx, 0)
-    z = p3.emc_idx_to_point_z(idx, 0)
+    gid = 0
+    x = p3.emc_gid_to_point_x(gid, 0)   # crystal 0, point 0
+    y = p3.emc_gid_to_point_y(gid, 0)
+    z = p3.emc_gid_to_point_z(gid, 0)
 
-    x = p3.emc_idx_to_point_x(idx, 7)   # crystal 0, point 7
-    y = p3.emc_idx_to_point_y(idx, 7)
-    z = p3.emc_idx_to_point_z(idx, 7)
+    x = p3.emc_gid_to_point_x(gid, 7)   # crystal 0, point 7
+    y = p3.emc_gid_to_point_y(gid, 7)
+    z = p3.emc_gid_to_point_z(gid, 7)
     ```
 
 === "NumPy array"
@@ -123,16 +123,16 @@ both support scalar/array inputs independently:
     import numpy as np
     import pybes3 as p3
 
-    idx = np.array([0, 100, 5000])
+    gid = np.array([0, 100, 5000])
 
-    x = p3.emc_idx_to_point_x(idx, 0)       # multiple crystals, point 0
-    y = p3.emc_idx_to_point_y(idx, 0)
-    z = p3.emc_idx_to_point_z(idx, 0)
+    x = p3.emc_gid_to_point_x(gid, 0)       # multiple crystals, point 0
+    y = p3.emc_gid_to_point_y(gid, 0)
+    z = p3.emc_gid_to_point_z(gid, 0)
 
     point_id = np.arange(8)
-    x = p3.emc_idx_to_point_x(0, point_id)  # crystal 0, all 8 points
-    y = p3.emc_idx_to_point_y(0, point_id)
-    z = p3.emc_idx_to_point_z(0, point_id)
+    x = p3.emc_gid_to_point_x(0, point_id)  # crystal 0, all 8 points
+    y = p3.emc_gid_to_point_y(0, point_id)
+    z = p3.emc_gid_to_point_z(0, point_id)
     ```
 
 === "Awkward Array"
@@ -141,11 +141,11 @@ both support scalar/array inputs independently:
     import awkward as ak
     import pybes3 as p3
 
-    idx = ak.Array([[0, 100], [5000]])
+    gid = ak.Array([[0, 100], [5000]])
     point = ak.Array([0, 1, 2])
 
-    x = p3.emc_idx_to_point_x(idx, 0)       # jagged crystals, point 0
-    x = p3.emc_idx_to_point_x(0, point)     # crystal 0, jagged points
+    x = p3.emc_gid_to_point_x(gid, 0)       # jagged crystals, point 0
+    x = p3.emc_gid_to_point_x(0, point)     # crystal 0, jagged points
     ```
 
 ---
@@ -179,19 +179,19 @@ p3.emc_barrel_offset_2
 
 These constants are exported from `EmcRecGeoSvc` in `BOSS`.
 
-## Index parser
+## GID parser
 
-Use `parse_emc_idx` to parse all fields from an index at once:
+Use `parse_emc_gid` to parse all fields from a gid at once:
 
 ```python
 # parse all fields; returns a dict (or ak.Array when the input is an ak.Array)
-res = p3.parse_emc_idx(idx)
+res = p3.parse_emc_gid(gid)
 part = res["part"]
 theta = res["theta"]
 phi = res["phi"]
 
 # with geometry information (front center and center)
-res_geom = p3.parse_emc_idx(idx, geometry=True)
+res_geom = p3.parse_emc_gid(gid, geometry=True)
 front_center_x = res_geom["front_center_x"]
 front_center_y = res_geom["front_center_y"]
 front_center_z = res_geom["front_center_z"]
@@ -201,7 +201,7 @@ center_z = res_geom["center_z"]
 ```
 
 !!! info
-    The 8 corner points of crystals are **not** returned by `parse_emc_idx`.
-    Use `emc_idx_to_point_x`, `emc_idx_to_point_y`, and `emc_idx_to_point_z` to get them individually.
+    The 8 corner points of crystals are **not** returned by `parse_emc_gid`.
+    Use `emc_gid_to_point_x`, `emc_gid_to_point_y`, and `emc_gid_to_point_z` to get them individually.
 
 When the input is an `ak.Array`, the result is also an `ak.Array` with record fields.
