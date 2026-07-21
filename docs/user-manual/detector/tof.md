@@ -2,7 +2,7 @@
 
 ## GID conversion
 
-All `tof_gid_to_*` and `get_tof_gid` are decorated with `@nb.vectorize`.
+All `tof_gid_to_*` and `get_tof_gid` are backed by compiled NumPy ufuncs.
 The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
 
 === "Scalar"
