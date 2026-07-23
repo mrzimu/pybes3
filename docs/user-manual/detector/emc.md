@@ -205,3 +205,39 @@ center_z = res_geom["center_z"]
     Use `emc_gid_to_point_x`, `emc_gid_to_point_y`, and `emc_gid_to_point_z` to get them individually.
 
 When the input is an `ak.Array`, the result is also an `ak.Array` with record fields.
+
+## Calculate charge (raw energy) with hit ADC information
+
+The charge, which is the raw energy of a hit, can be calculated with `emc_adc_to_charge`:
+
+```python
+import numpy as np
+import pybes3 as p3
+
+measure = np.array([0, 1, 2, 3])
+adc = np.array([100, 200, 300, 400])
+charge = p3.emc_adc_to_charge(measure, adc)
+```
+
+The conversion formula is:
+
+$$
+\text{charge} = \frac{\text{adc}}{1024} \times E_{\text{measure}}
+$$
+
+where $adc$ is the charge channel number, $E_{\text{measure}}$ is the maximum energy of the corresponding measure:
+
+$$
+E_{\text{measure}} =
+    \begin{cases}
+        0.078~\mathrm{GeV}, & \text{measure} = 0 \\
+        0.625~\mathrm{GeV}, & \text{measure} = 1 \\
+        2.500~\mathrm{GeV}, & \text{measure} = 2 \\
+        2.500~\mathrm{GeV}, & \text{measure} = 3 \\
+    \end{cases}
+$$
+
+Note that `measure=3` indicates that the hit is saturated, and the charge is calculated with the same formula as `measure=2`.
+
+!!! success "Same as BOSS"
+    EMC charge calculation is the same as the one given by `RawDataUtil::EmcCharge` in `BOSS`.

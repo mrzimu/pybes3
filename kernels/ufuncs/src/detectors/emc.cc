@@ -231,28 +231,11 @@ inline void emc_gid_to_point_z( T* gid, T* point, double* out ) noexcept {
     *out = _points_z[*gid * 8 + *point];
 }
 
-template <typename T>
-inline void emc_adc_to_charge( T* measure, T* adc, double* out ) noexcept {
-    switch ( *measure )
-    {
-    case 0: *out = static_cast<double>( *adc ) / 1024. * 0.078; break;
-    case 1: *out = static_cast<double>( *adc ) / 1024. * 0.625; break;
-    case 2: *out = static_cast<double>( *adc ) / 1024. * 2.500; break;
-    case 3: *out = static_cast<double>( *adc ) / 1024. * 2.500; break;
-    default: *out = std::nan( "INVALID_MEASURE" ); break;
-    }
-}
+constexpr double MEASURE_EMAX[4] = { 0.078, 0.625, 2.500, 2.500 };
 
 template <typename T>
-inline void emc_adc1p_to_charge( T* measure, T* adc, double* out ) noexcept {
-    switch ( *measure )
-    {
-    case 0: *out = static_cast<double>( *adc + 1 ) / 1024. * 0.078; break;
-    case 1: *out = static_cast<double>( *adc + 1 ) / 1024. * 0.625; break;
-    case 2: *out = static_cast<double>( *adc + 1 ) / 1024. * 2.500; break;
-    case 3: *out = static_cast<double>( *adc + 1 ) / 1024. * 2.500; break;
-    default: *out = std::nan( "INVALID_MEASURE" ); break;
-    }
+inline void emc_adc_to_charge( T* measure, T* adc, double* out ) noexcept {
+    *out = static_cast<double>( *adc ) / 1024. * MEASURE_EMAX[*measure];
 }
 
 void declare_emc( PyObject* d ) {
@@ -384,13 +367,4 @@ void declare_emc( PyObject* d ) {
         emc_adc_to_charge<uint64_t>, //
         emc_adc_to_charge<int64_t>>  //
         ( d, "emc_adc_to_charge" );
-
-    decl_ufunc_21<                     //
-        emc_adc1p_to_charge<uint16_t>, //
-        emc_adc1p_to_charge<int16_t>,  //
-        emc_adc1p_to_charge<uint32_t>, //
-        emc_adc1p_to_charge<int32_t>,  //
-        emc_adc1p_to_charge<uint64_t>, //
-        emc_adc1p_to_charge<int64_t>>  //
-        ( d, "emc_adc1p_to_charge" );
 }
