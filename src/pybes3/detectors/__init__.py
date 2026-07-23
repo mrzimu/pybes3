@@ -11,6 +11,7 @@ from pybes3.detectors.cgem import (
     parse_cgem_gid,
 )
 from pybes3.detectors.emc import (
+    emc_adc_to_charge,
     emc_gid_to_center_x,
     emc_gid_to_center_y,
     emc_gid_to_center_z,
@@ -122,6 +123,7 @@ __all__ = [
     "tof_hit_status_to_n_east",
     "tof_hit_status_to_n_west",
     # emc
+    "emc_adc_to_charge",
     "emc_gid_to_center_x",
     "emc_gid_to_center_y",
     "emc_gid_to_center_z",

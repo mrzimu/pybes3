@@ -231,6 +231,13 @@ inline void emc_gid_to_point_z( T* gid, T* point, double* out ) noexcept {
     *out = _points_z[*gid * 8 + *point];
 }
 
+constexpr double MEASURE_EMAX[4] = { 0.078, 0.625, 2.500, 2.500 };
+
+template <typename T>
+inline void emc_adc_to_charge( T* measure, T* adc, double* out ) noexcept {
+    *out = static_cast<double>( *adc ) / 1024. * MEASURE_EMAX[*measure];
+}
+
 void declare_emc( PyObject* d ) {
     if ( _import_array() < 0 ) return;
     if ( _import_umath() < 0 ) return;
@@ -351,4 +358,13 @@ void declare_emc( PyObject* d ) {
         emc_gid_to_point_z<uint64_t>, //
         emc_gid_to_point_z<int64_t>>  //
         ( d, "emc_gid_to_point_z" );
+
+    decl_ufunc_21<                   //
+        emc_adc_to_charge<uint16_t>, //
+        emc_adc_to_charge<int16_t>,  //
+        emc_adc_to_charge<uint32_t>, //
+        emc_adc_to_charge<int32_t>,  //
+        emc_adc_to_charge<uint64_t>, //
+        emc_adc_to_charge<int64_t>>  //
+        ( d, "emc_adc_to_charge" );
 }
