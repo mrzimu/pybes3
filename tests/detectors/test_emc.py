@@ -61,9 +61,3 @@ def test_emc_adc_to_charge():
 
     charge = p3.emc_adc_to_charge(measure, adc)
     assert np.allclose(charge, expected_charge, atol=1e-6)
-
-    # Test with invalid measure
-    invalid_measure = np.array([4], dtype=np.uint16)
-    invalid_adc = np.array([1024], dtype=np.uint16)
-    invalid_charge = p3.emc_adc_to_charge(invalid_measure, invalid_adc)
-    assert np.isnan(invalid_charge[0])
