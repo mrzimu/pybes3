@@ -48,7 +48,7 @@ dependencies = [
   "uproot-custom==2.4.*",
   "numpy==2.*"
 ]
-description = "Unofficial Python module for BES3"
+description = "A Python module for BES3 experiment"
 dynamic = ["version"]
 name = "pybes3"
 readme = "README.md"
