@@ -3,8 +3,11 @@ from __future__ import annotations
 import awkward as ak
 import numpy as np
 
-import pybes3._kernels._ufuncs as _ufuncs
-import pybes3.detectors as det
+import pybes3.kernels.ufuncs as _ufuncs
+from pybes3.cgem import get_cgem_gid
+from pybes3.emc import get_emc_gid
+from pybes3.mdc import get_mdc_gid
+from pybes3.tof import get_tof_gid
 from pybes3.typing import BoolLike, IntLike
 
 
@@ -97,7 +100,7 @@ def mdc_id_to_gid(mdc_id: IntLike) -> IntLike:
     Returns:
         The wire global ID.
     """
-    return det.get_mdc_gid(mdc_id_to_layer(mdc_id), mdc_id_to_wire(mdc_id))
+    return get_mdc_gid(mdc_id_to_layer(mdc_id), mdc_id_to_wire(mdc_id))
 
 
 def parse_mdc_id(mdc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
@@ -361,7 +364,7 @@ def tof_id_to_gid(tof_id: IntLike) -> IntLike:
         The strip global ID.
     """
     part = tof_id_to_part(tof_id)
-    return det.get_tof_gid(
+    return get_tof_gid(
         part,
         tof_id_to_layer_or_module(tof_id, part),
         tof_id_to_phi_or_strip(tof_id, part),
@@ -398,7 +401,7 @@ def parse_tof_id(tof_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     layer_or_module = tof_id_to_layer_or_module(tof_id, part)
     phi_or_strip = tof_id_to_phi_or_strip(tof_id, part)
     end = tof_id_to_end(tof_id)
-    gid = det.get_tof_gid(part, layer_or_module, phi_or_strip)
+    gid = get_tof_gid(part, layer_or_module, phi_or_strip)
 
     res = {
         "gid": gid,
@@ -544,10 +547,8 @@ def emc_id_to_gid(emc_id: IntLike) -> IntLike:
     Returns:
         The crystal global ID.
     """
-    return det.get_emc_gid(
-        emc_id_to_module(emc_id),
-        emc_id_to_theta(emc_id),
-        emc_id_to_phi(emc_id),
+    return get_emc_gid(
+        emc_id_to_module(emc_id), emc_id_to_theta(emc_id), emc_id_to_phi(emc_id)
     )
 
 
@@ -572,7 +573,7 @@ def parse_emc_id(emc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     theta = emc_id_to_theta(emc_id)
     phi = emc_id_to_phi(emc_id)
     res = {
-        "gid": det.get_emc_gid(module, theta, phi),
+        "gid": get_emc_gid(module, theta, phi),
         "part": module,
         "theta": theta,
         "phi": phi,
@@ -881,7 +882,7 @@ def cgem_id_to_gid(cgem_id: IntLike) -> IntLike:
     Returns:
         The strip global ID.
     """
-    return det.get_cgem_gid(
+    return get_cgem_gid(
         cgem_id_to_layer(cgem_id),
         cgem_id_to_sheet(cgem_id),
         cgem_id_to_strip_type(cgem_id),
@@ -911,7 +912,7 @@ def parse_cgem_id(cgem_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     sheet = cgem_id_to_sheet(cgem_id)
     strip_type = cgem_id_to_strip_type(cgem_id)
     strip = cgem_id_to_strip(cgem_id)
-    gid = det.get_cgem_gid(layer, sheet, strip_type, strip)
+    gid = get_cgem_gid(layer, sheet, strip_type, strip)
 
     res = {
         "gid": gid,

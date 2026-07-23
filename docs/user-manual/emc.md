@@ -46,7 +46,32 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
     gid = p3.get_emc_gid(part, theta, phi)
     ```
 
-## Crystals position
+Use `parse_emc_gid` to parse all fields from a gid at once:
+
+```python
+# parse all fields; returns a dict (or ak.Array when the input is an ak.Array)
+res = p3.parse_emc_gid(gid)
+part = res["part"]
+theta = res["theta"]
+phi = res["phi"]
+
+# with geometry information (front center and center)
+res_geom = p3.parse_emc_gid(gid, geometry=True)
+front_center_x = res_geom["front_center_x"]
+front_center_y = res_geom["front_center_y"]
+front_center_z = res_geom["front_center_z"]
+center_x = res_geom["center_x"]
+center_y = res_geom["center_y"]
+center_z = res_geom["center_z"]
+```
+
+!!! info
+    The 8 corner points of crystals are **not** returned by `parse_emc_gid`.
+    Use `emc_gid_to_point_x`, `emc_gid_to_point_y`, and `emc_gid_to_point_z` to get them individually.
+
+When the input is an `ak.Array`, the result is also an `ak.Array` with record fields.
+
+## Crystal position
 
 All `emc_gid_to_front_center_*`, `emc_gid_to_center_*`, `emc_gid_to_point_*` are also backed by compiled NumPy ufuncs.
 
@@ -178,33 +203,6 @@ p3.emc_barrel_offset_2
 ```
 
 These constants are exported from `EmcRecGeoSvc` in `BOSS`.
-
-## GID parser
-
-Use `parse_emc_gid` to parse all fields from a gid at once:
-
-```python
-# parse all fields; returns a dict (or ak.Array when the input is an ak.Array)
-res = p3.parse_emc_gid(gid)
-part = res["part"]
-theta = res["theta"]
-phi = res["phi"]
-
-# with geometry information (front center and center)
-res_geom = p3.parse_emc_gid(gid, geometry=True)
-front_center_x = res_geom["front_center_x"]
-front_center_y = res_geom["front_center_y"]
-front_center_z = res_geom["front_center_z"]
-center_x = res_geom["center_x"]
-center_y = res_geom["center_y"]
-center_z = res_geom["center_z"]
-```
-
-!!! info
-    The 8 corner points of crystals are **not** returned by `parse_emc_gid`.
-    Use `emc_gid_to_point_x`, `emc_gid_to_point_y`, and `emc_gid_to_point_z` to get them individually.
-
-When the input is an `ak.Array`, the result is also an `ak.Array` with record fields.
 
 ## Calculate charge (raw energy) with hit ADC information
 

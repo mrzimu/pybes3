@@ -12,7 +12,7 @@ import vector.backends.awkward as vec_ak
 
 vector.register_awkward()
 
-import pybes3._kernels._ufuncs as _ufuncs
+import pybes3.kernels.ufuncs as _ufuncs
 from pybes3._utils import _extract_index, _flat_to_numpy
 from pybes3.typing import FloatLike, IntLike
 

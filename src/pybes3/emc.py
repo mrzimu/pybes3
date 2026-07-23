@@ -5,7 +5,7 @@ from typing import Any, Literal
 import awkward as ak
 import numpy as np
 
-import pybes3._kernels._ufuncs as _ufuncs
+import pybes3.kernels.ufuncs as _ufuncs
 from pybes3.data import EMC_GEOM
 from pybes3.typing import FloatLike, IntLike
 

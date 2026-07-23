@@ -1,13 +1,14 @@
 from __future__ import annotations
 
-from typing import Any, Literal
 import warnings
+from typing import Any, Literal
 
 import awkward as ak
 import numpy as np
 
-import pybes3._kernels._ufuncs as _ufuncs
-import pybes3.detectors as det
+import pybes3.kernels.ufuncs as _ufuncs
+from pybes3.emc import get_emc_gid, parse_emc_gid
+from pybes3.mdc import get_mdc_gid, parse_mdc_gid
 from pybes3.typing import BoolLike, IntLike
 
 warnings.warn(
@@ -196,8 +197,8 @@ def parse_mdc_digi_id(
     """
     wire = mdc_id_to_wire(mdc_digi_id)
     layer = mdc_id_to_layer(mdc_digi_id)
-    gid = det.get_mdc_gid(layer, wire)
-    return det.parse_mdc_gid(gid, with_pos)
+    gid = get_mdc_gid(layer, wire)
+    return parse_mdc_gid(gid, with_pos)
 
 
 def parse_mdc_digi(mdc_digi: ak.Record, with_pos: bool = False) -> ak.Record:
@@ -604,8 +605,8 @@ def parse_emc_digi_id(
     part = emc_id_to_module(emc_digi_id)
     theta = emc_id_to_theta(emc_digi_id)
     phi = emc_id_to_phi(emc_digi_id)
-    gid = det.get_emc_gid(part, theta, phi)
-    return det.parse_emc_gid(gid, with_pos)
+    gid = get_emc_gid(part, theta, phi)
+    return parse_emc_gid(gid, with_pos)
 
 
 def parse_emc_digi(emc_digi: ak.Record, with_pos: bool = False) -> ak.Record:

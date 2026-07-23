@@ -5,7 +5,7 @@ from typing import Any
 import awkward as ak
 import numpy as np
 
-import pybes3._kernels._ufuncs as _ufuncs
+import pybes3.kernels.ufuncs as _ufuncs
 from pybes3.typing import BoolLike, IntLike
 
 N_PARTS = 5

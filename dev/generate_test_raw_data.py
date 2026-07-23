@@ -1,6 +1,6 @@
 import struct
 
-from pybes3.besio.raw_io import RawBinaryReader
+from pybes3.io.raw_io import RawBinaryReader
 
 reader = RawBinaryReader(
     "/besfs8/offline/data/merge/raw/round19/260409/run_0091668_All_merge0_file002_SFO-1.raw"
