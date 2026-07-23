@@ -5,9 +5,9 @@ from warnings import warn
 
 import uproot
 
-from pybes3.besio import root_io  # noqa: F401
-from pybes3.besio.raw_io import RawBinaryReader
-from pybes3.besio.raw_io import concatenate as concatenate_raw
+from pybes3.io import root_io  # noqa: F401
+from pybes3.io.raw_io import RawBinaryReader
+from pybes3.io.raw_io import concatenate as concatenate_raw
 
 
 def open(file: str, **kwargs: object) -> Any:

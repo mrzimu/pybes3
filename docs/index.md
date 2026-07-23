@@ -45,12 +45,6 @@
     Convert BOSS detector identifier number to a human-readable format.
   </a>
 
-- <a href="user-manual/detector/mdc" style="text-decoration: none; color: inherit;">
-    :material-crosshairs-gps: __Detectors__
-
-    Comprehensive functions for BES3 detectors, such as geometry information.
-  </a>
-
 - <a href="user-manual/helix" style="text-decoration: none; color: inherit;">
     :material-vector-curve: __Helix operations__
 

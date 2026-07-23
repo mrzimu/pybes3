@@ -2,7 +2,7 @@ import awkward as ak
 import numpy as np
 
 import pybes3 as p3
-from pybes3.detectors import emc
+from pybes3 import emc
 
 
 def test_emc_geom():

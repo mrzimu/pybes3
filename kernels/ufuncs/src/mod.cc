@@ -12,9 +12,9 @@ static PyMethodDef MyMethods[] = {
 };
 
 static struct PyModuleDef moduledef = {
-    PyModuleDef_HEAD_INIT, "_ufuncs", NULL, -1, MyMethods, NULL, NULL, NULL, NULL };
+    PyModuleDef_HEAD_INIT, "ufuncs", NULL, -1, MyMethods, NULL, NULL, NULL, NULL };
 
-PyMODINIT_FUNC PyInit__ufuncs( void ) {
+PyMODINIT_FUNC PyInit_ufuncs( void ) {
     import_array();
     import_umath();
 

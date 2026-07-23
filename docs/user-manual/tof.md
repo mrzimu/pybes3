@@ -54,8 +54,6 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
 
     The scintillator `layer` and MRPC `module` share the same axis, and the `phi` and `strip` fields also share the same axis.
 
-## GID parser
-
 Use `parse_tof_gid` to parse all fields from a gid at once:
 
 ```python

@@ -67,7 +67,38 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
 !!! note
     `mdc_gid_to_stereo` returns the stereo type of the wire, which can be `0` (axial), `-1` for `west_phi < east_phi` and `1` for `west_phi > east_phi`.
 
-## Wires position
+Use `parse_mdc_gid` to parse all fields from a gid at once:
+
+```python
+import numpy as np
+import pybes3 as p3
+
+# generate random wire gid
+gid = np.random.randint(0, 6796, 100)
+
+# parse all fields; returns a dict (or ak.Array when the input is an ak.Array)
+res = p3.parse_mdc_gid(gid)
+layer = res["layer"]
+wire = res["wire"]
+stereo = res["stereo"]
+is_stereo = res["is_stereo"]
+superlayer = res["superlayer"]
+
+# with geometry information (west/east endpoints and mid-point at z=0)
+res_geom = p3.parse_mdc_gid(gid, geometry=True)
+mid_x = res_geom["mid_x"]
+mid_y = res_geom["mid_y"]
+west_x = res_geom["west_x"]
+west_y = res_geom["west_y"]
+west_z = res_geom["west_z"]
+east_x = res_geom["east_x"]
+east_y = res_geom["east_y"]
+east_z = res_geom["east_z"]
+```
+
+When the input is an `ak.Array`, the result is also an `ak.Array` with record fields.
+
+## Wire position
 
 All `mdc_gid_to_west_*`, `mdc_gid_to_east_*`, `mdc_gid_z_to_*` are also backed by compiled NumPy ufuncs.
 
@@ -179,36 +210,3 @@ wire_position_ak = p3.get_mdc_geom_table(library="ak")
 # get table in `pd.DataFrame`
 wire_position_pd = p3.get_mdc_geom_table(library="pd")
 ```
-
-## GID parser
-
-Use `parse_mdc_gid` to parse all fields from a gid at once:
-
-```python
-import numpy as np
-import pybes3 as p3
-
-# generate random wire gid
-gid = np.random.randint(0, 6796, 100)
-
-# parse all fields; returns a dict (or ak.Array when the input is an ak.Array)
-res = p3.parse_mdc_gid(gid)
-layer = res["layer"]
-wire = res["wire"]
-stereo = res["stereo"]
-is_stereo = res["is_stereo"]
-superlayer = res["superlayer"]
-
-# with geometry information (west/east endpoints and mid-point at z=0)
-res_geom = p3.parse_mdc_gid(gid, geometry=True)
-mid_x = res_geom["mid_x"]
-mid_y = res_geom["mid_y"]
-west_x = res_geom["west_x"]
-west_y = res_geom["west_y"]
-west_z = res_geom["west_z"]
-east_x = res_geom["east_x"]
-east_y = res_geom["east_y"]
-east_z = res_geom["east_z"]
-```
-
-When the input is an `ak.Array`, the result is also an `ak.Array` with record fields.

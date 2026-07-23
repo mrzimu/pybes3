@@ -3,6 +3,7 @@ import numpy as np
 import pytest
 import uproot
 
+import pybes3 as p3
 from pybes3 import identifier
 
 
@@ -370,7 +371,13 @@ def test_parse_tof_id(test_data_dir):
 
     # Test numpy
     np_res = identifier.parse_tof_id(tof_id_np)
-    assert list(np_res.keys()) == ["gid", "part", "layer_or_module", "phi_or_strip", "end"]
+    assert list(np_res.keys()) == [
+        "gid",
+        "part",
+        "layer_or_module",
+        "phi_or_strip",
+        "end",
+    ]
     assert np.all(np_res["part"] == part_np)
     assert np.all(np_res["layer_or_module"] == layer_or_module_np)
     assert np.all(np_res["phi_or_strip"] == phi_or_strip_np)
@@ -379,7 +386,13 @@ def test_parse_tof_id(test_data_dir):
     # Test int
     tof_id_int = int(tof_id_np[0])
     int_res = identifier.parse_tof_id(tof_id_int)
-    assert list(int_res.keys()) == ["gid", "part", "layer_or_module", "phi_or_strip", "end"]
+    assert list(int_res.keys()) == [
+        "gid",
+        "part",
+        "layer_or_module",
+        "phi_or_strip",
+        "end",
+    ]
     assert int_res["part"] == part_np[0]
     assert int_res["layer_or_module"] == layer_or_module_np[0]
     assert int_res["phi_or_strip"] == phi_or_strip_np[0]
@@ -685,12 +698,10 @@ def test_parse_cgem_id(cgem_digi_event):
 
 
 def test_mdc_id_to_gid(digi_event):
-    from pybes3 import detectors as det
-
     mdc_id_ak: ak.Array = digi_event["m_mdcDigiCol"]["m_intId"]
 
-    # gid should equal det.get_mdc_gid(layer, wire)
-    expected_gid = det.get_mdc_gid(
+    # gid should equal p3.get_mdc_gid(layer, wire)
+    expected_gid = p3.get_mdc_gid(
         identifier.mdc_id_to_layer(mdc_id_ak),
         identifier.mdc_id_to_wire(mdc_id_ak),
     )
@@ -706,11 +717,9 @@ def test_mdc_id_to_gid(digi_event):
 
 
 def test_emc_id_to_gid(digi_event):
-    from pybes3 import detectors as det
-
     emc_id_ak: ak.Array = digi_event["m_emcDigiCol"]["m_intId"]
 
-    expected_gid = det.get_emc_gid(
+    expected_gid = p3.get_emc_gid(
         identifier.emc_id_to_module(emc_id_ak),
         identifier.emc_id_to_theta(emc_id_ak),
         identifier.emc_id_to_phi(emc_id_ak),
@@ -727,14 +736,12 @@ def test_emc_id_to_gid(digi_event):
 
 
 def test_tof_id_to_gid(test_data_dir):
-    from pybes3 import detectors as det
-
     tof_id_ak: ak.Array = uproot.open(test_data_dir / "test_mrpc.rtraw")[
         "Event/TDigiEvent/m_tofDigiCol"
     ].array()["m_intId"]
 
     part_ak = identifier.tof_id_to_part(tof_id_ak)
-    expected_gid = det.get_tof_gid(
+    expected_gid = p3.get_tof_gid(
         part_ak,
         identifier.tof_id_to_layer_or_module(tof_id_ak, part_ak),
         identifier.tof_id_to_phi_or_strip(tof_id_ak, part_ak),
@@ -751,11 +758,9 @@ def test_tof_id_to_gid(test_data_dir):
 
 
 def test_cgem_id_to_gid(cgem_digi_event):
-    from pybes3 import detectors as det
-
     cgem_id_ak: ak.Array = cgem_digi_event["m_cgemDigiCol"]["m_intId"]
 
-    expected_gid = det.get_cgem_gid(
+    expected_gid = p3.get_cgem_gid(
         identifier.cgem_id_to_layer(cgem_id_ak),
         identifier.cgem_id_to_sheet(cgem_id_ak),
         identifier.cgem_id_to_strip_type(cgem_id_ak),

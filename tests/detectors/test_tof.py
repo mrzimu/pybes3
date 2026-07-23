@@ -5,7 +5,7 @@ import numpy as np
 import uproot
 
 import pybes3 as p3
-from pybes3.detectors import tof
+from pybes3 import tof
 
 
 def test_tof_gid_conversion(tof_gid_dict):

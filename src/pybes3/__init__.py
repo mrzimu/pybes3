@@ -1,14 +1,17 @@
 from __future__ import annotations
 
 from pybes3._version import __version__, version
-from pybes3.besio import concatenate, concatenate_raw, open, open_raw
-from pybes3.detectors import (
+from pybes3.cgem import (
     cgem_gid_to_is_vstrip,
     cgem_gid_to_is_xstrip,
     cgem_gid_to_layer,
     cgem_gid_to_sheet,
     cgem_gid_to_strip,
     cgem_gid_to_strip_type,
+    get_cgem_gid,
+    parse_cgem_gid,
+)
+from pybes3.emc import (
     emc_adc_to_charge,
     emc_gid_to_center_x,
     emc_gid_to_center_y,
@@ -22,14 +25,27 @@ from pybes3.detectors import (
     emc_gid_to_point_y,
     emc_gid_to_point_z,
     emc_gid_to_theta,
-    get_cgem_gid,
     get_emc_crystal_position,
     get_emc_geom_table,
     get_emc_gid,
+    parse_emc_gid,
+)
+from pybes3.helix import (
+    HelixObject,
+    dr_phi0_to_x,
+    dr_phi0_to_y,
+    helix_awk,
+    helix_obj,
+    kappa_to_charge,
+    kappa_to_pt,
+    kappa_to_radius,
+    phi0_to_phi,
+)
+from pybes3.io import concatenate, concatenate_raw, open, open_raw
+from pybes3.mdc import (
     get_mdc_geom_table,
     get_mdc_gid,
     get_mdc_wire_position,
-    get_tof_gid,
     mdc_gid_to_east_x,
     mdc_gid_to_east_y,
     mdc_gid_to_east_z,
@@ -45,9 +61,10 @@ from pybes3.detectors import (
     mdc_gid_z_to_y,
     mdc_layer_to_is_stereo,
     mdc_layer_to_superlayer,
-    parse_cgem_gid,
-    parse_emc_gid,
     parse_mdc_gid,
+)
+from pybes3.tof import (
+    get_tof_gid,
     parse_tof_gid,
     parse_tof_hit_status,
     tof_gid_to_layer_or_module,
@@ -66,17 +83,6 @@ from pybes3.detectors import (
     tof_hit_status_to_n_counter,
     tof_hit_status_to_n_east,
     tof_hit_status_to_n_west,
-)
-from pybes3.helix import (
-    HelixObject,
-    dr_phi0_to_x,
-    dr_phi0_to_y,
-    helix_awk,
-    helix_obj,
-    kappa_to_charge,
-    kappa_to_pt,
-    kappa_to_radius,
-    phi0_to_phi,
 )
 
 __all__ = [

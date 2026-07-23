@@ -61,8 +61,6 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
 !!! info
     `strip_type=0` for x-strips and `strip_type=1` for v-strips.
 
-## GID parser
-
 Use `parse_cgem_gid` to parse all fields from a gid at once:
 
 ```python

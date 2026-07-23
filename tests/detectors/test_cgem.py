@@ -2,7 +2,7 @@ import awkward as ak
 import numpy as np
 
 import pybes3 as p3
-from pybes3.detectors import cgem
+from pybes3 import cgem
 
 
 def test_cgem_gid_conversion(cgem_gid_dict):
@@ -50,7 +50,14 @@ def test_cgem_parse_gid(cgem_gid_dict):
     # awkward
     ak_gid = ak.Array(np_gid)
     ak_res = p3.parse_cgem_gid(ak_gid)
-    assert ak_res.fields == ["layer", "sheet", "strip_type", "strip", "is_xstrip", "is_vstrip"]
+    assert ak_res.fields == [
+        "layer",
+        "sheet",
+        "strip_type",
+        "strip",
+        "is_xstrip",
+        "is_vstrip",
+    ]
     assert ak.all(ak_res["layer"] == ref_layer)
     assert ak.all(ak_res["sheet"] == ref_sheet)
     assert ak.all(ak_res["strip_type"] == ref_strip_type)

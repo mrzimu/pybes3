@@ -83,17 +83,19 @@ nav:
       - Global ID (gid): convention/gid.md
   - User manual:
       - Data reading: user-manual/data-reading.md
-      - Identifier: user-manual/identifier.md
-      - Detector:
-          - MDC: user-manual/detector/mdc.md
-          - TOF: user-manual/detector/tof.md
-          - EMC: user-manual/detector/emc.md
-          - CGEM: user-manual/detector/cgem.md
+      - MDC: user-manual/mdc.md
+      - TOF: user-manual/tof.md
+      - EMC: user-manual/emc.md
+      - CGEM: user-manual/cgem.md
       - Helix operations: user-manual/helix.md
+      - Identifier: user-manual/identifier.md
   - API Reference:
       - pybes3: api/pybes3.md
-      - pybes3.besio: api/pybes3.besio.md
-      - pybes3.detectors: api/pybes3.detectors.md
+      - pybes3.io: api/pybes3.io.md
+      - pybes3.mdc: api/pybes3.mdc.md
+      - pybes3.tof: api/pybes3.tof.md
+      - pybes3.emc: api/pybes3.emc.md
+      - pybes3.cgem: api/pybes3.cgem.md
       - pybes3.helix: api/pybes3.helix.md
       - pybes3.identifier: api/pybes3.identifier.md
       - pybes3.digi_id (deprecated): api/pybes3.digi_id.md

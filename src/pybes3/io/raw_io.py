@@ -12,9 +12,9 @@ import numpy as np
 from numpy.typing import NDArray
 from uproot._util import regularize_filter
 
-import pybes3.besio._reid as _reid
-from pybes3._kernels._io import read_bes_raw
+import pybes3.io._reid as _reid
 from pybes3.data import CGEM_ELEC_TABLE
+from pybes3.kernels._io import read_bes_raw
 
 _info_tables: dict[str, np.ndarray] = None
 

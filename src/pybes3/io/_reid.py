@@ -3,7 +3,7 @@ REID (Raw Electronics ID) to TEID (digi_id) conversion tables.
 
 In raw binary data, each sub-detector hit uses a hardware-specific electronics ID (REID).
 This module provides lookup tables to convert REIDs to the standard detector geometry IDs
-(TEIDs, i.e. digi_ids) used by `pybes3.detectors.digi_id`.
+(TEIDs, i.e. digi_ids) used by `pybes3.digi_id`.
 
 The conversion logic is ported from the BOSS offline software:
     Event/RawDataCnv/src/EventManagement/{Mdc,Tof,Emc,Muc}Builder.cxx
