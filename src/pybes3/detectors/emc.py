@@ -371,3 +371,40 @@ def parse_emc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, 
         return ak.zip(res)
     else:
         return res
+
+
+def emc_adc_to_charge(measure: IntLike, adc: IntLike) -> FloatLike:
+    """
+    Convert ADC of EMC hit to charge (raw-energy). Note that the charge
+    is in unit of GeV (while in BOSS it is in unit of MeV). The conversion
+    logic is `charge = adc / 1024 * Emax(GeV)`.
+
+    Parameters:
+        measure: The measure of the hit.
+        adc: The ADC channel number of the hit.
+
+    Returns:
+        The charge of the crystal.
+    """
+    return _ufuncs.emc_adc_to_charge(measure, adc)
+
+
+def emc_adc1p_to_charge(measure: IntLike, adc: IntLike) -> FloatLike:
+    """
+    Convert ADC of EMC hit to charge (raw-energy) with +1 offset.
+    The conversion logic is `charge = (adc + 1) / 1024 * Emax(GeV)`.
+
+    This is because ADC range is 0-1023, but when ADC value is 0,
+    it means the charge is not 0, but the minimum charge that can be measured.
+
+    This conversion logic is different from that in BOSS, but the difference is
+    very small.
+
+    Parameters:
+        measure: The measure of the hit.
+        adc: The ADC channel number of the hit.
+
+    Returns:
+        The charge of the crystal.
+    """
+    return _ufuncs.emc_adc1p_to_charge(measure, adc)

@@ -52,3 +52,33 @@ def test_parse_emc_gid():
 
     np_res2 = emc.parse_emc_gid(np_gid, geometry=False)
     assert list(np_res2.keys()) == ["gid", "part", "theta", "phi"]
+
+
+def test_emc_adc_to_charge():
+    measure = np.array([0, 1, 2, 3], dtype=np.uint16)
+    adc = np.array([1024, 1024, 1024, 1024], dtype=np.uint16)
+    expected_charge = np.array([0.078, 0.625, 2.5, 2.5], dtype=np.float64)
+
+    charge = p3.emc_adc_to_charge(measure, adc)
+    assert np.allclose(charge, expected_charge, atol=1e-6)
+
+    # Test with invalid measure
+    invalid_measure = np.array([4], dtype=np.uint16)
+    invalid_adc = np.array([1024], dtype=np.uint16)
+    invalid_charge = p3.emc_adc_to_charge(invalid_measure, invalid_adc)
+    assert np.isnan(invalid_charge[0])
+
+
+def test_emc_adc1p_to_charge():
+    measure = np.array([0, 1, 2, 3], dtype=np.uint16)
+    adc = np.array([1023, 1023, 1023, 1023], dtype=np.uint16)
+    expected_charge = np.array([0.078, 0.625, 2.5, 2.5], dtype=np.float64)
+
+    charge = p3.emc_adc1p_to_charge(measure, adc)
+    assert np.allclose(charge, expected_charge, atol=1e-6)
+
+    # Test with invalid measure
+    invalid_measure = np.array([4], dtype=np.uint16)
+    invalid_adc = np.array([1023], dtype=np.uint16)
+    invalid_charge = p3.emc_adc1p_to_charge(invalid_measure, invalid_adc)
+    assert np.isnan(invalid_charge[0])

@@ -231,6 +231,30 @@ inline void emc_gid_to_point_z( T* gid, T* point, double* out ) noexcept {
     *out = _points_z[*gid * 8 + *point];
 }
 
+template <typename T>
+inline void emc_adc_to_charge( T* measure, T* adc, double* out ) noexcept {
+    switch ( *measure )
+    {
+    case 0: *out = static_cast<double>( *adc ) / 1024. * 0.078; break;
+    case 1: *out = static_cast<double>( *adc ) / 1024. * 0.625; break;
+    case 2: *out = static_cast<double>( *adc ) / 1024. * 2.500; break;
+    case 3: *out = static_cast<double>( *adc ) / 1024. * 2.500; break;
+    default: *out = std::nan( "INVALID_MEASURE" ); break;
+    }
+}
+
+template <typename T>
+inline void emc_adc1p_to_charge( T* measure, T* adc, double* out ) noexcept {
+    switch ( *measure )
+    {
+    case 0: *out = static_cast<double>( *adc + 1 ) / 1024. * 0.078; break;
+    case 1: *out = static_cast<double>( *adc + 1 ) / 1024. * 0.625; break;
+    case 2: *out = static_cast<double>( *adc + 1 ) / 1024. * 2.500; break;
+    case 3: *out = static_cast<double>( *adc + 1 ) / 1024. * 2.500; break;
+    default: *out = std::nan( "INVALID_MEASURE" ); break;
+    }
+}
+
 void declare_emc( PyObject* d ) {
     if ( _import_array() < 0 ) return;
     if ( _import_umath() < 0 ) return;
@@ -351,4 +375,22 @@ void declare_emc( PyObject* d ) {
         emc_gid_to_point_z<uint64_t>, //
         emc_gid_to_point_z<int64_t>>  //
         ( d, "emc_gid_to_point_z" );
+
+    decl_ufunc_21<                   //
+        emc_adc_to_charge<uint16_t>, //
+        emc_adc_to_charge<int16_t>,  //
+        emc_adc_to_charge<uint32_t>, //
+        emc_adc_to_charge<int32_t>,  //
+        emc_adc_to_charge<uint64_t>, //
+        emc_adc_to_charge<int64_t>>  //
+        ( d, "emc_adc_to_charge" );
+
+    decl_ufunc_21<                     //
+        emc_adc1p_to_charge<uint16_t>, //
+        emc_adc1p_to_charge<int16_t>,  //
+        emc_adc1p_to_charge<uint32_t>, //
+        emc_adc1p_to_charge<int32_t>,  //
+        emc_adc1p_to_charge<uint64_t>, //
+        emc_adc1p_to_charge<int64_t>>  //
+        ( d, "emc_adc1p_to_charge" );
 }

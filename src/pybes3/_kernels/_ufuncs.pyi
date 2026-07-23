@@ -86,6 +86,8 @@ emc_gid_to_front_center_z: _UFunc_Nin1_Nout1
 emc_gid_to_point_x: _UFunc_Nin2_Nout1
 emc_gid_to_point_y: _UFunc_Nin2_Nout1
 emc_gid_to_point_z: _UFunc_Nin2_Nout1
+emc_adc_to_charge: _UFunc_Nin2_Nout1
+emc_adc1p_to_charge: _UFunc_Nin2_Nout1
 
 # helix.cc
 dr_phi0_to_x: _UFunc_Nin2_Nout1
