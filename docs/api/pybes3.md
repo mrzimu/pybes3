@@ -1,6 +1,6 @@
 # pybes3
 
-## besio
+## IO
 ::: pybes3.open
 ---
 ::: pybes3.concatenate
@@ -10,7 +10,7 @@
 ::: pybes3.concatenate_raw
 ---
 
-## detectors
+## Detectors
 ::: pybes3.emc_gid_to_center_x
 ---
 ::: pybes3.emc_gid_to_center_y
@@ -38,6 +38,8 @@
 ::: pybes3.get_emc_geom_table
 ---
 ::: pybes3.get_emc_gid
+---
+::: pybes3.emc_adc_to_charge
 ---
 ::: pybes3.get_mdc_gid
 ---
@@ -104,7 +106,7 @@
 ::: pybes3.tof_gid_to_phi_or_strip
 ---
 
-## tracks
+## Helix
 ::: pybes3.HelixObject
 ---
 ::: pybes3.dr_phi0_to_x

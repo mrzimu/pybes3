@@ -230,8 +230,8 @@ E_{\text{measure}} =
     \begin{cases}
         0.078~\mathrm{GeV}, & \text{measure} = 0 \\
         0.625~\mathrm{GeV}, & \text{measure} = 1 \\
-        2.500~\mathrm{GeV}, & \text{measure} = 2 \\
-        2.500~\mathrm{GeV}, & \text{measure} = 3 \\
+        2.5~\mathrm{GeV}, & \text{measure} = 2 \\
+        2.5~\mathrm{GeV}, & \text{measure} = 3 \\
     \end{cases}
 $$
 
