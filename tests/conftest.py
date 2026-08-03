@@ -3,7 +3,7 @@ from pathlib import Path
 import pytest
 import uproot
 
-import pybes3  # noqa: F401
+import pybes3
 import pybes3.data
 
 

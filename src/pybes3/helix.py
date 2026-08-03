@@ -338,7 +338,7 @@ class HelixObject:
 
     def isclose(
         self,
-        other: "HelixObject",
+        other: HelixObject,
         *,
         rtol: float = 1e-5,
         atol: float = 1e-8,
@@ -763,7 +763,7 @@ class HelixAwkwardRecord(ak.Record):
 
     def isclose(
         self,
-        value: "HelixAwkwardRecord",
+        value: HelixAwkwardRecord,
         *,
         rtol: float = 1e-5,
         atol: float = 1e-8,
@@ -835,7 +835,7 @@ class HelixAwkwardArray(ak.Array):
         """
         return kappa_to_radius(self.kappa)
 
-    def change_pivot(self, *args) -> "HelixAwkwardArray":
+    def change_pivot(self, *args) -> HelixAwkwardArray:
         """
         Changes the pivot point of the helix.
         """
@@ -847,7 +847,7 @@ class HelixAwkwardArray(ak.Array):
 
     def isclose(
         self,
-        other: "HelixAwkwardRecord",
+        other: HelixAwkwardRecord,
         *,
         rtol: float = 1e-5,
         atol: float = 1e-8,
