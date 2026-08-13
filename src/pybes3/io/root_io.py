@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import array
+
 import awkward as ak
 import awkward.contents
 import awkward.index
@@ -10,7 +12,6 @@ import uproot.extras
 import uproot.interpretation
 import uproot_custom.readers.cpp
 import uproot_custom.readers.python
-import array
 from uproot_custom import (
     AnyClassFactory,
     AsCustom,
@@ -193,7 +194,7 @@ class Bes3BaseObjectFactory(GroupFactory):
             return None
 
         # limit to bes3 relevant branches
-        if all(k not in item_path for k in bes3_branch2types.keys()):
+        if all(k not in item_path for k in bes3_branch2types):
             return None
 
         fName = cls_streamer_info["fName"]

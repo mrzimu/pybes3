@@ -1,5 +1,3 @@
-from __future__ import annotations
-
 import numpy as np
 from numpy._typing._ufunc import _UFunc_Nin1_Nout1, _UFunc_Nin2_Nout1
 

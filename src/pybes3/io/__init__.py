@@ -70,4 +70,4 @@ def open_raw(file: str) -> RawBinaryReader:
     return RawBinaryReader(file)
 
 
-__all__ = ["open", "concatenate", "open_raw", "concatenate_raw"]
+__all__ = ["concatenate", "concatenate_raw", "open", "open_raw"]

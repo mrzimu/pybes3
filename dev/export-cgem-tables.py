@@ -1,5 +1,6 @@
-import pandas as pd
 import numpy as np
+import pandas as pd
+
 import pybes3.digi_id as digi
 
 # The path of 'mapping.txt' file is in BOSS_Source/Cgem/CgemInfoLuSvc/share/mapping.txt.
