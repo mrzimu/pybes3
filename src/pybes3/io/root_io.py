@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import array
+from typing import ClassVar
 
 import awkward as ak
 import awkward.contents
@@ -199,7 +200,9 @@ class Bes3BaseObjectFactory(GroupFactory):
 
         fName = cls_streamer_info["fName"]
         sub_streamers: list[dict] = all_streamer_info[fName]
-        sub_factories = [build_factory(s, all_streamer_info, item_path) for s in sub_streamers]
+        sub_factories = [
+            build_factory(s, all_streamer_info, item_path) for s in sub_streamers
+        ]
 
         return cls(name=fName, sub_factories=sub_factories)
 
@@ -239,7 +242,9 @@ class Bes3PyCgemClusterColReader(uproot_custom.readers.python.IReader):
 
         # TObjArray
         stream.skip_fNBytes()
-        stream.skip(13)  # fVersion(2) + fVersion(2) + fUniqueID(4) + fBits(4) + fName(1)
+        stream.skip(
+            13
+        )  # fVersion(2) + fVersion(2) + fUniqueID(4) + fBits(4) + fName(1)
         fSize = stream.read_uint32()
         stream.skip(4)  # fLowerBound
 
@@ -253,7 +258,9 @@ class Bes3PyCgemClusterColReader(uproot_custom.readers.python.IReader):
 
             if self.version == -1:
                 if fNBytes not in (96, 88):
-                    raise ValueError(f"Unknown TCgemCluster version with FNBytes = {fNBytes}")
+                    raise ValueError(
+                        f"Unknown TCgemCluster version with FNBytes = {fNBytes}"
+                    )
 
                 self.version = 0 if fNBytes == 96 else 1
 
@@ -395,7 +402,7 @@ class Bes3PySymMatrixArrayReader(uproot_custom.readers.python.IReader):
 
 
 class Bes3SymMatrixArrayFactory(Factory):
-    target_items = {
+    target_items: ClassVar[set[str]] = {
         "/Event:TDstEvent/m_mdcTrackCol.TMdcTrack.m_err",
         "/Event:TDstEvent/m_emcTrackCol.TEmcTrack.m_err",
         "/Event:TDstEvent/m_extTrackCol.TExtTrack.myTof1ErrorMatrix",
@@ -440,7 +447,9 @@ class Bes3SymMatrixArrayFactory(Factory):
         dtype = PrimitiveFactory.typename2dtype[top_type_name]
 
         flat_size = np.prod(fMaxIndex[:fArrayDim])
-        assert flat_size > 0, f"flatten_size should be greater than 0, but got {flat_size}"
+        assert (
+            flat_size > 0
+        ), f"flatten_size should be greater than 0, but got {flat_size}"
 
         full_dim = int((np.sqrt(1 + 8 * flat_size) - 1) / 2)
 
@@ -465,10 +474,14 @@ class Bes3SymMatrixArrayFactory(Factory):
         return Bes3PySymMatrixArrayReader(self.name, self.flat_size, self.full_dim)
 
     def make_awkward_content(self, raw_data: np.ndarray):
-        return awkward.contents.NumpyArray(raw_data.reshape(-1, self.full_dim, self.full_dim))
+        return awkward.contents.NumpyArray(
+            raw_data.reshape(-1, self.full_dim, self.full_dim)
+        )
 
     def make_awkward_form(self):
-        return awkward.forms.NumpyForm(self.dtype, inner_shape=[self.full_dim, self.full_dim])
+        return awkward.forms.NumpyForm(
+            self.dtype, inner_shape=[self.full_dim, self.full_dim]
+        )
 
 
 uproot_custom.registered_factories |= {
@@ -537,7 +550,7 @@ class Bes3Interpretation(AsCustom):
     Custom interpretation for Bes3 data.
     """
 
-    target_branches: set[str] = set(bes3_branch2types.keys())
+    target_branches: ClassVar[set[str]] = set(bes3_branch2types.keys())
 
     def __init__(self, branch, context, simplify):
         super().__init__(branch, context, simplify)
