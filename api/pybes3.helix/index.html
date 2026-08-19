@@ -11,7 +11,7 @@
       
       
       
-        <link rel="prev" href="../pybes3.detectors/">
+        <link rel="prev" href="../pybes3.cgem/">
       
       
         <link rel="next" href="../pybes3.identifier/">
@@ -523,84 +523,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-manual/identifier/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Identifier
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    
-    
-    
-    
-      
-    
-    
-    <li class="md-nav__item md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_4_3" id="__nav_4_3_label" tabindex="0">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Detector
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_4_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_4_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Detector
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../user-manual/detector/mdc/" class="md-nav__link">
+      <a href="../../user-manual/mdc/" class="md-nav__link">
         
   
   
@@ -628,7 +551,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-manual/detector/tof/" class="md-nav__link">
+      <a href="../../user-manual/tof/" class="md-nav__link">
         
   
   
@@ -656,7 +579,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-manual/detector/emc/" class="md-nav__link">
+      <a href="../../user-manual/emc/" class="md-nav__link">
         
   
   
@@ -684,7 +607,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../user-manual/detector/cgem/" class="md-nav__link">
+      <a href="../../user-manual/cgem/" class="md-nav__link">
         
   
   
@@ -705,14 +628,6 @@
 
               
             
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-              
-            
               
                 
   
@@ -728,6 +643,34 @@
     
   
     Helix operations
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../user-manual/identifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Identifier
   
 
     
@@ -837,14 +780,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../pybes3.besio/" class="md-nav__link">
+      <a href="../pybes3.io/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    pybes3.besio
+    pybes3.io
   
 
     
@@ -865,14 +808,98 @@
   
   
     <li class="md-nav__item">
-      <a href="../pybes3.detectors/" class="md-nav__link">
+      <a href="../pybes3.mdc/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    pybes3.detectors
+    pybes3.mdc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pybes3.tof/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pybes3.tof
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pybes3.emc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pybes3.emc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../pybes3.cgem/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pybes3.cgem
   
 
     
@@ -1952,7 +1979,7 @@
 
     <span class="k">def</span><span class="w"> </span><span class="nf">isclose</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;HelixObject&quot;</span><span class="p">,</span>
+        <span class="n">other</span><span class="p">:</span> <span class="n">HelixObject</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
         <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
@@ -3331,7 +3358,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">isclose</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;HelixAwkwardRecord&quot;</span><span class="p">,</span>
+        <span class="n">value</span><span class="p">:</span> <span class="n">HelixAwkwardRecord</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
         <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
@@ -3642,7 +3669,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="normal">785</span>
 <span class="normal">786</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">isclose</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">value</span><span class="p">:</span> <span class="s2">&quot;HelixAwkwardRecord&quot;</span><span class="p">,</span>
+    <span class="n">value</span><span class="p">:</span> <span class="n">HelixAwkwardRecord</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
     <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
@@ -3818,7 +3845,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">kappa_to_radius</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">kappa</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">change_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;HelixAwkwardArray&quot;</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">change_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HelixAwkwardArray</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Changes the pivot point of the helix.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -3830,7 +3857,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">isclose</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-        <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;HelixAwkwardRecord&quot;</span><span class="p">,</span>
+        <span class="n">other</span><span class="p">:</span> <span class="n">HelixAwkwardRecord</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
         <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
@@ -4067,7 +4094,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="normal">843</span>
 <span class="normal">844</span>
 <span class="normal">845</span>
-<span class="normal">846</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">change_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;HelixAwkwardArray&quot;</span><span class="p">:</span>
+<span class="normal">846</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">change_pivot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">HelixAwkwardArray</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Changes the pivot point of the helix.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -4172,7 +4199,7 @@ The transformation refers to <code>Helix</code> class in <code>BOSS</code>.</p>
 <span class="normal">865</span>
 <span class="normal">866</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">isclose</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-    <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;HelixAwkwardRecord&quot;</span><span class="p">,</span>
+    <span class="n">other</span><span class="p">:</span> <span class="n">HelixAwkwardRecord</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">rtol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-5</span><span class="p">,</span>
     <span class="n">atol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-8</span><span class="p">,</span>
