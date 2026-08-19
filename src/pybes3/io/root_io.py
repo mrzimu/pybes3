@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import array
+from typing import ClassVar
 
 import awkward as ak
 import awkward.contents
@@ -395,7 +396,7 @@ class Bes3PySymMatrixArrayReader(uproot_custom.readers.python.IReader):
 
 
 class Bes3SymMatrixArrayFactory(Factory):
-    target_items = {
+    target_items: ClassVar[set[str]] = {
         "/Event:TDstEvent/m_mdcTrackCol.TMdcTrack.m_err",
         "/Event:TDstEvent/m_emcTrackCol.TEmcTrack.m_err",
         "/Event:TDstEvent/m_extTrackCol.TExtTrack.myTof1ErrorMatrix",
@@ -537,7 +538,7 @@ class Bes3Interpretation(AsCustom):
     Custom interpretation for Bes3 data.
     """
 
-    target_branches: set[str] = set(bes3_branch2types.keys())
+    target_branches: ClassVar[set[str]] = set(bes3_branch2types.keys())
 
     def __init__(self, branch, context, simplify):
         super().__init__(branch, context, simplify)

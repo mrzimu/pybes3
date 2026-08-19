@@ -3,7 +3,6 @@ from __future__ import annotations
 import enum
 import glob
 from pathlib import Path
-from typing import Union
 
 import awkward as ak
 import awkward.contents
@@ -97,7 +96,7 @@ class RawBinaryReader:
             _info_tables["muc_strsqc"] = _reid.build_muc_strsqc()
 
         self.path = str(Path(file).resolve())
-        self._file = open(file, "rb")
+        self._file = open(file, "rb")  # noqa: SIM115
 
         self.file_version: int = -1
         self.file_number: int = -1
@@ -136,7 +135,7 @@ class RawBinaryReader:
         *,
         entry_start: int = 0,
         entry_stop: int = -1,
-        filter_name: Union[str, list, None] = None,
+        filter_name: str | list | None = None,
     ) -> ak.Array:
         """
         Read and return arrays of data from the BES raw file.
@@ -352,7 +351,7 @@ def concatenate(
     *,
     entry_start: int = 0,
     entry_stop: int = -1,
-    filter_name: Union[str, list, None] = None,
+    filter_name: str | list | None = None,
     verbose: bool = False,
 ) -> ak.Array:
     """
