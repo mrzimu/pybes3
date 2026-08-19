@@ -59,7 +59,7 @@ urls = {"Homepage" = "https://github.com/mrzimu/pybes3", "Documentation" = "http
 build = ["cp*-manylinux_x86_64", "cp*-macosx_arm64", "cp*-win_amd64"]
 
 [tool.ruff]
-include = ["pyproject.toml", "src/**/*.py", "src/**/*.pyi"]
+include = ["pyproject.toml", "src/**/*.py", "src/**/*.pyi", "tests/**/*.py"]
 line-length = 95
 target-version = "py39"
 
