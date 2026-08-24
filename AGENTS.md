@@ -53,7 +53,7 @@ _tmp/                # Temporary/experimental scripts
 ## Key Conventions
 
 - **gid naming**: The public API consistently uses `gid` (global ID). The underlying C++ kernel internally uses `idx`. See `docs/convention/global-id.md`.
-- **Deprecation pattern**: Use `warnings.warn` + `DeprecationWarning`, and keep deprecated function references in documentation. See `/memories/repo/pybes3-conventions.md`.
+- **Deprecation pattern**: Use `warnings.warn` + `DeprecationWarning`, and keep deprecated function references in documentation.
 - **No absolute paths**: All file paths in documentation, comments, code, and configuration files must be relative to the project root. Absolute paths (e.g. `/home/...`, `/Users/...`, `/tmp/...`) are not allowed, as they are machine-specific and non-portable.
 - **NumPy C-API**: Every translation unit that uses the NumPy C-API must call `_import_array` / `_import_umath` for initialization, otherwise it will crash at `PyUFunc_FromFuncAndData`.
 - **C++ compilation**: Uses `-Wall -Werror`, C++20 standard.
@@ -61,5 +61,4 @@ _tmp/                # Temporary/experimental scripts
 ## More Information
 
 - User documentation: `docs/`
-- Repository conventions: `/memories/repo/pybes3-conventions.md`
 - Project configuration: `pyproject.toml`
