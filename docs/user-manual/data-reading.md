@@ -93,7 +93,7 @@ To read a raw data file, use `pybes3.open_raw`:
 
 ```python
 >>> import pybes3 as p3
->>> file_path = "/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file001_SFO-1.raw"
+>>> file_path = "run_0087397_All_merge0_file001_SFO-1.raw"
 >>> raw_file = p3.open_raw(file_path)
 >>> raw_file
 <RawData filename='run_0087397_All_merge0_file001_SFO-1.raw' Entries=180322 Size='2368 MB'>
@@ -107,7 +107,7 @@ Get meta information:
 >>> raw_file.run_number
 87397
 >>> raw_file.path
-'/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file001_SFO-1.raw'
+'run_0087397_All_merge0_file001_SFO-1.raw'
 >>> raw_file.size
 2483177188 # Size in bytes
 ```
@@ -171,9 +171,9 @@ To read multiple files and concatenate them into a single array, use `pybes3.con
 
 ```python
 >>> files = [
-        file_path,
-        "/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file002_SFO-1.raw",
->>> ]
+...     "run_0087397_All_merge0_file001_SFO-1.raw",
+...     "run_0087397_All_merge0_file002_SFO-1.raw",
+... ]
 >>> raw_data = p3.concatenate_raw(files)
 >>> raw_data
 <Array [{evt_header: {...}, ...}, ..., {...}] type='363492 * {evt_header: {...'>
@@ -183,8 +183,8 @@ Set `verbose=True` to print progress:
 
 ```python
 >>> raw_data = p3.concatenate_raw(files, verbose=True)
-Reading file /mnt/f/pybes3/run_0087397_All_merge0_file001_SFO-1.raw: 0 -> 180322 entries ...
-Reading file /mnt/f/pybes3/run_0087397_All_merge0_file001_SFO-1.raw: 180322 -> 363492 entries ...
+Reading file run_0087397_All_merge0_file001_SFO-1.raw: 0 -> 180322 entries ...
+Reading file run_0087397_All_merge0_file001_SFO-1.raw: 180322 -> 363492 entries ...
 ```
 
 `entry_start`, `entry_stop` and `filter_name` can also be used in `concatenate_raw` to read only a portion of the files or specific fields:
