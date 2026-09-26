@@ -1318,7 +1318,7 @@
 <h3 id="read-a-single-file">Read a single file</h3>
 <p>To read a raw data file, use <code>pybes3.open_raw</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="n">file_path</span> <span class="o">=</span> <span class="s2">&quot;/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file001_SFO-1.raw&quot;</span>
+<span class="o">&gt;&gt;&gt;</span> <span class="n">file_path</span> <span class="o">=</span> <span class="s2">&quot;run_0087397_All_merge0_file001_SFO-1.raw&quot;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">raw_file</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">open_raw</span><span class="p">(</span><span class="n">file_path</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">raw_file</span>
 <span class="o">&lt;</span><span class="n">RawData</span> <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;run_0087397_All_merge0_file001_SFO-1.raw&#39;</span> <span class="n">Entries</span><span class="o">=</span><span class="mi">180322</span> <span class="n">Size</span><span class="o">=</span><span class="s1">&#39;2368 MB&#39;</span><span class="o">&gt;</span>
@@ -1329,7 +1329,7 @@
 <span class="o">&gt;&gt;&gt;</span> <span class="n">raw_file</span><span class="o">.</span><span class="n">run_number</span>
 <span class="mi">87397</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">raw_file</span><span class="o">.</span><span class="n">path</span>
-<span class="s1">&#39;/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file001_SFO-1.raw&#39;</span>
+<span class="s1">&#39;run_0087397_All_merge0_file001_SFO-1.raw&#39;</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">raw_file</span><span class="o">.</span><span class="n">size</span>
 <span class="mi">2483177188</span> <span class="c1"># Size in bytes</span>
 </code></pre></div>
@@ -1375,17 +1375,17 @@
 <h3 id="concatenate-multiple-files">Concatenate multiple files</h3>
 <p>To read multiple files and concatenate them into a single array, use <code>pybes3.concatenate_raw</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">files</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">file_path</span><span class="p">,</span>
-        <span class="s2">&quot;/besfs8/offline/data/merge/raw/round19/250912/run_0087397_All_merge0_file002_SFO-1.raw&quot;</span><span class="p">,</span>
-<span class="o">&gt;&gt;&gt;</span> <span class="p">]</span>
+<span class="o">...</span>     <span class="s2">&quot;run_0087397_All_merge0_file001_SFO-1.raw&quot;</span><span class="p">,</span>
+<span class="o">...</span>     <span class="s2">&quot;run_0087397_All_merge0_file002_SFO-1.raw&quot;</span><span class="p">,</span>
+<span class="o">...</span> <span class="p">]</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">raw_data</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">concatenate_raw</span><span class="p">(</span><span class="n">files</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">raw_data</span>
 <span class="o">&lt;</span><span class="n">Array</span> <span class="p">[{</span><span class="n">evt_header</span><span class="p">:</span> <span class="p">{</span><span class="o">...</span><span class="p">},</span> <span class="o">...</span><span class="p">},</span> <span class="o">...</span><span class="p">,</span> <span class="p">{</span><span class="o">...</span><span class="p">}]</span> <span class="nb">type</span><span class="o">=</span><span class="s1">&#39;363492 * {evt_header: {...&#39;</span><span class="o">&gt;</span>
 </code></pre></div>
 <p>Set <code>verbose=True</code> to print progress:</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">raw_data</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">concatenate_raw</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="n">Reading</span> <span class="n">file</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">f</span><span class="o">/</span><span class="n">pybes3</span><span class="o">/</span><span class="n">run_0087397_All_merge0_file001_SFO</span><span class="o">-</span><span class="mf">1.</span><span class="n">raw</span><span class="p">:</span> <span class="mi">0</span> <span class="o">-&gt;</span> <span class="mi">180322</span> <span class="n">entries</span> <span class="o">...</span>
-<span class="n">Reading</span> <span class="n">file</span> <span class="o">/</span><span class="n">mnt</span><span class="o">/</span><span class="n">f</span><span class="o">/</span><span class="n">pybes3</span><span class="o">/</span><span class="n">run_0087397_All_merge0_file001_SFO</span><span class="o">-</span><span class="mf">1.</span><span class="n">raw</span><span class="p">:</span> <span class="mi">180322</span> <span class="o">-&gt;</span> <span class="mi">363492</span> <span class="n">entries</span> <span class="o">...</span>
+<span class="n">Reading</span> <span class="n">file</span> <span class="n">run_0087397_All_merge0_file001_SFO</span><span class="o">-</span><span class="mf">1.</span><span class="n">raw</span><span class="p">:</span> <span class="mi">0</span> <span class="o">-&gt;</span> <span class="mi">180322</span> <span class="n">entries</span> <span class="o">...</span>
+<span class="n">Reading</span> <span class="n">file</span> <span class="n">run_0087397_All_merge0_file001_SFO</span><span class="o">-</span><span class="mf">1.</span><span class="n">raw</span><span class="p">:</span> <span class="mi">180322</span> <span class="o">-&gt;</span> <span class="mi">363492</span> <span class="n">entries</span> <span class="o">...</span>
 </code></pre></div>
 <p><code>entry_start</code>, <code>entry_stop</code> and <code>filter_name</code> can also be used in <code>concatenate_raw</code> to read only a portion of the files or specific fields:</p>
 <div class="highlight"><pre><span></span><code><span class="o">&gt;&gt;&gt;</span> <span class="n">raw_data</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">concatenate_raw</span><span class="p">(</span><span class="n">files</span><span class="p">,</span> <span class="n">entry_start</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">entry_stop</span><span class="o">=</span><span class="mi">200</span><span class="p">,</span> <span class="n">filter_name</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;cgem&#39;</span><span class="p">,</span> <span class="s1">&#39;mdc&#39;</span><span class="p">])</span>
