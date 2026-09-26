@@ -2,7 +2,7 @@
 
 #include <uproot-custom/uproot-custom.hh>
 
-using namespace uproot;
+using namespace uproot_custom;
 
 template <typename T>
 using SharedVector = std::shared_ptr<std::vector<T>>;

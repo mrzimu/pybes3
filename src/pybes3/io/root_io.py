@@ -116,7 +116,7 @@ class Bes3TObjArrayFactory(Factory):
         item_path: str,
         **kwargs,
     ):
-        if top_type_name != "TObjArray":
+        if top_type_name != "TObjArray*":
             return None
 
         item_path = item_path.replace(".TObjArray*", "")
