@@ -1,12 +1,13 @@
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, Literal
 
 import awkward as ak
 import numpy as np
 
 import pybes3.kernels.ufuncs as _ufuncs
-from pybes3.typing import BoolLike, IntLike
+from pybes3.data import TOF_GEOM
+from pybes3.typing import BoolLike, FloatLike, IntLike
 
 N_PARTS = 5
 N_LAYER_OR_MODULE = np.array([1, 2, 1, 36, 36])
@@ -15,6 +16,66 @@ N_STRIPS = (N_LAYER_OR_MODULE * N_PHI_OR_STRIP).sum()
 
 N_LAYER_OR_MODULE.setflags(write=False)
 N_PHI_OR_STRIP.setflags(write=False)
+
+with np.load(TOF_GEOM) as f:
+    _tof_geom_table = dict(f)
+
+for v in _tof_geom_table.values():
+    v.setflags(write=False)
+
+
+_part = _tof_geom_table["part"]
+_layer_or_module = _tof_geom_table["layer_or_module"]
+_phi_or_strip = _tof_geom_table["phi_or_strip"]
+_points_x = _tof_geom_table["points_x"]
+_points_y = _tof_geom_table["points_y"]
+_points_z = _tof_geom_table["points_z"]
+
+_ufuncs._init_tof_geom(
+    _points_x,
+    _points_y,
+    _points_z,
+)
+
+
+def get_tof_geom_table(library: Literal["np", "ak", "pd"] = "np"):
+    """
+    Get TOF scintillator / MRPC position table.
+
+    Parameters:
+        library: The library to return the data in. Choose from 'ak', 'np', 'pd'.
+
+    Returns:
+        (ak.Array | dict[str, np.ndarray] | pd.DataFrame): The TOF scintillator / MRPC position table.
+
+    Raises:
+        ValueError: If the library is not 'ak', 'np', or 'pd'.
+        ImportError: If the library is 'pd' but pandas is not installed.
+    """
+    cp: dict[str, np.ndarray] = {k: v.copy() for k, v in _tof_geom_table.items()}
+
+    res: dict[str, np.ndarray] = {}
+    for k in ["gid", "part", "layer_or_module", "phi_or_strip"]:
+        res[k] = cp[k]
+
+    # flatten crystal points
+    for i in range(8):
+        res[f"points_x_{i}"] = cp["points_x"][:, i]
+        res[f"points_y_{i}"] = cp["points_y"][:, i]
+        res[f"points_z_{i}"] = cp["points_z"][:, i]
+
+    if library == "ak":
+        return ak.Array(res)
+    elif library == "np":
+        return res
+    elif library == "pd":
+        try:
+            import pandas as pd  # type: ignore
+        except ImportError:
+            raise ImportError("Pandas is not installed. Run `pip install pandas`.")
+        return pd.DataFrame(res)
+    else:
+        raise ValueError(f"Invalid library {library}. Choose from 'ak', 'np', 'pd'.")
 
 
 def get_tof_gid(part: IntLike, layer_or_module: IntLike, phi_or_strip: IntLike) -> IntLike:
@@ -69,6 +130,48 @@ def tof_gid_to_phi_or_strip(gid: IntLike) -> IntLike:
         The phi (for scintillator) or strip (for MRPC) number of the TOF strip.
     """
     return _ufuncs.tof_gid_to_phi_or_strip(gid)
+
+
+def tof_gid_to_point_x(gid: IntLike, i: IntLike) -> FloatLike:
+    """
+    Get TOF point x coordinate from gid and index.
+
+    Parameters:
+        gid: The strip global ID of the TOF strip, ranging from 0 to 1135.
+        i: The index of the point, ranging from 0 to 7.
+
+    Returns:
+        The x coordinate of the TOF point.
+    """
+    return _ufuncs.tof_gid_to_point_x(gid, i)
+
+
+def tof_gid_to_point_y(gid: IntLike, i: IntLike) -> FloatLike:
+    """
+    Get TOF point y coordinate from gid and index.
+
+    Parameters:
+        gid: The strip global ID of the TOF strip, ranging from 0 to 1135.
+        i: The index of the point, ranging from 0 to 7.
+
+    Returns:
+        The y coordinate of the TOF point.
+    """
+    return _ufuncs.tof_gid_to_point_y(gid, i)
+
+
+def tof_gid_to_point_z(gid: IntLike, i: IntLike) -> FloatLike:
+    """
+    Get TOF point z coordinate from gid and index.
+
+    Parameters:
+        gid: The strip global ID of the TOF strip, ranging from 0 to 1135.
+        i: The index of the point, ranging from 0 to 7.
+
+    Returns:
+        The z coordinate of the TOF point.
+    """
+    return _ufuncs.tof_gid_to_point_z(gid, i)
 
 
 def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:

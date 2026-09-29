@@ -20,6 +20,22 @@ def test_tof_gid_conversion(tof_gid_dict):
     assert np.all(p3.get_tof_gid(ref_part, ref_layer_or_module, ref_phi_or_strip) == ref_gid)
 
 
+def test_tof_geom():
+    gid = np.arange(tof.N_STRIPS)
+    assert np.all(p3.tof_gid_to_part(gid) == tof._part)
+    assert np.all(p3.tof_gid_to_layer_or_module(gid) == tof._layer_or_module)
+    assert np.all(p3.tof_gid_to_phi_or_strip(gid) == tof._phi_or_strip)
+
+    for i in range(8):
+        assert np.all(p3.tof_gid_to_point_x(gid, i) == tof._points_x[gid, i])
+        assert np.all(p3.tof_gid_to_point_y(gid, i) == tof._points_y[gid, i])
+        assert np.all(p3.tof_gid_to_point_z(gid, i) == tof._points_z[gid, i])
+
+    p3.get_tof_geom_table(library="np")
+    p3.get_tof_geom_table(library="ak")
+    p3.get_tof_geom_table(library="pd")
+
+
 def test_tof_parse_gid(tof_gid_dict):
     ref_part = tof_gid_dict["part"]
     ref_layer_or_module = tof_gid_dict["layer_or_module"]

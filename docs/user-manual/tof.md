@@ -66,6 +66,68 @@ phi_or_strip = res["phi_or_strip"]
 
 When the input is an `ak.Array`, the result is also an `ak.Array` with record fields.
 
+## Scintillator / MRPC position
+
+Each strip (scintillator or MRPC) has 8 vertices. `tof_gid_to_point_*` take two arguments (`gid` and `point`), both support scalar/array inputs independently:
+
+=== "Scalar"
+
+    ```python
+    import pybes3 as p3
+
+    gid = 0
+
+    x = p3.tof_gid_to_point_x(gid, 0)
+    y = p3.tof_gid_to_point_y(gid, 0)
+    z = p3.tof_gid_to_point_z(gid, 0)
+
+    x = p3.tof_gid_to_point_x(gid, 7)
+    y = p3.tof_gid_to_point_y(gid, 7)
+    z = p3.tof_gid_to_point_z(gid, 7)
+    ```
+
+=== "NumPy array"
+
+    ```python
+    import numpy as np
+    import pybes3 as p3
+
+    gid = np.array([0, 100, 500])
+    point = np.array([0, 1, 2])
+
+    x = p3.tof_gid_to_point_x(gid, 0)
+    x = p3.tof_gid_to_point_x(0, point)
+    x = p3.tof_gid_to_point_x(gid, point)
+    ```
+
+=== "Awkward Array"
+
+    ```python
+    import awkward as ak
+    import pybes3 as p3
+
+    gid = ak.Array([[0, 100], [500]])
+    point = ak.Array([[0, 1], 2])
+
+    x = p3.tof_gid_to_point_x(gid, 0)       # jagged strips, vertex 0
+    x = p3.tof_gid_to_point_x(0, point)     # strip 0, jagged vertices
+    x = p3.tof_gid_to_point_x(gid, point)  # jagged strips, jagged vertices
+    ```
+
+---
+
+Retrieve the full strip position table:
+
+```python
+# get table in `dict[str, np.ndarray]`
+strip_position_np = p3.get_tof_geom_table()
+
+# get table in `ak.Array`
+strip_position_ak = p3.get_tof_geom_table(library="ak")
+
+# get table in `pd.DataFrame`
+strip_position_pd = p3.get_tof_geom_table(library="pd")
+```
 
 ## Hit status
 

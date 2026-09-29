@@ -39,10 +39,20 @@ mdc_gid_z_to_x: _UFunc_Nin2_Nout1
 mdc_gid_z_to_y: _UFunc_Nin2_Nout1
 
 # detectors/tof.cc
+def _init_tof_geom(
+    points_x: np.ndarray,
+    points_y: np.ndarray,
+    points_z: np.ndarray,
+    /,
+): ...
+
 get_tof_gid: np.ufunc
 tof_gid_to_part: _UFunc_Nin1_Nout1
 tof_gid_to_layer_or_module: _UFunc_Nin1_Nout1
 tof_gid_to_phi_or_strip: _UFunc_Nin1_Nout1
+tof_gid_to_point_x: _UFunc_Nin2_Nout1
+tof_gid_to_point_y: _UFunc_Nin2_Nout1
+tof_gid_to_point_z: _UFunc_Nin2_Nout1
 tof_hit_status_to_is_raw: _UFunc_Nin1_Nout1
 tof_hit_status_to_is_readout: _UFunc_Nin1_Nout1
 tof_hit_status_to_is_counter: _UFunc_Nin1_Nout1

@@ -13,6 +13,28 @@ gaudi_add_executable(ExportGid
         Identifier
 )
 
+gaudi_add_executable(ExportTofScintGeom
+    SOURCES
+        src/ExportTofScintGeom.cc
+    LINK
+        BesGDML
+        ROOTGeo
+        ROOT::Core
+        ROOT::Geom
+        Identifier
+)
+
+gaudi_add_executable(ExportTofMrpcGeom
+    SOURCES
+        src/ExportTofMrpcGeom.cc
+    LINK
+        BesGDML
+        ROOTGeo
+        ROOT::Core
+        ROOT::Geom
+        Identifier
+)
+
 gaudi_add_module(TestPybes3
     SOURCES
         src/ExportTestRawDataAlg.cc

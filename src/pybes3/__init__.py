@@ -64,12 +64,16 @@ from pybes3.mdc import (
     parse_mdc_gid,
 )
 from pybes3.tof import (
+    get_tof_geom_table,
     get_tof_gid,
     parse_tof_gid,
     parse_tof_hit_status,
     tof_gid_to_layer_or_module,
     tof_gid_to_part,
     tof_gid_to_phi_or_strip,
+    tof_gid_to_point_x,
+    tof_gid_to_point_y,
+    tof_gid_to_point_z,
     tof_hit_status_to_is_barrel,
     tof_hit_status_to_is_cluster,
     tof_hit_status_to_is_counter,
@@ -86,10 +90,8 @@ from pybes3.tof import (
 )
 
 __all__ = [
-    # tracks
     "HelixObject",
     "__version__",
-    # detectors
     "cgem_gid_to_is_vstrip",
     "cgem_gid_to_is_xstrip",
     "cgem_gid_to_layer",
@@ -120,6 +122,7 @@ __all__ = [
     "get_mdc_geom_table",
     "get_mdc_gid",
     "get_mdc_wire_position",
+    "get_tof_geom_table",
     "get_tof_gid",
     "helix_awk",
     "helix_obj",
@@ -141,7 +144,6 @@ __all__ = [
     "mdc_gid_z_to_y",
     "mdc_layer_to_is_stereo",
     "mdc_layer_to_superlayer",
-    # besio
     "open",
     "open_raw",
     "parse_cgem_gid",
@@ -153,6 +155,9 @@ __all__ = [
     "tof_gid_to_layer_or_module",
     "tof_gid_to_part",
     "tof_gid_to_phi_or_strip",
+    "tof_gid_to_point_x",
+    "tof_gid_to_point_y",
+    "tof_gid_to_point_z",
     "tof_hit_status_to_is_barrel",
     "tof_hit_status_to_is_cluster",
     "tof_hit_status_to_is_counter",
