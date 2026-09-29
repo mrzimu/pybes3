@@ -266,6 +266,23 @@ def tof_hit_status_to_is_mrpc(status: IntLike) -> BoolLike:
     return _ufuncs.tof_hit_status_to_is_mrpc(status)
 
 
+def tof_hit_status_id_to_gid(status: IntLike, tof_id: IntLike) -> IntLike:
+    """Convert hit status and tofID to `gid`."""
+    m1 = status == 0
+    if (isinstance(m1, (bool, np.bool)) and m1) or ak.any(m1):
+        raise ValueError(
+            "TOF hit status cannot be zero, try to filter them out before calling this function"
+        )
+
+    m2 = tof_id < 0
+    if (isinstance(m2, (bool, np.bool)) and m2) or ak.any(m2):
+        raise ValueError(
+            "TOF ID cannot be negative, try to filter them out before calling this function"
+        )
+
+    return _ufuncs.tof_hit_status_id_to_gid(status, tof_id)
+
+
 def parse_tof_hit_status(status: IntLike) -> ak.Array | dict[str, Any]:
     """
     Parse TOF hit status into its components.

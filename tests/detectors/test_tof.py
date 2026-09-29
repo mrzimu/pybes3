@@ -2,9 +2,11 @@ from pathlib import Path
 
 import awkward as ak
 import numpy as np
+import pytest
 import uproot
 
 import pybes3 as p3
+from pybes3 import identifier as ident
 from pybes3 import tof
 
 
@@ -101,3 +103,26 @@ def test_tof_hit_status(test_data_dir: Path):
     scalar_parsed = p3.parse_tof_hit_status(s)
     for f in fields:
         assert scalar_parsed[f] == flat_expected[f][0]
+
+
+def test_tof_hit_status_id_to_gid(test_data_dir: Path):
+    tof_digis = ak.from_parquet(test_data_dir / "test_mrpc.rtraw.parquet")["m_tofDigiCol"]
+    ref_gid = ident.parse_tof_digi(tof_digis)["gid"]
+
+    tof_trks = ak.from_parquet(test_data_dir / "test_mrpc.dst.parquet")["m_tofTrackCol"]
+    status = tof_trks["m_status"]
+
+    with pytest.raises(ValueError):
+        p3.tof_hit_status_id_to_gid(status, -1)
+
+    tof_id = tof_trks["m_tofID"]
+    mask = (tof_id >= 0) & (status != 0)
+
+    m_status = status[mask]
+    m_tofid = tof_id[mask]
+    test_gid = p3.tof_hit_status_id_to_gid(m_status, m_tofid)
+
+    for i in range(len(ref_gid)):
+        test_gid_np = test_gid[i].to_numpy()
+        ref_gid_np = ref_gid[i].to_numpy()
+        assert np.isin(test_gid_np, ref_gid_np).all()

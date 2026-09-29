@@ -85,6 +85,8 @@
 ---
 ::: pybes3.tof_gid_to_point_z
 ---
+::: pybes3.tof_hit_status_id_to_gid
+---
 ::: pybes3.tof_hit_status_to_is_barrel
 ---
 ::: pybes3.tof_hit_status_to_is_cluster

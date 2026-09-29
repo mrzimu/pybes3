@@ -1,8 +1,11 @@
 #include <numeric>
+#include <stdexcept>
 #include <tuple>
 
 #include "mod.hh"
 #include "ufunc.hh"
+
+#include "identifier.hh"
 
 namespace tof {
     constexpr size_t N_PARTS = 5;
@@ -177,6 +180,32 @@ namespace tof {
         *out = ( ( *status & 0x01000000 ) >> 24 ) > 0;
     }
 
+    template <typename T>
+    inline void tof_hit_status_id_to_gid( T* status, T* tof_id, T* out ) noexcept {
+        if ( *status == 0 )
+        {
+            T part, layer_or_module, phi_or_strip;
+            identifier::tof_id_to_part( tof_id, &part );
+            identifier::_tof_id_to_layer_or_module_2( tof_id, &part, &layer_or_module );
+            identifier::_tof_id_to_phi_or_strip_2( tof_id, &part, &phi_or_strip );
+            get_tof_gid( &part, &layer_or_module, &phi_or_strip, out );
+            return;
+        }
+
+        const bool is_barrel = ( ( *status & 0x00000010 ) >> 4 ) > 0;
+        if ( is_barrel )
+        {
+            *out = 48 + *tof_id;
+            return;
+        }
+
+        const bool is_east = ( ( *status & 0x00000020 ) >> 5 ) > 0;
+        const bool is_mrpc = ( ( *status & 0x01000000 ) >> 24 ) > 0;
+        if ( !is_mrpc ) *out = is_east ? *tof_id : ( *tof_id + 88 * 2 );
+
+        *out = ( 48 + 88 ) * 2 + *tof_id;
+    }
+
     void declare_tof( PyObject* d ) {
         if ( _import_array() < 0 ) return;
         if ( _import_umath() < 0 ) return;
@@ -347,5 +376,14 @@ namespace tof {
             tof_hit_status_to_is_mrpc<int32_t>,  //
             tof_hit_status_to_is_mrpc<uint64_t>, //
             tof_hit_status_to_is_mrpc<int64_t>>( d, "tof_hit_status_to_is_mrpc" );
+
+        decl_ufunc_21<                          //
+            tof_hit_status_id_to_gid<uint16_t>, //
+            tof_hit_status_id_to_gid<int16_t>,  //
+            tof_hit_status_id_to_gid<uint32_t>, //
+            tof_hit_status_id_to_gid<int32_t>,  //
+            tof_hit_status_id_to_gid<uint64_t>, //
+            tof_hit_status_id_to_gid<int64_t>>  //
+            ( d, "tof_hit_status_id_to_gid" );
     }
 } // namespace tof

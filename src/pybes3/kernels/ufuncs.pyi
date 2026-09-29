@@ -66,6 +66,7 @@ tof_hit_status_to_n_counter: _UFunc_Nin1_Nout1
 tof_hit_status_to_n_east: _UFunc_Nin1_Nout1
 tof_hit_status_to_n_west: _UFunc_Nin1_Nout1
 tof_hit_status_to_is_mrpc: _UFunc_Nin1_Nout1
+tof_hit_status_id_to_gid: _UFunc_Nin2_Nout1
 
 # detectors/emc.cc
 def _init_emc_geom(

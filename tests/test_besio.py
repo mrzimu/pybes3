@@ -45,6 +45,22 @@ def test_rec(test_data_dir):
     assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
+def test_mrpc_rtraw(test_data_dir):
+    f_rtraw = uproot.open(test_data_dir / "test_mrpc.rtraw")
+    truth_arr = ak.from_parquet(test_data_dir / "test_mrpc.rtraw.parquet")
+    arr = f_rtraw["Event"].arrays()
+    assert len(arr) == 10
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
+
+
+def test_mrpc_dst(test_data_dir):
+    f_dst = uproot.open(test_data_dir / "test_mrpc.dst")
+    truth_arr = ak.from_parquet(test_data_dir / "test_mrpc.dst.parquet")
+    arr = f_dst["Event"].arrays()
+    assert len(arr) == 10
+    assert ak.array_equal(arr, truth_arr, equal_nan=True)
+
+
 def test_cgem_rtraw(test_data_dir):
     f_rtraw = uproot.open(test_data_dir / "test_cgem.rtraw")
     truth_arr = ak.from_parquet(test_data_dir / "test_cgem.rtraw.parquet")
