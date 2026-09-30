@@ -192,17 +192,24 @@ namespace tof {
             return;
         }
 
-        const bool is_barrel = ( ( *status & 0x00000010 ) >> 4 ) > 0;
+        bool is_barrel;
+        tof_hit_status_to_is_barrel( status, &is_barrel );
         if ( is_barrel )
         {
             *out = 48 + *tof_id;
             return;
         }
 
-        const bool is_east = ( ( *status & 0x00000020 ) >> 5 ) > 0;
-        const bool is_mrpc = ( ( *status & 0x01000000 ) >> 24 ) > 0;
-        if ( !is_mrpc ) *out = is_east ? *tof_id : ( *tof_id + 88 * 2 );
+        bool is_east, is_mrpc;
+        tof_hit_status_to_is_east( status, &is_east );
+        tof_hit_status_to_is_mrpc( status, &is_mrpc );
+        if ( !is_mrpc ) // scint endcap
+        {
+            *out = is_east ? *tof_id : ( *tof_id + 88 * 2 );
+            return;
+        }
 
+        // MRPC endcap
         *out = ( 48 + 88 ) * 2 + *tof_id;
     }
 

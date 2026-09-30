@@ -113,14 +113,19 @@ def test_tof_hit_status_id_to_gid(test_data_dir: Path):
     status = tof_trks["m_status"]
 
     with pytest.raises(ValueError):
-        p3.tof_hit_status_id_to_gid(status, -1)
+        p3.tof_hit_status_id_to_gid(status, -1)  # ak
+        p3.tof_hit_status_id_to_gid(status[0].to_numpy(), -1)  # np
+        p3.tof_hit_status_id_to_gid(int(status[0][0]), -1)  # scalar
 
     tof_id = tof_trks["m_tofID"]
     mask = (tof_id >= 0) & (status != 0)
 
     m_status = status[mask]
     m_tofid = tof_id[mask]
-    test_gid = p3.tof_hit_status_id_to_gid(m_status, m_tofid)
+
+    test_gid = p3.tof_hit_status_id_to_gid(m_status, m_tofid)  # ak
+    p3.tof_hit_status_id_to_gid(m_status[0].to_numpy(), m_tofid[0].to_numpy())  # np
+    p3.tof_hit_status_id_to_gid(int(m_status[0][0]), int(m_tofid[0][0]))  # scalar
 
     for i in range(len(ref_gid)):
         test_gid_np = test_gid[i].to_numpy()
