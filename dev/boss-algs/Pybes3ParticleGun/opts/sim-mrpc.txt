@@ -1,0 +1,46 @@
+//DENG Zi-yan 2008-03-17
+
+#include "$OFFLINEEVENTLOOPMGRROOT/share/OfflineEventLoopMgr_Option.txt"
+
+ApplicationMgr.TopAlg += { "Pybes3ParticleGun" };
+Pybes3ParticleGun.Mode = 1; // Sampling mode: 0 for p-costheta-phi, 1 for p-|costheta|-phi
+Pybes3ParticleGun.PdgList = { 11, 13, 22, 211, 321 }; // 11: e-; 13: mu-; 22: gamma; 211: pi+; 321: K+
+Pybes3ParticleGun.PRange = { 0.5, 1.8 };
+Pybes3ParticleGun.CosthetaRange = { 0.75, 0.93 };
+Pybes3ParticleGun.PhiRange = { -3.14, 3.14 }; // should be in [-pi, pi], not [0, 2*pi]
+
+//**************job options for random number************************
+BesRndmGenSvc.RndmSeed = 100;
+
+//**************job options for detector simulation******************
+#include "$BESSIMROOT/share/G4Svc_BesSim.txt"
+G4Svc.BoostLab = false; // necessary to set to false for the simulation
+
+//configure for calibration constants
+#include "$CALIBSVCROOT/share/calibConfig_sim.txt"
+
+// run ID
+RealizationSvc.RunIdList = {-59000};
+
+#include "$ROOTIOROOT/share/jobOptions_Digi2Root.txt"
+RootWriter.ItemList = { "/Event/EventHeader#1",
+                        "/Event/Navigator#1",
+                        "/Event/MC/McParticleCol#1",
+                        "/Event/MC/MdcMcHitCol#1",
+                        "/Event/MC/EmcMcHitCol#1",
+                        "/Event/MC/TofMcHitCol#1",
+                        "/Event/MC/MucMcHitCol#1",
+                        "/Event/Digi#99"};
+
+RootCnvSvc.digiRootOutputFile = "test_mrpc.rtraw";
+
+// OUTPUT PRINTOUT LEVEL
+// Set output level threshold (2=DEBUG, 3=INFO, 4=WARNING, 5=ERROR, 6=FATAL )
+MessageSvc.OutputLevel = 5;
+
+// Number of events to be processed (default is 10)
+ApplicationMgr.EvtMax = 10;
+
+// Show progress
+OfflineEventLoopMgr.ShowProgressInterval = 1;
+OfflineEventLoopMgr.ProgressLevel = 7; // 7=Always

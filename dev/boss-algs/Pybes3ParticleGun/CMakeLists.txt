@@ -1,0 +1,11 @@
+boss_add_module(Pybes3ParticleGun
+    SOURCES
+        src/Pybes3ParticleGun.cxx
+    LINK
+        Gaudi::GaudiKernel
+        Gaudi::Functional
+        GeneratorObject
+        BesRndmGenSvcLib
+        HepMC::HepMC
+        HepPDT::heppdt
+)
