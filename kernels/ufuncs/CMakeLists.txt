@@ -8,6 +8,7 @@ python_add_library(ufuncs MODULE WITH_SOABI
     src/emc.cc
     src/mdc.cc
     src/tof.cc
+    src/muc.cc
 )
 
 target_include_directories(ufuncs PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)

@@ -4,9 +4,6 @@ When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, `muc`, an
 
 ## Identifier array parsing
 
-!!! info
-    The MUC full identifier parsing is still under development. Use the [standalone identifier parsing methods](#standalone-identifier-parsing) for MUC identifiers for now.
-
 ```python
 import pybes3.identifier as p3id
 import uproot

@@ -147,6 +147,38 @@
 ---
 ::: pybes3.parse_emc_gid
 ---
+::: pybes3.get_muc_geom_table
+---
+::: pybes3.get_muc_gid
+---
+::: pybes3.muc_gid_to_center_x
+---
+::: pybes3.muc_gid_to_center_y
+---
+::: pybes3.muc_gid_to_center_z
+---
+::: pybes3.muc_gid_to_dx
+---
+::: pybes3.muc_gid_to_dy
+---
+::: pybes3.muc_gid_to_dz
+---
+::: pybes3.muc_gid_to_layer
+---
+::: pybes3.muc_gid_to_part
+---
+::: pybes3.muc_gid_to_point_x
+---
+::: pybes3.muc_gid_to_point_y
+---
+::: pybes3.muc_gid_to_point_z
+---
+::: pybes3.muc_gid_to_segment
+---
+::: pybes3.muc_gid_to_strip
+---
+::: pybes3.parse_muc_gid
+---
 
 ## Helix
 ::: pybes3.HelixObject

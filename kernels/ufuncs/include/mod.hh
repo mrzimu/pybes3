@@ -32,3 +32,8 @@ namespace emc {
     void declare_emc( PyObject* d );
     PyObject* _init_emc_geom( PyObject* self, PyObject* args );
 } // namespace emc
+
+namespace muc {
+    void declare_muc( PyObject* d );
+    PyObject* _init_muc_geom( PyObject* self, PyObject* args );
+} // namespace muc

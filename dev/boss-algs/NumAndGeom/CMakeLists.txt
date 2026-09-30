@@ -30,6 +30,18 @@ gaudi_add_executable(ExportTofMrpcGeom
         Identifier
 )
 
+gaudi_add_executable(ExportMucGeom
+    SOURCES
+        src/ExportMucGeom.cc
+    LINK
+        BesGDML
+        ROOTGeo
+        MucCalib
+        ROOT::Core
+        ROOT::Geom
+        Identifier
+)
+
 gaudi_add_module(TestPybes3
     SOURCES
         src/ExportTestRawDataAlg.cc

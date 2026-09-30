@@ -1,5 +1,4 @@
 #include <numeric>
-#include <stdexcept>
 #include <tuple>
 
 #include "mod.hh"

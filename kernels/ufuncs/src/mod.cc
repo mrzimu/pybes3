@@ -10,6 +10,8 @@ static PyMethodDef MyMethods[] = {
       "Initialize TOF geometry arrays from numpy arrays." },
     { "_init_mdc_geom", mdc::_init_mdc_geom, METH_VARARGS,
       "Initialize MDC geometry arrays from numpy arrays." },
+    { "_init_muc_geom", muc::_init_muc_geom, METH_VARARGS,
+      "Initialize MUC geometry arrays from numpy arrays." },
     { NULL, NULL, 0, NULL } /* Sentinel */
 };
 
@@ -29,6 +31,7 @@ PyMODINIT_FUNC PyInit_ufuncs( void ) {
     mdc::declare_mdc( d );
     tof::declare_tof( d );
     emc::declare_emc( d );
+    muc::declare_muc( d );
 
     helix::declare_helix( d );
     identifier::declare_identifier( d );
