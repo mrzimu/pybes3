@@ -36,10 +36,10 @@
 //     phi0 : azimuth of the centre line at the **most negative z** end
 //            (rad, global xy azimuth)
 //     dphi : total signed azimuth change from that end along the centre line towards +z
-//     z0   : most negative z of the centre line (mm); dz : total z change towards +z (>=0)
+//     z0   : most negative z of the centre line (cm); dz : total z change towards +z (>=0)
 //     width: X strip = width along the arc direction; V strip = width perpendicular to
 //            the strip
-//     thick: radial thickness of the strip (mm)
+//     thick: radial thickness of the strip (cm)
 //
 //   Note: the length along the centre line is sqrt((dphi*r)^2+dz^2); it is not written out
 //         (it follows from the other columns).

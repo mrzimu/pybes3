@@ -77,6 +77,31 @@ def test_cgem_geom(cgem_geom_dict):
         atol=1e-9,
     )
 
+    # the offset is measured from the middle of the strip, so a phi given in another period
+    # gives the same z, and the midpoint gives the midpoint
+    assert np.allclose(
+        p3.cgem_gid_phi_to_z(gid[v_strip], (phi0 - 2 * np.pi)[v_strip]),
+        z0[v_strip],
+        atol=1e-9,
+    )
+    assert np.allclose(
+        p3.cgem_gid_phi_to_z(gid[v_strip], (phi0 + dphi + 2 * np.pi)[v_strip]),
+        (z0 + dz)[v_strip],
+        atol=1e-9,
+    )
+    assert np.allclose(
+        p3.cgem_gid_phi_to_z(gid[v_strip], (phi0 + dphi / 2)[v_strip]),
+        (z0 + dz / 2)[v_strip],
+        atol=1e-9,
+    )
+
+    # a phi just outside the strip is extrapolated linearly, not folded to the other end
+    assert np.allclose(
+        p3.cgem_gid_phi_to_z(gid[v_strip], (phi0 - 0.01)[v_strip]),
+        (z0[v_strip] - 0.01 / dphi[v_strip] * dz[v_strip]),
+        atol=1e-9,
+    )
+
     # an x-strip runs along the z axis: z gives its phi0, while phi gives no z
     assert np.allclose(
         p3.cgem_gid_z_to_phi(gid[~v_strip], z0[~v_strip]), phi0[~v_strip], atol=1e-9

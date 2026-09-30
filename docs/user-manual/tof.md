@@ -216,3 +216,37 @@ n_counter = parse_result["n_counter"]
 n_east = parse_result["n_east"]
 n_west = parse_result["n_west"]
 ```
+
+## Hit status and gid
+
+`tof_hit_status_id_to_gid` converts the hit status and the `tofID` of a TOF hit into the `gid`
+of the strip which was hit:
+
+```python
+import pybes3 as p3
+
+status = tof_track["m_status"]
+tof_id = tof_track["m_tofID"]
+
+# `status == 0` and negative `tofID` are rejected, filter them out first
+mask = (status != 0) & (tof_id >= 0)
+
+gid = p3.tof_hit_status_id_to_gid(status[mask], tof_id[mask])
+```
+
+The `tofID` is not the raw digi ID, but a compact index which enumerates the counters of the
+part of the TOF the hit belongs to. The two endcaps of a sub-detector share a single index
+space, the east one first, and the hit status tells which sub-detector it is:
+
+| Part | `tofID` | `gid` |
+| ---- | ------- | ----- |
+| Barrel | `layer * 88 + phi` | `48 + tofID` |
+| Scintillator east endcap | `phi` | `tofID` |
+| Scintillator west endcap | `48 + phi` | `tofID + 176` |
+| MRPC east endcap | `module * 12 + strip` | `272 + tofID` |
+| MRPC west endcap | `432 + module * 12 + strip` | `272 + tofID` |
+
+!!! warning
+    A hit without a hit status (`status == 0`) stores the raw digi ID in `m_tofID` instead of
+    the compact index above, and a negative `m_tofID` is not a valid counter index. Both are
+    rejected with a `ValueError`, so filter them out before calling the function.

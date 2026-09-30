@@ -267,7 +267,36 @@ def tof_hit_status_to_is_mrpc(status: IntLike) -> BoolLike:
 
 
 def tof_hit_status_id_to_gid(status: IntLike, tof_id: IntLike) -> IntLike:
-    """Convert hit status and tofID to `gid`."""
+    """
+    Convert the hit status and the `tofID` of a TOF hit into the `gid` of its strip.
+
+    The hit status is used to know which part of the TOF the hit belongs to (see
+    `tof_hit_status_to_is_barrel`, `tof_hit_status_to_is_east` and
+    `tof_hit_status_to_is_mrpc`), and the `tofID` to know which strip it is. The `tofID` is
+    not the raw digi ID: it is a compact index which enumerates the counters of that part,
+    with the east and the west endcaps sharing a single index space (east first):
+
+    - barrel: `tof_id = layer * 88 + phi`, and `gid = 48 + tof_id`;
+    - scintillator endcaps: `tof_id = 48 * endcap + phi`, and `gid = tof_id` for the east
+      endcap, `gid = tof_id + 176` for the west one;
+    - MRPC endcaps: `tof_id = 432 * endcap + module * 12 + strip`, and `gid = 272 +
+      tof_id` for both endcaps, since `tof_id` already distinguishes them.
+
+    Both arguments must be filtered beforehand: a hit without a hit status
+    (`status == 0`) carries the raw digi ID in its `tofID` field instead of the compact
+    index, and a negative `tofID` is not a valid counter index.
+
+    Parameters:
+        status: The hit status of the TOF hit, encoded as an integer, must not be 0.
+        tof_id: The `tofID` of the TOF hit, must not be negative.
+
+    Returns:
+        The global ID of the strip the hit belongs to, in the same shape as the input.
+
+    Raises:
+        ValueError: If any element of `status` is 0, or if any element of `tof_id` is
+            negative.
+    """
     m1 = status == 0
     if (isinstance(m1, (bool, np.bool)) and m1) or (
         not isinstance(m1, (bool, np.bool)) and ak.any(m1)

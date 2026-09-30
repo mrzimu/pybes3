@@ -163,9 +163,11 @@ both supporting scalar/array inputs independently:
     import pybes3 as p3
 
     gid = 1297
+    phi0 = p3.cgem_gid_to_phi0(gid)
+    z0 = p3.cgem_gid_to_z0(gid)
 
-    z = p3.cgem_gid_phi_to_z(gid, 0.0)      # z (cm) of the strip at phi = 0
-    phi = p3.cgem_gid_z_to_phi(gid, 0.0)    # phi (rad) of the strip at z = 0 cm
+    z = p3.cgem_gid_phi_to_z(gid, phi0)     # z (cm) of the strip at its start point
+    phi = p3.cgem_gid_z_to_phi(gid, z0)     # phi (rad) of the strip at its start point
     ```
 
 === "NumPy array"
@@ -200,6 +202,13 @@ both supporting scalar/array inputs independently:
 Both functions are backed by compiled NumPy ufuncs and use linear interpolation between the
 two ends of the strip, without any range check, so a `phi` or `z` outside the strip is
 extrapolated.
+
+They differ in how they treat the azimuth: `cgem_gid_phi_to_z` takes the offset of `phi` from
+`phi0` as the representative which is within half a turn of the middle of the strip. A `phi`
+given in any period therefore gives the same z, and every strip, including one spanning more
+than half a turn, is covered exactly once. `cgem_gid_z_to_phi` does not reduce anything: it
+returns a phi which follows `phi0 + (z - z0) / dz * dphi` and is not wrapped into
+$[-\pi, \pi]$.
 
 !!! info
     An x-strip runs along the z axis, so `cgem_gid_z_to_phi` always returns its `phi0`, whereas

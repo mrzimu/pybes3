@@ -262,9 +262,13 @@ def cgem_gid_phi_to_z(gid: IntLike, phi: FloatLike) -> FloatLike:
     """
     Get the z (cm) position of a CGEM strip at the azimuth phi (rad).
 
-    The z is obtained by linear interpolation between the two ends of the strip, without
-    any range check, so a phi outside the strip is extrapolated. `phi` may be given in any
-    period, i.e. it does not have to be wrapped into [-pi, pi].
+    The centre line of a strip runs from `(phi0, z0)` to `(phi0 + dphi, z0 + dz)`, and its
+    azimuthal span is smaller than one full turn. The offset of `phi` from `phi0` is taken
+    as the representative which is within half a turn of the middle of the strip; for a
+    point on the strip this is exact whatever the period of `phi` is.
+
+    The offset is then used to interpolate linearly between the two ends of the strip,
+    without any range check, so a `phi` outside the strip is extrapolated.
 
     Parameters:
         gid: The strip global ID of the CGEM strip.
@@ -282,7 +286,9 @@ def cgem_gid_z_to_phi(gid: IntLike, z: FloatLike) -> FloatLike:
     Get the azimuth phi (rad) of a CGEM strip at the z (cm) position.
 
     The phi is obtained by linear interpolation between the two ends of the strip, without
-    any range check, so a z outside the strip is extrapolated.
+    any range check, so a z outside the strip is extrapolated. This is the inverse of
+    `cgem_gid_phi_to_z` for a point on the strip. Unlike it, the returned phi is not
+    wrapped, so it is not restricted to any period.
 
     Parameters:
         gid: The strip global ID of the CGEM strip.

@@ -180,11 +180,11 @@ namespace cgem {
             return;
         }
 
-        // Distance from the start point, measured in the direction given by the sign of
-        // dphi, so that any period of `phi` and the +-pi seam are both handled.
-        auto d = std::remainder( *phi - phi0, TWO_PI );
-        if ( dphi > 0.0 && d < 0.0 ) d += TWO_PI;
-        if ( dphi < 0.0 && d > 0.0 ) d -= TWO_PI;
+        // Offset from the start point. It is measured from the middle of the strip, which
+        // is less than half a turn away from every point of it, so that the offset of a
+        // point on the strip is exact whatever the period of `phi` is, and a `phi` outside
+        // the strip is extrapolated instead of being folded to its other end.
+        auto d = std::remainder( *phi - ( phi0 + 0.5 * dphi ), TWO_PI ) + 0.5 * dphi;
 
         *out = z0 + d / dphi * dz;
     }
