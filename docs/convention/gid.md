@@ -75,7 +75,12 @@ The concrete relationship between gid and `(theta, phi)` for EMC endcap 1 is:
 
 ## MUC
 
-!!! note "Under development"
+| Range  |       Increasing Order        |
+| :----: | :---------------------------: |
+| 0-9151 | (part, segment, layer, strip) |
+
+!!! success "Same as BOSS"
+    MUC gid is the same as the one given by `MucCalib/MucIdTransform` in `BOSS`.
 
 ## CGEM
 

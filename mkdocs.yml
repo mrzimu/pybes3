@@ -86,6 +86,7 @@ nav:
       - MDC: user-manual/mdc.md
       - TOF: user-manual/tof.md
       - EMC: user-manual/emc.md
+      - MUC: user-manual/muc.md
       - CGEM: user-manual/cgem.md
       - Helix operations: user-manual/helix.md
       - Identifier: user-manual/identifier.md
@@ -95,6 +96,7 @@ nav:
       - pybes3.mdc: api/pybes3.mdc.md
       - pybes3.tof: api/pybes3.tof.md
       - pybes3.emc: api/pybes3.emc.md
+      - pybes3.muc: api/pybes3.muc.md
       - pybes3.cgem: api/pybes3.cgem.md
       - pybes3.helix: api/pybes3.helix.md
       - pybes3.identifier: api/pybes3.identifier.md

@@ -4,10 +4,16 @@
 #include "numpy/ufuncobject.h"
 
 static PyMethodDef MyMethods[] = {
-    { "_init_emc_geom", _init_emc_geom, METH_VARARGS,
+    { "_init_emc_geom", emc::_init_emc_geom, METH_VARARGS,
       "Initialize EMC geometry arrays from numpy arrays." },
-    { "_init_mdc_geom", _init_mdc_geom, METH_VARARGS,
+    { "_init_tof_geom", tof::_init_tof_geom, METH_VARARGS,
+      "Initialize TOF geometry arrays from numpy arrays." },
+    { "_init_mdc_geom", mdc::_init_mdc_geom, METH_VARARGS,
       "Initialize MDC geometry arrays from numpy arrays." },
+    { "_init_muc_geom", muc::_init_muc_geom, METH_VARARGS,
+      "Initialize MUC geometry arrays from numpy arrays." },
+    { "_init_cgem_geom", cgem::_init_cgem_geom, METH_VARARGS,
+      "Initialize CGEM geometry arrays from numpy arrays." },
     { NULL, NULL, 0, NULL } /* Sentinel */
 };
 
@@ -23,13 +29,14 @@ PyMODINIT_FUNC PyInit_ufuncs( void ) {
 
     PyObject* d = PyModule_GetDict( m );
 
-    declare_cgem( d );
-    declare_mdc( d );
-    declare_tof( d );
-    declare_emc( d );
+    cgem::declare_cgem( d );
+    mdc::declare_mdc( d );
+    tof::declare_tof( d );
+    emc::declare_emc( d );
+    muc::declare_muc( d );
 
-    declare_helix( d );
-    declare_identifier( d );
+    helix::declare_helix( d );
+    identifier::declare_identifier( d );
 
     return m;
 }

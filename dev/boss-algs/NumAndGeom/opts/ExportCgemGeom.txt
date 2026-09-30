@@ -1,0 +1,10 @@
+ApplicationMgr.TopAlg += { "ExportCgemGeomAlg" };
+ApplicationMgr.EvtMax = 1;
+ApplicationMgr.EvtSel = "NONE";
+
+// Set output level threshold (2=DEBUG, 3=INFO, 4=WARNING, 5=ERROR, 6=FATAL )
+MessageSvc.OutputLevel = 5;
+
+// Output Data
+ApplicationMgr.HistogramPersistency = "ROOT";
+NTupleSvc.Output = { "FILE1 DATAFILE='../../../../tests/data/ref_cgem_geom.root' OPT='NEW' TYP='ROOT'" };

@@ -66,6 +66,68 @@ phi_or_strip = res["phi_or_strip"]
 
 When the input is an `ak.Array`, the result is also an `ak.Array` with record fields.
 
+## Scintillator / MRPC position
+
+Each strip (scintillator or MRPC) has 8 vertices. `tof_gid_to_point_*` take two arguments (`gid` and `point`), both support scalar/array inputs independently:
+
+=== "Scalar"
+
+    ```python
+    import pybes3 as p3
+
+    gid = 0
+
+    x = p3.tof_gid_to_point_x(gid, 0)
+    y = p3.tof_gid_to_point_y(gid, 0)
+    z = p3.tof_gid_to_point_z(gid, 0)
+
+    x = p3.tof_gid_to_point_x(gid, 7)
+    y = p3.tof_gid_to_point_y(gid, 7)
+    z = p3.tof_gid_to_point_z(gid, 7)
+    ```
+
+=== "NumPy array"
+
+    ```python
+    import numpy as np
+    import pybes3 as p3
+
+    gid = np.array([0, 100, 500])
+    point = np.array([0, 1, 2])
+
+    x = p3.tof_gid_to_point_x(gid, 0)
+    x = p3.tof_gid_to_point_x(0, point)
+    x = p3.tof_gid_to_point_x(gid, point)
+    ```
+
+=== "Awkward Array"
+
+    ```python
+    import awkward as ak
+    import pybes3 as p3
+
+    gid = ak.Array([[0, 100], [500]])
+    point = ak.Array([[0, 1], 2])
+
+    x = p3.tof_gid_to_point_x(gid, 0)       # jagged strips, vertex 0
+    x = p3.tof_gid_to_point_x(0, point)     # strip 0, jagged vertices
+    x = p3.tof_gid_to_point_x(gid, point)  # jagged strips, jagged vertices
+    ```
+
+---
+
+Retrieve the full strip position table:
+
+```python
+# get table in `dict[str, np.ndarray]`
+strip_position_np = p3.get_tof_geom_table()
+
+# get table in `ak.Array`
+strip_position_ak = p3.get_tof_geom_table(library="ak")
+
+# get table in `pd.DataFrame`
+strip_position_pd = p3.get_tof_geom_table(library="pd")
+```
 
 ## Hit status
 
@@ -154,3 +216,37 @@ n_counter = parse_result["n_counter"]
 n_east = parse_result["n_east"]
 n_west = parse_result["n_west"]
 ```
+
+## Hit status and gid
+
+`tof_hit_status_id_to_gid` converts the hit status and the `tofID` of a TOF hit into the `gid`
+of the strip which was hit:
+
+```python
+import pybes3 as p3
+
+status = tof_track["m_status"]
+tof_id = tof_track["m_tofID"]
+
+# `status == 0` and negative `tofID` are rejected, filter them out first
+mask = (status != 0) & (tof_id >= 0)
+
+gid = p3.tof_hit_status_id_to_gid(status[mask], tof_id[mask])
+```
+
+The `tofID` is not the raw digi ID, but a compact index which enumerates the counters of the
+part of the TOF the hit belongs to. The two endcaps of a sub-detector share a single index
+space, the east one first, and the hit status tells which sub-detector it is:
+
+| Part | `tofID` | `gid` |
+| ---- | ------- | ----- |
+| Barrel | `layer * 88 + phi` | `48 + tofID` |
+| Scintillator east endcap | `phi` | `tofID` |
+| Scintillator west endcap | `48 + phi` | `tofID + 176` |
+| MRPC east endcap | `module * 12 + strip` | `272 + tofID` |
+| MRPC west endcap | `432 + module * 12 + strip` | `272 + tofID` |
+
+!!! warning
+    A hit without a hit status (`status == 0`) stores the raw digi ID in `m_tofID` instead of
+    the compact index above, and a negative `m_tofID` is not a valid counter index. Both are
+    rejected with a `ValueError`, so filter them out before calling the function.

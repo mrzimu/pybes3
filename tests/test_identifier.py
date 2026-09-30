@@ -536,8 +536,8 @@ def test_parse_muc_id(digi_event):
     strip_ak = identifier.muc_id_to_strip(muc_id_ak)
 
     # Test awkward, flat=False, library='ak'
-    ak_res1 = identifier.parse_muc_id(muc_id_ak)
-    assert ak_res1.fields == [
+    fields = [
+        "gid",
         "part",
         "segment",
         "layer",
@@ -545,6 +545,8 @@ def test_parse_muc_id(digi_event):
         "gap",
         "strip",
     ]
+    ak_res1 = identifier.parse_muc_id(muc_id_ak)
+    assert ak_res1.fields == fields
     assert len(ak_res1.positional_axis) == 2
     assert ak.all(ak_res1["part"] == part_ak)
     assert ak.all(ak_res1["segment"] == segment_ak)
@@ -563,14 +565,7 @@ def test_parse_muc_id(digi_event):
 
     # Test numpy
     np_res = identifier.parse_muc_id(muc_id_np)
-    assert list(np_res.keys()) == [
-        "part",
-        "segment",
-        "layer",
-        "channel",
-        "gap",
-        "strip",
-    ]
+    assert list(np_res.keys()) == fields
     assert np.all(np_res["part"] == part_np)
     assert np.all(np_res["segment"] == segment_np)
     assert np.all(np_res["layer"] == layer_np)
@@ -581,20 +576,56 @@ def test_parse_muc_id(digi_event):
     # Test int
     muc_id_int = int(muc_id_np[0])
     int_res = identifier.parse_muc_id(muc_id_int)
-    assert list(int_res.keys()) == [
-        "part",
-        "segment",
-        "layer",
-        "channel",
-        "gap",
-        "strip",
-    ]
+    assert list(int_res.keys()) == fields
     assert int_res["part"] == part_np[0]
     assert int_res["segment"] == segment_np[0]
     assert int_res["layer"] == layer_np[0]
     assert int_res["channel"] == channel_np[0]
     assert int_res["gap"] == gap_np[0]
     assert int_res["strip"] == strip_np[0]
+
+
+def test_parse_muc_digi(digi_event):
+    digi_ak: ak.Array = digi_event["m_mucDigiCol"]
+    fields = [
+        "gid",
+        "part",
+        "segment",
+        "layer",
+        "channel",
+        "gap",
+        "strip",
+        "charge_channel",
+        "time_channel",
+        "track_index",
+    ]
+
+    ak_res = identifier.parse_muc_digi(digi_ak)
+    assert ak_res.fields == fields
+    assert len(ak_res.positional_axis) == 2
+
+    flat_digi_ak = ak.flatten(digi_ak)
+    digi_np = {k: flat_digi_ak[k].to_numpy() for k in flat_digi_ak.fields}
+    np_res = identifier.parse_muc_digi(digi_np)
+    assert list(np_res.keys()) == fields
+    for field in fields:
+        assert np.asarray(np_res[field]).ndim == 1
+
+
+def test_parse_muc_digi_raw(raw_event):
+    digi_ak: ak.Array = raw_event["muc"]
+    fields = ["gid", "part", "segment", "layer", "channel", "gap", "strip"]
+
+    ak_res = identifier.parse_muc_digi(digi_ak)
+    assert ak_res.fields == fields
+    assert len(ak_res.positional_axis) == 2
+
+    flat_digi_ak = ak.flatten(digi_ak)
+    digi_np = {k: flat_digi_ak[k].to_numpy() for k in flat_digi_ak.fields}
+    np_res = identifier.parse_muc_digi(digi_np)
+    assert list(np_res.keys()) == fields
+    for field in fields:
+        assert np.asarray(np_res[field]).ndim == 1
 
 
 def test_cgem_id(cgem_digi_event):

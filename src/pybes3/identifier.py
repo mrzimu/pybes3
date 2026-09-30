@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from typing import TypeVar
+
 import awkward as ak
 import numpy as np
 
@@ -7,8 +9,11 @@ import pybes3.kernels.ufuncs as _ufuncs
 from pybes3.cgem import get_cgem_gid
 from pybes3.emc import get_emc_gid
 from pybes3.mdc import get_mdc_gid
+from pybes3.muc import get_muc_gid
 from pybes3.tof import get_tof_gid
 from pybes3.typing import BoolLike, IntLike
+
+T = TypeVar("T")
 
 
 def _add_field_if_exist(digi: ak.Array | dict, res: dict, field: str, output: str):
@@ -134,9 +139,7 @@ def parse_mdc_id(mdc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
         return res
 
 
-def parse_mdc_digi(
-    mdc_digi: ak.Array | dict[str, np.ndarray | int],
-) -> ak.Array | dict[str, np.ndarray | int]:
+def parse_mdc_digi(mdc_digi: T) -> T:
     """
     Parse MDC raw digi array. The raw digi array should contain [`m_intId`,
     `m_timeChannel`, `m_chargeChannel`, `m_overflow`] fields.
@@ -417,9 +420,7 @@ def parse_tof_id(tof_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
         return res
 
 
-def parse_tof_digi(
-    tof_digi: ak.Array | dict[str, np.ndarray | int],
-) -> ak.Array | dict[str, np.ndarray | int]:
+def parse_tof_digi(tof_digi: T) -> T:
     """
     Parse TOF raw digi array. The raw digi array should contain [`m_intId`,
     `m_timeChannel`, `m_chargeChannel`, `m_overflow`] fields.
@@ -585,9 +586,7 @@ def parse_emc_id(emc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
         return res
 
 
-def parse_emc_digi(
-    emc_digi: ak.Array | dict[str, np.ndarray | int],
-) -> ak.Array | dict[str, np.ndarray | int]:
+def parse_emc_digi(emc_digi: T) -> T:
     """
     Parse EMC raw digi array. The raw digi array should contain [`m_intId`,
     `m_timeChannel`, `m_chargeChannel`, `m_measure`] fields.
@@ -768,8 +767,10 @@ def parse_muc_id(muc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     segment = muc_id_to_segment(muc_id)
     layer = muc_id_to_layer(muc_id)
     channel = muc_id_to_channel(muc_id)
+    gid = get_muc_gid(part, segment, layer, channel)
 
     res = {
+        "gid": gid,
         "part": part,
         "segment": segment,
         "layer": layer,
@@ -779,6 +780,55 @@ def parse_muc_id(muc_id: IntLike) -> ak.Array | dict[str, np.ndarray | int]:
     }
 
     if isinstance(muc_id, ak.Array):
+        return ak.zip(res)
+    else:
+        return res
+
+
+def parse_muc_digi(muc_digi: T) -> T:
+    """
+    Parse MUC raw digi array. The raw digi array should contain the [`m_intId`] field. Note that
+    one MUC raw digi represents one FEC, which covers 16 strip channels.
+
+    Fields of the output:
+
+    - `gid`: Global ID of the strip.
+    - `part`: The part number.
+    - `segment`: The segment number.
+    - `layer`: The layer number.
+    - `channel`: The channel number.
+    - `gap`: The gap number, which is equivalent to layer number.
+    - `strip`: The strip number, which is equivalent to channel number.
+    - `charge_channel`: Charge channel.
+    - `time_channel`: Time channel.
+    - `track_index`: Track index.
+
+    `charge_channel`, `time_channel` and `track_index` are only present if the input array
+    provides [`m_chargeChannel`], [`m_timeChannel`] and [`m_trackIndex`] respectively.
+
+    Parameters:
+        muc_digi: The MUC raw digi array.
+
+    Returns:
+        The parsed MUC raw digi array.
+    """
+    parsed_id = parse_muc_id(muc_digi["m_intId"])
+
+    res = {
+        "gid": parsed_id["gid"],
+        "part": parsed_id["part"],
+        "segment": parsed_id["segment"],
+        "layer": parsed_id["layer"],
+        "channel": parsed_id["channel"],
+        "gap": parsed_id["gap"],
+        "strip": parsed_id["strip"],
+    }
+
+    _add_field_if_exist(muc_digi, res, "m_chargeChannel", "charge_channel")
+    _add_field_if_exist(muc_digi, res, "m_timeChannel", "time_channel")
+    _add_field_if_exist(muc_digi, res, "m_trackIndex", "track_index")
+
+    if isinstance(muc_digi, ak.Array):
         return ak.zip(res)
     else:
         return res

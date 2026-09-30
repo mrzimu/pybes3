@@ -2,6 +2,14 @@ import numpy as np
 from numpy._typing._ufunc import _UFunc_Nin1_Nout1, _UFunc_Nin2_Nout1
 
 # detectors/cgem.cc
+def _init_cgem_geom(
+    phi0: np.ndarray,
+    dphi: np.ndarray,
+    z0: np.ndarray,
+    dz: np.ndarray,
+    /,
+): ...
+
 get_cgem_gid: np.ufunc
 cgem_gid_to_layer: _UFunc_Nin1_Nout1
 cgem_gid_to_sheet: _UFunc_Nin1_Nout1
@@ -9,6 +17,14 @@ cgem_gid_to_strip_type: _UFunc_Nin1_Nout1
 cgem_gid_to_strip: _UFunc_Nin1_Nout1
 cgem_gid_to_is_xstrip: _UFunc_Nin1_Nout1
 cgem_gid_to_is_vstrip: _UFunc_Nin1_Nout1
+cgem_gid_to_width: _UFunc_Nin1_Nout1
+cgem_gid_to_radius: _UFunc_Nin1_Nout1
+cgem_gid_to_phi0: _UFunc_Nin1_Nout1
+cgem_gid_to_dphi: _UFunc_Nin1_Nout1
+cgem_gid_to_z0: _UFunc_Nin1_Nout1
+cgem_gid_to_dz: _UFunc_Nin1_Nout1
+cgem_gid_phi_to_z: _UFunc_Nin2_Nout1
+cgem_gid_z_to_phi: _UFunc_Nin2_Nout1
 
 # detectors/mdc.cc
 def _init_mdc_geom(
@@ -39,10 +55,20 @@ mdc_gid_z_to_x: _UFunc_Nin2_Nout1
 mdc_gid_z_to_y: _UFunc_Nin2_Nout1
 
 # detectors/tof.cc
+def _init_tof_geom(
+    points_x: np.ndarray,
+    points_y: np.ndarray,
+    points_z: np.ndarray,
+    /,
+): ...
+
 get_tof_gid: np.ufunc
 tof_gid_to_part: _UFunc_Nin1_Nout1
 tof_gid_to_layer_or_module: _UFunc_Nin1_Nout1
 tof_gid_to_phi_or_strip: _UFunc_Nin1_Nout1
+tof_gid_to_point_x: _UFunc_Nin2_Nout1
+tof_gid_to_point_y: _UFunc_Nin2_Nout1
+tof_gid_to_point_z: _UFunc_Nin2_Nout1
 tof_hit_status_to_is_raw: _UFunc_Nin1_Nout1
 tof_hit_status_to_is_readout: _UFunc_Nin1_Nout1
 tof_hit_status_to_is_counter: _UFunc_Nin1_Nout1
@@ -56,6 +82,7 @@ tof_hit_status_to_n_counter: _UFunc_Nin1_Nout1
 tof_hit_status_to_n_east: _UFunc_Nin1_Nout1
 tof_hit_status_to_n_west: _UFunc_Nin1_Nout1
 tof_hit_status_to_is_mrpc: _UFunc_Nin1_Nout1
+tof_hit_status_id_to_gid: _UFunc_Nin2_Nout1
 
 # detectors/emc.cc
 def _init_emc_geom(
@@ -85,6 +112,35 @@ emc_gid_to_point_x: _UFunc_Nin2_Nout1
 emc_gid_to_point_y: _UFunc_Nin2_Nout1
 emc_gid_to_point_z: _UFunc_Nin2_Nout1
 emc_adc_to_charge: _UFunc_Nin2_Nout1
+
+# detectors/muc.cc
+def _init_muc_geom(
+    points_x: np.ndarray,
+    points_y: np.ndarray,
+    points_z: np.ndarray,
+    center_x: np.ndarray,
+    center_y: np.ndarray,
+    center_z: np.ndarray,
+    dx: np.ndarray,
+    dy: np.ndarray,
+    dz: np.ndarray,
+    /,
+): ...
+
+get_muc_gid: np.ufunc
+muc_gid_to_part: _UFunc_Nin1_Nout1
+muc_gid_to_segment: _UFunc_Nin1_Nout1
+muc_gid_to_layer: _UFunc_Nin1_Nout1
+muc_gid_to_strip: _UFunc_Nin1_Nout1
+muc_gid_to_center_x: _UFunc_Nin1_Nout1
+muc_gid_to_center_y: _UFunc_Nin1_Nout1
+muc_gid_to_center_z: _UFunc_Nin1_Nout1
+muc_gid_to_dx: _UFunc_Nin1_Nout1
+muc_gid_to_dy: _UFunc_Nin1_Nout1
+muc_gid_to_dz: _UFunc_Nin1_Nout1
+muc_gid_to_point_x: _UFunc_Nin2_Nout1
+muc_gid_to_point_y: _UFunc_Nin2_Nout1
+muc_gid_to_point_z: _UFunc_Nin2_Nout1
 
 # helix.cc
 dr_phi0_to_x: _UFunc_Nin2_Nout1
