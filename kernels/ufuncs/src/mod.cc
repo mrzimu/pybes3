@@ -12,6 +12,8 @@ static PyMethodDef MyMethods[] = {
       "Initialize MDC geometry arrays from numpy arrays." },
     { "_init_muc_geom", muc::_init_muc_geom, METH_VARARGS,
       "Initialize MUC geometry arrays from numpy arrays." },
+    { "_init_cgem_geom", cgem::_init_cgem_geom, METH_VARARGS,
+      "Initialize CGEM geometry arrays from numpy arrays." },
     { NULL, NULL, 0, NULL } /* Sentinel */
 };
 

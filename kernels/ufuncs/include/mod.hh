@@ -16,7 +16,8 @@ namespace identifier {
 
 namespace cgem {
     void declare_cgem( PyObject* d );
-}
+    PyObject* _init_cgem_geom( PyObject* self, PyObject* args );
+} // namespace cgem
 
 namespace mdc {
     void declare_mdc( PyObject* d );

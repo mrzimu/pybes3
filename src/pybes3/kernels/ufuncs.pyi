@@ -2,6 +2,14 @@ import numpy as np
 from numpy._typing._ufunc import _UFunc_Nin1_Nout1, _UFunc_Nin2_Nout1
 
 # detectors/cgem.cc
+def _init_cgem_geom(
+    phi0: np.ndarray,
+    dphi: np.ndarray,
+    z0: np.ndarray,
+    dz: np.ndarray,
+    /,
+): ...
+
 get_cgem_gid: np.ufunc
 cgem_gid_to_layer: _UFunc_Nin1_Nout1
 cgem_gid_to_sheet: _UFunc_Nin1_Nout1
@@ -9,6 +17,14 @@ cgem_gid_to_strip_type: _UFunc_Nin1_Nout1
 cgem_gid_to_strip: _UFunc_Nin1_Nout1
 cgem_gid_to_is_xstrip: _UFunc_Nin1_Nout1
 cgem_gid_to_is_vstrip: _UFunc_Nin1_Nout1
+cgem_gid_to_width: _UFunc_Nin1_Nout1
+cgem_gid_to_radius: _UFunc_Nin1_Nout1
+cgem_gid_to_phi0: _UFunc_Nin1_Nout1
+cgem_gid_to_dphi: _UFunc_Nin1_Nout1
+cgem_gid_to_z0: _UFunc_Nin1_Nout1
+cgem_gid_to_dz: _UFunc_Nin1_Nout1
+cgem_gid_phi_to_z: _UFunc_Nin2_Nout1
+cgem_gid_z_to_phi: _UFunc_Nin2_Nout1
 
 # detectors/mdc.cc
 def _init_mdc_geom(

@@ -47,6 +47,7 @@ gaudi_add_module(TestPybes3
         src/ExportTestRawDataAlg.cc
         src/ExportTofHitStatusAlg.cc
         src/ExportEmcGeomAlg.cc
+        src/ExportCgemGeomAlg.cc
     LINK
         Gaudi::GaudiKernel
         EventModel
@@ -57,4 +58,5 @@ gaudi_add_module(TestPybes3
         TofRawEvent
         TrigEvent
         DstEvent
+        CgemGeomSvcLib
 )

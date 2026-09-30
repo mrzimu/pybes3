@@ -1,4 +1,4 @@
-ApplicationMgr.TopAlg += { "ExportEmcGeomAlg" };
+ApplicationMgr.TopAlg += { "ExportCgemGeomAlg" };
 ApplicationMgr.EvtMax = 1;
 ApplicationMgr.EvtSel = "NONE";
 
@@ -7,4 +7,4 @@ MessageSvc.OutputLevel = 5;
 
 // Output Data
 ApplicationMgr.HistogramPersistency = "ROOT";
-NTupleSvc.Output = { "FILE1 DATAFILE='../../../../tests/data/ref_emc_geom.root' OPT='NEW' TYP='ROOT'" };
+NTupleSvc.Output = { "FILE1 DATAFILE='../../../../tests/data/ref_cgem_geom.root' OPT='NEW' TYP='ROOT'" };
