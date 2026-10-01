@@ -11,7 +11,7 @@
       
       
       
-        <link rel="prev" href="../emc/">
+        <link rel="prev" href="../muc/">
       
       
         <link rel="next" href="../helix/">
@@ -606,6 +606,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../muc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MUC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -673,6 +701,17 @@
     <span class="md-ellipsis">
       
         GID conversion
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#strip-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strip geometry
       
     </span>
   </a>
@@ -950,6 +989,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/pybes3.muc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pybes3.muc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/pybes3.cgem/" class="md-nav__link">
         
   
@@ -1099,6 +1166,17 @@
   
 </li>
       
+        <li class="md-nav__item">
+  <a href="#strip-geometry" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Strip geometry
+      
+    </span>
+  </a>
+  
+</li>
+      
     </ul>
   
 </nav>
@@ -1189,6 +1267,147 @@ The calling convention is identical for scalar, NumPy array, and Awkward Array i
 <span class="n">is_vstrip</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;is_vstrip&quot;</span><span class="p">]</span>
 </code></pre></div>
 <p>When the input is an <code>ak.Array</code>, the result is also an <code>ak.Array</code> with record fields.</p>
+<h2 id="strip-geometry">Strip geometry</h2>
+<p>All <code>cgem_gid_to_width</code>, <code>cgem_gid_to_radius</code>, <code>cgem_gid_to_phi0</code>, <code>cgem_gid_to_dphi</code>,
+<code>cgem_gid_to_z0</code> and <code>cgem_gid_to_dz</code> are also backed by compiled NumPy ufuncs.
+The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="2:3"><input checked="checked" id="__tabbed_2_1" name="__tabbed_2" type="radio" /><input id="__tabbed_2_2" name="__tabbed_2" type="radio" /><input id="__tabbed_2_3" name="__tabbed_2" type="radio" /><div class="tabbed-labels"><label for="__tabbed_2_1">Scalar</label><label for="__tabbed_2_2">NumPy array</label><label for="__tabbed_2_3">Awkward Array</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
+
+<span class="n">gid</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">width</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_width</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">radius</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_radius</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+
+<span class="n">phi0</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_phi0</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">dphi</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_dphi</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">z0</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_z0</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">dz</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_dz</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
+
+<span class="n">gid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">856</span><span class="p">,</span> <span class="mi">5000</span><span class="p">])</span>
+<span class="n">width</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_width</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">radius</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_radius</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+
+<span class="n">phi0</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_phi0</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">dphi</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_dphi</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">z0</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_z0</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">dz</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_dz</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">awkward</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ak</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
+
+<span class="n">gid</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">856</span><span class="p">],</span> <span class="p">[</span><span class="mi">5000</span><span class="p">]])</span>
+<span class="n">width</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_width</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">radius</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_radius</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+
+<span class="n">phi0</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_phi0</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">dphi</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_dphi</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">z0</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_z0</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">dz</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_dz</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>The centre line of a strip is described in the global cylindrical coordinate system.
+<code>radius</code> is the distance (cm) of the strip from the beam axis, and <code>width</code> is the width (cm)
+of the strip, which is measured along the arc direction for an x-strip and perpendicular to
+the strip for a v-strip.</p>
+<p>The other four values parametrise the centre line from its start point (<span class="arithmatex">\(t = 0\)</span>), which is the
+end with the most negative z, to its other end (<span class="arithmatex">\(t = 1\)</span>):</p>
+<div class="arithmatex">\[\phi(t) = \phi_0 + t \cdot \Delta\phi, \qquad z(t) = z_0 + t \cdot \Delta z, \qquad 0 \le t \le 1\]</div>
+<ul>
+<li><code>phi0</code>, <code>z0</code>: azimuth (rad) and z (cm) of the start point;</li>
+<li><code>dphi</code>, <code>dz</code>: changes of the azimuth (rad) and of the z (cm) along the strip, from the start
+  point to the other end; their signs give the direction of the strip (<code>dz</code> is always positive,
+  because the start point is the negative z end).</li>
+</ul>
+<p><code>dphi</code> is 0 for x-strips, which run along the beam axis, and non-zero for v-strips, which are
+tilted by the stereo angle.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p><code>radius</code> and <code>width</code> only depend on the strip type and the layer, so they take a few distinct
+values, whereas <code>phi0</code>, <code>dphi</code>, <code>z0</code> and <code>dz</code> vary from strip to strip.</p>
+</div>
+<hr />
+<p>The position along a strip can be converted between the azimuth and the z coordinate with
+<code>cgem_gid_phi_to_z</code> and <code>cgem_gid_z_to_phi</code>. They take two arguments (<code>gid</code> and <code>phi</code> or <code>z</code>),
+both supporting scalar/array inputs independently:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="3:3"><input checked="checked" id="__tabbed_3_1" name="__tabbed_3" type="radio" /><input id="__tabbed_3_2" name="__tabbed_3" type="radio" /><input id="__tabbed_3_3" name="__tabbed_3" type="radio" /><div class="tabbed-labels"><label for="__tabbed_3_1">Scalar</label><label for="__tabbed_3_2">NumPy array</label><label for="__tabbed_3_3">Awkward Array</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
+
+<span class="n">gid</span> <span class="o">=</span> <span class="mi">1297</span>
+<span class="n">phi0</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_phi0</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+<span class="n">z0</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_to_z0</span><span class="p">(</span><span class="n">gid</span><span class="p">)</span>
+
+<span class="n">z</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_phi_to_z</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">phi0</span><span class="p">)</span>     <span class="c1"># z (cm) of the strip at its start point</span>
+<span class="n">phi</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_z_to_phi</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="n">z0</span><span class="p">)</span>     <span class="c1"># phi (rad) of the strip at its start point</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
+
+<span class="n">gid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1297</span><span class="p">,</span> <span class="mi">1300</span><span class="p">,</span> <span class="mi">1301</span><span class="p">])</span>
+<span class="n">phi</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">])</span>
+
+<span class="n">z</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_phi_to_z</span><span class="p">(</span><span class="mi">1297</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>     <span class="c1"># strip 1297 at multiple phi</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_phi_to_z</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>      <span class="c1"># multiple strips at phi = 0</span>
+
+<span class="n">phi</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_z_to_phi</span><span class="p">(</span><span class="mi">1297</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="o">-</span><span class="mf">10.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">]))</span>
+<span class="n">phi</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_z_to_phi</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>    <span class="c1"># multiple strips at z = 0 cm</span>
+</code></pre></div>
+</div>
+<div class="tabbed-block">
+<div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">awkward</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">ak</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pybes3</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3</span>
+
+<span class="n">gid</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">([[</span><span class="mi">1297</span><span class="p">,</span> <span class="mi">1300</span><span class="p">],</span> <span class="p">[</span><span class="mi">1301</span><span class="p">]])</span>
+<span class="n">phi</span> <span class="o">=</span> <span class="n">ak</span><span class="o">.</span><span class="n">Array</span><span class="p">([[</span><span class="o">-</span><span class="mf">3.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">]])</span>
+
+<span class="n">z</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_phi_to_z</span><span class="p">(</span><span class="mi">1297</span><span class="p">,</span> <span class="n">phi</span><span class="p">)</span>     <span class="c1"># strip 1297 at jagged phi</span>
+<span class="n">z</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">cgem_gid_phi_to_z</span><span class="p">(</span><span class="n">gid</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span>      <span class="c1"># jagged strips at phi = 0</span>
+</code></pre></div>
+</div>
+</div>
+</div>
+<p>Both functions are backed by compiled NumPy ufuncs and use linear interpolation between the
+two ends of the strip, without any range check, so a <code>phi</code> or <code>z</code> outside the strip is
+extrapolated.</p>
+<p>They differ in how they treat the azimuth: <code>cgem_gid_phi_to_z</code> takes the offset of <code>phi</code> from
+<code>phi0</code> as the representative which is within half a turn of the middle of the strip. A <code>phi</code>
+given in any period therefore gives the same z, and every strip, including one spanning more
+than half a turn, is covered exactly once. <code>cgem_gid_z_to_phi</code> does not reduce anything: it
+returns a phi which follows <code>phi0 + (z - z0) / dz * dphi</code> and is not wrapped into
+<span class="arithmatex">\([-\pi, \pi]\)</span>.</p>
+<div class="admonition info">
+<p class="admonition-title">Info</p>
+<p>An x-strip runs along the z axis, so <code>cgem_gid_z_to_phi</code> always returns its <code>phi0</code>, whereas
+<code>cgem_gid_phi_to_z</code> returns NaN, since its phi does not give any z.</p>
+</div>
+<hr />
+<p>Retrieve the full strip geometry table:</p>
+<div class="highlight"><pre><span></span><code><span class="c1"># get table in `dict[str, np.ndarray]`</span>
+<span class="n">strip_geom_np</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_cgem_geom_table</span><span class="p">()</span>
+
+<span class="c1"># get table in `ak.Array`</span>
+<span class="n">strip_geom_ak</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_cgem_geom_table</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="s2">&quot;ak&quot;</span><span class="p">)</span>
+
+<span class="c1"># get table in `pd.DataFrame`</span>
+<span class="n">strip_geom_pd</span> <span class="o">=</span> <span class="n">p3</span><span class="o">.</span><span class="n">get_cgem_geom_table</span><span class="p">(</span><span class="n">library</span><span class="o">=</span><span class="s2">&quot;pd&quot;</span><span class="p">)</span>
+</code></pre></div>
+<p>The table holds <code>gid</code>, <code>layer</code>, <code>sheet</code>, <code>strip_type</code>, <code>strip</code>, <code>r</code>, <code>width</code>, <code>phi0</code>, <code>dphi</code>,
+<code>z0</code> and <code>dz</code>. Here <code>r</code> and <code>width</code> are the same values as the ones returned by
+<code>cgem_gid_to_radius</code> and <code>cgem_gid_to_width</code>.</p>
 
 
 

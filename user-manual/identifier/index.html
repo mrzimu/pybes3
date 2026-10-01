@@ -609,6 +609,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../muc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    MUC
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../cgem/" class="md-nav__link">
         
   
@@ -983,6 +1011,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../../api/pybes3.muc/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    pybes3.muc
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../../api/pybes3.cgem/" class="md-nav__link">
         
   
@@ -1188,10 +1244,6 @@
 <h1 id="identifier">Identifier</h1>
 <p>When reading <code>TDigiEvent</code>, the <code>m_intId</code> field in <code>mdc</code>, <code>tof</code>, <code>emc</code>, <code>muc</code>, and <code>cgem</code> branches represents the electronics readout ID (TEID), also known as <code>Identifier</code> in <code>BOSS</code>. <code>pybes3</code> provides methods to parse and calculate the identifier for each detector.</p>
 <h2 id="identifier-array-parsing">Identifier array parsing</h2>
-<div class="admonition info">
-<p class="admonition-title">Info</p>
-<p>The MUC full identifier parsing is still under development. Use the <a href="#standalone-identifier-parsing">standalone identifier parsing methods</a> for MUC identifiers for now.</p>
-</div>
 <div class="highlight"><pre><span></span><code><span class="kn">import</span><span class="w"> </span><span class="nn">pybes3.identifier</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">p3id</span>
 <span class="kn">import</span><span class="w"> </span><span class="nn">uproot</span>
 
