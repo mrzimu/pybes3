@@ -304,6 +304,270 @@ def test_helix_awk_2(
         (vector.obj(x=10, y=10, z=10),),
     ],
 )
+def test_helix_awk_3(new_pivot, raw_helix_arr, raw_helix_err_arr):
+    """Test HelixAwkwardArray slices."""
+
+    helix_arr = p3.helix_awk(helix=raw_helix_arr, error=raw_helix_err_arr)
+    helix_rec = helix_arr[0]
+
+    # test isclose
+    assert ak.all(helix_rec.change_pivot(*new_pivot).change_pivot(0, 0, 0).isclose(helix_rec))
+    assert ak.all(helix_rec.change_pivot(*new_pivot).isclose(helix_rec))
+
+    # test attributes
+    assert isinstance(helix_rec.position, ak.Array)
+    assert isinstance(helix_rec.momentum, ak.Array)
+    assert ak.all(helix_rec.position.isclose(helix_arr.position[0]))
+    assert ak.all(helix_rec.momentum.isclose(helix_arr.momentum[0]))
+    assert ak.all(helix_rec.charge == helix_arr.charge[0])
+    assert ak.all(np.isclose(helix_rec.radius, helix_arr.radius[0]))
+
+
+def test_helix_awk_record_0(mdc_trk):
+    """Regression test: helix_awk must accept a single track's helix read from a DST.
+
+    Such a helix has no array axis left, so all its parameters are scalars and
+    the result must be an awkward record instead of an awkward array.
+    """
+    helix = mdc_trk[0][0]["m_helix"]
+
+    h = p3.helix_awk(helix)
+
+    assert isinstance(h, ak.Record)
+    assert h.fields == ["dr", "phi0", "kappa", "dz", "tanl", "pivot"]
+    assert np.all(np.asarray(helix) == [h.dr, h.phi0, h.kappa, h.dz, h.tanl])
+    assert isinstance(h.pivot, ak.Record)
+
+
+def test_helix_awk_record_1(flat_helix_arr, flat_helix_err_arr):
+    """Test all construction cases of helix_awk for a single-track helix."""
+    helix_arr = p3.helix_awk(flat_helix_arr, flat_helix_err_arr)
+
+    for i in range(len(flat_helix_arr)):
+        # a single helix, whose parameters are all scalars
+        helix = flat_helix_arr[i]
+        helix_err = flat_helix_err_arr[i]
+
+        # case 1-1: positional helix and error arguments
+        h1_1 = p3.helix_awk(helix, helix_err)
+
+        # case 1-2: keyword arguments helix and error
+        h1_2 = p3.helix_awk(helix=helix, error=helix_err)
+
+        # case 5: keyword arguments dr, phi0, kappa, dz, tanl as scalars
+        h5 = p3.helix_awk(
+            dr=float(helix[..., 0]),
+            phi0=float(helix[..., 1]),
+            kappa=float(helix[..., 2]),
+            dz=float(helix[..., 3]),
+            tanl=float(helix[..., 4]),
+            error=helix_err,
+        )
+
+        # case 6: keyword arguments momentum, position, charge
+        h6 = p3.helix_awk(
+            momentum=h1_1.momentum,
+            position=h1_1.position,
+            charge=int(h1_1.charge),
+            error=helix_err,
+        )
+
+        ref = helix_arr[i]
+
+        for h in [h1_1, h1_2, h5, h6]:
+            assert isinstance(h, ak.Record)
+            assert not isinstance(h, ak.Array)
+
+            for field, expected in zip(["dr", "phi0", "kappa", "dz", "tanl"], helix.tolist()):
+                assert h[field] == pytest.approx(expected, rel=1e-9)
+
+            assert isinstance(h.pivot, ak.Record)
+            assert h.pivot.x == 0.0
+            assert h.pivot.y == 0.0
+            assert h.pivot.z == 0.0
+
+            assert "error" in h.fields
+            assert np.all(np.asarray(h.error) == np.asarray(helix_err))
+
+            # derived properties must agree with the record obtained from the array
+            assert h.charge == ref.charge
+            assert h.radius == pytest.approx(ref.radius, rel=1e-9)
+            for field in ["pt", "phi", "pz"]:
+                assert np.isclose(h.momentum[field], ref.momentum[field])
+            for field in ["x", "y", "z"]:
+                assert np.isclose(h.position[field], ref.position[field])
+
+            # the single-track record must be close to the same helix in the array
+            assert ref.isclose(h)
+
+
+@pytest.mark.parametrize(
+    "new_pivot",
+    [
+        (10, 10, 10),
+        (vector.obj(x=10, y=10, z=10),),
+    ],
+)
+def test_helix_awk_record_2(new_pivot, flat_helix_arr, flat_helix_err_arr):
+    """Test change_pivot and isclose for single-track helixes."""
+    helix_arr = p3.helix_awk(flat_helix_arr, flat_helix_err_arr)
+
+    for i in range(len(flat_helix_arr)):
+        h = p3.helix_awk(flat_helix_arr[i], flat_helix_err_arr[i])
+        h_moved = h.change_pivot(*new_pivot)
+
+        assert isinstance(h_moved, ak.Record)
+        assert h_moved.pivot.x == pytest.approx(10, rel=1e-9)
+
+        # changed pivot, should be still close because of the automatic transformation
+        assert h_moved.change_pivot(0, 0, 0).isclose(h)
+        assert h_moved.isclose(h)
+
+        # check strict criteria
+        assert not h_moved.change_pivot(0, 0, 0).isclose(h, rtol=0, atol=0)
+
+        # must be consistent with the array-based helix
+        assert helix_arr[i].isclose(h)
+        assert helix_arr[i].change_pivot(*new_pivot).isclose(h_moved)
+
+
+@pytest.mark.parametrize(
+    "pivot",
+    [
+        (0, 0, 0),
+        vector.obj(x=0, y=0, z=0),
+        ak.Record({"x": 0.0, "y": 0.0, "z": 0.0}, with_name="Vector3D"),
+    ],
+)
+def test_helix_awk_record_3(pivot, flat_helix_arr):
+    """Test the different pivot arguments for a single-track helix."""
+    for i in range(len(flat_helix_arr)):
+        h = p3.helix_awk(flat_helix_arr[i], pivot=pivot)
+
+        assert isinstance(h, ak.Record)
+        assert isinstance(h.pivot, ak.Record)
+        assert h.pivot.x == 0.0
+        assert h.pivot.y == 0.0
+        assert h.pivot.z == 0.0
+
+
+def test_helix_awk_record_4(flat_helix_arr, flat_helix_err_arr):
+    """Test isclose with mismatched error matrices for single-track helixes."""
+    helix_with_err = p3.helix_awk(flat_helix_arr[0], flat_helix_err_arr[0])
+    helix_no_err = p3.helix_awk(flat_helix_arr[0])
+
+    assert "error" in helix_with_err.fields
+    assert "error" not in helix_no_err.fields
+
+    # test with-error and no-error helix comparison, in both directions
+    with pytest.warns(UserWarning, match="Ignoring error matrix for isclose check."):
+        assert helix_with_err.isclose(helix_no_err)
+
+    with pytest.warns(UserWarning, match="Ignoring error matrix for isclose check."):
+        assert helix_no_err.isclose(helix_with_err)
+
+
+PIVOT_ARGS = [
+    ((1, 2, 3), (1.0, 2.0, 3.0)),
+    (vector.obj(x=1, y=2, z=3), (1.0, 2.0, 3.0)),
+    (ak.Record({"x": 1.0, "y": 2.0, "z": 3.0}, with_name="Vector3D"), (1.0, 2.0, 3.0)),
+]
+
+
+def _assert_pivot(helix, expected_pivot):
+    assert isinstance(helix.pivot, ak.Record)
+    for field, expected in zip(("x", "y", "z"), expected_pivot):
+        assert helix.pivot[field] == pytest.approx(expected, rel=1e-12)
+
+
+@pytest.mark.parametrize("pivot, expected_pivot", PIVOT_ARGS)
+def test_helix_awk_record_5(pivot, expected_pivot, flat_helix_arr, flat_helix_err_arr):
+    """Test case 5 (scalar parameters) with the different pivot arguments."""
+    for i in range(len(flat_helix_arr)):
+        dr, phi0, kappa, dz, tanl = (float(v) for v in flat_helix_arr[i])
+        helix_err = flat_helix_err_arr[i]
+
+        h = p3.helix_awk(
+            dr=dr,
+            phi0=phi0,
+            kappa=kappa,
+            dz=dz,
+            tanl=tanl,
+            error=helix_err,
+            pivot=pivot,
+        )
+
+        assert isinstance(h, ak.Record)
+        assert not isinstance(h, ak.Array)
+        assert [h[f] for f in ("dr", "phi0", "kappa", "dz", "tanl")] == pytest.approx(
+            [dr, phi0, kappa, dz, tanl], rel=1e-12
+        )
+        _assert_pivot(h, expected_pivot)
+        assert np.all(np.asarray(h.error) == np.asarray(helix_err))
+
+        # moving the pivot away and back must reproduce the same helix
+        assert h.change_pivot(0, 0, 0).change_pivot(*expected_pivot).isclose(h)
+
+
+@pytest.mark.parametrize("pivot, expected_pivot", PIVOT_ARGS)
+def test_helix_awk_record_6(pivot, expected_pivot, flat_helix_arr, flat_helix_err_arr):
+    """Test case 6 (momentum, position, charge) with a custom pivot.
+
+    ``position`` is an absolute point, while ``HelixAwkwardRecord.position`` is
+    relative to the pivot, so the reference point must be shifted by the pivot.
+    """
+    for i in range(len(flat_helix_arr)):
+        h1 = p3.helix_awk(flat_helix_arr[i], flat_helix_err_arr[i])
+        h2 = h1.change_pivot(*expected_pivot)
+
+        position = vector.obj(
+            x=h2.position.x + expected_pivot[0],
+            y=h2.position.y + expected_pivot[1],
+            z=h2.position.z + expected_pivot[2],
+        )
+        h3 = p3.helix_awk(
+            momentum=h2.momentum,
+            position=position,
+            charge=int(h2.charge),
+            error=h2.error,
+            pivot=pivot,
+        )
+
+        assert isinstance(h3, ak.Record)
+        _assert_pivot(h3, expected_pivot)
+        assert h3.isclose(h2)
+
+
+def test_helix_awk_positional_args(
+    raw_helix_arr, raw_helix_err_arr, flat_helix_arr, flat_helix_err_arr
+):
+    """Test the positional ``helix, error, pivot`` form and the conflict errors."""
+    pivot = (10, 10, 10)
+
+    h_arr = p3.helix_awk(raw_helix_arr, raw_helix_err_arr, pivot)
+    assert isinstance(h_arr, ak.Array)
+    assert ak.all(h_arr.pivot.x == pivot[0])
+    assert ak.all(h_arr.pivot.y == pivot[1])
+    assert ak.all(h_arr.pivot.z == pivot[2])
+
+    h_rec = p3.helix_awk(flat_helix_arr[0], flat_helix_err_arr[0], pivot)
+    assert isinstance(h_rec, ak.Record)
+    _assert_pivot(h_rec, tuple(float(v) for v in pivot))
+
+    with pytest.raises(ValueError, match="Cannot pass both helix and error"):
+        p3.helix_awk(raw_helix_arr, raw_helix_err_arr, error=raw_helix_err_arr)
+
+    with pytest.raises(ValueError, match="Cannot pass both helix and pivot"):
+        p3.helix_awk(raw_helix_arr, raw_helix_err_arr, pivot, pivot=pivot)
+
+
+@pytest.mark.parametrize(
+    "new_pivot",
+    [
+        (10, 10, 10),
+        (vector.obj(x=10, y=10, z=10),),
+    ],
+)
 def test_HelixAwkwardRecord_1(new_pivot, raw_helix_arr, raw_helix_err_arr):
     """Test HelixAwkwardRecord class with 1 track."""
     helix_arr = p3.helix_awk(helix=raw_helix_arr, error=raw_helix_err_arr)
@@ -329,32 +593,6 @@ def test_HelixAwkwardRecord_1(new_pivot, raw_helix_arr, raw_helix_err_arr):
     assert helix_rec.momentum.isclose(helix_obj.momentum)
     assert helix_rec.charge == helix_obj.charge
     assert helix_rec.radius == pytest.approx(helix_obj.radius, rel=1e-6)
-
-
-@pytest.mark.parametrize(
-    "new_pivot",
-    [
-        (10, 10, 10),
-        (vector.obj(x=10, y=10, z=10),),
-    ],
-)
-def test_helix_awk_3(new_pivot, raw_helix_arr, raw_helix_err_arr):
-    """Test HelixAwkwardArray slices."""
-
-    helix_arr = p3.helix_awk(helix=raw_helix_arr, error=raw_helix_err_arr)
-    helix_rec = helix_arr[0]
-
-    # test isclose
-    assert ak.all(helix_rec.change_pivot(*new_pivot).change_pivot(0, 0, 0).isclose(helix_rec))
-    assert ak.all(helix_rec.change_pivot(*new_pivot).isclose(helix_rec))
-
-    # test attributes
-    assert isinstance(helix_rec.position, ak.Array)
-    assert isinstance(helix_rec.momentum, ak.Array)
-    assert ak.all(helix_rec.position.isclose(helix_arr.position[0]))
-    assert ak.all(helix_rec.momentum.isclose(helix_arr.momentum[0]))
-    assert ak.all(helix_rec.charge == helix_arr.charge[0])
-    assert ak.all(np.isclose(helix_rec.radius, helix_arr.radius[0]))
 
 
 if __name__ == "__main__":
