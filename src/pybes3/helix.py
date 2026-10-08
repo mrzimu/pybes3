@@ -176,6 +176,24 @@ def _change_pivot(
     return new_dr, new_phi0, new_dz, new_error
 
 
+def _get_error(helix):
+    """
+    Return the error matrix of a helix object or record.
+
+    Awkward records silently drop the ``error`` field when no error matrix was
+    given, so the field must be checked before being accessed.
+
+    Args:
+        helix: A `HelixObject`, an awkward helix record or an awkward helix array.
+
+    Returns:
+        The error matrix, or None if the helix has no error matrix.
+    """
+    if isinstance(helix, (ak.Array, ak.Record)):
+        return helix["error"] if "error" in helix.fields else None
+    return helix.error
+
+
 def _obj_isclose(self, other, *, rtol: float, atol: float, equal_nan: bool) -> bool:
     kwargs = {"rtol": rtol, "atol": atol, "equal_nan": equal_nan}
     other = other.change_pivot(self.pivot)
@@ -193,8 +211,10 @@ def _obj_isclose(self, other, *, rtol: float, atol: float, equal_nan: bool) -> b
         and np.isclose(np.abs(self_pivot - other_pivot), 0, **kwargs)
     )
 
-    if self.error is not None and other.error is not None:
-        condition = condition and np.allclose(self.error, other.error, **kwargs)
+    self_error = _get_error(self)
+    other_error = _get_error(other)
+    if self_error is not None and other_error is not None:
+        condition = condition and np.allclose(self_error, other_error, **kwargs)
 
     return bool(condition)
 
@@ -924,7 +944,7 @@ def _fix_dr_sign(dr: FloatLike, phi0: FloatLike, dist_phi: FloatLike) -> FloatLi
 _SENTINEL = object()
 
 
-def helix_awk(*args, **kwargs) -> HelixAwkwardArray:
+def helix_awk(*args, **kwargs) -> HelixAwkwardArray | HelixAwkwardRecord:
     # Use a sentinel to distinguish "not provided" from an explicit None
     error = _SENTINEL
     pivot = _SENTINEL
@@ -992,10 +1012,16 @@ def helix_awk(*args, **kwargs) -> HelixAwkwardArray:
     if not isinstance(pivot, ak.Array):
         pivot = _regularize_obj_position(pivot)
 
-        x0 = ak.ones_like(dr) * pivot.x
-        y0 = ak.ones_like(dr) * pivot.y
-        z0 = ak.ones_like(dr) * pivot.z
-        pivot = ak.zip({"x": x0, "y": y0, "z": z0}, with_name="Vector3D")
+        if isinstance(dr, ak.Array):
+            x0 = ak.ones_like(dr) * pivot.x
+            y0 = ak.ones_like(dr) * pivot.y
+            z0 = ak.ones_like(dr) * pivot.z
+            pivot = ak.zip({"x": x0, "y": y0, "z": z0}, with_name="Vector3D")
+        else:
+            x0 = pivot.x
+            y0 = pivot.y
+            z0 = pivot.z
+            pivot = ak.Record({"x": x0, "y": y0, "z": z0}, with_name="Vector3D")
 
     res_dict = {
         "dr": dr,
@@ -1011,5 +1037,8 @@ def helix_awk(*args, **kwargs) -> HelixAwkwardArray:
 
     _check_kwargs_used_up(kwargs)
 
-    raw_shape = _extract_index(dr.layout)
-    return ak.zip(res_dict, depth_limit=len(raw_shape) + 1, with_name="Bes3Helix")
+    if isinstance(dr, ak.Array):
+        raw_shape = _extract_index(dr.layout)
+        return ak.zip(res_dict, depth_limit=len(raw_shape) + 1, with_name="Bes3Helix")
+    else:
+        return ak.Record(res_dict, with_name="Bes3Helix")
