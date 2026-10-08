@@ -926,6 +926,41 @@ def helix_awk(
 ) -> HelixAwkwardArray: ...
 
 
+# case 4
+@overload
+def helix_awk(
+    helix: ak.Record,
+    error: ak.Array | None = None,
+    pivot: TypeAwkPosition = (0, 0, 0),
+) -> HelixAwkwardRecord: ...
+
+
+# case 5
+@overload
+def helix_awk(
+    *,
+    dr: float,
+    phi0: float,
+    kappa: float,
+    dz: float,
+    tanl: float,
+    error: ak.Array | None = None,
+    pivot: TypeAwkPosition = (0, 0, 0),
+) -> HelixAwkwardRecord: ...
+
+
+# case 6
+@overload
+def helix_awk(
+    *,
+    momentum: ak.Record,
+    position: ak.Record,
+    charge: Literal[-1, 1],
+    error: ak.Array | None = None,
+    pivot: TypeAwkPosition = (0, 0, 0),
+) -> HelixAwkwardRecord: ...
+
+
 def _fix_dr_sign(dr: FloatLike, phi0: FloatLike, dist_phi: FloatLike) -> FloatLike:
     """
     Fix the sign of dr based on the azimuthal angle.
