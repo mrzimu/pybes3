@@ -21,7 +21,7 @@ dev = [
   "dask-awkward",
   "dask[complete]"
 ]
-docs = ["mkdocs<2", "mkdocs-material", "mkdocstrings", "mkdocstrings-python"]
+docs = ["mkdocs<2", "mkdocs-material", "mkdocstrings", "mkdocstrings-python", "pymdown-extensions<12.2"]
 
 [project]
 authors = [{ name = "Mingrun Li", email = "mrun_lee@foxmail.com" }]
