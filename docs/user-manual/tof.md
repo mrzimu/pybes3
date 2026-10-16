@@ -5,54 +5,65 @@
 All `tof_gid_to_*` and `get_tof_gid` are backed by compiled NumPy ufuncs.
 The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
 
-=== "Scalar"
+::::{tab-set}
 
-    ```python
-    import pybes3 as p3
+:::{tab-item} Scalar
+:sync: scalar
 
-    gid = 0
-    part = p3.tof_gid_to_part(gid)          # 0
-    layer_or_module = p3.tof_gid_to_layer_or_module(gid)
-    phi_or_strip = p3.tof_gid_to_phi_or_strip(gid)
+```python
+import pybes3 as p3
 
-    gid = p3.get_tof_gid(part, layer_or_module, phi_or_strip)
-    ```
+gid = 0
+part = p3.tof_gid_to_part(gid)          # 0
+layer_or_module = p3.tof_gid_to_layer_or_module(gid)
+phi_or_strip = p3.tof_gid_to_phi_or_strip(gid)
 
-=== "NumPy array"
+gid = p3.get_tof_gid(part, layer_or_module, phi_or_strip)
+```
+:::
 
-    ```python
-    import numpy as np
-    import pybes3 as p3
+:::{tab-item} NumPy array
+:sync: numpy
 
-    gid = np.array([0, 100, 500])
-    part = p3.tof_gid_to_part(gid)          # array([0, 1, 3])
-    layer_or_module = p3.tof_gid_to_layer_or_module(gid)
-    phi_or_strip = p3.tof_gid_to_phi_or_strip(gid)
+```python
+import numpy as np
+import pybes3 as p3
 
-    gid = p3.get_tof_gid(part, layer_or_module, phi_or_strip)
-    ```
+gid = np.array([0, 100, 500])
+part = p3.tof_gid_to_part(gid)          # array([0, 1, 3])
+layer_or_module = p3.tof_gid_to_layer_or_module(gid)
+phi_or_strip = p3.tof_gid_to_phi_or_strip(gid)
 
-=== "Awkward Array"
+gid = p3.get_tof_gid(part, layer_or_module, phi_or_strip)
+```
+:::
 
-    ```python
-    import awkward as ak
-    import pybes3 as p3
+:::{tab-item} Awkward Array
+:sync: awkward
 
-    gid = ak.Array([[0, 100], [500]])
-    part = p3.tof_gid_to_part(gid)          # <Array [[0, 1], [3]] type='...'>
-    layer_or_module = p3.tof_gid_to_layer_or_module(gid)
-    phi_or_strip = p3.tof_gid_to_phi_or_strip(gid)
+```python
+import awkward as ak
+import pybes3 as p3
 
-    gid = p3.get_tof_gid(part, layer_or_module, phi_or_strip)
-    ```
+gid = ak.Array([[0, 100], [500]])
+part = p3.tof_gid_to_part(gid)          # <Array [[0, 1], [3]] type='...'>
+layer_or_module = p3.tof_gid_to_layer_or_module(gid)
+phi_or_strip = p3.tof_gid_to_phi_or_strip(gid)
 
-!!! note
-    The convention of `part` field is different from BOSS:
+gid = p3.get_tof_gid(part, layer_or_module, phi_or_strip)
+```
+:::
 
-    - 0, 1, 2: scintillator endcap 0, barrel, endcap 1
-    - 3, 4: MRPC endcap 0, endcap 1
+::::
 
-    The scintillator `layer` and MRPC `module` share the same axis, and the `phi` and `strip` fields also share the same axis.
+:::{note}
+The convention of `part` field is different from BOSS:
+
+- 0, 1, 2: scintillator endcap 0, barrel, endcap 1
+- 3, 4: MRPC endcap 0, endcap 1
+
+The scintillator `layer` and MRPC `module` share the same axis, and the `phi` and `strip` fields also share the same axis.
+:::
 
 Use `parse_tof_gid` to parse all fields from a gid at once:
 
@@ -70,49 +81,59 @@ When the input is an `ak.Array`, the result is also an `ak.Array` with record fi
 
 Each strip (scintillator or MRPC) has 8 vertices. `tof_gid_to_point_*` take two arguments (`gid` and `point`), both support scalar/array inputs independently:
 
-=== "Scalar"
+::::{tab-set}
 
-    ```python
-    import pybes3 as p3
+:::{tab-item} Scalar
+:sync: scalar
 
-    gid = 0
+```python
+import pybes3 as p3
 
-    x = p3.tof_gid_to_point_x(gid, 0)
-    y = p3.tof_gid_to_point_y(gid, 0)
-    z = p3.tof_gid_to_point_z(gid, 0)
+gid = 0
 
-    x = p3.tof_gid_to_point_x(gid, 7)
-    y = p3.tof_gid_to_point_y(gid, 7)
-    z = p3.tof_gid_to_point_z(gid, 7)
-    ```
+x = p3.tof_gid_to_point_x(gid, 0)
+y = p3.tof_gid_to_point_y(gid, 0)
+z = p3.tof_gid_to_point_z(gid, 0)
 
-=== "NumPy array"
+x = p3.tof_gid_to_point_x(gid, 7)
+y = p3.tof_gid_to_point_y(gid, 7)
+z = p3.tof_gid_to_point_z(gid, 7)
+```
+:::
 
-    ```python
-    import numpy as np
-    import pybes3 as p3
+:::{tab-item} NumPy array
+:sync: numpy
 
-    gid = np.array([0, 100, 500])
-    point = np.array([0, 1, 2])
+```python
+import numpy as np
+import pybes3 as p3
 
-    x = p3.tof_gid_to_point_x(gid, 0)
-    x = p3.tof_gid_to_point_x(0, point)
-    x = p3.tof_gid_to_point_x(gid, point)
-    ```
+gid = np.array([0, 100, 500])
+point = np.array([0, 1, 2])
 
-=== "Awkward Array"
+x = p3.tof_gid_to_point_x(gid, 0)
+x = p3.tof_gid_to_point_x(0, point)
+x = p3.tof_gid_to_point_x(gid, point)
+```
+:::
 
-    ```python
-    import awkward as ak
-    import pybes3 as p3
+:::{tab-item} Awkward Array
+:sync: awkward
 
-    gid = ak.Array([[0, 100], [500]])
-    point = ak.Array([[0, 1], 2])
+```python
+import awkward as ak
+import pybes3 as p3
 
-    x = p3.tof_gid_to_point_x(gid, 0)       # jagged strips, vertex 0
-    x = p3.tof_gid_to_point_x(0, point)     # strip 0, jagged vertices
-    x = p3.tof_gid_to_point_x(gid, point)  # jagged strips, jagged vertices
-    ```
+gid = ak.Array([[0, 100], [500]])
+point = ak.Array([[0, 1], 2])
+
+x = p3.tof_gid_to_point_x(gid, 0)       # jagged strips, vertex 0
+x = p3.tof_gid_to_point_x(0, point)     # strip 0, jagged vertices
+x = p3.tof_gid_to_point_x(gid, point)  # jagged strips, jagged vertices
+```
+:::
+
+::::
 
 ---
 
@@ -133,70 +154,80 @@ strip_position_pd = p3.get_tof_geom_table(library="pd")
 
 `pybes3` provides implementation of `TofHitStatus` functions. They are defined as `tof_hit_status_to_*`. All these functions are backed by compiled NumPy ufuncs. The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
 
-=== "Scalar"
+::::{tab-set}
 
-    ```python
-    import pybes3 as p3
+:::{tab-item} Scalar
+:sync: scalar
 
-    hit_status = 0
-    is_raw = p3.tof_hit_status_to_is_raw(hit_status)
-    is_readout = p3.tof_hit_status_to_is_readout(hit_status)
-    is_counter = p3.tof_hit_status_to_is_counter(hit_status)
-    is_cluster = p3.tof_hit_status_to_is_cluster(hit_status)
-    is_barrel = p3.tof_hit_status_to_is_barrel(hit_status)
-    is_east = p3.tof_hit_status_to_is_east(hit_status)
-    is_overflow = p3.tof_hit_status_to_is_overflow(hit_status)
-    is_multihit = p3.tof_hit_status_to_is_multihit(hit_status)
-    is_mrpc = p3.tof_hit_status_to_is_mrpc(hit_status)
-    layer = p3.tof_hit_status_to_layer(hit_status)
-    n_counter = p3.tof_hit_status_to_n_counter(hit_status)
-    n_east = p3.tof_hit_status_to_n_east(hit_status)
-    n_west = p3.tof_hit_status_to_n_west(hit_status)
-    ```
+```python
+import pybes3 as p3
 
-=== "NumPy array"
+hit_status = 0
+is_raw = p3.tof_hit_status_to_is_raw(hit_status)
+is_readout = p3.tof_hit_status_to_is_readout(hit_status)
+is_counter = p3.tof_hit_status_to_is_counter(hit_status)
+is_cluster = p3.tof_hit_status_to_is_cluster(hit_status)
+is_barrel = p3.tof_hit_status_to_is_barrel(hit_status)
+is_east = p3.tof_hit_status_to_is_east(hit_status)
+is_overflow = p3.tof_hit_status_to_is_overflow(hit_status)
+is_multihit = p3.tof_hit_status_to_is_multihit(hit_status)
+is_mrpc = p3.tof_hit_status_to_is_mrpc(hit_status)
+layer = p3.tof_hit_status_to_layer(hit_status)
+n_counter = p3.tof_hit_status_to_n_counter(hit_status)
+n_east = p3.tof_hit_status_to_n_east(hit_status)
+n_west = p3.tof_hit_status_to_n_west(hit_status)
+```
+:::
 
-    ```python
-    import numpy as np
-    import pybes3 as p3
+:::{tab-item} NumPy array
+:sync: numpy
 
-    hit_status = np.array([0, 1, 256])
-    is_raw = p3.tof_hit_status_to_is_raw(hit_status)
-    is_readout = p3.tof_hit_status_to_is_readout(hit_status)
-    is_counter = p3.tof_hit_status_to_is_counter(hit_status)
-    is_cluster = p3.tof_hit_status_to_is_cluster(hit_status)
-    is_barrel = p3.tof_hit_status_to_is_barrel(hit_status)
-    is_east = p3.tof_hit_status_to_is_east(hit_status)
-    is_overflow = p3.tof_hit_status_to_is_overflow(hit_status)
-    is_multihit = p3.tof_hit_status_to_is_multihit(hit_status)
-    is_mrpc = p3.tof_hit_status_to_is_mrpc(hit_status)
-    layer = p3.tof_hit_status_to_layer(hit_status)
-    n_counter = p3.tof_hit_status_to_n_counter(hit_status)
-    n_east = p3.tof_hit_status_to_n_east(hit_status)
-    n_west = p3.tof_hit_status_to_n_west(hit_status)
-    ```
+```python
+import numpy as np
+import pybes3 as p3
 
-=== "Awkward Array"
+hit_status = np.array([0, 1, 256])
+is_raw = p3.tof_hit_status_to_is_raw(hit_status)
+is_readout = p3.tof_hit_status_to_is_readout(hit_status)
+is_counter = p3.tof_hit_status_to_is_counter(hit_status)
+is_cluster = p3.tof_hit_status_to_is_cluster(hit_status)
+is_barrel = p3.tof_hit_status_to_is_barrel(hit_status)
+is_east = p3.tof_hit_status_to_is_east(hit_status)
+is_overflow = p3.tof_hit_status_to_is_overflow(hit_status)
+is_multihit = p3.tof_hit_status_to_is_multihit(hit_status)
+is_mrpc = p3.tof_hit_status_to_is_mrpc(hit_status)
+layer = p3.tof_hit_status_to_layer(hit_status)
+n_counter = p3.tof_hit_status_to_n_counter(hit_status)
+n_east = p3.tof_hit_status_to_n_east(hit_status)
+n_west = p3.tof_hit_status_to_n_west(hit_status)
+```
+:::
 
-    ```python
-    import awkward as ak
-    import pybes3 as p3
+:::{tab-item} Awkward Array
+:sync: awkward
 
-    hit_status = ak.Array([[0, 1], [256]])
-    is_raw = p3.tof_hit_status_to_is_raw(hit_status)
-    is_readout = p3.tof_hit_status_to_is_readout(hit_status)
-    is_counter = p3.tof_hit_status_to_is_counter(hit_status)
-    is_cluster = p3.tof_hit_status_to_is_cluster(hit_status)
-    is_barrel = p3.tof_hit_status_to_is_barrel(hit_status)
-    is_east = p3.tof_hit_status_to_is_east(hit_status)
-    is_overflow = p3.tof_hit_status_to_is_overflow(hit_status)
-    is_multihit = p3.tof_hit_status_to_is_multihit(hit_status)
-    is_mrpc = p3.tof_hit_status_to_is_mrpc(hit_status)
-    layer = p3.tof_hit_status_to_layer(hit_status)
-    n_counter = p3.tof_hit_status_to_n_counter(hit_status)
-    n_east = p3.tof_hit_status_to_n_east(hit_status)
-    n_west = p3.tof_hit_status_to_n_west(hit_status)
-    ```
+```python
+import awkward as ak
+import pybes3 as p3
+
+hit_status = ak.Array([[0, 1], [256]])
+is_raw = p3.tof_hit_status_to_is_raw(hit_status)
+is_readout = p3.tof_hit_status_to_is_readout(hit_status)
+is_counter = p3.tof_hit_status_to_is_counter(hit_status)
+is_cluster = p3.tof_hit_status_to_is_cluster(hit_status)
+is_barrel = p3.tof_hit_status_to_is_barrel(hit_status)
+is_east = p3.tof_hit_status_to_is_east(hit_status)
+is_overflow = p3.tof_hit_status_to_is_overflow(hit_status)
+is_multihit = p3.tof_hit_status_to_is_multihit(hit_status)
+is_mrpc = p3.tof_hit_status_to_is_mrpc(hit_status)
+layer = p3.tof_hit_status_to_layer(hit_status)
+n_counter = p3.tof_hit_status_to_n_counter(hit_status)
+n_east = p3.tof_hit_status_to_n_east(hit_status)
+n_west = p3.tof_hit_status_to_n_west(hit_status)
+```
+:::
+
+::::
 
 Use `parse_tof_hit_status` to parse all fields from a hit status at once:
 
@@ -246,7 +277,8 @@ space, the east one first, and the hit status tells which sub-detector it is:
 | MRPC east endcap | `module * 12 + strip` | `272 + tofID` |
 | MRPC west endcap | `432 + module * 12 + strip` | `272 + tofID` |
 
-!!! warning
-    A hit without a hit status (`status == 0`) stores the raw digi ID in `m_tofID` instead of
-    the compact index above, and a negative `m_tofID` is not a valid counter index. Both are
-    rejected with a `ValueError`, so filter them out before calling the function.
+:::{warning}
+A hit without a hit status (`status == 0`) stores the raw digi ID in `m_tofID` instead of
+the compact index above, and a negative `m_tofID` is not a valid counter index. Both are
+rejected with a `ValueError`, so filter them out before calling the function.
+:::

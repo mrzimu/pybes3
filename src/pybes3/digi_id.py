@@ -589,10 +589,10 @@ def parse_emc_digi_id(
     - `center_y`: y position of the center of the crystal.
     - `center_z`: z position of the center of the crystal.
 
-    !!! info
+    .. note::
         The 8 points of the crystal will not be returned here.
-        If you need the 8 points of the crystal, use `emc_gid_to_point_x`, `emc_gid_to_point_y`
-        and `emc_gid_to_point_z`.
+        If you need the 8 points of the crystal, use :func:`pybes3.emc_gid_to_point_x`,
+        :func:`pybes3.emc_gid_to_point_y` and :func:`pybes3.emc_gid_to_point_z`.
 
     Parameters:
         emc_digi_id: The EMC digi ID.

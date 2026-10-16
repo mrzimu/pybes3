@@ -9,8 +9,8 @@
 **Always check for and activate the virtual environment before running any Python command.**
 
 - A `.venv/` virtual environment exists at the project root.
-- All Python commands (`python`, `pytest`, `mkdocs`, `ruff`, `pip`, etc.) must use executables under `.venv/bin/`, or first `source .venv/bin/activate`.
-- Some commands (e.g. `mkdocs`) rely on PATH resolution and will raise `FileNotFoundError` if the virtual environment is not activated, so **always activate first**:
+- All Python commands (`python`, `pytest`, `sphinx`, `ruff`, `pip`, etc.) must use executables under `.venv/bin/`, or first `source .venv/bin/activate`.
+- Some commands rely on PATH resolution and will raise `FileNotFoundError` if the virtual environment is not activated, so **always activate first**:
 
 ```bash
 source .venv/bin/activate
@@ -25,8 +25,8 @@ source .venv/bin/activate
 | Run tests | `source .venv/bin/activate && python -m pytest` |
 | Run single test | `source .venv/bin/activate && python -m pytest tests/test_xxx.py -k test_name` |
 | Lint | `source .venv/bin/activate && ruff check` |
-| Build docs | `source .venv/bin/activate && mkdocs build` |
-| Preview docs | `source .venv/bin/activate && mkdocs serve` |
+| Build docs | `source .venv/bin/activate && python -m sphinx -b dirhtml docs build/docs` |
+| Preview docs | `source .venv/bin/activate && sphinx-autobuild docs build/docs -b dirhtml` |
 | Build package | `source .venv/bin/activate && python -m build` |
 | Install in dev mode | `source .venv/bin/activate && pip install -e .` |
 
@@ -46,13 +46,13 @@ source .venv/bin/activate
 src/pybes3/          # Python source code
 kernels/             # C++ extensions (pybind11 + CMake)
 tests/               # Tests
-docs/                # Documentation (mkdocs-material)
+docs/                # Documentation (Sphinx + Furo)
 _tmp/                # Temporary/experimental scripts
 ```
 
 ## Key Conventions
 
-- **gid naming**: The public API consistently uses `gid` (global ID). The underlying C++ kernel internally uses `idx`. See `docs/convention/global-id.md`.
+- **gid naming**: The public API consistently uses `gid` (global ID). The underlying C++ kernel internally uses `idx`. See `docs/convention/gid.md`.
 - **Deprecation pattern**: Use `warnings.warn` + `DeprecationWarning`, and keep deprecated function references in documentation.
 - **No absolute paths**: All file paths in documentation, comments, code, and configuration files must be relative to the project root. Absolute paths (i.e., paths starting with `/`) are not allowed, as they are machine-specific and non-portable.
 - **NumPy C-API**: Every translation unit that uses the NumPy C-API must call `_import_array` / `_import_umath` for initialization, otherwise it will crash at `PyUFunc_FromFuncAndData`.

@@ -32,8 +32,9 @@ tof_id = p3id.parse_tof_id(tof_digi["m_intId"])
 emc_id = p3id.parse_emc_id(emc_digi["m_intId"])
 ```
 
-!!! info
-    `parse_mdc_id` and `parse_emc_id` currently return detector ID-related fields only.
+:::{note}
+`parse_mdc_id` and `parse_emc_id` currently return detector ID-related fields only.
+:::
 
 ## Convert identifier to a specific field
 
@@ -69,10 +70,11 @@ end = tof_id["end"]
 tof_int_id = p3id.get_tof_id(part, layer_or_module, phi_or_strip, end)
 ```
 
-!!! info
-    `pybes3` uses a different convention for the TOF `part` number:
+:::{note}
+`pybes3` uses a different convention for the TOF `part` number:
 
-    - `0`, `1`, `2` for scintillator endcap 0, barrel, and endcap 1
-    - `3`, `4` for MRPC endcap 0 and endcap 1
+- `0`, `1`, `2` for scintillator endcap 0, barrel, and endcap 1
+- `3`, `4` for MRPC endcap 0 and endcap 1
 
-    With this convention, TOF ID information can be decoded into 4 fields: `part`, `layer_or_module`, `phi_or_strip`, and `end`.
+With this convention, TOF ID information can be decoded into 4 fields: `part`, `layer_or_module`, `phi_or_strip`, and `end`.
+:::

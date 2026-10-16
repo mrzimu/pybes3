@@ -1,7 +1,8 @@
 # Installation
 
-!!! info
-    `pybes3` requires Python 3.9 or higher.
+:::{note}
+`pybes3` requires Python 3.9 or higher.
+:::
 
 ## Install `pybes3` using pip
 
@@ -40,5 +41,6 @@ export PYTHONPATH=`python -m site --user-site`:$PYTHONPATH
 export PATH=`python -m site --user-base`/bin:$PATH
 ```
 
-!!! warning
-    Do **not** add these commands to your shell configuration file (e.g., `~/.bashrc`), since they will conflict with the default Python environment (without `BOSS8`).
+:::{warning}
+Do **not** add these commands to your shell configuration file (e.g., `~/.bashrc`), since they will conflict with the default Python environment (without `BOSS8`).
+:::

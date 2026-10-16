@@ -68,8 +68,9 @@ This indicates that event 0 contains 12 MC particles. Their PDGIDs are `23, 4, -
 
 ### Reading specific branches
 
-!!! tip
-    It is recommended to read only the branches you need for better performance.
+:::{tip}
+It is recommended to read only the branches you need for better performance.
+:::
 
 To read a specific branch (note: use `array()` instead of `arrays()` here):
 
@@ -132,8 +133,9 @@ To read a portion of the file:
 <Array [{evt_header: {...}, ...}, ..., {...}] type='50 * {evt_header: {evt_...'>
 ```
 
-!!! warning
-    Explicitly specifying `entry_start` and `entry_stop` will slow down the reading speed ($\sim 0.33 \times$), as the reader needs to skip entries one by one until it reaches `entry_stop`.
+:::{warning}
+Explicitly specifying `entry_start` and `entry_stop` will slow down the reading speed ($\sim 0.33 \times$), as the reader needs to skip entries one by one until it reaches `entry_stop`.
+:::
 
 To read only specific fields:
 
@@ -143,10 +145,11 @@ To read only specific fields:
 ['evt_header', 'cgem', 'mdc']
 ```
 
-!!! info
-    Available fields are: `cgem`, `mdc`, `tof`, `emc`, `muc`, `trigGTD`.
+:::{note}
+Available fields are: `cgem`, `mdc`, `tof`, `emc`, `muc`, `trigGTD`.
 
-    `evt_header` is always read and cannot be filtered out.
+`evt_header` is always read and cannot be filtered out.
+:::
 
 
 Close the file when done:
@@ -155,8 +158,9 @@ Close the file when done:
 >>> raw_file.close()
 ```
 
-!!! warning
-    Always close the file after reading to free up system resources.
+:::{warning}
+Always close the file after reading to free up system resources.
+:::
 
 Open the file using a context manager to automatically close it after reading:
 

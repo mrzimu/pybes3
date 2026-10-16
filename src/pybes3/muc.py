@@ -60,7 +60,7 @@ def get_muc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
         library: The library to return the data in. Choose from 'ak', 'np', 'pd'.
 
     Returns:
-        (ak.Array | dict[str, np.ndarray] | pd.DataFrame): The MUC strip position table.
+        ak.Array | dict[str, np.ndarray] | pd.DataFrame: The MUC strip position table.
 
     Raises:
         ValueError: If the library is not 'ak', 'np', or 'pd'.
@@ -315,10 +315,10 @@ def parse_muc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, 
     - `dy`: Half-length of the strip along y.
     - `dz`: Half-length of the strip along z.
 
-    !!! info
+    .. note::
         The 8 points of the strip will not be returned here.
-        If you need the 8 points of the strip, use `muc_gid_to_point_x`, `muc_gid_to_point_y`
-        and `muc_gid_to_point_z`.
+        If you need the 8 points of the strip, use :func:`muc_gid_to_point_x`,
+        :func:`muc_gid_to_point_y` and :func:`muc_gid_to_point_z`.
 
     Parameters:
         gid: The global ID of the strip.

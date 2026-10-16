@@ -2,25 +2,29 @@
 
 ## Helix operations
 
-::: pybes3.helix.HelixObject
----
-::: pybes3.helix.helix_obj
----
-::: pybes3.helix.helix_awk
----
-::: pybes3.helix.dr_phi0_to_x
----
-::: pybes3.helix.dr_phi0_to_y
----
-::: pybes3.helix.phi0_to_phi
----
-::: pybes3.helix.kappa_to_pt
----
-::: pybes3.helix.kappa_to_charge
----
-::: pybes3.helix.kappa_to_radius
----
-::: pybes3.helix.HelixAwkwardRecord
----
-::: pybes3.helix.HelixAwkwardArray
----
+```{eval-rst}
+.. autoclass:: pybes3.helix.HelixObject
+   :members:
+
+.. autofunction:: pybes3.helix.helix_obj
+
+.. autofunction:: pybes3.helix.helix_awk
+
+.. autofunction:: pybes3.helix.dr_phi0_to_x
+
+.. autofunction:: pybes3.helix.dr_phi0_to_y
+
+.. autofunction:: pybes3.helix.phi0_to_phi
+
+.. autofunction:: pybes3.helix.kappa_to_pt
+
+.. autofunction:: pybes3.helix.kappa_to_charge
+
+.. autofunction:: pybes3.helix.kappa_to_radius
+
+.. autoclass:: pybes3.helix.HelixAwkwardRecord
+   :members:
+
+.. autoclass:: pybes3.helix.HelixAwkwardArray
+   :members:
+```

@@ -60,7 +60,7 @@ def get_cgem_geom_table(library: Literal["np", "ak", "pd"] = "np"):
         library: The library to return the data in. Choose from 'ak', 'np', 'pd'.
 
     Returns:
-        (ak.Array | dict[str, np.ndarray] | pd.DataFrame): The CGEM strip geometry table.
+        ak.Array | dict[str, np.ndarray] | pd.DataFrame: The CGEM strip geometry table.
 
     Raises:
         ValueError: If the library is not 'ak', 'np', or 'pd'.

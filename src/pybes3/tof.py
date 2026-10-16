@@ -46,7 +46,7 @@ def get_tof_geom_table(library: Literal["np", "ak", "pd"] = "np"):
         library: The library to return the data in. Choose from 'ak', 'np', 'pd'.
 
     Returns:
-        (ak.Array | dict[str, np.ndarray] | pd.DataFrame): The TOF scintillator / MRPC position table.
+        ak.Array | dict[str, np.ndarray] | pd.DataFrame: The TOF scintillator / MRPC position table.
 
     Raises:
         ValueError: If the library is not 'ak', 'np', or 'pd'.

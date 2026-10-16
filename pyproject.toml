@@ -21,10 +21,10 @@ dev = [
   "dask-awkward",
   "dask[complete]"
 ]
-docs = ["mkdocs<2", "mkdocs-material", "mkdocstrings", "mkdocstrings-python", "pymdown-extensions<12.2"]
+docs = ["furo", "myst-parser", "sphinx", "sphinx-autobuild", "sphinx-copybutton", "sphinx-design"]
 
 [project]
-authors = [{ name = "Mingrun Li", email = "mrun_lee@foxmail.com" }]
+authors = [{name = "Mingrun Li", email = "mrun_lee@foxmail.com"}]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
@@ -53,7 +53,7 @@ dynamic = ["version"]
 name = "pybes3"
 readme = "README.md"
 requires-python = ">=3.9, <3.15"
-urls = { "Homepage" = "https://github.com/mrzimu/pybes3", "Documentation" = "https://pybes3.readthedocs.io/en/stable/" }
+urls = {"Homepage" = "https://github.com/mrzimu/pybes3", "Documentation" = "https://pybes3.readthedocs.io/en/stable/"}
 
 [tool.cibuildwheel]
 build = ["cp*-manylinux_x86_64", "cp*-macosx_arm64", "cp*-win_amd64"]

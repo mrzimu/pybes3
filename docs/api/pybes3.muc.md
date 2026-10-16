@@ -1,3 +1,6 @@
 # pybes3.muc
 
-::: pybes3.muc
+```{eval-rst}
+.. automodule:: pybes3.muc
+   :members:
+```

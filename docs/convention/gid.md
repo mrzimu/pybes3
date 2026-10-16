@@ -14,8 +14,9 @@ For example, the MDC gid follows the order `(layer, wire)`, meaning it increases
 ...
 ```
 
-!!! note
-    This section only describes the numbering scheme of global ID (gid) for each detector. For how to parse and calculate gid, see the [MDC](../user-manual/mdc.md), [TOF](../user-manual/tof.md), [EMC](../user-manual/emc.md), [CGEM](../user-manual/cgem.md) pages.
+:::{note}
+This section only describes the numbering scheme of global ID (gid) for each detector. For how to parse and calculate gid, see the [MDC](../user-manual/mdc.md), [TOF](../user-manual/tof.md), [EMC](../user-manual/emc.md), [CGEM](../user-manual/cgem.md) pages.
+:::
 
 ## MDC
 
@@ -23,8 +24,9 @@ For example, the MDC gid follows the order `(layer, wire)`, meaning it increases
 | :----: | :--------------: |
 | 0-6795 | (layer, wire)    |
 
-!!! success "Same as BOSS"
-    MDC gid is the same as the one given by `MdcGeomSvc` in `BOSS`.
+:::{hint} Same as BOSS
+MDC gid is the same as the one given by `MdcGeomSvc` in `BOSS`.
+:::
 
 ## TOF
 
@@ -70,8 +72,9 @@ The concrete relationship between gid and `(theta, phi)` for EMC endcap 1 is:
 | 6176-6239 |         64         |   0   | Innermost layer |
 
 
-!!! success "Same as BOSS"
-    EMC gid is the same as the one given by `EmcCalibSvc` in `BOSS`.
+:::{hint} Same as BOSS
+EMC gid is the same as the one given by `EmcCalibSvc` in `BOSS`.
+:::
 
 ## MUC
 
@@ -79,8 +82,9 @@ The concrete relationship between gid and `(theta, phi)` for EMC endcap 1 is:
 | :----: | :---------------------------: |
 | 0-9151 | (part, segment, layer, strip) |
 
-!!! success "Same as BOSS"
-    MUC gid is the same as the one given by `MucCalib/MucIdTransform` in `BOSS`.
+:::{hint} Same as BOSS
+MUC gid is the same as the one given by `MucCalib/MucIdTransform` in `BOSS`.
+:::
 
 ## CGEM
 
