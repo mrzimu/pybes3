@@ -1,23 +1,23 @@
-# pybes3
+# Pybes3
 
-`pybes3` is a Python module that aims to make BES3 users easier to work with Python.
+Pybes3 is a Python module that aims to make BES3 users easier to work with Python.
 
 > [!TIP]
 > If you have any suggestions, questions, or issues, please feel free to open an [issue](https://github.com/mrzimu/pybes3/issues/new/choose).
 
-It is highly recommended to take a look at these Python modules before using `pybes3`:
+It is highly recommended to take a look at these Python modules before using Pybes3:
 
 - [`awkward`](https://awkward-array.org/doc/stable/index.html): A Python module that can handle ragged-like array.
-- [`uproot`](https://uproot.readthedocs.io/en/stable/): A ROOT I/O Python module. `pybes3` uses `uproot` to read BES3 ROOT files.
+- [`uproot`](https://uproot.readthedocs.io/en/stable/): A ROOT I/O Python module. Pybes3 uses `uproot` to read BES3 ROOT files.
 
 Visit the [documentation](https://pybes3.readthedocs.io/en/stable/) for more information about installation, usage, and examples.
 
 ## Installation
 
 > [!NOTE]
-> `pybes3` requires Python 3.9 or higher.
+> Pybes3 requires Python 3.9 or higher.
 
-### Install `pybes3` using pip
+### Install Pybes3 using pip
 
 ```bash
 python3 -m pip install pybes3
@@ -45,9 +45,9 @@ ln -s /path/to/somewhere/.local ~/.local
 ln -s /path/to/somewhere/.cache ~/.cache
 ```
 
-### Using `pybes3` under `BOSS8` environment
+### Using Pybes3 under `BOSS8` environment
 
-If you are using `pybes3` under `BOSS8` environment, you MUST run following commands after setting up `BOSS8` environment:
+If you are using Pybes3 under `BOSS8` environment, you MUST run following commands after setting up `BOSS8` environment:
 
 ```bash
 export PYTHONPATH=`python -m site --user-site`:$PYTHONPATH
@@ -59,13 +59,13 @@ export PATH=`python -m site --user-base`/bin:$PATH
 
 ## Features
 
-At the moment, `pybes3` provides:
+At the moment, Pybes3 provides:
 
 - **BES3 data reading**: Read `rtraw`, `rec`, `dst`, and even `raw` files.
 
 - **Identifier**: Convert BOSS detector identifier number to a human-readable format.
 
-- **Indexing**: Each detector element in `pybes3` is assigned a zero-based index, useful for array indexing and mapping detector elements.
+- **Indexing**: Each detector element in Pybes3 is assigned a zero-based index, useful for array indexing and mapping detector elements.
 
 - **Geometry**: Retrieve and compute geometry information of detectors.
 
@@ -73,13 +73,13 @@ At the moment, `pybes3` provides:
 
 ## Performance
 
-`pybes3` is designed to be fast and efficient. It uses C++ to accelerate some of the operations, such as helix operations, detector identifier conversion, etc.
+Pybes3 is designed to be fast and efficient. It uses C++ to accelerate some of the operations, such as helix operations, detector identifier conversion, etc.
 
 ### Data reading
 
-A simple benchmark is provided to compare the performance of `pybes3` and `BOSS8` in reading `dst` files:
+A simple benchmark is provided to compare the performance of Pybes3 and `BOSS8` in reading `dst` files:
 
-- For `pybes3`, we directly read out the `Event` tree:
+- For Pybes3, we directly read out the `Event` tree:
 
     ```python
     import uproot
@@ -123,8 +123,8 @@ The results are shown below:
 
 <div align="center">
     <picture>
-        <source srcset="./docs/image/io-benchmarking-dark.svg" media="(prefers-color-scheme: dark)">
-        <img src="./docs/image/io-benchmarking-light.svg" alt="Dummy Reading Performance">
+        <source srcset="./docs/_static/image/io-benchmarking-dark.svg" media="(prefers-color-scheme: dark)">
+        <img src="./docs/_static/image/io-benchmarking-light.svg" alt="Dummy Reading Performance">
     </picture>
 </div>
 
@@ -134,8 +134,8 @@ The fitting results with a linear function is:
 | :------------------------: | :---------------------: | :-----------------: |
 | BOSS8 (with `RecMakerAlg`) | 0.615                   | 2.766               |
 | BOSS8 (no `RecMakerAlg`)   | 0.451                   | 0.338               |
-| pybes3                     | 1.135                   | 0.326               |
+| Pybes3                     | 1.135                   | 0.326               |
 
-The result shows that `pybes3` is also comparable to `BOSS8` when `RecMakerAlg` is not loaded, which means that the reading performance of `pybes3` is close to the reading performance of `ROOT` itself. `pybes3` is several times faster than `BOSS8` with default settings, and slower when reading small number of events (~1000), since the module importing and initialization time is counted in the benchmark.
+The result shows that Pybes3 is also comparable to `BOSS8` when `RecMakerAlg` is not loaded, which means that the reading performance of Pybes3 is close to the reading performance of `ROOT` itself. Pybes3 is several times faster than `BOSS8` with default settings, and slower when reading small number of events (~1000), since the module importing and initialization time is counted in the benchmark.
 
-Since users may have to use the default settings of `BOSS` to read reconstruction data, `pybes3` is still several times faster in this case.
+Since users may have to use the default settings of `BOSS` to read reconstruction data, Pybes3 is still several times faster in this case.

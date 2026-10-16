@@ -1,4 +1,4 @@
-# AGENTS.md — pybes3
+# AGENTS.md — Pybes3
 
 ## Language
 
@@ -32,7 +32,7 @@ source .venv/bin/activate
 
 ## Project Overview
 
-`pybes3` is a Python module for the BES3 particle physics experiment, providing data reading, detector identifier conversion, geometry information, and helix operations. C++ extensions are bound via pybind11, located in the `kernels/` directory.
+Pybes3 is a Python module for the BES3 particle physics experiment, providing data reading, detector identifier conversion, geometry information, and helix operations. C++ extensions are bound via pybind11, located in the `kernels/` directory.
 
 - **Package manager**: `uv` (configured in `pyproject.toml` `[tool.uv]`)
 - **Build system**: `scikit-build-core` + CMake (C++ extensions in `kernels/CMakeLists.txt`)

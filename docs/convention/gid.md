@@ -1,6 +1,6 @@
 # Global ID (gid)
 
-To uniquely locate each detector element, `pybes3` defines a global ID (gid). The gid starts from 0 and increases sequentially along the detector elements. The increasing order is described by a tuple-like structure.
+To uniquely locate each detector element, Pybes3 defines a global ID (gid). The gid starts from 0 and increases sequentially along the detector elements. The increasing order is described by a tuple-like structure.
 
 For example, the MDC gid follows the order `(layer, wire)`, meaning it increases first along `wire`, then along `layer`:
 

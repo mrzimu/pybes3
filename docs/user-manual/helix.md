@@ -1,6 +1,6 @@
 # Helix Operations
 
-In BES3, a helix is represented by 5 parameters: `dr`, `phi0`, `kappa`, `dz`, `tanl`. `pybes3` provides a convenient way to parse these parameters and perform pivot transformations with parameters and error matrices.
+In BES3, a helix is represented by 5 parameters: `dr`, `phi0`, `kappa`, `dz`, `tanl`. Pybes3 provides a convenient way to parse these parameters and perform pivot transformations with parameters and error matrices.
 
 The implementation depends on [`vector`](https://vector.readthedocs.io/en/latest/). It is recommended to review [Vector objects](https://vector.readthedocs.io/en/latest/src/object.html) and [Awkward Arrays of vectors](https://vector.readthedocs.io/en/latest/src/awkward.html) before using helix objects, as they are used to represent helix position, momentum, and pivot point.
 
@@ -85,7 +85,7 @@ p3.helix_obj(..., pivot=pivot)
 ### From helix parameters (array)
 
 :::{warning}
-You must import `pybes3` before creating a helix array, even if the creation does not directly use any `pybes3` functions.
+You must import `pybes3` before creating a helix array, even if the creation does not directly use any Pybes3 functions.
 :::
 
 The helix array is implemented with awkward's ["behavior" mechanism](https://awkward-array.org/doc/main/reference/ak.behavior.html). You can create a helix array via `pybes3.helix_awk`, or directly create an awkward array with the `Bes3Helix` behavior.
@@ -253,7 +253,7 @@ helix = ak.Array({
 
 ### Create helix from physics parameters
 
-You can also create a helix from position, momentum, and charge. Pass these parameters to `pybes3.helix_obj` or `pybes3.helix_awk`, and `pybes3` will automatically calculate the helix parameters.
+You can also create a helix from position, momentum, and charge. Pass these parameters to `pybes3.helix_obj` or `pybes3.helix_awk`, and Pybes3 will automatically calculate the helix parameters.
 
 ::::{tab-set}
 

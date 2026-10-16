@@ -1,10 +1,10 @@
 # Installation
 
 :::{note}
-`pybes3` requires Python 3.9 or higher.
+Pybes3 requires Python 3.9 or higher.
 :::
 
-## Install `pybes3` using pip
+## Install Pybes3 using pip
 
 ```bash
 pip install pybes3
@@ -32,9 +32,9 @@ ln -s /path/to/somewhere/.local ~/.local
 ln -s /path/to/somewhere/.cache ~/.cache
 ```
 
-## Using `pybes3` under `BOSS8` environment
+## Using Pybes3 under `BOSS8` environment
 
-If you are using `pybes3` under a `BOSS8` environment, you **must** run the following commands after setting up the `BOSS8` environment:
+If you are using Pybes3 under a `BOSS8` environment, you **must** run the following commands after setting up the `BOSS8` environment:
 
 ```bash
 export PYTHONPATH=`python -m site --user-site`:$PYTHONPATH

@@ -1,27 +1,27 @@
-# Documentation for pybes3
+# Documentation for Pybes3
 
-`pybes3` is a Python module that aims to make it easier for BES3 users to work with Python.
+Pybes3 is a Python module that aims to make it easier for BES3 users to work with Python.
 
-:::{note} Help us improve `pybes3`!
+:::{note} Help us improve Pybes3!
 If you have any suggestions, questions, or issues, please feel free to
 [open an issue](https://github.com/mrzimu/pybes3/issues/new/choose).
 :::
 
 :::{tip} See Also
-It is highly recommended to take a look at these Python modules before using `pybes3`:
+It is highly recommended to take a look at these Python modules before using Pybes3:
 
 - [`awkward`](https://awkward-array.org/doc/stable/index.html): A Python module that can handle ragged-like array.
-- [`uproot`](https://uproot.readthedocs.io/en/stable/): A ROOT I/O Python module. `pybes3` uses `uproot` to read BES3 ROOT files.
+- [`uproot`](https://uproot.readthedocs.io/en/stable/): A ROOT I/O Python module. Pybes3 uses `uproot` to read BES3 ROOT files.
 :::
 
 ::::{grid} 1 2 2 2
 :gutter: 3
 
-:::{grid-item-card} Install `pybes3` using `pip`
+:::{grid-item-card} Install Pybes3 using `pip`
 :link: installation
 :link-type: doc
 
-Get `pybes3` from PyPI.
+Get Pybes3 from PyPI.
 :::
 
 :::{grid-item-card} Get started with user manual
@@ -48,7 +48,7 @@ Read `rtraw`, `rec`, `dst`, and even `raw` files.
 :link: convention/gid
 :link-type: doc
 
-Zero-based global ID (gid) for detector elements in `pybes3`.
+Zero-based global ID (gid) for detector elements in Pybes3.
 :::
 
 :::{grid-item-card} BOSS identifier
@@ -68,13 +68,13 @@ Parse and transform helix parameters.
 
 ## Performance
 
-`pybes3` is designed to be fast and efficient. It uses C++ to accelerate some of the operations, such as helix operations, detector identifier conversion, etc.
+Pybes3 is designed to be fast and efficient. It uses C++ to accelerate some of the operations, such as helix operations, detector identifier conversion, etc.
 
 ### Data reading
 
-A simple benchmark compares the performance of `pybes3` and `BOSS8` in reading `dst` files:
+A simple benchmark compares the performance of Pybes3 and `BOSS8` in reading `dst` files:
 
-- For `pybes3`, we directly read out the `Event` tree:
+- For Pybes3, we directly read out the `Event` tree:
 
     ```python
     import uproot
@@ -129,9 +129,9 @@ The linear fit results are:
 | :------------------------: | :---------------------: | :-----------------: |
 | BOSS8 (with `RecMakerAlg`) | 0.615                   | 2.766               |
 | BOSS8 (no `RecMakerAlg`)   | 0.451                   | 0.338               |
-| pybes3                     | 1.135                   | 0.326               |
+| Pybes3                     | 1.135                   | 0.326               |
 
-The results show that `pybes3` achieves comparable performance to `BOSS8` when `RecMakerAlg` is not loaded—its reading speed is close to raw ROOT I/O. With default `BOSS8` settings (including `RecMakerAlg`), `pybes3` is several times faster. The only exception is very small datasets (~1,000 events), where Python module import and initialization overhead becomes noticeable.
+The results show that Pybes3 achieves comparable performance to `BOSS8` when `RecMakerAlg` is not loaded—its reading speed is close to raw ROOT I/O. With default `BOSS8` settings (including `RecMakerAlg`), Pybes3 is several times faster. The only exception is very small datasets (~1,000 events), where Python module import and initialization overhead becomes noticeable.
 
 :::{toctree}
 :hidden:

@@ -7,7 +7,7 @@ from importlib.metadata import version as get_version
 
 # -- Project information -----------------------------------------------------
 
-project = "pybes3"
+project = "Pybes3"
 author = "Mingrun Li"
 
 try:

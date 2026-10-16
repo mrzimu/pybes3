@@ -1,6 +1,6 @@
 # Unit
 
-`pybes3` uses following unit conventions:
+Pybes3 uses following unit conventions:
 
 | Quantity | Unit |
 | --- | --- |

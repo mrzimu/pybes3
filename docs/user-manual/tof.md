@@ -152,7 +152,7 @@ strip_position_pd = p3.get_tof_geom_table(library="pd")
 
 ## Hit status
 
-`pybes3` provides implementation of `TofHitStatus` functions. They are defined as `tof_hit_status_to_*`. All these functions are backed by compiled NumPy ufuncs. The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
+Pybes3 provides implementation of `TofHitStatus` functions. They are defined as `tof_hit_status_to_*`. All these functions are backed by compiled NumPy ufuncs. The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
 
 ::::{tab-set}
 
