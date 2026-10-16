@@ -17,9 +17,8 @@ def open(file: str, **kwargs: object) -> Any:
     Returns:
         The uproot file object.
 
-    Warning:
-        This function is deprecated and will be removed in future versions.
-        Use `uproot.open` instread.
+    .. deprecated::
+        Use :func:`uproot.open` instead.
     """
     # TODO: Remove this in the future.
     warn(
@@ -43,9 +42,8 @@ def concatenate(
     Returns:
         The concatenated array.
 
-    Warning:
-        This function is deprecated and will be removed in future versions.
-        Use `uproot.concatenate` instread.
+    .. deprecated::
+        Use :func:`uproot.concatenate` instead.
     """
     # TODO: Remove this in the future.
     warn(
@@ -65,7 +63,7 @@ def open_raw(file: str) -> RawBinaryReader:
         file (str): The file to open.
 
     Returns:
-        (RawBinaryReader): The raw binary reader.
+        RawBinaryReader: The raw binary reader.
     """
     return RawBinaryReader(file)
 

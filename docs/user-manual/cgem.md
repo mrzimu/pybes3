@@ -5,61 +5,72 @@
 All `cgem_gid_to_*` and `get_cgem_gid` are backed by compiled NumPy ufuncs.
 The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
 
-=== "Scalar"
+::::{tab-set}
 
-    ```python
-    import pybes3 as p3
+:::{tab-item} Scalar
+:sync: scalar
 
-    gid = 0
-    layer = p3.cgem_gid_to_layer(gid)       # 0
-    sheet = p3.cgem_gid_to_sheet(gid)
-    strip_type = p3.cgem_gid_to_strip_type(gid)
-    strip = p3.cgem_gid_to_strip(gid)
+```python
+import pybes3 as p3
 
-    is_xstrip = p3.cgem_gid_to_is_xstrip(gid)
-    is_vstrip = p3.cgem_gid_to_is_vstrip(gid)
+gid = 0
+layer = p3.cgem_gid_to_layer(gid)       # 0
+sheet = p3.cgem_gid_to_sheet(gid)
+strip_type = p3.cgem_gid_to_strip_type(gid)
+strip = p3.cgem_gid_to_strip(gid)
 
-    gid = p3.get_cgem_gid(layer, sheet, strip_type, strip)
-    ```
+is_xstrip = p3.cgem_gid_to_is_xstrip(gid)
+is_vstrip = p3.cgem_gid_to_is_vstrip(gid)
 
-=== "NumPy array"
+gid = p3.get_cgem_gid(layer, sheet, strip_type, strip)
+```
+:::
 
-    ```python
-    import numpy as np
-    import pybes3 as p3
+:::{tab-item} NumPy array
+:sync: numpy
 
-    gid = np.array([0, 100, 5000])
-    layer = p3.cgem_gid_to_layer(gid)       # array([0, 0, 1])
-    sheet = p3.cgem_gid_to_sheet(gid)
-    strip_type = p3.cgem_gid_to_strip_type(gid)
-    strip = p3.cgem_gid_to_strip(gid)
+```python
+import numpy as np
+import pybes3 as p3
 
-    is_xstrip = p3.cgem_gid_to_is_xstrip(gid)
-    is_vstrip = p3.cgem_gid_to_is_vstrip(gid)
+gid = np.array([0, 100, 5000])
+layer = p3.cgem_gid_to_layer(gid)       # array([0, 0, 1])
+sheet = p3.cgem_gid_to_sheet(gid)
+strip_type = p3.cgem_gid_to_strip_type(gid)
+strip = p3.cgem_gid_to_strip(gid)
 
-    gid = p3.get_cgem_gid(layer, sheet, strip_type, strip)
-    ```
+is_xstrip = p3.cgem_gid_to_is_xstrip(gid)
+is_vstrip = p3.cgem_gid_to_is_vstrip(gid)
 
-=== "Awkward Array"
+gid = p3.get_cgem_gid(layer, sheet, strip_type, strip)
+```
+:::
 
-    ```python
-    import awkward as ak
-    import pybes3 as p3
+:::{tab-item} Awkward Array
+:sync: awkward
 
-    gid = ak.Array([[0, 100], [5000]])
-    layer = p3.cgem_gid_to_layer(gid)       # <Array [[0, 0], [1]] type='...'>
-    sheet = p3.cgem_gid_to_sheet(gid)
-    strip_type = p3.cgem_gid_to_strip_type(gid)
-    strip = p3.cgem_gid_to_strip(gid)
+```python
+import awkward as ak
+import pybes3 as p3
 
-    is_xstrip = p3.cgem_gid_to_is_xstrip(gid)
-    is_vstrip = p3.cgem_gid_to_is_vstrip(gid)
+gid = ak.Array([[0, 100], [5000]])
+layer = p3.cgem_gid_to_layer(gid)       # <Array [[0, 0], [1]] type='...'>
+sheet = p3.cgem_gid_to_sheet(gid)
+strip_type = p3.cgem_gid_to_strip_type(gid)
+strip = p3.cgem_gid_to_strip(gid)
 
-    gid = p3.get_cgem_gid(layer, sheet, strip_type, strip)
-    ```
+is_xstrip = p3.cgem_gid_to_is_xstrip(gid)
+is_vstrip = p3.cgem_gid_to_is_vstrip(gid)
 
-!!! info
-    `strip_type=0` for x-strips and `strip_type=1` for v-strips.
+gid = p3.get_cgem_gid(layer, sheet, strip_type, strip)
+```
+:::
+
+::::
+
+:::{note}
+`strip_type=0` for x-strips and `strip_type=1` for v-strips.
+:::
 
 Use `parse_cgem_gid` to parse all fields from a gid at once:
 
@@ -82,52 +93,62 @@ All `cgem_gid_to_width`, `cgem_gid_to_radius`, `cgem_gid_to_phi0`, `cgem_gid_to_
 `cgem_gid_to_z0` and `cgem_gid_to_dz` are also backed by compiled NumPy ufuncs.
 The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
 
-=== "Scalar"
+::::{tab-set}
 
-    ```python
-    import pybes3 as p3
+:::{tab-item} Scalar
+:sync: scalar
 
-    gid = 0
-    width = p3.cgem_gid_to_width(gid)
-    radius = p3.cgem_gid_to_radius(gid)
+```python
+import pybes3 as p3
 
-    phi0 = p3.cgem_gid_to_phi0(gid)
-    dphi = p3.cgem_gid_to_dphi(gid)
-    z0 = p3.cgem_gid_to_z0(gid)
-    dz = p3.cgem_gid_to_dz(gid)
-    ```
+gid = 0
+width = p3.cgem_gid_to_width(gid)
+radius = p3.cgem_gid_to_radius(gid)
 
-=== "NumPy array"
+phi0 = p3.cgem_gid_to_phi0(gid)
+dphi = p3.cgem_gid_to_dphi(gid)
+z0 = p3.cgem_gid_to_z0(gid)
+dz = p3.cgem_gid_to_dz(gid)
+```
+:::
 
-    ```python
-    import numpy as np
-    import pybes3 as p3
+:::{tab-item} NumPy array
+:sync: numpy
 
-    gid = np.array([0, 856, 5000])
-    width = p3.cgem_gid_to_width(gid)
-    radius = p3.cgem_gid_to_radius(gid)
+```python
+import numpy as np
+import pybes3 as p3
 
-    phi0 = p3.cgem_gid_to_phi0(gid)
-    dphi = p3.cgem_gid_to_dphi(gid)
-    z0 = p3.cgem_gid_to_z0(gid)
-    dz = p3.cgem_gid_to_dz(gid)
-    ```
+gid = np.array([0, 856, 5000])
+width = p3.cgem_gid_to_width(gid)
+radius = p3.cgem_gid_to_radius(gid)
 
-=== "Awkward Array"
+phi0 = p3.cgem_gid_to_phi0(gid)
+dphi = p3.cgem_gid_to_dphi(gid)
+z0 = p3.cgem_gid_to_z0(gid)
+dz = p3.cgem_gid_to_dz(gid)
+```
+:::
 
-    ```python
-    import awkward as ak
-    import pybes3 as p3
+:::{tab-item} Awkward Array
+:sync: awkward
 
-    gid = ak.Array([[0, 856], [5000]])
-    width = p3.cgem_gid_to_width(gid)
-    radius = p3.cgem_gid_to_radius(gid)
+```python
+import awkward as ak
+import pybes3 as p3
 
-    phi0 = p3.cgem_gid_to_phi0(gid)
-    dphi = p3.cgem_gid_to_dphi(gid)
-    z0 = p3.cgem_gid_to_z0(gid)
-    dz = p3.cgem_gid_to_dz(gid)
-    ```
+gid = ak.Array([[0, 856], [5000]])
+width = p3.cgem_gid_to_width(gid)
+radius = p3.cgem_gid_to_radius(gid)
+
+phi0 = p3.cgem_gid_to_phi0(gid)
+dphi = p3.cgem_gid_to_dphi(gid)
+z0 = p3.cgem_gid_to_z0(gid)
+dz = p3.cgem_gid_to_dz(gid)
+```
+:::
+
+::::
 
 The centre line of a strip is described in the global cylindrical coordinate system.
 `radius` is the distance (cm) of the strip from the beam axis, and `width` is the width (cm)
@@ -147,9 +168,10 @@ $$\phi(t) = \phi_0 + t \cdot \Delta\phi, \qquad z(t) = z_0 + t \cdot \Delta z, \
 `dphi` is 0 for x-strips, which run along the beam axis, and non-zero for v-strips, which are
 tilted by the stereo angle.
 
-!!! info
-    `radius` and `width` only depend on the strip type and the layer, so they take a few distinct
-    values, whereas `phi0`, `dphi`, `z0` and `dz` vary from strip to strip.
+:::{note}
+`radius` and `width` only depend on the strip type and the layer, so they take a few distinct
+values, whereas `phi0`, `dphi`, `z0` and `dz` vary from strip to strip.
+:::
 
 ---
 
@@ -157,47 +179,57 @@ The position along a strip can be converted between the azimuth and the z coordi
 `cgem_gid_phi_to_z` and `cgem_gid_z_to_phi`. They take two arguments (`gid` and `phi` or `z`),
 both supporting scalar/array inputs independently:
 
-=== "Scalar"
+::::{tab-set}
 
-    ```python
-    import pybes3 as p3
+:::{tab-item} Scalar
+:sync: scalar
 
-    gid = 1297
-    phi0 = p3.cgem_gid_to_phi0(gid)
-    z0 = p3.cgem_gid_to_z0(gid)
+```python
+import pybes3 as p3
 
-    z = p3.cgem_gid_phi_to_z(gid, phi0)     # z (cm) of the strip at its start point
-    phi = p3.cgem_gid_z_to_phi(gid, z0)     # phi (rad) of the strip at its start point
-    ```
+gid = 1297
+phi0 = p3.cgem_gid_to_phi0(gid)
+z0 = p3.cgem_gid_to_z0(gid)
 
-=== "NumPy array"
+z = p3.cgem_gid_phi_to_z(gid, phi0)     # z (cm) of the strip at its start point
+phi = p3.cgem_gid_z_to_phi(gid, z0)     # phi (rad) of the strip at its start point
+```
+:::
 
-    ```python
-    import numpy as np
-    import pybes3 as p3
+:::{tab-item} NumPy array
+:sync: numpy
 
-    gid = np.array([1297, 1300, 1301])
-    phi = np.array([-3.0, 0.0, 1.0])
+```python
+import numpy as np
+import pybes3 as p3
 
-    z = p3.cgem_gid_phi_to_z(1297, phi)     # strip 1297 at multiple phi
-    z = p3.cgem_gid_phi_to_z(gid, 0.0)      # multiple strips at phi = 0
+gid = np.array([1297, 1300, 1301])
+phi = np.array([-3.0, 0.0, 1.0])
 
-    phi = p3.cgem_gid_z_to_phi(1297, np.array([-10.0, 0.0, 10.0]))
-    phi = p3.cgem_gid_z_to_phi(gid, 0.0)    # multiple strips at z = 0 cm
-    ```
+z = p3.cgem_gid_phi_to_z(1297, phi)     # strip 1297 at multiple phi
+z = p3.cgem_gid_phi_to_z(gid, 0.0)      # multiple strips at phi = 0
 
-=== "Awkward Array"
+phi = p3.cgem_gid_z_to_phi(1297, np.array([-10.0, 0.0, 10.0]))
+phi = p3.cgem_gid_z_to_phi(gid, 0.0)    # multiple strips at z = 0 cm
+```
+:::
 
-    ```python
-    import awkward as ak
-    import pybes3 as p3
+:::{tab-item} Awkward Array
+:sync: awkward
 
-    gid = ak.Array([[1297, 1300], [1301]])
-    phi = ak.Array([[-3.0, 0.0], [1.0]])
+```python
+import awkward as ak
+import pybes3 as p3
 
-    z = p3.cgem_gid_phi_to_z(1297, phi)     # strip 1297 at jagged phi
-    z = p3.cgem_gid_phi_to_z(gid, 0.0)      # jagged strips at phi = 0
-    ```
+gid = ak.Array([[1297, 1300], [1301]])
+phi = ak.Array([[-3.0, 0.0], [1.0]])
+
+z = p3.cgem_gid_phi_to_z(1297, phi)     # strip 1297 at jagged phi
+z = p3.cgem_gid_phi_to_z(gid, 0.0)      # jagged strips at phi = 0
+```
+:::
+
+::::
 
 Both functions are backed by compiled NumPy ufuncs and use linear interpolation between the
 two ends of the strip, without any range check, so a `phi` or `z` outside the strip is
@@ -210,9 +242,10 @@ than half a turn, is covered exactly once. `cgem_gid_z_to_phi` does not reduce a
 returns a phi which follows `phi0 + (z - z0) / dz * dphi` and is not wrapped into
 $[-\pi, \pi]$.
 
-!!! info
-    An x-strip runs along the z axis, so `cgem_gid_z_to_phi` always returns its `phi0`, whereas
-    `cgem_gid_phi_to_z` returns NaN, since its phi does not give any z.
+:::{note}
+An x-strip runs along the z axis, so `cgem_gid_z_to_phi` always returns its `phi0`, whereas
+`cgem_gid_phi_to_z` returns NaN, since its phi does not give any z.
+:::
 
 ---
 

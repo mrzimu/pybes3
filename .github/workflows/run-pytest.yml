@@ -29,8 +29,28 @@ jobs:
 
       - name: Install dependencies
         run: |
-          uv pip install -e . --group dev --group docs
+          uv pip install -e . --group dev
 
       - name: Run tests
         run: |
-          uv run pytest -v tests/
+          uv run --no-sync pytest -v tests/
+
+  test-docs:
+    name: Test documentation build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          python-version: '3.12'
+          activate-environment: true
+
+      - name: Install dependencies
+        run: |
+          uv pip install -e . --group dev --group docs
+
+      - name: Run documentation tests
+        run: |
+          uv run --no-sync pytest -v tests/test_docs.py

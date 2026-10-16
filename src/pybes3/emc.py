@@ -70,7 +70,7 @@ def get_emc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
         library: The library to return the data in. Choose from 'ak', 'np', 'pd'.
 
     Returns:
-        (ak.Array | dict[str, np.ndarray] | pd.DataFrame): The EMC crystal position table.
+        ak.Array | dict[str, np.ndarray] | pd.DataFrame: The EMC crystal position table.
 
     Raises:
         ValueError: If the library is not 'ak', 'np', or 'pd'.
@@ -116,8 +116,8 @@ def get_emc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
 
 def get_emc_crystal_position(library: Literal["np", "ak", "pd"] = "np"):
     """
-    !!! warning "Deprecated"
-        This function is deprecated, use `get_emc_geom_table` instead.
+    .. deprecated::
+        Use :func:`get_emc_geom_table` instead.
     """
     import warnings
 
@@ -135,14 +135,17 @@ def get_emc_gid(part: IntLike, theta: IntLike, phi: IntLike) -> IntLike:
     Get the EMC crystal global ID (gid) for the given part, theta, and phi.
 
     - part 0: 0-479
+
         - theta 0: 0-63
         - theta 1: 64-127
         - theta 2: 128-207
         - theta 3: 208-287
         - theta 4: 288-383
         - theta 5: 384-479
+
     - part 1: 480-5759 (theta 0-47)
     - part 2: 5760-6239
+
         - theta 5: 5760-5855 (96)
         - theta 4: 5856-5951 (96)
         - theta 3: 5952-6031 (80)
@@ -341,10 +344,10 @@ def parse_emc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, 
     - `center_y`: y position of the center of the crystal.
     - `center_z`: z position of the center of the crystal.
 
-    !!! info
+    .. note::
         The 8 points of the crystal will not be returned here.
-        If you need the 8 points of the crystal, use `emc_gid_to_point_x`, `emc_gid_to_point_y`
-        and `emc_gid_to_point_z`.
+        If you need the 8 points of the crystal, use :func:`emc_gid_to_point_x`,
+        :func:`emc_gid_to_point_y` and :func:`emc_gid_to_point_z`.
 
     Parameters:
         gid: The global ID of the crystal.

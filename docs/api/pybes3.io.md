@@ -1,10 +1,17 @@
 # pybes3.io
 
-!!! tip "Looking for usage examples?"
-    See the [Data Reading](../user-manual/data-reading.md) user guide for practical examples.
+:::{tip} Looking for usage examples?
+See the [Data Reading](../user-manual/data-reading.md) user guide for practical examples.
+:::
 
-::: pybes3.io
+```{eval-rst}
+.. automodule:: pybes3.io
+   :members:
 
-::: pybes3.io.root_io
+.. automodule:: pybes3.io.root_io
+   :members:
 
-::: pybes3.io.raw_io
+.. automodule:: pybes3.io.raw_io
+   :members:
+   :undoc-members:
+```

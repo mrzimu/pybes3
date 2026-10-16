@@ -43,7 +43,7 @@ def get_mdc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
         library: The library to return the data in. Choose from 'ak', 'np', 'pd'.
 
     Returns:
-        (ak.Array | dict[str, np.ndarray] | pd.DataFrame): The MDC wire position table.
+        ak.Array | dict[str, np.ndarray] | pd.DataFrame: The MDC wire position table.
 
     Raises:
         ValueError: If the library is not 'ak', 'np', or 'pd'.
@@ -65,8 +65,8 @@ def get_mdc_geom_table(library: Literal["np", "ak", "pd"] = "np"):
 
 def get_mdc_wire_position(library: Literal["np", "ak", "pd"] = "np"):
     """
-    !!! warning "Deprecated"
-        This function is deprecated, use `get_mdc_geom_table` instead.
+    .. deprecated::
+        Use :func:`get_mdc_geom_table` instead.
     """
     import warnings
 

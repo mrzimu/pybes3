@@ -1,201 +1,208 @@
 # pybes3
 
 ## IO
-::: pybes3.open
----
-::: pybes3.concatenate
----
-::: pybes3.open_raw
----
-::: pybes3.concatenate_raw
----
+
+```{eval-rst}
+.. autofunction:: pybes3.open
+
+.. autofunction:: pybes3.concatenate
+
+.. autofunction:: pybes3.open_raw
+
+.. autofunction:: pybes3.concatenate_raw
+```
 
 ## Detectors
-::: pybes3.cgem_gid_to_is_vstrip
----
-::: pybes3.cgem_gid_to_is_xstrip
----
-::: pybes3.cgem_gid_to_layer
----
-::: pybes3.cgem_gid_to_sheet
----
-::: pybes3.cgem_gid_to_strip
----
-::: pybes3.cgem_gid_to_strip_type
----
-::: pybes3.get_cgem_gid
----
-::: pybes3.parse_cgem_gid
----
-::: pybes3.get_mdc_geom_table
----
-::: pybes3.get_mdc_gid
----
-::: pybes3.get_mdc_wire_position
----
-::: pybes3.mdc_gid_to_east_x
----
-::: pybes3.mdc_gid_to_east_y
----
-::: pybes3.mdc_gid_to_east_z
----
-::: pybes3.mdc_gid_to_is_stereo
----
-::: pybes3.mdc_gid_to_layer
----
-::: pybes3.mdc_gid_to_stereo
----
-::: pybes3.mdc_gid_to_superlayer
----
-::: pybes3.mdc_gid_to_west_x
----
-::: pybes3.mdc_gid_to_west_y
----
-::: pybes3.mdc_gid_to_west_z
----
-::: pybes3.mdc_gid_to_wire
----
-::: pybes3.mdc_gid_z_to_x
----
-::: pybes3.mdc_gid_z_to_y
----
-::: pybes3.mdc_layer_to_is_stereo
----
-::: pybes3.mdc_layer_to_superlayer
----
-::: pybes3.parse_mdc_gid
----
-::: pybes3.get_tof_geom_table
----
-::: pybes3.get_tof_gid
----
-::: pybes3.parse_tof_gid
----
-::: pybes3.parse_tof_hit_status
----
-::: pybes3.tof_gid_to_layer_or_module
----
-::: pybes3.tof_gid_to_part
----
-::: pybes3.tof_gid_to_phi_or_strip
----
-::: pybes3.tof_gid_to_point_x
----
-::: pybes3.tof_gid_to_point_y
----
-::: pybes3.tof_gid_to_point_z
----
-::: pybes3.tof_hit_status_id_to_gid
----
-::: pybes3.tof_hit_status_to_is_barrel
----
-::: pybes3.tof_hit_status_to_is_cluster
----
-::: pybes3.tof_hit_status_to_is_counter
----
-::: pybes3.tof_hit_status_to_is_east
----
-::: pybes3.tof_hit_status_to_is_mrpc
----
-::: pybes3.tof_hit_status_to_is_multihit
----
-::: pybes3.tof_hit_status_to_is_overflow
----
-::: pybes3.tof_hit_status_to_is_raw
----
-::: pybes3.tof_hit_status_to_is_readout
----
-::: pybes3.tof_hit_status_to_layer
----
-::: pybes3.tof_hit_status_to_n_counter
----
-::: pybes3.tof_hit_status_to_n_east
----
-::: pybes3.tof_hit_status_to_n_west
----
-::: pybes3.emc_adc_to_charge
----
-::: pybes3.emc_gid_to_center_x
----
-::: pybes3.emc_gid_to_center_y
----
-::: pybes3.emc_gid_to_center_z
----
-::: pybes3.emc_gid_to_front_center_x
----
-::: pybes3.emc_gid_to_front_center_y
----
-::: pybes3.emc_gid_to_front_center_z
----
-::: pybes3.emc_gid_to_part
----
-::: pybes3.emc_gid_to_phi
----
-::: pybes3.emc_gid_to_point_x
----
-::: pybes3.emc_gid_to_point_y
----
-::: pybes3.emc_gid_to_point_z
----
-::: pybes3.emc_gid_to_theta
----
-::: pybes3.get_emc_crystal_position
----
-::: pybes3.get_emc_geom_table
----
-::: pybes3.get_emc_gid
----
-::: pybes3.parse_emc_gid
----
-::: pybes3.get_muc_geom_table
----
-::: pybes3.get_muc_gid
----
-::: pybes3.muc_gid_to_center_x
----
-::: pybes3.muc_gid_to_center_y
----
-::: pybes3.muc_gid_to_center_z
----
-::: pybes3.muc_gid_to_dx
----
-::: pybes3.muc_gid_to_dy
----
-::: pybes3.muc_gid_to_dz
----
-::: pybes3.muc_gid_to_layer
----
-::: pybes3.muc_gid_to_part
----
-::: pybes3.muc_gid_to_point_x
----
-::: pybes3.muc_gid_to_point_y
----
-::: pybes3.muc_gid_to_point_z
----
-::: pybes3.muc_gid_to_segment
----
-::: pybes3.muc_gid_to_strip
----
-::: pybes3.parse_muc_gid
----
+
+```{eval-rst}
+.. autofunction:: pybes3.cgem_gid_to_is_vstrip
+
+.. autofunction:: pybes3.cgem_gid_to_is_xstrip
+
+.. autofunction:: pybes3.cgem_gid_to_layer
+
+.. autofunction:: pybes3.cgem_gid_to_sheet
+
+.. autofunction:: pybes3.cgem_gid_to_strip
+
+.. autofunction:: pybes3.cgem_gid_to_strip_type
+
+.. autofunction:: pybes3.get_cgem_gid
+
+.. autofunction:: pybes3.parse_cgem_gid
+
+.. autofunction:: pybes3.get_mdc_geom_table
+
+.. autofunction:: pybes3.get_mdc_gid
+
+.. autofunction:: pybes3.get_mdc_wire_position
+
+.. autofunction:: pybes3.mdc_gid_to_east_x
+
+.. autofunction:: pybes3.mdc_gid_to_east_y
+
+.. autofunction:: pybes3.mdc_gid_to_east_z
+
+.. autofunction:: pybes3.mdc_gid_to_is_stereo
+
+.. autofunction:: pybes3.mdc_gid_to_layer
+
+.. autofunction:: pybes3.mdc_gid_to_stereo
+
+.. autofunction:: pybes3.mdc_gid_to_superlayer
+
+.. autofunction:: pybes3.mdc_gid_to_west_x
+
+.. autofunction:: pybes3.mdc_gid_to_west_y
+
+.. autofunction:: pybes3.mdc_gid_to_west_z
+
+.. autofunction:: pybes3.mdc_gid_to_wire
+
+.. autofunction:: pybes3.mdc_gid_z_to_x
+
+.. autofunction:: pybes3.mdc_gid_z_to_y
+
+.. autofunction:: pybes3.mdc_layer_to_is_stereo
+
+.. autofunction:: pybes3.mdc_layer_to_superlayer
+
+.. autofunction:: pybes3.parse_mdc_gid
+
+.. autofunction:: pybes3.get_tof_geom_table
+
+.. autofunction:: pybes3.get_tof_gid
+
+.. autofunction:: pybes3.parse_tof_gid
+
+.. autofunction:: pybes3.parse_tof_hit_status
+
+.. autofunction:: pybes3.tof_gid_to_layer_or_module
+
+.. autofunction:: pybes3.tof_gid_to_part
+
+.. autofunction:: pybes3.tof_gid_to_phi_or_strip
+
+.. autofunction:: pybes3.tof_gid_to_point_x
+
+.. autofunction:: pybes3.tof_gid_to_point_y
+
+.. autofunction:: pybes3.tof_gid_to_point_z
+
+.. autofunction:: pybes3.tof_hit_status_id_to_gid
+
+.. autofunction:: pybes3.tof_hit_status_to_is_barrel
+
+.. autofunction:: pybes3.tof_hit_status_to_is_cluster
+
+.. autofunction:: pybes3.tof_hit_status_to_is_counter
+
+.. autofunction:: pybes3.tof_hit_status_to_is_east
+
+.. autofunction:: pybes3.tof_hit_status_to_is_mrpc
+
+.. autofunction:: pybes3.tof_hit_status_to_is_multihit
+
+.. autofunction:: pybes3.tof_hit_status_to_is_overflow
+
+.. autofunction:: pybes3.tof_hit_status_to_is_raw
+
+.. autofunction:: pybes3.tof_hit_status_to_is_readout
+
+.. autofunction:: pybes3.tof_hit_status_to_layer
+
+.. autofunction:: pybes3.tof_hit_status_to_n_counter
+
+.. autofunction:: pybes3.tof_hit_status_to_n_east
+
+.. autofunction:: pybes3.tof_hit_status_to_n_west
+
+.. autofunction:: pybes3.emc_adc_to_charge
+
+.. autofunction:: pybes3.emc_gid_to_center_x
+
+.. autofunction:: pybes3.emc_gid_to_center_y
+
+.. autofunction:: pybes3.emc_gid_to_center_z
+
+.. autofunction:: pybes3.emc_gid_to_front_center_x
+
+.. autofunction:: pybes3.emc_gid_to_front_center_y
+
+.. autofunction:: pybes3.emc_gid_to_front_center_z
+
+.. autofunction:: pybes3.emc_gid_to_part
+
+.. autofunction:: pybes3.emc_gid_to_phi
+
+.. autofunction:: pybes3.emc_gid_to_point_x
+
+.. autofunction:: pybes3.emc_gid_to_point_y
+
+.. autofunction:: pybes3.emc_gid_to_point_z
+
+.. autofunction:: pybes3.emc_gid_to_theta
+
+.. autofunction:: pybes3.get_emc_crystal_position
+
+.. autofunction:: pybes3.get_emc_geom_table
+
+.. autofunction:: pybes3.get_emc_gid
+
+.. autofunction:: pybes3.parse_emc_gid
+
+.. autofunction:: pybes3.get_muc_geom_table
+
+.. autofunction:: pybes3.get_muc_gid
+
+.. autofunction:: pybes3.muc_gid_to_center_x
+
+.. autofunction:: pybes3.muc_gid_to_center_y
+
+.. autofunction:: pybes3.muc_gid_to_center_z
+
+.. autofunction:: pybes3.muc_gid_to_dx
+
+.. autofunction:: pybes3.muc_gid_to_dy
+
+.. autofunction:: pybes3.muc_gid_to_dz
+
+.. autofunction:: pybes3.muc_gid_to_layer
+
+.. autofunction:: pybes3.muc_gid_to_part
+
+.. autofunction:: pybes3.muc_gid_to_point_x
+
+.. autofunction:: pybes3.muc_gid_to_point_y
+
+.. autofunction:: pybes3.muc_gid_to_point_z
+
+.. autofunction:: pybes3.muc_gid_to_segment
+
+.. autofunction:: pybes3.muc_gid_to_strip
+
+.. autofunction:: pybes3.parse_muc_gid
+```
 
 ## Helix
-::: pybes3.HelixObject
----
-::: pybes3.dr_phi0_to_x
----
-::: pybes3.dr_phi0_to_y
----
-::: pybes3.helix_awk
----
-::: pybes3.helix_obj
----
-::: pybes3.kappa_to_charge
----
-::: pybes3.kappa_to_pt
----
-::: pybes3.kappa_to_radius
----
-::: pybes3.phi0_to_phi
----
+
+```{eval-rst}
+.. autoclass:: pybes3.HelixObject
+   :members:
+
+.. autofunction:: pybes3.dr_phi0_to_x
+
+.. autofunction:: pybes3.dr_phi0_to_y
+
+.. autofunction:: pybes3.helix_awk
+
+.. autofunction:: pybes3.helix_obj
+
+.. autofunction:: pybes3.kappa_to_charge
+
+.. autofunction:: pybes3.kappa_to_pt
+
+.. autofunction:: pybes3.kappa_to_radius
+
+.. autofunction:: pybes3.phi0_to_phi
+```
