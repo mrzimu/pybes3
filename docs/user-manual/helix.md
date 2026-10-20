@@ -45,7 +45,9 @@ helix = p3.helix_obj(
 When `error` is not provided, it defaults to `None`. When `pivot` is not provided, it defaults to `(0, 0, 0)`.
 
 
-:::::{note} Overload of `helix_obj`
+:::::{admonition} Overload of `helix_obj`
+:class: note
+
 When calling `helix_obj`, you can pass the helix parameters and initial pivot point in different ways:
 
 ::::{tab-set}
@@ -162,7 +164,9 @@ helix = p3.helix_awk(
 )
 ```
 
-:::{note} Different types of pivot point
+:::{admonition} Different types of pivot point
+:class: note
+
 The `pivot` can be specified in different ways when using `helix_awk`:
 
 - As a tuple or `Vector3D` object
@@ -355,7 +359,9 @@ y = position.y
 z = position.z
 ```
 
-:::{tip} See Also
+:::{admonition} See Also
+:class: tip
+
 See [Interface for 3D vectors](https://vector.readthedocs.io/en/latest/src/vector3d.html) for more properties.
 :::
 
@@ -380,11 +386,15 @@ theta = momentum.theta  # polar angle
 phi = momentum.phi  # azimuthal angle
 ```
 
-:::{tip} See Also
+:::{admonition} See Also
+:class: tip
+
 See [Interface for 3D momentum](https://vector.readthedocs.io/en/latest/src/momentum3d.html) for more properties.
 :::
 
-:::{warning} Momentum depends on the pivot point
+:::{admonition} Momentum depends on the pivot point
+:class: warning
+
 When changing the pivot point, the momentum also changes, because it is evaluated at the closest point to the pivot.
 :::
 

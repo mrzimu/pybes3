@@ -2,12 +2,16 @@
 
 Pybes3 is a Python module that aims to make it easier for BES3 users to work with Python.
 
-:::{note} Help us improve Pybes3!
+:::{admonition} Help us improve Pybes3!
+:class: note
+
 If you have any suggestions, questions, or issues, please feel free to
 [open an issue](https://github.com/mrzimu/pybes3/issues/new/choose).
 :::
 
-:::{tip} See Also
+:::{admonition} See Also
+:class: tip
+
 It is highly recommended to take a look at these Python modules before using Pybes3:
 
 - [`awkward`](https://awkward-array.org/doc/stable/index.html): A Python module that can handle ragged-like array.

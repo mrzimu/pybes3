@@ -24,7 +24,9 @@ This section only describes the numbering scheme of global ID (gid) for each det
 | :----: | :--------------: |
 | 0-6795 | (layer, wire)    |
 
-:::{hint} Same as BOSS
+:::{admonition} Same as BOSS
+:class: hint
+
 MDC gid is the same as the one given by `MdcGeomSvc` in `BOSS`.
 :::
 
@@ -72,7 +74,9 @@ The concrete relationship between gid and `(theta, phi)` for EMC endcap 1 is:
 | 6176-6239 |         64         |   0   | Innermost layer |
 
 
-:::{hint} Same as BOSS
+:::{admonition} Same as BOSS
+:class: hint
+
 EMC gid is the same as the one given by `EmcCalibSvc` in `BOSS`.
 :::
 
@@ -82,7 +86,9 @@ EMC gid is the same as the one given by `EmcCalibSvc` in `BOSS`.
 | :----: | :---------------------------: |
 | 0-9151 | (part, segment, layer, strip) |
 
-:::{hint} Same as BOSS
+:::{admonition} Same as BOSS
+:class: hint
+
 MUC gid is the same as the one given by `MucCalib/MucIdTransform` in `BOSS`.
 :::
 

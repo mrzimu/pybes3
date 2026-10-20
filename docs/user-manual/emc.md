@@ -268,6 +268,8 @@ $$
 
 Note that `measure=3` indicates that the hit is saturated, and the charge is calculated with the same formula as `measure=2`.
 
-:::{hint} Same as BOSS
+:::{admonition} Same as BOSS
+:class: hint
+
 EMC charge calculation is the same as the one given by `RawDataUtil::EmcCharge` in `BOSS`.
 :::

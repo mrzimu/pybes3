@@ -1,6 +1,8 @@
 # pybes3.io
 
-:::{tip} Looking for usage examples?
+:::{admonition} Looking for usage examples?
+:class: tip
+
 See the [Data Reading](../user-manual/data-reading.md) user guide for practical examples.
 :::
 
