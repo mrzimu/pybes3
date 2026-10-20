@@ -286,21 +286,21 @@ class Bes3PyCgemClusterColReader(uproot_custom.readers.python.IReader):
         result = {}
 
         result["offsets"] = np.asarray(self.offsets)
-        result["m_clusterID"] = np.asarray(self.clusterid)
-        result["m_trkID"] = np.asarray(self.trkid)
-        result["m_layerID"] = np.asarray(self.layerid)
-        result["m_sheetID"] = np.asarray(self.sheetid)
+        result["m_clusterid"] = np.asarray(self.clusterid)
+        result["m_trkid"] = np.asarray(self.trkid)
+        result["m_layerid"] = np.asarray(self.layerid)
+        result["m_sheetid"] = np.asarray(self.sheetid)
         result["m_flag"] = np.asarray(self.flag)
-        result["m_energyDeposit"] = np.asarray(self.energydeposit)
-        result["m_recPhi"] = np.asarray(self.recphi)
+        result["m_energydeposit"] = np.asarray(self.energydeposit)
+        result["m_recphi"] = np.asarray(self.recphi)
 
         if self.version == 0:
-            result["m_recPositionY"] = np.asarray(self.recpositiony)
+            result["m_recpositiony"] = np.asarray(self.recpositiony)
 
-        result["m_recV"] = np.asarray(self.recv)
+        result["m_recv"] = np.asarray(self.recv)
         result["m_recZ"] = np.asarray(self.recZ)
-        result["m_clusterFlag"] = np.asarray(self.clusterflag)
-        result["m_stripID"] = np.asarray(self.stripid)
+        result["m_clusterflag"] = np.asarray(self.clusterflag)
+        result["m_stripid"] = np.asarray(self.stripid)
 
         return result
 
@@ -323,9 +323,6 @@ class Bes3CgemClusterColFactory(Factory):
         if item_path != "/Event:TRecEvent/m_recCgemClusterCol":
             return None
 
-        if all_streamer_info.get("TCgemCluster") is not None:
-            return None  # Let Bes3TObjArrayReader handle it
-
         return cls(name=cur_streamer_info["fName"])
 
     def build_cpp_reader(self):
@@ -341,10 +338,10 @@ class Bes3CgemClusterColFactory(Factory):
         for k, v in raw_data.items():
             tmp_content = awkward.contents.NumpyArray(v)
 
-            if k == "m_clusterFlag":
+            if k == "m_clusterflag":
                 tmp_content = awkward.contents.RegularArray(tmp_content, 2)
 
-            if k == "m_stripID":
+            if k == "m_stripid":
                 tmp_content = awkward.contents.RegularArray(tmp_content, 2)
                 tmp_content = awkward.contents.RegularArray(tmp_content, 2)
 
