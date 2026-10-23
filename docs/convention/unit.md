@@ -8,3 +8,4 @@ Pybes3 uses following unit conventions:
 | Momentum | $\mathrm{GeV}/c$ |
 | Energy | $\mathrm{GeV}$ |
 | Mass | $\mathrm{GeV}/c^2$ |
+| Time | $\mathrm{ns}$ |

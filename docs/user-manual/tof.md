@@ -152,6 +152,12 @@ strip_position_pd = p3.get_tof_geom_table(library="pd")
 
 ## Hit status
 
+The hit status of a TOF hit encodes which part of the TOF the hit belongs to, its layer, and
+several flags and counters of the hit. It can be parsed into individual fields, and it can
+also be combined with the `tofID` of the hit to get the `gid` of the hit strip.
+
+### Fields
+
 Pybes3 provides implementation of `TofHitStatus` functions. They are defined as `tof_hit_status_to_*`. All these functions are backed by compiled NumPy ufuncs. The calling convention is identical for scalar, NumPy array, and Awkward Array inputs:
 
 ::::{tab-set}
@@ -248,7 +254,7 @@ n_east = parse_result["n_east"]
 n_west = parse_result["n_west"]
 ```
 
-## Hit status and gid
+### Strip gid
 
 `tof_hit_status_id_to_gid` converts the hit status and the `tofID` of a TOF hit into the `gid`
 of the strip which was hit:
@@ -282,3 +288,27 @@ A hit without a hit status (`status == 0`) stores the raw digi ID in `m_tofID` i
 the compact index above, and a negative `m_tofID` is not a valid counter index. Both are
 rejected with a `ValueError`, so filter them out before calling the function.
 :::
+
+## Raw data conversion
+
+The ADC and the TDC channel numbers of a hit can be converted into charge and time with
+`tof_adc_to_charge` and `tof_tdc_to_time`:
+
+```python
+import numpy as np
+import pybes3 as p3
+
+adc = np.array([100, 200, 300, 400])
+charge = p3.tof_adc_to_charge(adc)
+
+tdc = np.array([100, 200, 300, 400])
+time = p3.tof_tdc_to_time(tdc)
+```
+
+The charge is calculated as `charge = (adc & 0x1fff) * 0.3`, i.e. only the lower 13 bits
+of the ADC word carry the charge channel number, and the conversion formula of the time
+is:
+
+$$
+\text{time} = \text{tdc} \times \frac{12000}{499.8 \times 8 \times 1024}~\mathrm{ns}
+$$

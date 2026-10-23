@@ -48,6 +48,7 @@ gaudi_add_module(TestPybes3
         src/ExportTofHitStatusAlg.cc
         src/ExportEmcGeomAlg.cc
         src/ExportCgemGeomAlg.cc
+        src/ExportRawDataUtilAlg.cc
     LINK
         Gaudi::GaudiKernel
         EventModel

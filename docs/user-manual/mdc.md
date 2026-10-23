@@ -241,3 +241,28 @@ wire_position_ak = p3.get_mdc_geom_table(library="ak")
 # get table in `pd.DataFrame`
 wire_position_pd = p3.get_mdc_geom_table(library="pd")
 ```
+
+## Raw data conversion
+
+The ADC and the TDC channel numbers of a hit can be converted into charge and time with `mdc_adc_to_charge` and `mdc_tdc_to_time`:
+
+```python
+import numpy as np
+import pybes3 as p3
+
+adc = np.array([100, 200, 300, 400])
+charge = p3.mdc_adc_to_charge(adc)
+
+tdc = np.array([100, 200, 300, 400])
+time = p3.mdc_tdc_to_time(tdc)
+```
+
+The conversion formula of the time is:
+
+$$
+\text{time} = \text{tdc} \times 0.09375~\mathrm{ns}
+$$
+
+:::{note}
+In BOSS there is no concrete physics unit of the MDC charge: the raw channel number is used in the reconstruction, hence `mdc_adc_to_charge` only casts the ADC to `float64`.
+:::

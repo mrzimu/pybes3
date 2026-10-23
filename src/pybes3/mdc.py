@@ -355,3 +355,35 @@ def parse_mdc_gid(gid: IntLike, geometry: bool = False) -> ak.Array | dict[str, 
         return ak.zip(res)
     else:
         return res
+
+
+def mdc_adc_to_charge(adc: IntLike) -> FloatLike:
+    """
+    Convert the ADC of an MDC hit to its charge.
+
+    In BOSS there is no concrete physics unit of the MDC charge: the raw channel
+    number is used in the reconstruction, so the conversion is an identity
+    (`charge = adc`) which only casts the input to `float64`.
+
+    Parameters:
+        adc: The ADC channel number of the hit.
+
+    Returns:
+        The charge of the hit.
+    """
+    return _ufuncs.mdc_adc_to_charge(adc)
+
+
+def mdc_tdc_to_time(tdc: IntLike) -> FloatLike:
+    """
+    Convert the TDC of an MDC hit to its drift time.
+
+    The conversion formula is `time = tdc * 0.09375`, and the time is in ns.
+
+    Parameters:
+        tdc: The TDC channel number of the hit.
+
+    Returns:
+        The drift time of the hit, in ns.
+    """
+    return _ufuncs.mdc_tdc_to_time(tdc)

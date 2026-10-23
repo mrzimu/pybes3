@@ -240,11 +240,17 @@ namespace emc {
         *out = _points_z[*gid * 8 + *point];
     }
 
+    /* ------ RawDataUtil ------*/
     constexpr double MEASURE_EMAX[4] = { 0.078, 0.625, 2.500, 2.500 };
 
     template <typename T>
     inline void emc_adc_to_charge( T* measure, T* adc, double* out ) noexcept {
         *out = static_cast<double>( *adc ) / 1024. * MEASURE_EMAX[*measure];
+    }
+
+    template <typename T>
+    inline void emc_tdc_to_time( T* tdc, double* out ) noexcept {
+        *out = static_cast<double>( *tdc ) * 50.0; // ns
     }
 
     void declare_emc( PyObject* d ) {
@@ -376,5 +382,14 @@ namespace emc {
             emc_adc_to_charge<uint64_t>, //
             emc_adc_to_charge<int64_t>>  //
             ( d, "emc_adc_to_charge" );
+
+        decl_ufunc_11<                 //
+            emc_tdc_to_time<uint16_t>, //
+            emc_tdc_to_time<int16_t>,  //
+            emc_tdc_to_time<uint32_t>, //
+            emc_tdc_to_time<int32_t>,  //
+            emc_tdc_to_time<uint64_t>, //
+            emc_tdc_to_time<int64_t>>  //
+            ( d, "emc_tdc_to_time" );
     }
 } // namespace emc

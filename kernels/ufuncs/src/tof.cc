@@ -212,6 +212,20 @@ namespace tof {
         *out = ( 48 + 88 ) * 2 + *tof_id;
     }
 
+    /* ------ RawDataUtil ------*/
+    constexpr double TDC_TO_TIME   = 12000. / 499.8 / 8. / 1024.;
+    constexpr double ADC_TO_CHARGE = 0.3;
+
+    template <typename T>
+    inline void tof_tdc_to_time( T* tdc, double* out ) noexcept {
+        *out = static_cast<double>( *tdc ) * TDC_TO_TIME;
+    }
+
+    template <typename T>
+    inline void tof_adc_to_charge( T* adc, double* out ) noexcept {
+        *out = static_cast<double>( *adc & 0x1fff ) * ADC_TO_CHARGE;
+    }
+
     void declare_tof( PyObject* d ) {
         if ( _import_array() < 0 ) return;
         if ( _import_umath() < 0 ) return;
@@ -391,5 +405,25 @@ namespace tof {
             tof_hit_status_id_to_gid<uint64_t>, //
             tof_hit_status_id_to_gid<int64_t>>  //
             ( d, "tof_hit_status_id_to_gid" );
+
+        /* ------ RawDataUtil ------ */
+
+        decl_ufunc_11<                   //
+            tof_adc_to_charge<uint16_t>, //
+            tof_adc_to_charge<int16_t>,  //
+            tof_adc_to_charge<uint32_t>, //
+            tof_adc_to_charge<int32_t>,  //
+            tof_adc_to_charge<uint64_t>, //
+            tof_adc_to_charge<int64_t>>  //
+            ( d, "tof_adc_to_charge" );
+
+        decl_ufunc_11<                 //
+            tof_tdc_to_time<uint16_t>, //
+            tof_tdc_to_time<int16_t>,  //
+            tof_tdc_to_time<uint32_t>, //
+            tof_tdc_to_time<int32_t>,  //
+            tof_tdc_to_time<uint64_t>, //
+            tof_tdc_to_time<int64_t>>  //
+            ( d, "tof_tdc_to_time" );
     }
 } // namespace tof

@@ -37,6 +37,8 @@
 
 .. autofunction:: pybes3.get_mdc_wire_position
 
+.. autofunction:: pybes3.mdc_adc_to_charge
+
 .. autofunction:: pybes3.mdc_gid_to_east_x
 
 .. autofunction:: pybes3.mdc_gid_to_east_y
@@ -67,6 +69,8 @@
 
 .. autofunction:: pybes3.mdc_layer_to_superlayer
 
+.. autofunction:: pybes3.mdc_tdc_to_time
+
 .. autofunction:: pybes3.parse_mdc_gid
 
 .. autofunction:: pybes3.get_tof_geom_table
@@ -76,6 +80,8 @@
 .. autofunction:: pybes3.parse_tof_gid
 
 .. autofunction:: pybes3.parse_tof_hit_status
+
+.. autofunction:: pybes3.tof_adc_to_charge
 
 .. autofunction:: pybes3.tof_gid_to_layer_or_module
 
@@ -117,6 +123,8 @@
 
 .. autofunction:: pybes3.tof_hit_status_to_n_west
 
+.. autofunction:: pybes3.tof_tdc_to_time
+
 .. autofunction:: pybes3.emc_adc_to_charge
 
 .. autofunction:: pybes3.emc_gid_to_center_x
@@ -142,6 +150,8 @@
 .. autofunction:: pybes3.emc_gid_to_point_z
 
 .. autofunction:: pybes3.emc_gid_to_theta
+
+.. autofunction:: pybes3.emc_tdc_to_time
 
 .. autofunction:: pybes3.get_emc_crystal_position
 

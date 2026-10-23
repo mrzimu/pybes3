@@ -17,12 +17,12 @@ def test_emc_geom():
         assert np.all(p3.emc_gid_to_point_y(gid, i) == emc._points_y[gid, i])
         assert np.all(p3.emc_gid_to_point_z(gid, i) == emc._points_z[gid, i])
 
-    assert np.allclose(p3.emc_gid_to_center_x(gid), emc._center_x, atol=1e-6)
-    assert np.allclose(p3.emc_gid_to_center_y(gid), emc._center_y, atol=1e-6)
-    assert np.allclose(p3.emc_gid_to_center_z(gid), emc._center_z, atol=1e-6)
-    assert np.allclose(p3.emc_gid_to_front_center_x(gid), emc._front_center_x, atol=1e-6)
-    assert np.allclose(p3.emc_gid_to_front_center_y(gid), emc._front_center_y, atol=1e-6)
-    assert np.allclose(p3.emc_gid_to_front_center_z(gid), emc._front_center_z, atol=1e-6)
+    assert np.allclose(p3.emc_gid_to_center_x(gid), emc._center_x)
+    assert np.allclose(p3.emc_gid_to_center_y(gid), emc._center_y)
+    assert np.allclose(p3.emc_gid_to_center_z(gid), emc._center_z)
+    assert np.allclose(p3.emc_gid_to_front_center_x(gid), emc._front_center_x)
+    assert np.allclose(p3.emc_gid_to_front_center_y(gid), emc._front_center_y)
+    assert np.allclose(p3.emc_gid_to_front_center_z(gid), emc._front_center_z)
 
     p3.get_emc_geom_table(library="np")
     p3.get_emc_geom_table(library="ak")
@@ -58,10 +58,14 @@ def test_parse_emc_gid():
     assert list(np_res2.keys()) == ["gid", "part", "theta", "phi"]
 
 
-def test_emc_adc_to_charge():
-    measure = np.array([0, 1, 2, 3], dtype=np.uint16)
-    adc = np.array([1024, 1024, 1024, 1024], dtype=np.uint16)
-    expected_charge = np.array([0.078, 0.625, 2.5, 2.5], dtype=np.float64)
+def test_emc_raw_data_util(raw_data_util_ref):
+    ref_emc = raw_data_util_ref["emc"]
 
-    charge = p3.emc_adc_to_charge(measure, adc)
-    assert np.allclose(charge, expected_charge, atol=1e-6)
+    measure = ref_emc["measure"]
+    adc = ref_emc["adc"]
+    charge = ref_emc["charge"]
+    assert np.allclose(p3.emc_adc_to_charge(measure, adc), charge)
+
+    tdc = ref_emc["tdc"]
+    time = ref_emc["time"]
+    assert np.allclose(p3.emc_tdc_to_time(tdc), time)

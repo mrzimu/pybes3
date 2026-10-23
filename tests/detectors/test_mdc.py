@@ -25,26 +25,10 @@ def test_mdc_index():
     assert np.all(p3.mdc_gid_to_west_y(ref_gid) == geom_table["west_y"])
     assert np.all(p3.mdc_gid_to_west_z(ref_gid) == geom_table["west_z"])
 
-    assert np.allclose(
-        p3.mdc_gid_z_to_x(ref_gid, geom_table["west_z"]),
-        geom_table["west_x"],
-        atol=1e-6,
-    )
-    assert np.allclose(
-        p3.mdc_gid_z_to_y(ref_gid, geom_table["west_z"]),
-        geom_table["west_y"],
-        atol=1e-6,
-    )
-    assert np.allclose(
-        p3.mdc_gid_z_to_x(ref_gid, geom_table["east_z"]),
-        geom_table["east_x"],
-        atol=1e-6,
-    )
-    assert np.allclose(
-        p3.mdc_gid_z_to_y(ref_gid, geom_table["east_z"]),
-        geom_table["east_y"],
-        atol=1e-6,
-    )
+    assert np.allclose(p3.mdc_gid_z_to_x(ref_gid, geom_table["west_z"]), geom_table["west_x"])
+    assert np.allclose(p3.mdc_gid_z_to_y(ref_gid, geom_table["west_z"]), geom_table["west_y"])
+    assert np.allclose(p3.mdc_gid_z_to_x(ref_gid, geom_table["east_z"]), geom_table["east_x"])
+    assert np.allclose(p3.mdc_gid_z_to_y(ref_gid, geom_table["east_z"]), geom_table["east_y"])
 
 
 def test_mdc_parse_gid():
@@ -92,3 +76,15 @@ def test_mdc_parse_gid():
         "is_stereo",
         "superlayer",
     ]
+
+
+def test_mdc_raw_data_util(raw_data_util_ref):
+    ref_mdc = raw_data_util_ref["mdc"]
+
+    adc = ref_mdc["adc"]
+    charge = ref_mdc["charge"]
+    assert np.allclose(p3.mdc_adc_to_charge(adc), charge)
+
+    tdc = ref_mdc["tdc"]
+    time = ref_mdc["time"]
+    assert np.allclose(p3.mdc_tdc_to_time(tdc), time)

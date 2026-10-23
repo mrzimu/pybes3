@@ -390,3 +390,18 @@ def emc_adc_to_charge(measure: IntLike, adc: IntLike) -> FloatLike:
         The charge of the crystal.
     """
     return _ufuncs.emc_adc_to_charge(measure, adc)
+
+
+def emc_tdc_to_time(tdc: IntLike) -> FloatLike:
+    """
+    Convert the TDC of an EMC hit to its time.
+
+    The conversion formula is `time = tdc * 50`, and the time is in ns.
+
+    Parameters:
+        tdc: The TDC channel number of the hit.
+
+    Returns:
+        The time of the hit, in ns.
+    """
+    return _ufuncs.emc_tdc_to_time(tdc)

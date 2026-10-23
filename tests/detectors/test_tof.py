@@ -131,3 +131,15 @@ def test_tof_hit_status_id_to_gid(test_data_dir: Path):
         test_gid_np = test_gid[i].to_numpy()
         ref_gid_np = ref_gid[i].to_numpy()
         assert np.isin(test_gid_np, ref_gid_np).all()
+
+
+def test_tof_raw_data_util(raw_data_util_ref):
+    ref_tof = raw_data_util_ref["tof"]
+
+    adc = ref_tof["adc"]
+    charge = ref_tof["charge"]
+    assert np.allclose(p3.tof_adc_to_charge(adc), charge)
+
+    tdc = ref_tof["tdc"]
+    time = ref_tof["time"]
+    assert np.allclose(p3.tof_tdc_to_time(tdc), time)

@@ -34,6 +34,7 @@ from pybes3.emc import (
     emc_gid_to_point_y,
     emc_gid_to_point_z,
     emc_gid_to_theta,
+    emc_tdc_to_time,
     get_emc_crystal_position,
     get_emc_geom_table,
     get_emc_gid,
@@ -55,6 +56,7 @@ from pybes3.mdc import (
     get_mdc_geom_table,
     get_mdc_gid,
     get_mdc_wire_position,
+    mdc_adc_to_charge,
     mdc_gid_to_east_x,
     mdc_gid_to_east_y,
     mdc_gid_to_east_z,
@@ -70,6 +72,7 @@ from pybes3.mdc import (
     mdc_gid_z_to_y,
     mdc_layer_to_is_stereo,
     mdc_layer_to_superlayer,
+    mdc_tdc_to_time,
     parse_mdc_gid,
 )
 from pybes3.muc import (
@@ -95,6 +98,7 @@ from pybes3.tof import (
     get_tof_gid,
     parse_tof_gid,
     parse_tof_hit_status,
+    tof_adc_to_charge,
     tof_gid_to_layer_or_module,
     tof_gid_to_part,
     tof_gid_to_phi_or_strip,
@@ -115,6 +119,7 @@ from pybes3.tof import (
     tof_hit_status_to_n_counter,
     tof_hit_status_to_n_east,
     tof_hit_status_to_n_west,
+    tof_tdc_to_time,
 )
 
 __all__ = [
@@ -151,6 +156,7 @@ __all__ = [
     "emc_gid_to_point_y",
     "emc_gid_to_point_z",
     "emc_gid_to_theta",
+    "emc_tdc_to_time",
     "get_cgem_geom_table",
     "get_cgem_gid",
     "get_emc_crystal_position",
@@ -168,6 +174,7 @@ __all__ = [
     "kappa_to_charge",
     "kappa_to_pt",
     "kappa_to_radius",
+    "mdc_adc_to_charge",
     "mdc_gid_to_east_x",
     "mdc_gid_to_east_y",
     "mdc_gid_to_east_z",
@@ -183,6 +190,7 @@ __all__ = [
     "mdc_gid_z_to_y",
     "mdc_layer_to_is_stereo",
     "mdc_layer_to_superlayer",
+    "mdc_tdc_to_time",
     "muc_gid_to_center_x",
     "muc_gid_to_center_y",
     "muc_gid_to_center_z",
@@ -205,6 +213,7 @@ __all__ = [
     "parse_tof_gid",
     "parse_tof_hit_status",
     "phi0_to_phi",
+    "tof_adc_to_charge",
     "tof_gid_to_layer_or_module",
     "tof_gid_to_part",
     "tof_gid_to_phi_or_strip",
@@ -225,5 +234,6 @@ __all__ = [
     "tof_hit_status_to_n_counter",
     "tof_hit_status_to_n_east",
     "tof_hit_status_to_n_west",
+    "tof_tdc_to_time",
     "version",
 ]

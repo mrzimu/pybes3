@@ -53,6 +53,8 @@ mdc_gid_to_east_y: _UFunc_Nin1_Nout1
 mdc_gid_to_east_z: _UFunc_Nin1_Nout1
 mdc_gid_z_to_x: _UFunc_Nin2_Nout1
 mdc_gid_z_to_y: _UFunc_Nin2_Nout1
+mdc_adc_to_charge: _UFunc_Nin1_Nout1
+mdc_tdc_to_time: _UFunc_Nin1_Nout1
 
 # detectors/tof.cc
 def _init_tof_geom(
@@ -83,6 +85,8 @@ tof_hit_status_to_n_east: _UFunc_Nin1_Nout1
 tof_hit_status_to_n_west: _UFunc_Nin1_Nout1
 tof_hit_status_to_is_mrpc: _UFunc_Nin1_Nout1
 tof_hit_status_id_to_gid: _UFunc_Nin2_Nout1
+tof_adc_to_charge: _UFunc_Nin1_Nout1
+tof_tdc_to_time: _UFunc_Nin1_Nout1
 
 # detectors/emc.cc
 def _init_emc_geom(
@@ -112,6 +116,7 @@ emc_gid_to_point_x: _UFunc_Nin2_Nout1
 emc_gid_to_point_y: _UFunc_Nin2_Nout1
 emc_gid_to_point_z: _UFunc_Nin2_Nout1
 emc_adc_to_charge: _UFunc_Nin2_Nout1
+emc_tdc_to_time: _UFunc_Nin1_Nout1
 
 # detectors/muc.cc
 def _init_muc_geom(
