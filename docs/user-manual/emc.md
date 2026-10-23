@@ -235,9 +235,9 @@ p3.emc_barrel_offset_2
 
 These constants are exported from `EmcRecGeoSvc` in `BOSS`.
 
-## Calculate charge (raw energy) with hit ADC information
+## Raw data conversion
 
-The charge, which is the raw energy of a hit, can be calculated with `emc_adc_to_charge`:
+The ADC measure/channel and the TDC channel numbers of a hit can be converted into charge (raw energy) and time with `emc_adc_to_charge` and `emc_tdc_to_time`:
 
 ```python
 import numpy as np
@@ -246,9 +246,12 @@ import pybes3 as p3
 measure = np.array([0, 1, 2, 3])
 adc = np.array([100, 200, 300, 400])
 charge = p3.emc_adc_to_charge(measure, adc)
+
+tdc = np.array([10, 20, 30, 40])
+time = p3.emc_tdc_to_time(tdc)
 ```
 
-The conversion formula is:
+The conversion formula of the charge is:
 
 $$
 \text{charge} = \frac{\text{adc}}{1024} \times E_{\text{measure}}
@@ -271,5 +274,17 @@ Note that `measure=3` indicates that the hit is saturated, and the charge is cal
 :::{admonition} Same as BOSS
 :class: hint
 
-EMC charge calculation is the same as the one given by `RawDataUtil::EmcCharge` in `BOSS`.
+EMC charge calculation is the same as the one given by `RawDataUtil::EmcCharge` in `BOSS`, except that the charge is in GeV in `pybes3`, while it is in MeV in `BOSS`.
+:::
+
+The conversion formula of the time is:
+
+$$
+\text{time} = \text{tdc} \times 50~\mathrm{ns}
+$$
+
+:::{admonition} Different from BOSS
+:class: warning
+
+EMC time calculation is different from the one given by `RawDataUtil` in `BOSS`. In `RawDataUtil` it simply multiplies the time channel number by 1 without any unit conversion, while in `pybes3` it multiplies by 50 ns.
 :::

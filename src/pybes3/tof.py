@@ -347,3 +347,35 @@ def parse_tof_hit_status(status: IntLike) -> ak.Array | dict[str, Any]:
         return ak.zip(res)
     else:
         return res
+
+
+def tof_adc_to_charge(adc: IntLike) -> FloatLike:
+    """
+    Convert the ADC of a TOF hit to its charge.
+
+    The conversion formula is `charge = (adc & 0x1fff) * 0.3`, i.e. only the lower
+    13 bits of the ADC word carry the charge channel number.
+
+    Parameters:
+        adc: The ADC channel number of the hit.
+
+    Returns:
+        The charge of the hit.
+    """
+    return _ufuncs.tof_adc_to_charge(adc)
+
+
+def tof_tdc_to_time(tdc: IntLike) -> FloatLike:
+    """
+    Convert the TDC of a TOF hit to its time.
+
+    The conversion formula is `time = tdc * 12000 / 499.8 / 8 / 1024`, and the time
+    is in ns.
+
+    Parameters:
+        tdc: The TDC channel number of the hit.
+
+    Returns:
+        The time of the hit, in ns.
+    """
+    return _ufuncs.tof_tdc_to_time(tdc)

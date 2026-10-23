@@ -189,6 +189,21 @@ namespace mdc {
         *out = _west_y[*gid] + _dy_dz[*gid] * ( *z - _west_z[*gid] );
     }
 
+    /* ------ RawDataUtil ------*/
+    constexpr double TDC_TO_TIME = 0.09375;
+
+    template <typename T>
+    inline void mdc_tdc_to_time( T* tdc, double* out ) noexcept {
+        *out = static_cast<double>( *tdc ) * TDC_TO_TIME;
+    }
+
+    // In BOSS there is no concrete physics unit of MDC charge,
+    // the raw channel number is used in reconstruction.
+    template <typename T>
+    inline void mdc_adc_to_charge( T* adc, double* out ) noexcept {
+        *out = static_cast<double>( *adc );
+    }
+
     void declare_mdc( PyObject* d ) {
         if ( _import_array() < 0 ) return;
         if ( _import_umath() < 0 ) return;
@@ -320,5 +335,25 @@ namespace mdc {
             mdc_gid_z_to_y<int32_t>,  //
             mdc_gid_z_to_y<uint64_t>, //
             mdc_gid_z_to_y<int64_t>>( d, "mdc_gid_z_to_y" );
+
+        /* ------ RawDataUtil ------ */
+
+        decl_ufunc_11<                   //
+            mdc_adc_to_charge<uint16_t>, //
+            mdc_adc_to_charge<int16_t>,  //
+            mdc_adc_to_charge<uint32_t>, //
+            mdc_adc_to_charge<int32_t>,  //
+            mdc_adc_to_charge<uint64_t>, //
+            mdc_adc_to_charge<int64_t>>  //
+            ( d, "mdc_adc_to_charge" );
+
+        decl_ufunc_11<                 //
+            mdc_tdc_to_time<uint16_t>, //
+            mdc_tdc_to_time<int16_t>,  //
+            mdc_tdc_to_time<uint32_t>, //
+            mdc_tdc_to_time<int32_t>,  //
+            mdc_tdc_to_time<uint64_t>, //
+            mdc_tdc_to_time<int64_t>>  //
+            ( d, "mdc_tdc_to_time" );
     }
 } // namespace mdc
