@@ -122,7 +122,7 @@ To read all data:
 >>> raw_data.fields
 ['evt_header', 'cgem', 'mdc', 'tof', 'emc', 'muc', 'trigGTD']
 >>> raw_data.cgem.fields
-['id', 'adc', 'tdc', 'time', 'charge']
+['m_intId', 'm_chargeChannel', 'm_timeChannel', 'm_time_ns', 'm_charge_fc']
 ```
 
 To read a portion of the file:

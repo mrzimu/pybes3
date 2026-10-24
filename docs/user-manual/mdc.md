@@ -266,3 +266,9 @@ $$
 :::{note}
 In BOSS there is no concrete physics unit of the MDC charge: the raw channel number is used in the reconstruction, hence `mdc_adc_to_charge` only casts the ADC to `float64`.
 :::
+
+:::{admonition} Same as BOSS
+:class: hint
+
+MDC charge and time calculations are the same as the ones given by `RawDataUtil::MdcCharge` and `RawDataUtil::MdcTime` in `BOSS`.
+:::
