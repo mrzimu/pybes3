@@ -312,3 +312,9 @@ is:
 $$
 \text{time} = \text{tdc} \times \frac{12000}{499.8 \times 8 \times 1024}~\mathrm{ns}
 $$
+
+:::{admonition} Same as BOSS
+:class: hint
+
+TOF charge and time calculations are the same as the ones given by `RawDataUtil::TofCharge` and `RawDataUtil::TofTime` in `BOSS`.
+:::
