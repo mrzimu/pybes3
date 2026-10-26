@@ -818,6 +818,8 @@ def test_parse_cgem_digi_rtraw(cgem_digi_event):
         "strip",
         "charge_channel",
         "time_channel",
+        "charge_fc",
+        "time_ns",
         "overflow",
         "track_index",
     ]
@@ -844,6 +846,8 @@ def test_parse_cgem_digi_raw(raw_event):
         "strip",
         "charge_channel",
         "time_channel",
+        "charge_fc",
+        "time_ns",
     ]
 
     ak_res = identifier.parse_cgem_digi(digi_ak)
