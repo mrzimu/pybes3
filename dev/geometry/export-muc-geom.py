@@ -2,10 +2,10 @@
 
 `ExportMucGeom` (from `dev/boss-algs`) has to be run in a BOSS environment, where
 `GDMLMANAGEMENTDATAROOT` is set. This script runs it directly, or reuses a CSV file
-exported earlier:
+exported earlier (e.g. by `dump_muc_strip_vtx` of this directory):
 
-    python dev/export-muc-geom.py                # run ExportMucGeom
-    python dev/export-muc-geom.py muc-vtx.csv    # reuse an exported CSV
+    python dev/geometry/export-muc-geom.py                # run ExportMucGeom
+    python dev/geometry/export-muc-geom.py muc-vtx.csv    # reuse an exported CSV
 """
 
 import subprocess
@@ -16,7 +16,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-OUTPUT = Path(__file__).resolve().parent.parent / "src" / "pybes3" / "data" / "muc_geom.npz"
+OUTPUT = Path(__file__).resolve().parents[2] / "src" / "pybes3" / "data" / "muc_geom.npz"
 
 if len(sys.argv) > 1:
     df = pd.read_csv(sys.argv[1])

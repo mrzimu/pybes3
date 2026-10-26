@@ -1,0 +1,5 @@
+# compiled export programs (run ./build.sh to generate them)
+/dump_tof_scin_vtx
+/dump_tof_mrpc
+/dump_muc_strip_vtx
+/dump_cgem_strip

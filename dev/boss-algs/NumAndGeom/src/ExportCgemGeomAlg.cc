@@ -2,7 +2,7 @@
 // Export the CGEM X-strip / V-strip geometry parameters straight from the BOSS
 // service ICgemGeomSvc.
 //
-//   == The same columns as pybes3's `dump_cgem_strip --simple` ==
+//   == The same columns as `dump_cgem_strip` (dev/geometry) ==
 //      layer,sheet,strip_type,strip,r,phi0,dphi,z0,dz,width,thick
 //
 //   All data comes from CgemGeomSvc (the single parametrised model shared by
