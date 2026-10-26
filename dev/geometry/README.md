@@ -240,7 +240,7 @@ gid,layer,sheet,strip_type,strip,r,phi0,dphi,z0,dz,width,thick
 | `z0` | most negative z of the centre line (cm) |
 | `dz` | total z change towards +z (>= 0), cm |
 | `width` | transverse width of the strip (cm): x strip = 0.058 in the arc direction; v strip = 0.013 in the **perpendicular** direction |
-| `thick` | **radial thickness** of the strip (cm) = readout Cu layer thickness = `rmax - rmin` of the strip shell; x strips = Cu2 shell, v strips = Cu1 shell, **0.0005 in the whole table** |
+| `thick` | **radial thickness** of the strip (cm): the read-out copper electrode of that layer, i.e. the Cu2 layer for the x strips (shell `Anode_X_Strip_solid<L>`) and the Cu1 layer for the v strips (shell `Anode_V_Strip_solid<L>`); it is the radial span `rmax - rmin` of that shell and equals `getOuterROfAnodeCu2()-getInnerROfAnodeCu2()` (x) / `getOuterROfAnodeCu1()-getInnerROfAnodeCu1()` (v) of `CgemGeomSvc`, **0.0005 in the whole table** (0.005 mm). It is *not* the `z` extent of a V shell slice, see below |
 
 - `(r, phi0, dphi, z0, dz)` give the centre line and `(width, thick)` the cross section ->
   the strip is uniquely reconstructed
@@ -281,9 +281,15 @@ Measured and cross checked:
   equation to 9e-7 mm (= the six-decimal rounding of the CSV)
 - `length` agrees exactly with the `z` of the X strip shell in the GDML (532 / 690 / 847)
 - `xpitch = 0.660` agrees with `dphi*rmin` of the X strip shell (0.6605 / 0.6605 / 0.6601 mm)
-- the V strip shell in the GDML is a **full thin ring** with `dphi = 360 deg` (0.094 / 0.166 /
-  0.154 mm thick) -- this models "a V strip as thousands of ring slices stacked along z, each
-  rotated a bit in phi so that they form a helical band" (`BesCgemConstruction.cc:1100-1210`)
+- `thick = 0.0005 cm` (0.005 mm) for **every** row, both for the X strips (Cu2) and the V
+  strips (Cu1): the shells `Anode_X_Strip_solid<L>` / `Anode_V_Strip_solid<L>` are exactly
+  the electrodes, `rmin` = inner radius (`rv` = `getInnerROfAnode()` for the V strips) and
+  `rmax = rmin + 0.005 mm`
+- the V strip shell is a **full ring** (`dphi = 360 deg`) of a few hundred micrometres **along
+  z**: its `z` attribute is 0.094 / 0.166 / 0.154 mm for layers 0/1/2. That is the length of
+  one helical slice, **not** a thickness (the radial span is the 0.005 mm above); it models
+  "a V strip as thousands of ring slices stacked along z, each rotated a bit in phi so that
+  they form a helical band" (`BesCgemConstruction.cc:1100-1210`)
 
 #### The same table from the BOSS service
 

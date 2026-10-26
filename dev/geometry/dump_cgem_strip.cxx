@@ -76,9 +76,16 @@
 //       dz         : total z change towards +z (>= 0), in cm
 //       width      : transverse width of the strip (cm); x strip = arc direction,
 //                    v strip = perpendicular direction
-//       thick      : *radial thickness* of the strip (cm) = rmax-rmin of the strip shell
-//                    (Anode_X_Strip_solid<L> / Anode_V_Strip_solid<L> in the GDML, i.e.
-//                     the thickness of the Cu electrode of that layer)
+//       thick      : *radial thickness* of the strip (cm) = rmax-rmin of the strip shell =
+//                    the read-out copper electrode of that layer, i.e. the Cu2 layer for
+//                    the X strips (Anode_X_Strip_solid<L>) and the Cu1 layer for the V
+//                    strips (Anode_V_Strip_solid<L>). It equals
+//                    getOuterROfAnodeCu2()-getInnerROfAnodeCu2() (X) /
+//                    getOuterROfAnodeCu1()-getInnerROfAnodeCu1() (V) of CgemGeomSvc, in
+//                    other words the same value ExportCgemGeomAlg writes (0.0005 cm for the
+//                    current model). NB: the `z` attribute of Anode_V_Strip_solid<L>
+//                    (0.094/0.166/0.154 mm) is the length of one helical slice along z and
+//                    is *not* this thickness.
 //     (r, phi0, dphi, z0, dz) give the centre line, (width, thick) give the cross section
 //     -> the strip is uniquely reconstructed; X strips run along z, hence dphi = 0 and
 //     dz = full sheet length.
@@ -169,6 +176,8 @@ struct Plane {
     double xminStrip;
     double vtot, vmin, vmax;
     double zref;      // reference end of the V line formula
+    double thickX;    // radial thickness of the X strip shell = Cu2 electrode thickness (mm)
+    double thickV;    // radial thickness of the V strip shell = Cu1 electrode thickness (mm)
     double clipXmin;  // xmin handed to the V calculator by the display (= phiFromXID(0)*Rmid
                       // - WStrip_X/2)
     double clipWidth; // width handed to the V calculator by the display (= arc length span of
@@ -415,6 +424,16 @@ int main( int argc, char** argv ) {
         double rV    = solidV[i].rmin;
         double rmid  = 0.5 * ( rX + rV );
         double width = rX * 2.0 * M_PI / L.nSheet; // sheet arc length (service formula)
+
+        // Radial span of the two shells. Anode_X_Strip_solid<L> is the Cu2 electrode and
+        // Anode_V_Strip_solid<L> the Cu1 electrode of that layer (rmin = inner radius, which
+        // the service calls getInnerROfAnodeCu2()/getInnerROfAnode(): RV ==
+        // getInnerROfAnode()), so rmax-rmin *is* the electrode thickness that
+        // ExportCgemGeomAlg exports as `thick` (0.005 mm = 0.0005 cm for the current model).
+        // Do not confuse it with the `z` attribute of Anode_V_Strip_solid<L>: that is the
+        // length of one helical slice along z (0.0943/0.1662/0.1544 mm), not a thickness.
+        double thickX = solidX[i].rmax - solidX[i].rmin;
+        double thickV = solidV[i].rmax - solidV[i].rmin;
         for ( int j = 0; j < L.nSheet; ++j )
         {
             Plane p;
@@ -440,9 +459,11 @@ int main( int argc, char** argv ) {
                           rX / rmid; // dX_start_strip
             p.vtot = p.nx * p.xpitch * std::cos( p.alpha ) +
                      L.lenLayer * std::fabs( std::sin( p.alpha ) );
-            p.vmin = ( p.vtot - p.nv * p.vpitch ) / 2.0;
-            p.vmax = p.vmin + p.nv * p.vpitch;
-            p.zref = ( p.k < 0 ) ? p.zmin : p.zmin + p.length; // z0 of getZFromXV
+            p.vmin   = ( p.vtot - p.nv * p.vpitch ) / 2.0;
+            p.vmax   = p.vmin + p.nv * p.vpitch;
+            p.zref   = ( p.k < 0 ) ? p.zmin : p.zmin + p.length; // z0 of getZFromXV
+            p.thickX = thickX;
+            p.thickV = thickV;
 
             // the two quantities the display hands to the V calculator
             // (CgemROOTGeo::InitGeometry)
@@ -455,15 +476,38 @@ int main( int argc, char** argv ) {
         }
     }
 
-    // cross checks of the layer constants against the GDML
+    // cross checks of the layer constants against the GDML: the layer length, the pitch and
+    // the electrode thicknesses (Cu2 for the X strips, Cu1 for the V strips) that the `thick`
+    // column carries
+    double thickXRef = 0.0, thickVRef = 0.0;
     for ( int i = 0; i < nLayer; ++i )
+    {
+        if ( i == 0 )
+        {
+            thickXRef = solidX[i].rmax - solidX[i].rmin;
+            thickVRef = solidV[i].rmax - solidV[i].rmin;
+        }
         fprintf( stderr,
                  "[info] layer%d cross check: L_Layer=%.1f vs GDML X shell z=%.4f (same layer "
                  "length); XPitch=%.4f vs GDML dphi*rmin=%.4f; V shell dphi=%.1f r=%.4f..%.4f "
-                 "z(slice)=%.4f\n",
+                 "(radial span = Cu1 thickness %.4f mm), V slice length along z=%.4f mm\n",
                  i, layers[i].lenLayer, solidX[i].z, layers[i].pitchX,
                  solidX[i].deltaphi / 180.0 * M_PI * solidX[i].rmin, solidV[i].deltaphi,
-                 solidV[i].rmin, solidV[i].rmax, solidV[i].z );
+                 solidV[i].rmin, solidV[i].rmax, solidV[i].rmax - solidV[i].rmin,
+                 solidV[i].z );
+        if ( solidX[i].rmax - solidX[i].rmin != thickXRef ||
+             solidV[i].rmax - solidV[i].rmin != thickVRef )
+            fprintf( stderr,
+                     "[warn] layer%d: the electrode thickness differs from layer 0 "
+                     "(Cu2 %.4f mm, Cu1 %.4f mm)\n",
+                     i, solidX[i].rmax - solidX[i].rmin, solidV[i].rmax - solidV[i].rmin );
+    }
+    fprintf( stderr,
+             "[info] electrode thickness written to `thick`: Cu2 (X strips) %.4f mm, Cu1 "
+             "(V strips) %.4f mm, i.e. %.4f cm - the same values as\n"
+             "       getOuterROfAnodeCu2()-getInnerROfAnodeCu2() and getOuterROfAnodeCu1()-"
+             "getInnerROfAnodeCu1() of CgemGeomSvc\n",
+             thickXRef, thickVRef, thickXRef / 10.0 );
 
     // ---------- 4) output the per-strip parameters ----------
     printf( "gid,layer,sheet,strip_type,strip,r,phi0,dphi,z0,dz,width,thick\n" );
@@ -483,11 +527,10 @@ int main( int argc, char** argv ) {
             double x =
                 ( s + 0.5 ) * p.xpitch + p.xminStrip + p.xmin; // getCentralXFromXID + m_Xmin
             double phi = x / p.rmid;                           // getPhiFromXID
-            // X strips run along z: dphi = 0, dz = full sheet length; thick = shell radial
-            // thickness
-            const double thick = ( solidX[p.layer].rmax - solidX[p.layer].rmin ) / 10.0;
+            // X strips run along z: dphi = 0, dz = full sheet length; thick = radial span of
+            // the Cu2 shell (electrode thickness)
             PrintStripRow( gid, p.layer, p.sheet, 0, s, p.rx / 10.0, phi, 0.0, p.zmin / 10.0,
-                           p.length / 10.0, p.wstripX / 10.0, thick );
+                           p.length / 10.0, p.wstripX / 10.0, p.thickX / 10.0 );
             ++gid;
             ++nX;
         }
@@ -538,9 +581,9 @@ int main( int argc, char** argv ) {
                 phZ  = ph1;
                 zZ   = z1;
             }
-            const double thick = ( solidV[p.layer].rmax - solidV[p.layer].rmin ) / 10.0;
+            // thick = radial span of the Cu1 shell (electrode thickness)
             PrintStripRow( gid, p.layer, p.sheet, 1, s, p.rv / 10.0, phi0, phZ - phi0,
-                           z0 / 10.0, ( zZ - z0 ) / 10.0, p.wstripV / 10.0, thick );
+                           z0 / 10.0, ( zZ - z0 ) / 10.0, p.wstripV / 10.0, p.thickV / 10.0 );
             ++gid;
             ++nV;
         }
