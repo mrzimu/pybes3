@@ -109,3 +109,10 @@ def new_pivot(request, raw_helix_arr):
         )
     else:
         yield (10, 10, 10)
+
+
+@pytest.fixture(scope="session")
+def particle_status_ref(test_data_dir):
+    yield uproot.open(test_data_dir / "ref_particle_status.root")["particle_status"].arrays(
+        filter_name=["status", "is*", "decay*"]
+    )

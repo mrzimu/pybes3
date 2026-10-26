@@ -52,6 +52,13 @@ from pybes3.helix import (
     phi0_to_phi,
 )
 from pybes3.io import concatenate, concatenate_raw, open, open_raw
+from pybes3.mc import (
+    parse_particle_status,
+    particle_decay_from_generator,
+    particle_decay_in_flight,
+    particle_is_leaf,
+    particle_is_primary,
+)
 from pybes3.mdc import (
     get_mdc_geom_table,
     get_mdc_gid,
@@ -210,8 +217,13 @@ __all__ = [
     "parse_emc_gid",
     "parse_mdc_gid",
     "parse_muc_gid",
+    "parse_particle_status",
     "parse_tof_gid",
     "parse_tof_hit_status",
+    "particle_decay_from_generator",
+    "particle_decay_in_flight",
+    "particle_is_leaf",
+    "particle_is_primary",
     "phi0_to_phi",
     "tof_adc_to_charge",
     "tof_gid_to_layer_or_module",

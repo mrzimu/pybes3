@@ -194,6 +194,18 @@
 .. autofunction:: pybes3.parse_muc_gid
 ```
 
+## Monte Carlo
+
+```{eval-rst}
+.. autofunction:: pybes3.particle_decay_from_generator
+
+.. autofunction:: pybes3.particle_decay_in_flight
+
+.. autofunction:: pybes3.particle_is_leaf
+
+.. autofunction:: pybes3.particle_is_primary
+```
+
 ## Helix
 
 ```{eval-rst}
