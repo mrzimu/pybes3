@@ -204,5 +204,5 @@ int main( int argc, char** argv ) {
             fprintf( stderr, " [%s]", s->c_str() );
         fprintf( stderr, "\n" );
     }
-    return ( nBad || nNotBox || nOk != nExpected ) ? 2 : 0;
+    return ( nBad || nNotBox || nOk != nExpected || nOk != 9152 ) ? 2 : 0;
 }
