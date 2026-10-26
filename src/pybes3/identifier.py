@@ -996,6 +996,8 @@ def parse_cgem_digi(
     - `time_channel`: Time channel.
     - `overflow`: Overflow flag.
     - `track_index`: Track index.
+    - `charge_fc`: Charge in fC.
+    - `time_ns`: Time in ns.
 
     Parameters:
         cgem_digi: The CGEM raw digi array.
@@ -1016,6 +1018,8 @@ def parse_cgem_digi(
         "strip": parsed_id["strip"],
         "charge_channel": charge_channel,
         "time_channel": time_channel,
+        "charge_fc": cgem_digi["m_charge_fc"],
+        "time_ns": cgem_digi["m_time_ns"],
     }
 
     _add_field_if_exist(cgem_digi, res, "m_overflow", "overflow")
