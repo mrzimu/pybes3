@@ -159,6 +159,7 @@ convention/gid
 :maxdepth: 1
 
 user-manual/data-reading
+user-manual/mc
 user-manual/mdc
 user-manual/tof
 user-manual/emc
@@ -183,4 +184,5 @@ api/pybes3.cgem
 api/pybes3.helix
 api/pybes3.identifier
 api/pybes3.digi_id
+api/pybes3.mc
 :::

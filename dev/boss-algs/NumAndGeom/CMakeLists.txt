@@ -49,6 +49,7 @@ gaudi_add_module(TestPybes3
         src/ExportEmcGeomAlg.cc
         src/ExportCgemGeomAlg.cc
         src/ExportRawDataUtilAlg.cc
+        src/ExportParticleStatusAlg.cc
     LINK
         Gaudi::GaudiKernel
         EventModel
@@ -60,4 +61,5 @@ gaudi_add_module(TestPybes3
         TrigEvent
         DstEvent
         CgemGeomSvcLib
+        McTruth
 )
