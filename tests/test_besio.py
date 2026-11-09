@@ -13,7 +13,7 @@ def test_uproot_branches(test_data_dir):
     assert len(f_only_mc_particles["Event/TMcEvent"].branches) == 6
 
 
-def test_mc_full(test_data_dir, backend):
+def test_mc_full(test_data_dir):
     f_rtraw = uproot.open(test_data_dir / "test_full_mc_evt_1.rtraw")
     truth_arr = ak.from_parquet(test_data_dir / "test_full_mc_evt_1.rtraw.parquet")
     arr = f_rtraw["Event"].arrays()
