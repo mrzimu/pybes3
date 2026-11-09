@@ -1,6 +1,7 @@
 import awkward as ak
 import pytest
 import uproot
+import uproot_custom
 
 import pybes3 as p3
 
@@ -13,10 +14,12 @@ def test_uproot_branches(test_data_dir):
     assert len(f_only_mc_particles["Event/TMcEvent"].branches) == 6
 
 
-def test_mc_full(test_data_dir):
+@pytest.mark.parametrize("backend", ["cpp", "python"])
+def test_mc_full(test_data_dir, backend):
     f_rtraw = uproot.open(test_data_dir / "test_full_mc_evt_1.rtraw")
     truth_arr = ak.from_parquet(test_data_dir / "test_full_mc_evt_1.rtraw.parquet")
-    arr = f_rtraw["Event"].arrays()
+    with uproot_custom.use_backend(backend):
+        arr = f_rtraw["Event"].arrays()
     assert len(arr) == 10
     assert ak.array_equal(arr, truth_arr, equal_nan=True)
 

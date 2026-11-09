@@ -78,7 +78,7 @@ class Bes3PyTObjArrayReader(uproot_custom.readers.python.IReader):
     def __init__(self, name, element_reader: uproot_custom.readers.python.IReader):
         super().__init__(name)
         self.element_reader = element_reader
-        self.offsets = array.array("I", [0])
+        self.offsets = array.array("q", [0])
 
     def read(self, stream):
         stream.skip_fNBytes()
@@ -221,7 +221,7 @@ class Bes3PyCgemClusterColReader(uproot_custom.readers.python.IReader):
 
         self.version = -1  # -1: unknown, 0: with recpositiony, 1: without recpositiony
 
-        self.offsets = array.array("I", [0])
+        self.offsets = array.array("q", [0])
         self.clusterid = array.array("i")
         self.trkid = array.array("i")
         self.layerid = array.array("i")
