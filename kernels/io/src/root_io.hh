@@ -15,13 +15,13 @@ SharedVector<T> make_shared_vector( Args&&... args ) {
 class Bes3TObjArrayReader : public IReader {
   private:
     SharedReader m_element_reader;
-    SharedVector<uint32_t> m_offsets;
+    SharedVector<int64_t> m_offsets;
 
   public:
     Bes3TObjArrayReader( std::string name, SharedReader element_reader )
         : IReader( name )
         , m_element_reader( element_reader )
-        , m_offsets( make_shared_vector<uint32_t>( 1, 0 ) ) {}
+        , m_offsets( make_shared_vector<int64_t>( 1, 0 ) ) {}
 
     void read( BinaryStream& stream ) override {
         debug_printf( "Bes3TObjArrayReader %s: reading...\n", m_name.c_str() );
@@ -117,7 +117,7 @@ class Bes3CgemClusterColReader : public IReader {
   private:
     int m_version{ -1 }; // -1: unknown, 0: with recpositiony, 1: without recpositiony
 
-    SharedVector<uint32_t> m_offsets;
+    SharedVector<int64_t> m_offsets;
     SharedVector<int32_t> m_clusterid;
     SharedVector<int32_t> m_trkid;
     SharedVector<int32_t> m_layerid;
@@ -134,7 +134,7 @@ class Bes3CgemClusterColReader : public IReader {
   public:
     Bes3CgemClusterColReader( std::string name )
         : IReader( name )
-        , m_offsets( make_shared_vector<uint32_t>( 1, 0 ) )
+        , m_offsets( make_shared_vector<int64_t>( 1, 0 ) )
         , m_clusterid( make_shared_vector<int32_t>() )
         , m_trkid( make_shared_vector<int32_t>() )
         , m_layerid( make_shared_vector<int32_t>() )
