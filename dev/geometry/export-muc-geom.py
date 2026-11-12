@@ -1,4 +1,5 @@
-"""Export the MUC strip geometry to `src/pybes3/data/muc_geom.npz`.
+"""
+Export the MUC strip geometry to `src/pybes3/data/muc_geom.npz`.
 
 `ExportMucGeom` (from `dev/boss-algs`) has to be run in a BOSS environment, where
 `GDMLMANAGEMENTDATAROOT` is set. This script runs it directly, or reuses a CSV file

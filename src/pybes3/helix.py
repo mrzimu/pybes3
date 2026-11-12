@@ -719,7 +719,9 @@ def _awk_change_pivot(helix_self, args, *, is_multi_trk: bool):
 
 
 def _helix_isclose_check_error(self_fields, other_fields):
-    """Emit a warning when only one side has an error matrix."""
+    """
+    Emit a warning when only one side has an error matrix.
+    """
     has_self = "error" in self_fields
     has_other = "error" in other_fields
     if xor(has_self, has_other):
