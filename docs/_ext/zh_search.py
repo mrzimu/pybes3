@@ -12,13 +12,22 @@ longest match over the terms that are actually in the index. That reproduces
 jieba's word boundaries without shipping a dictionary to the browser, and falls
 back to individual characters (always indexed) when nothing longer matches.
 
-It also drops the English stemmer. Sphinx appends
-``window.Stemmer = ChineseStemmer;`` to the bundled English stemmer for Chinese
-(`sphinx/search/__init__.py`, ``get_js_stemmer_code``), but the bundled file only
-defines ``EnglishStemmer``. That ``ReferenceError`` aborts the whole
-``language_data.js`` script, so no splitter is ever installed. With the stemmer
-disabled, both the index (Python) and the browser only lowercase the terms, which
-keeps them consistent.
+It also replaces the stemmer with an identity one, because the Python side only
+lowercases (see ``stem()`` below) and both sides must agree. Sphinx wires the
+browser stemmer differently across versions:
+
+- 8.x: ``SearchChinese.js_stemmer_code`` holds an English Porter stemmer, which
+  ``get_js_stemmer_code()`` returns whenever ``js_stemmer_rawcode`` is empty.
+  Leaving it inherited would stem browser queries (``reading`` -> ``read``)
+  against an index that only lowercased them.
+- 9.x: ``SearchChinese.js_stemmer_rawcode`` points at the bundled
+  ``english-stemmer.js``, and ``get_js_stemmer_code()`` appends
+  ``window.Stemmer = ChineseStemmer;`` although that file only defines
+  ``EnglishStemmer``. The resulting ``ReferenceError`` aborts the whole
+  ``language_data.js`` script, so the splitter below is never installed.
+
+``js_stemmer_code`` therefore defines an identity ``Stemmer`` explicitly and
+``js_stemmer_rawcode`` is cleared, which behaves the same on both majors.
 """
 
 from __future__ import annotations
@@ -29,6 +38,17 @@ from sphinx.search.zh import SearchChinese
 
 # CJK Unified Ideographs, Extension A and the compatibility block.
 _CJK_CHARACTER = re.compile(r"[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]")
+
+_JS_STEMMER = r"""
+/**
+ * Identity stemmer: keep in sync with `stem()` below, which only lowercases.
+ */
+var Stemmer = function () {
+  this.stemWord = function (w) {
+    return w;
+  };
+};
+"""
 
 _JS_SPLITTER = r"""
 /**
@@ -92,10 +112,11 @@ class SearchChineseWithSplitter(SearchChinese):
 
     js_splitter_code = _JS_SPLITTER
 
-    # Fall back to the identity stemmer shipped by ``SearchLanguage`` rather
-    # than the English one, whose generated alias is broken for Chinese (see
-    # the module docstring). ``stem()`` below keeps index and query in sync.
+    # Both must be set: an empty ``js_stemmer_rawcode`` alone falls back to the
+    # inherited ``js_stemmer_code``, which is the English Porter stemmer on
+    # Sphinx 8.x (see the module docstring).
     js_stemmer_rawcode = ""
+    js_stemmer_code = _JS_STEMMER
 
     def split(self, input: str) -> list[str]:
         words = super().split(input)

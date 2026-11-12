@@ -48,8 +48,12 @@ def test_sphinx_build(tmp_path, language, manual_snippet, index_snippet):
     language_data = (out_dir / "_static" / "language_data.js").read_text(encoding="utf-8")
     if language == "zh_CN":
         assert "var splitQuery" in language_data
-        # Sphinx appends `window.Stemmer = ChineseStemmer;` to the English stemmer
-        # file, which only defines `EnglishStemmer`; that aborts the script.
+        # The stemmer must be the identity one from `docs/_ext/zh_search.py`: the
+        # Python index only lowercases, so stemming in the browser would break
+        # the match. Sphinx 9 also emits a broken `ChineseStemmer` alias, and
+        # Sphinx 8 inherits the English Porter stemmer.
+        assert "Identity stemmer" in language_data
         assert "ChineseStemmer" not in language_data
+        assert "Porter" not in language_data
     else:
         assert "var splitQuery" not in language_data
