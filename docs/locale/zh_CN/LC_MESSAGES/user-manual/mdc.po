@@ -1,0 +1,141 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Pybes3 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Pybes3 0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 21:05+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/user-manual/mdc.md:1 27bb4e32d8db46479bffe4746f983b51
+msgid "MDC"
+msgstr "MDC"
+
+#: ../../docs/user-manual/mdc.md:3 dde73578f4c142a7b3e1d5b6e9c372b8
+msgid "GID conversion"
+msgstr "GID 转换"
+
+#: ../../docs/user-manual/mdc.md:5 48c3d59c1dc24e1d8d377b7256ce4840
+msgid ""
+"All `mdc_gid_to_*`, `mdc_layer_to_*` and `get_mdc_gid` are backed by "
+"compiled NumPy ufuncs. The calling convention is identical for scalar, "
+"NumPy array, and Awkward Array inputs:"
+msgstr ""
+"`mdc_gid_to_*`、`mdc_layer_to_*` 与 `get_mdc_gid` 都由编译好的 NumPy ufunc "
+"实现。标量、NumPy 数组与 Awkward Array 三种输入的调用方式完全一致："
+
+#: ../../docs/user-manual/mdc.md 09d40b84c6214b20917a4a046a666d67
+#: b87eae149d504a66bf334d178dffad91 f4d8ffc5f5cf4d03924c4a310f1758f7
+msgid "Scalar"
+msgstr "标量"
+
+#: ../../docs/user-manual/mdc.md 4f2316a232f1428fa1048dff6989e19b
+#: 919f65b55a094a2488e76bf813a98851 a3b62b51a6ef47aca784fd0644dbc145
+msgid "NumPy array"
+msgstr "NumPy 数组"
+
+#: ../../docs/user-manual/mdc.md 8340c8f51cff4127a718321f76125bfb
+#: d12290dc6d0541039e906e54b3e26e9d d526d9a309114433adc7cc33d73413fc
+msgid "Awkward Array"
+msgstr "Awkward Array"
+
+#: ../../docs/user-manual/mdc.md:78 db70c078eddc4bd79d18fba234da1d14
+msgid ""
+"`mdc_gid_to_stereo` returns the stereo type of the wire, which can be `0`"
+" (axial), `-1` for `west_phi < east_phi` and `1` for `west_phi > "
+"east_phi`."
+msgstr ""
+"`mdc_gid_to_stereo` 返回丝的 stereo 类型：`0` 表示 axial，`-1` 表示 `west_phi < "
+"east_phi`，`1` 表示 `west_phi > east_phi`。"
+
+#: ../../docs/user-manual/mdc.md:81 e0d231be05934fd69c6689d071b5a4b4
+msgid "Use `parse_mdc_gid` to parse all fields from a gid at once:"
+msgstr "用 `parse_mdc_gid` 一次性解析 gid 的所有字段："
+
+#: ../../docs/user-manual/mdc.md:110 bfc46bcde90f4faa834fc0414ffbacb3
+msgid ""
+"When the input is an `ak.Array`, the result is also an `ak.Array` with "
+"record fields."
+msgstr "当输入为 `ak.Array` 时，结果也是带 record 字段的 `ak.Array`。"
+
+#: ../../docs/user-manual/mdc.md:112 6cf003e229554583aff09b93d4163598
+msgid "Wire position"
+msgstr "丝的位置"
+
+#: ../../docs/user-manual/mdc.md:114 f02a5a6d7c5745bd84afb9eea41f0472
+msgid ""
+"All `mdc_gid_to_west_*`, `mdc_gid_to_east_*`, `mdc_gid_z_to_*` are also "
+"backed by compiled NumPy ufuncs."
+msgstr ""
+"`mdc_gid_to_west_*`、`mdc_gid_to_east_*` 与 `mdc_gid_z_to_*` 同样由编译好的 NumPy "
+"ufunc 实现。"
+
+#: ../../docs/user-manual/mdc.md:175 f0737f5c435746fda8bcbd89968d0754
+msgid ""
+"Get the x, y coordinates of a wire at a specific z position. "
+"`mdc_gid_z_to_x` / `mdc_gid_z_to_y` take two arguments (`gid` and `z`), "
+"both support scalar/array inputs independently:"
+msgstr ""
+"获取某条丝在给定 z 处的 x、y 坐标。`mdc_gid_z_to_x` / `mdc_gid_z_to_y` 接受两个参数（`gid` 与 "
+"`z`），两者都独立支持标量/数组输入："
+
+#: ../../docs/user-manual/mdc.md:232 93157349a250471e80d1b08065abfc4c
+msgid "Retrieve the full wire position table:"
+msgstr "获取完整的丝位置表："
+
+#: ../../docs/user-manual/mdc.md:245 9b793a2d433647a89be27d5dbb642c55
+msgid "Raw data conversion"
+msgstr "原始数据转换"
+
+#: ../../docs/user-manual/mdc.md:247 a7ec3490908e428484f725d873d5f072
+msgid ""
+"The ADC and the TDC channel numbers of a hit can be converted into charge"
+" and time with `mdc_adc_to_charge` and `mdc_tdc_to_time`:"
+msgstr "hit 的 ADC 与 TDC 道数可用 `mdc_adc_to_charge` 与 `mdc_tdc_to_time` 分别转换为电荷与时间："
+
+#: ../../docs/user-manual/mdc.md:260 25bd0c4b02f64a3bba4fb30a2c3e0edd
+msgid "The conversion formula of the time is:"
+msgstr "时间的换算公式为："
+
+#: ../../docs/user-manual/mdc.md:262 f06f8f9e108b4b5c8c0e68a1d459dd89
+#, python-brace-format
+msgid ""
+"\n"
+"\\text{time} = \\text{tdc} \\times 0.09375~\\mathrm{ns}\n"
+msgstr ""
+"\n"
+"\\text{time} = \\text{tdc} \\times 0.09375~\\mathrm{ns}\n"
+
+#: ../../docs/user-manual/mdc.md:267 3462f825300a4c57ba485b9d735087d9
+msgid ""
+"In BOSS there is no concrete physics unit of the MDC charge: the raw "
+"channel number is used in the reconstruction, hence `mdc_adc_to_charge` "
+"only casts the ADC to `float64`."
+msgstr ""
+"BOSS 中 MDC 的电荷没有具体的物理单位：重建时直接使用原始道数，因此 `mdc_adc_to_charge` 只是把 ADC 转成 "
+"`float64`。"
+
+#: ../../docs/user-manual/mdc.md:270 7c60e66808c64c10956bac729c071ffb
+msgid "Same as BOSS"
+msgstr "与 BOSS 一致"
+
+#: ../../docs/user-manual/mdc.md:273 c2a58037db024ae2a7158c26eb3014bd
+msgid ""
+"MDC charge and time calculations are the same as the ones given by "
+"`RawDataUtil::MdcCharge` and `RawDataUtil::MdcTime` in `BOSS`."
+msgstr ""
+"MDC 的电荷与时间计算与 `BOSS` 中 `RawDataUtil::MdcCharge` 和 `RawDataUtil::MdcTime` "
+"给出的结果一致。"
+

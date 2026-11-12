@@ -1,0 +1,41 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Pybes3 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Pybes3 0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 21:05+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/api/pybes3.md:1 6918fce4172b425d86ec0f823b2ce36a
+msgid "pybes3"
+msgstr "pybes3"
+
+#: ../../docs/api/pybes3.md:3 765968de93ae4063b2dae49bc68228aa
+msgid "IO"
+msgstr "IO"
+
+#: ../../docs/api/pybes3.md:15 26a66d7bd4e3496784e15748de61e55b
+msgid "Detectors"
+msgstr "探测器"
+
+#: ../../docs/api/pybes3.md:197 6e01056dcb4748f0a8f17cec2f2d4c54
+msgid "Monte Carlo"
+msgstr "蒙特卡罗"
+
+#: ../../docs/api/pybes3.md:209 2f54ac472cfe4cebad84642315ebea25
+msgid "Helix"
+msgstr "螺旋线参数"
+

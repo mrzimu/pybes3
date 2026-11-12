@@ -1,0 +1,246 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Pybes3 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Pybes3 0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 20:55+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/index.md:147
+msgid "Convention"
+msgstr "约定"
+
+#: ../../docs/index.md:39 ../../docs/index.md:156
+#: a04507ee52b54f92b69d483d1ac2133d
+msgid "User manual"
+msgstr "用户指南"
+
+#: ../../docs/index.md:172
+msgid "API Reference"
+msgstr "API 参考"
+
+#: ../../docs/index.md:1 c6a131252f49485fad12f02087e6c9c8
+msgid "Documentation for Pybes3"
+msgstr "Pybes3 文档"
+
+#: ../../docs/index.md:3 2a6619c4c5124e3ba8a0b4043d3f6f1c
+msgid ""
+"Pybes3 is a Python module that aims to make it easier for BES3 users to "
+"work with Python."
+msgstr "Pybes3 是一个 Python 模块，旨在让 BES3 用户更方便地用 Python 处理数据。"
+
+#: ../../docs/index.md:5 52de287a214e4f6cb8f53a90cdbb2952
+msgid "Help us improve Pybes3!"
+msgstr "帮助我们改进 Pybes3！"
+
+#: ../../docs/index.md:8 b959809adddc4473a84b40221dc18afa
+msgid ""
+"If you have any suggestions, questions, or issues, please feel free to "
+"[open an issue](https://github.com/mrzimu/pybes3/issues/new/choose)."
+msgstr ""
+"如果你有任何建议、疑问或问题，欢迎[提交 "
+"issue](https://github.com/mrzimu/pybes3/issues/new/choose)。"
+
+#: ../../docs/index.md:12 8f03645a1c164a75a03ea9e4e34acf54
+msgid "See Also"
+msgstr "另请参阅"
+
+#: ../../docs/index.md:15 641552bc76dc4de2b9a1b4f6e8de7beb
+msgid ""
+"It is highly recommended to take a look at these Python modules before "
+"using Pybes3:"
+msgstr "强烈建议在使用 Pybes3 之前先了解以下 Python 模块："
+
+#: ../../docs/index.md:17 9d77d55b909c4834b47e6fc514df686d
+msgid ""
+"[`awkward`](https://awkward-array.org/doc/stable/index.html): A Python "
+"module that can handle ragged-like array."
+msgstr ""
+"[`awkward`](https://awkward-"
+"array.org/doc/stable/index.html)：一个可处理不规则（ragged）数组的 Python 模块。"
+
+#: ../../docs/index.md:18 0d28b3fec36142c98933491bf2cfe68c
+msgid ""
+"[`uproot`](https://uproot.readthedocs.io/en/stable/): A ROOT I/O Python "
+"module. Pybes3 uses `uproot` to read BES3 ROOT files."
+msgstr ""
+"[`uproot`](https://uproot.readthedocs.io/en/stable/)：一个 ROOT I/O 的 Python"
+" 模块。Pybes3 使用 `uproot` 读取 BES3 的 ROOT 文件。"
+
+#: ../../docs/index.md:24 a8955988dc404689a474b3c480dcc472
+msgid "Install Pybes3 using pip"
+msgstr "使用 pip 安装 Pybes3"
+
+#: ../../docs/index.md:28 7761b6929818477d8bb692dc347ee3d3
+msgid "Get Pybes3 from PyPI."
+msgstr "从 PyPI 获取 Pybes3。"
+
+#: ../../docs/index.md:31 0791fe22e1384dafaa979112da7d367f
+msgid "Get started with user manual"
+msgstr "从用户指南开始"
+
+#: ../../docs/index.md:35 0d5a08f314164384be7e8db8e8ea5d68
+msgid "Learn how to read data and use detector utilities."
+msgstr "学习如何读取数据并使用探测器工具。"
+
+#: ../../docs/index.md:44 ../../docs/index.md:77
+#: 789a0f16a4f7443abe4d5111036addaa 9c72e8439cf3437a9b4b53ecb9d9327e
+msgid "Data reading"
+msgstr "数据读取"
+
+#: ../../docs/index.md:48 8047443e7f2f4d0a847d5e57bb907d08
+msgid "Read `rtraw`, `rec`, `dst`, and even `raw` files."
+msgstr "读取 `rtraw`、`rec`、`dst` 乃至 `raw` 文件。"
+
+#: ../../docs/index.md:51 23ede8e1f839450e8265769eba57ca7f
+msgid "Global ID (gid)"
+msgstr "全局 ID（gid）"
+
+#: ../../docs/index.md:55 95124a5ecb304e288ddf761d73f5ff49
+msgid "Zero-based global ID (gid) for detector elements in Pybes3."
+msgstr "Pybes3 中探测器元素的全局 ID（gid），从 0 开始。"
+
+#: ../../docs/index.md:58 d455113214ea403b91c28c9b72b36ff4
+msgid "BOSS identifier"
+msgstr "BOSS 探测器标识符"
+
+#: ../../docs/index.md:62 0189fae76ac34ee089e9aaabdafa41fb
+msgid "Convert BOSS detector identifier number to a human-readable format."
+msgstr "把 BOSS 探测器标识符编号转换为易读的形式。"
+
+#: ../../docs/index.md:65 c8f7eaeead93460ab4df1661fa5841a3
+msgid "Helix operations"
+msgstr "螺旋线参数操作"
+
+#: ../../docs/index.md:69 07cd20cadb7b4a46b156ab0b7c341de3
+msgid "Parse and transform helix parameters."
+msgstr "解析并变换螺旋线参数。"
+
+#: ../../docs/index.md:73 1d99054626f042b28fc02e9499a46a4f
+msgid "Performance"
+msgstr "性能"
+
+#: ../../docs/index.md:75 9951783d8c9743cf89d397b283062288
+msgid ""
+"Pybes3 is designed to be fast and efficient. It uses C++ to accelerate "
+"some of the operations, such as helix operations, detector identifier "
+"conversion, etc."
+msgstr "Pybes3 注重速度与效率，部分操作（如螺旋线参数运算、探测器标识符转换等）使用 C++ 加速。"
+
+#: ../../docs/index.md:79 41be3e383d764869ae70a014f34f1e99
+msgid ""
+"A simple benchmark compares the performance of Pybes3 and `BOSS8` in "
+"reading `dst` files:"
+msgstr "下面用一个简单基准比较 Pybes3 与 `BOSS8` 读取 `dst` 文件的性能："
+
+#: ../../docs/index.md:81 7efb966dde8d456c864b42a01583b2db
+msgid "For Pybes3, we directly read out the `Event` tree:"
+msgstr "对 Pybes3，直接读取 `Event` tree："
+
+#: ../../docs/index.md:93 0043b112c46247349aa3ddc61b4fb8d7
+msgid ""
+"For `BOSS8`, reading reconstruction data with the default job-options "
+"loads `RecMakerAlg` for each event, which slows down the reading "
+"performance significantly (4–5× slower than pure reading). We test 2 "
+"cases:"
+msgstr ""
+"对 `BOSS8`，用默认 job-options 读取重建数据会为每个事件加载 `RecMakerAlg`，显著拖慢读取速度（比纯读取慢 4–5"
+" 倍）。我们测试了 2 种情形："
+
+#: ../../docs/index.md:95 122db35ca24d4388b8bc673f50232b65
+msgid "A loop on all events **with** `RecMakerAlg` (default job-options):"
+msgstr "遍历所有事件并**加载** `RecMakerAlg`（默认 job-options）："
+
+#: ../../docs/index.md:106 a7c7559279f24602bf05929c51435324
+msgid ""
+"A loop on all events **without** `RecMakerAlg`. This is similar to "
+"reading `rtraw` files and is the closest case to raw ROOT reading:"
+msgstr "遍历所有事件且**不加载** `RecMakerAlg`。这类似于读取 `rtraw` 文件，是最接近原生 ROOT 读取的情形："
+
+#: ../../docs/index.md:119 591392d4c10340199d88135d1a9c2361
+msgid ""
+"The benchmark machine is an Intel i7-12700 with Great Wall GW7000 4TB "
+"SSD, running AlmaLinux OS 9 on WSL2. The number of events varies from "
+"1,000 to 1,000,000."
+msgstr ""
+"基准测试机器为 Intel i7-12700，搭配长城 GW7000 4TB SSD，在 WSL2 上运行 AlmaLinux OS 9。事件数从"
+" 1,000 到 1,000,000 不等。"
+
+#: ../../docs/index.md:121 6af6b54891254b05bf4edd3b2102e4cc
+msgid "The results are shown below:"
+msgstr "结果如下："
+
+#: ../../docs/index.md:130 932a6714cf4a4b339e6b7d0dd91dd770
+msgid "The linear fit results are:"
+msgstr "线性拟合结果如下："
+
+#: ../../docs/index.md:65 2d5c8c24e25e43ad92de0e0547b6ca62
+msgid "Initialization time (s)"
+msgstr "初始化时间（s）"
+
+#: ../../docs/index.md:65 93250a12ee9f49b6a76d29b9531c40a4
+msgid "Slope (s/10k-event)"
+msgstr "斜率（s/万事件）"
+
+#: ../../docs/index.md:65 2c1a06f7b81b47ca8034bc32dd57cb9c
+msgid "BOSS8 (with `RecMakerAlg`)"
+msgstr "BOSS8（加载 `RecMakerAlg`）"
+
+#: ../../docs/index.md:65 0f716ead6521401c819d16329dc45ab9
+msgid "0.615"
+msgstr "0.615"
+
+#: ../../docs/index.md:65 a837b1eae86b41b987ae7eef043d774c
+msgid "2.766"
+msgstr "2.766"
+
+#: ../../docs/index.md:65 86901fcf7414469c9461f768a9af741e
+msgid "BOSS8 (no `RecMakerAlg`)"
+msgstr "BOSS8（不加载 `RecMakerAlg`）"
+
+#: ../../docs/index.md:65 8ee80620bb7f4310b581233356967ac2
+msgid "0.451"
+msgstr "0.451"
+
+#: ../../docs/index.md:65 0c132f0d7f60494baebba8275eea1d41
+msgid "0.338"
+msgstr "0.338"
+
+#: ../../docs/index.md:65 a8959f5aafdb4bf6a831c301773ffab6
+msgid "Pybes3"
+msgstr "Pybes3"
+
+#: ../../docs/index.md:65 e599554872674c8fa0e1ee54021d298a
+msgid "1.135"
+msgstr "1.135"
+
+#: ../../docs/index.md:65 0fb7f22b2db3458d9b4aac952f74569b
+msgid "0.326"
+msgstr "0.326"
+
+#: ../../docs/index.md:138 37b872ce434f4bcc9baa682e8985c644
+msgid ""
+"The results show that Pybes3 achieves comparable performance to `BOSS8` "
+"when `RecMakerAlg` is not loaded—its reading speed is close to raw ROOT "
+"I/O. With default `BOSS8` settings (including `RecMakerAlg`), Pybes3 is "
+"several times faster. The only exception is very small datasets (~1,000 "
+"events), where Python module import and initialization overhead becomes "
+"noticeable."
+msgstr ""
+"结果表明，在未加载 `RecMakerAlg` 时，Pybes3 的性能与 `BOSS8` 相当——其读取速度接近原生 ROOT I/O。而在 "
+"`BOSS8` 的默认设置（包含 `RecMakerAlg`）下，Pybes3 快数倍。唯一的例外是极小的数据集（约 1,000 个事件），此时 "
+"Python 模块导入与初始化的开销比较明显。"
+

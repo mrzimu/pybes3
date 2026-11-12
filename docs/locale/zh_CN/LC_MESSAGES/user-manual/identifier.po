@@ -1,0 +1,98 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Pybes3 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Pybes3 0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 20:55+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/user-manual/identifier.md:1 82474230cf21467cb6bbce19c0c708b8
+msgid "Identifier"
+msgstr "标识符"
+
+#: ../../docs/user-manual/identifier.md:3 8c1da3e23c40401c9bc41f1aac415aed
+msgid ""
+"When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, "
+"`muc`, and `cgem` branches represents the electronics readout ID (TEID), "
+"also known as `Identifier` in `BOSS`. Pybes3 provides methods to parse "
+"and calculate the identifier for each detector."
+msgstr ""
+"读取 `TDigiEvent` 时，`mdc`、`tof`、`emc`、`muc` 与 `cgem` branch 中的 `m_intId` "
+"字段表示电子学读出 ID（TEID），即 `BOSS` 中的 `Identifier`。Pybes3 提供了各探测器的标识符解析与计算方法。"
+
+#: ../../docs/user-manual/identifier.md:5 99002823eb1740e787d873b2b7881fe4
+msgid "Identifier array parsing"
+msgstr "标识符数组解析"
+
+#: ../../docs/user-manual/identifier.md:18 fe33fc68f6d941e3a1903f804ce033ae
+msgid "Standalone identifier parsing"
+msgstr "单独解析标识符"
+
+#: ../../docs/user-manual/identifier.md:20 f730cbd7d9d34fe0b0b4c18bb0e3b3ba
+msgid ""
+"When full identifier array parsing is not necessary or not yet supported,"
+" use `parse_xxx_id` methods (where `xxx` is the detector name: `cgem`, "
+"`mdc`, `tof`, `emc`, `muc`) to parse only the identifier:"
+msgstr ""
+"当不需要或尚不支持完整的标识符数组解析时，可用 `parse_xxx_id` 方法（`xxx` "
+"为探测器名：`cgem`、`mdc`、`tof`、`emc`、`muc`）只解析标识符："
+
+#: ../../docs/user-manual/identifier.md:36 a1b9997fd84f4726b432d0534e7debbd
+msgid ""
+"`parse_mdc_id` and `parse_emc_id` currently return detector ID-related "
+"fields only."
+msgstr "`parse_mdc_id` 与 `parse_emc_id` 目前只返回与探测器 ID 相关的字段。"
+
+#: ../../docs/user-manual/identifier.md:39 1b5fbe55267246a08750b262e60d1955
+msgid "Convert identifier to a specific field"
+msgstr "把标识符转换为指定字段"
+
+#: ../../docs/user-manual/identifier.md:54 55e91d107f704eb291faf17ef8969955
+msgid ""
+"See the [Identifier API](../api/pybes3.identifier.md) for all available "
+"methods."
+msgstr "全部可用方法见[标识符 API](../api/pybes3.identifier.md)。"
+
+#: ../../docs/user-manual/identifier.md:56 f0b7bc2b947246e49ebd3fe78c77b3db
+msgid "Identifier calculation"
+msgstr "标识符计算"
+
+#: ../../docs/user-manual/identifier.md:58 839b018194d043818d5cf9969e5da52e
+msgid ""
+"To compute `m_intId` from geometry numbers, use `get_xxx_id` methods "
+"(where `xxx` is the detector name: `cgem`, `mdc`, `tof`, `emc`, `muc`):"
+msgstr ""
+"要由几何编号计算 `m_intId`，可用 `get_xxx_id` 方法（`xxx` "
+"为探测器名：`cgem`、`mdc`、`tof`、`emc`、`muc`）："
+
+#: ../../docs/user-manual/identifier.md:74 a9dbb61bc8ca4aed9d510102f54841e2
+msgid "Pybes3 uses a different convention for the TOF `part` number:"
+msgstr "Pybes3 对 TOF 的 `part` 编号采用不同的约定："
+
+#: ../../docs/user-manual/identifier.md:76 8047a2bd2f954dda8f4b2489c7698435
+msgid "`0`, `1`, `2` for scintillator endcap 0, barrel, and endcap 1"
+msgstr "`0`、`1`、`2` 分别表示闪烁体端盖 0、桶部、端盖 1"
+
+#: ../../docs/user-manual/identifier.md:77 9c69e95f9ed94be79c6daf18e07321cf
+msgid "`3`, `4` for MRPC endcap 0 and endcap 1"
+msgstr "`3`、`4` 分别表示 MRPC 端盖 0 与端盖 1"
+
+#: ../../docs/user-manual/identifier.md:79 2b07cf54aff94ada8c8a0bef887f7b2a
+msgid ""
+"With this convention, TOF ID information can be decoded into 4 fields: "
+"`part`, `layer_or_module`, `phi_or_strip`, and `end`."
+msgstr "按此约定，TOF ID 信息可以解码为 4 个字段：`part`、`layer_or_module`、`phi_or_strip` 与 `end`。"
+

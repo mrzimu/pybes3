@@ -18,9 +18,12 @@ repos:
           )
       - id: debug-statements
       - id: end-of-file-fixer
+        exclude: ^docs/locale/
       - id: mixed-line-ending
+        exclude: ^docs/locale/
       - id: requirements-txt-fixer
       - id: trailing-whitespace
+        exclude: ^docs/locale/
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.17.3

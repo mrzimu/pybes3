@@ -21,7 +21,7 @@ dev = [
   "dask-awkward",
   "dask[complete]"
 ]
-docs = ["furo", "myst-parser", "sphinx", "sphinx-autobuild", "sphinx-copybutton", "sphinx-design"]
+docs = ["furo", "jieba", "myst-parser", "sphinx", "sphinx-autobuild", "sphinx-copybutton", "sphinx-design", "sphinx-intl"]
 
 [project]
 authors = [{ name = "Mingrun Li", email = "mrun_lee@foxmail.com" }]
@@ -48,7 +48,7 @@ dependencies = [
   "uproot-custom==2.5.*",
   "numpy==2.*"
 ]
-description = "A Python module for BES3 experiment"
+description = "A Python module that aims to make it easier for BES3 users to work with Python."
 dynamic = ["version"]
 name = "pybes3"
 readme = "README.md"

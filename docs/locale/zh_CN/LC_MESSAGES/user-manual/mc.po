@@ -1,0 +1,81 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Pybes3 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Pybes3 0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 21:05+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/user-manual/mc.md:1 4b74feaf2faf4be5afeb7d29f5070b40
+msgid "Monte Carlo"
+msgstr "蒙特卡罗"
+
+#: ../../docs/user-manual/mc.md:3 28e122e7f8c5466f9b27a724353c2af2
+msgid "Particle status"
+msgstr "粒子状态"
+
+#: ../../docs/user-manual/mc.md:5 a6dc5ae5c7ef4807be9ab0f608dc8fd4
+msgid ""
+"The status of an MC particle is the `m_statusFlags` branch of "
+"`TMcEvent/m_mcParticleCol` in a DST:"
+msgstr "MC 粒子的状态是 DST 中 `TMcEvent/m_mcParticleCol` 的 `m_statusFlags` branch："
+
+#: ../../docs/user-manual/mc.md:17 4abe63fbb2404fe494f535f4ffb288dc
+msgid ""
+"It is a bit field defined by BOSS as `Event::McParticle::StatusBits`: bit"
+" 0 `DECAYED` (the particle comes from the generator), bit 1 `DECAYFLT` "
+"(produced in flight by Geant4), bit 2 `PRIMARY` and bit 3 `LEAF` (no "
+"daughter). Several bits can be set at the same time, e.g. `5` is `PRIMARY"
+" | DECAYED`."
+msgstr ""
+"它是由 BOSS 定义为 `Event::McParticle::StatusBits` 的位字段：bit 0 "
+"`DECAYED`（粒子来自产生子）、bit 1 `DECAYFLT`（由 Geant4 在飞行中产生）、bit 2 `PRIMARY`、bit "
+"3 `LEAF`（无子粒子）。多个位可以同时置位，例如 `5` 表示 `PRIMARY | DECAYED`。"
+
+#: ../../docs/user-manual/mc.md:22 9cd93847b21a45228bde6304b52f9a88
+msgid ""
+"`particle_is_primary`, `particle_is_leaf`, "
+"`particle_decay_from_generator` and `particle_decay_in_flight` decode "
+"them one by one. The calling convention is identical for scalar, NumPy "
+"array, and Awkward Array inputs:"
+msgstr ""
+"`particle_is_primary`、`particle_is_leaf`、`particle_decay_from_generator` "
+"与 `particle_decay_in_flight` 逐个解码这些标志位。标量、NumPy 数组与 Awkward Array "
+"三种输入的调用方式完全一致："
+
+#: ../../docs/user-manual/mc.md dbbf68ab5e844f298a1f2d0bd71ba48f
+msgid "Scalar"
+msgstr "标量"
+
+#: ../../docs/user-manual/mc.md b364d7606fa5423bb826ef82fd0f0461
+msgid "NumPy array"
+msgstr "NumPy 数组"
+
+#: ../../docs/user-manual/mc.md e15d2a1dfbbf48579ddd2231c1f4ec97
+msgid "Awkward Array"
+msgstr "Awkward Array"
+
+#: ../../docs/user-manual/mc.md:74 8f9fbd7a34ac429e82987b4d28ddc242
+msgid ""
+"`parse_particle_status` (in `pybes3.mc`, not re-exported at the top "
+"level) decodes all flags at once. It returns a `dict` for scalar and "
+"NumPy input, and an `ak.Array` with the fields `is_primary`, `is_leaf`, "
+"`decay_from_generator` and `decay_in_flight` for Awkward input:"
+msgstr ""
+"`parse_particle_status`（位于 `pybes3.mc`，未在顶层重新导出）一次性解码所有标志位。对标量与 NumPy "
+"输入返回 `dict`，对 Awkward 输入返回带 `is_primary`、`is_leaf`、`decay_from_generator`"
+" 与 `decay_in_flight` 字段的 `ak.Array`："
+

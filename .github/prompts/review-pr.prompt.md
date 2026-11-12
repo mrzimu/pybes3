@@ -31,7 +31,7 @@ Provide a concise overview:
 Check adherence to the conventions documented in `.github/` and the repo:
 
 - **Deprecation pattern**: When renaming a public function, keep the old name with a `DeprecationWarning` and `stacklevel=2`, and preserve the docstring reference in `docs/api/pybes3.md`.
-- **Docstrings**: All public functions must have NumPy-style docstrings. New modules must be registered in `docs/api/pybes3.md`.
+- **Docstrings**: All public modules, classes, and functions must have Google-style docstrings (`Parameters:` / `Returns:` / `Raises:` sections) written in Markdown, with the triple quotes on their own lines (see `AGENTS.md`). New modules must be registered in `docs/api/pybes3.md`.
 - **Tests**: New features need tests in `tests/`. Run `uv run pytest ./tests/` to verify.
 
 ## Step 4: Python code quality review

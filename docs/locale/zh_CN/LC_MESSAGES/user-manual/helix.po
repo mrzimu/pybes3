@@ -1,0 +1,494 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Pybes3 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Pybes3 0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 21:05+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/user-manual/helix.md:1 6a952d10b79d42818f69f3d79080a27d
+msgid "Helix Operations"
+msgstr "螺旋线参数操作"
+
+#: ../../docs/user-manual/helix.md:3 235179a95ee6495c8d38a87cd63d30f1
+msgid ""
+"In BES3, a helix is represented by 5 parameters: `dr`, `phi0`, `kappa`, "
+"`dz`, `tanl`. Pybes3 provides a convenient way to parse these parameters "
+"and perform pivot transformations with parameters and error matrices."
+msgstr ""
+"在 BES3 中，螺旋线（helix）由 5 个参数表示：`dr`、`phi0`、`kappa`、`dz`、`tanl`。Pybes3 "
+"提供了便捷的方式来解析这些参数，并用参数与误差矩阵做 pivot 变换。"
+
+#: ../../docs/user-manual/helix.md:5 f4a6acccc964454d9f5ffae61beb5048
+msgid ""
+"The implementation depends on "
+"[`vector`](https://vector.readthedocs.io/en/latest/). It is recommended "
+"to review [Vector "
+"objects](https://vector.readthedocs.io/en/latest/src/object.html) and "
+"[Awkward Arrays of "
+"vectors](https://vector.readthedocs.io/en/latest/src/awkward.html) before"
+" using helix objects, as they are used to represent helix position, "
+"momentum, and pivot point."
+msgstr ""
+"实现依赖 [`vector`](https://vector.readthedocs.io/en/latest/)。建议在使用 helix "
+"对象之前先了解 [Vector "
+"objects](https://vector.readthedocs.io/en/latest/src/object.html) 与 "
+"[Awkward Arrays of "
+"vectors](https://vector.readthedocs.io/en/latest/src/awkward.html)，因为它们用于表示"
+" helix 的位置、动量与 pivot 点。"
+
+#: ../../docs/user-manual/helix.md:7 9205fa1bdffa4358a0aeed5344ad6198
+msgid "Transformation rules"
+msgstr "变换规则"
+
+#: ../../docs/user-manual/helix.md:9 5fc2eda1bb204939bb3a988fad554a66
+msgid "The implementation follows these formulas:"
+msgstr "实现遵循以下公式："
+
+#: ../../docs/user-manual/helix.md:11 9011621d61a84aea9318f43b52a952cf
+#, python-brace-format
+msgid "Position $[\\mathrm{cm}]$:"
+msgstr "位置 $[\\mathrm{cm}]$："
+
+#: ../../docs/user-manual/helix.md:12 9ea8fbc0784f4c938f1490c50494b9fe
+msgid "$x = x_0 + dr \\times \\cos \\varphi_0$"
+msgstr "$x = x_0 + dr \\times \\cos \\varphi_0$"
+
+#: ../../docs/user-manual/helix.md:13 867d4c753e904cb096f0bc5583af13bb
+msgid "$y = y_0 + dr \\times \\sin \\varphi_0$"
+msgstr "$y = y_0 + dr \\times \\sin \\varphi_0$"
+
+#: ../../docs/user-manual/helix.md:14 965882cc4956418a818903beaa3a3342
+msgid "$z = z_0 + dz$"
+msgstr "$z = z_0 + dz$"
+
+#: ../../docs/user-manual/helix.md:16 287e5b4239a44c6b89a4c8ffc93d8124
+#, python-brace-format
+msgid "Momentum $[\\mathrm{GeV}/c]$:"
+msgstr "动量 $[\\mathrm{GeV}/c]$："
+
+#: ../../docs/user-manual/helix.md:17 07d7ac2e44514e47a5580ec24a6e191a
+#, python-brace-format
+msgid "$p_t = \\frac{1}{\\left| \\kappa \\right|}$"
+msgstr "$p_t = \\frac{1}{\\left| \\kappa \\right|}$"
+
+#: ../../docs/user-manual/helix.md:18 5b7a92e1f7bf42c78e5d86cabd449b2b
+#, python-brace-format
+msgid "$\\varphi = \\varphi_0 + \\frac{\\pi}{2}$"
+msgstr "$\\varphi = \\varphi_0 + \\frac{\\pi}{2}$"
+
+#: ../../docs/user-manual/helix.md:19 fb7c497658b24788bd905a141d63089e
+msgid "$p_x = p_t \\times \\cos(\\varphi)$"
+msgstr "$p_x = p_t \\times \\cos(\\varphi)$"
+
+#: ../../docs/user-manual/helix.md:20 0717529561284b50841bfb087056f90c
+msgid "$p_y = p_t \\times \\sin(\\varphi)$"
+msgstr "$p_y = p_t \\times \\sin(\\varphi)$"
+
+#: ../../docs/user-manual/helix.md:21 825945c38ddf4b208b5d4f80220d1bc0
+msgid "$p_z = p_t \\times \\tan\\lambda$"
+msgstr "$p_z = p_t \\times \\tan\\lambda$"
+
+#: ../../docs/user-manual/helix.md:23 79cc617849234e0aa97c15c9a42a25ad
+msgid "Others:"
+msgstr "其他："
+
+#: ../../docs/user-manual/helix.md:24 08fa608f441b4aaa9d9207a2a0527d23
+#, python-brace-format
+msgid "$\\mathrm{charge} = \\mathrm{sign}(\\kappa)$"
+msgstr "$\\mathrm{charge} = \\mathrm{sign}(\\kappa)$"
+
+#: ../../docs/user-manual/helix.md:25 1303912d6ea5434783186cb7fa90556f
+msgid ""
+"$r_{\\mathrm{trk}} \\ [\\mathrm{cm}] = \\frac{1000}{2.99792458} \\times "
+"p_t \\ [\\mathrm{GeV}/c]$"
+msgstr ""
+"$r_{\\mathrm{trk}} \\ [\\mathrm{cm}] = \\frac{1000}{2.99792458} \\times "
+"p_t \\ [\\mathrm{GeV}/c]$"
+
+#: ../../docs/user-manual/helix.md:27 3df4d06bd91a47f5ac40a1afbbf26fa9
+msgid "The magnetic field in BES3 is assumed to be 1 T."
+msgstr "BES3 中的磁场按 1 T 处理。"
+
+#: ../../docs/user-manual/helix.md:29 58086b6813334d2d82784a88e5086657
+msgid "Create helix"
+msgstr "创建 helix"
+
+#: ../../docs/user-manual/helix.md:31 9a6510239dc04504b1505450f8afc93b
+msgid "From helix parameters (single track)"
+msgstr "由 helix 参数创建（单条径迹）"
+
+#: ../../docs/user-manual/helix.md:33 81e0f89c34914a24bd1a3e82842e8e5b
+msgid "For a single track, use `pybes3.helix_obj`:"
+msgstr "单条径迹请用 `pybes3.helix_obj`："
+
+#: ../../docs/user-manual/helix.md:45 0716438d6a0642fd91bff4e6048e6042
+msgid ""
+"When `error` is not provided, it defaults to `None`. When `pivot` is not "
+"provided, it defaults to `(0, 0, 0)`."
+msgstr "不提供 `error` 时默认为 `None`；不提供 `pivot` 时默认为 `(0, 0, 0)`。"
+
+#: ../../docs/user-manual/helix.md:48 cab14b880c8c47f498ff8471d8831d3e
+msgid "Overload of `helix_obj`"
+msgstr "`helix_obj` 的重载"
+
+#: ../../docs/user-manual/helix.md:51 bdf9be8b84da4693b7068b38af4efe82
+msgid ""
+"When calling `helix_obj`, you can pass the helix parameters and initial "
+"pivot point in different ways:"
+msgstr "调用 `helix_obj` 时，可以用不同方式传入 helix 参数与初始 pivot 点："
+
+#: ../../docs/user-manual/helix.md 3099bc9fbb9342e5bfd25b6fcb379a18
+msgid "Helix parameters"
+msgstr "helix 参数"
+
+#: ../../docs/user-manual/helix.md:59 fb8ca31e59f9404da8dda11d229d9860
+msgid "You can specify the helix parameters in two ways:"
+msgstr "可以用两种方式指定 helix 参数："
+
+#: ../../docs/user-manual/helix.md ../../docs/user-manual/helix.md:401
+#: 1133ba304d114db09b0a517c2c15520c a503930537584bb3bfeed3b183a78bbe
+msgid "Pivot point"
+msgstr "pivot 点"
+
+#: ../../docs/user-manual/helix.md:73 5a23213e71f54d38b9541005f1026ad1
+msgid "You can specify the initial pivot point in different ways:"
+msgstr "可以用不同方式指定初始 pivot 点："
+
+#: ../../docs/user-manual/helix.md:87 4edb2c311b6842bbb586c18586ef7dee
+msgid "From helix parameters (array)"
+msgstr "由 helix 参数创建（数组）"
+
+#: ../../docs/user-manual/helix.md:90 e544249b9796465eb5030b1e53d9e1ed
+msgid ""
+"You must import `pybes3` before creating a helix array, even if the "
+"creation does not directly use any Pybes3 functions."
+msgstr "创建 helix 数组之前必须先导入 `pybes3`，即使创建过程并不直接调用任何 Pybes3 函数。"
+
+#: ../../docs/user-manual/helix.md:93 19cfd46ea50941a2bcc1fe3185fb2430
+msgid ""
+"The helix array is implemented with awkward's [\"behavior\" "
+"mechanism](https://awkward-"
+"array.org/doc/main/reference/ak.behavior.html). You can create a helix "
+"array via `pybes3.helix_awk`, or directly create an awkward array with "
+"the `Bes3Helix` behavior."
+msgstr ""
+"helix 数组基于 awkward 的 [\"behavior\" 机制](https://awkward-"
+"array.org/doc/main/reference/ak.behavior.html)实现。你可以通过 `pybes3.helix_awk`"
+" 创建 helix 数组，也可以直接创建带 `Bes3Helix` behavior 的 awkward 数组。"
+
+#: ../../docs/user-manual/helix.md:95 68e9203302c342778bb7304f50bb8e33
+msgid "A common use case is reading helix parameters from a BES3 file:"
+msgstr "一个常见场景是从 BES3 文件读取 helix 参数："
+
+#: ../../docs/user-manual/helix.md:114 a7094a0dee8f4555b7b3253d65a59fe7
+msgid "This overload of `helix_awk` follows such convention:"
+msgstr "`helix_awk` 的这一重载遵循该约定："
+
+#: ../../docs/user-manual/helix.md:125 4cbbfcacfdca4ac6a5fdac43bedeab43
+msgid ""
+"If you want to specify the helix parameters directly, pass them as "
+"keyword arguments:"
+msgstr "如果希望直接指定 helix 参数，请以关键字参数传入："
+
+#: ../../docs/user-manual/helix.md:150 f140b841f7b74c538bb0223895513267
+msgid ""
+"Since each track has a `5x5` error matrix, if a track array has shape "
+"`(n, var)`, the error matrix should have shape `(n, var, 5, 5)`."
+msgstr "每条径迹都有一个 `5x5` 误差矩阵，因此若径迹数组的形状为 `(n, var)`，误差矩阵的形状应为 `(n, var, 5, 5)`。"
+
+#: ../../docs/user-manual/helix.md:153 b458c1705ca44369b208f0e6d887cd22
+msgid "You can also specify the initial pivot point:"
+msgstr "也可以指定初始 pivot 点："
+
+#: ../../docs/user-manual/helix.md:167 47dc060440c9493b9744e2197b833c19
+msgid "Different types of pivot point"
+msgstr "不同类型的 pivot 点"
+
+#: ../../docs/user-manual/helix.md:170 14a48c5685bb4f31a310dcfadb435a08
+msgid "The `pivot` can be specified in different ways when using `helix_awk`:"
+msgstr "使用 `helix_awk` 时，`pivot` 可以用不同方式指定："
+
+#: ../../docs/user-manual/helix.md:172 e766987bd5a444a7869aa24031faf607
+msgid "As a tuple or `Vector3D` object"
+msgstr "以元组或 `Vector3D` 对象"
+
+#: ../../docs/user-manual/helix.md:174 61371a7375904e2882494296befee899
+msgid ""
+"If all tracks share the same pivot point, you can specify it as a tuple "
+"or a `Vector3D` object:"
+msgstr "若所有径迹共用同一个 pivot 点，可以用元组或 `Vector3D` 对象指定："
+
+#: ../../docs/user-manual/helix.md:185 a1d1763c88a44dcfa1d0d2720fee1642
+msgid "As an awkward array"
+msgstr "以 awkward 数组"
+
+#: ../../docs/user-manual/helix.md:187 c54e3e3123d44bde95da6d0f18c3f61b
+msgid ""
+"If you have different pivot points for each track, you can provide a "
+"`Vector3D` awkward array:"
+msgstr "若每条径迹的 pivot 点不同，可以传入 `Vector3D` 的 awkward 数组："
+
+#: ../../docs/user-manual/helix.md f4ba09b0b25b4c22816173b5b4696bb7
+msgid "Directly create helix array"
+msgstr "直接创建 helix 数组"
+
+#: ../../docs/user-manual/helix.md:201 8c1d1317ce714a4bb7edf8763cc3aa7b
+msgid "To create a helix array directly, first import necessary modules:"
+msgstr "直接创建 helix 数组时，先导入必要的模块："
+
+#: ../../docs/user-manual/helix.md:208 f5ccd28c35f347f3ab12825f437ff036
+msgid "Prepare helix parameters:"
+msgstr "准备 helix 参数："
+
+#: ../../docs/user-manual/helix.md:218 c147491a96454ef2a40856dff203a954
+msgid "Prepare initial pivot point:"
+msgstr "准备初始 pivot 点："
+
+#: ../../docs/user-manual/helix.md:228 8ce1f39cc6234a37bd7456c23ca6281f
+msgid "Create helix array (with no error matrix)"
+msgstr "创建 helix 数组（不含误差矩阵）"
+
+#: ../../docs/user-manual/helix.md:241 4d87430845d94e2d903b7dd4380f8902
+msgid "Optionally, you can also create an error matrix."
+msgstr "也可以选择性地创建误差矩阵。"
+
+#: ../../docs/user-manual/helix.md:258 523531de976743af97227f332750f54c
+msgid "Create helix from physics parameters"
+msgstr "由物理量创建 helix"
+
+#: ../../docs/user-manual/helix.md:260 4afe0f4e5abe44a39b0cc4465de50dbc
+msgid ""
+"You can also create a helix from position, momentum, and charge. Pass "
+"these parameters to `pybes3.helix_obj` or `pybes3.helix_awk`, and Pybes3 "
+"will automatically calculate the helix parameters."
+msgstr ""
+"你也可以由位置、动量与电荷创建 helix。把这些参数传给 `pybes3.helix_obj` 或 "
+"`pybes3.helix_awk`，Pybes3 会自动计算 helix 参数。"
+
+#: ../../docs/user-manual/helix.md 02d817823b8843dfa33efbce17155809
+#: 3ac82136a61d4c2e9eefe51d31a22a17 bf82ce9dcb4145daa3b1054cabdd6579
+msgid "Object"
+msgstr "对象"
+
+#: ../../docs/user-manual/helix.md:268 eb835e6bf0cb4b2f8648901df449ad0b
+msgid "To create a helix object, use:"
+msgstr "创建 helix 对象："
+
+#: ../../docs/user-manual/helix.md:280 374499c1b80c416591c92f55df882cd6
+msgid ""
+"where `charge` should be `1` or `-1`, and the `pivot` defaults to `(0, 0,"
+" 0)` if not provided."
+msgstr "其中 `charge` 应为 `1` 或 `-1`，若不提供 `pivot` 则默认为 `(0, 0, 0)`。"
+
+#: ../../docs/user-manual/helix.md 1734656ca8144ac39788603df6fc3532
+#: c7c7c230c8a84d24b5f2e5e7875c9796 f1c5f2ef0112431aa4e80eff5f2c0024
+msgid "Array"
+msgstr "数组"
+
+#: ../../docs/user-manual/helix.md:286 f50e4eefd2404115898e5e90c8365f16
+msgid "To create a helix array, use:"
+msgstr "创建 helix 数组："
+
+#: ../../docs/user-manual/helix.md:312 9c0295e3f8f042b9b984d53110434d2f
+msgid ""
+"where `charge` should be array of `1` or `-1`, and the `pivot` defaults "
+"to `(0, 0, 0)` if not provided."
+msgstr "其中 `charge` 应为由 `1` 或 `-1` 组成的数组，若不提供 `pivot` 则默认为 `(0, 0, 0)`。"
+
+#: ../../docs/user-manual/helix.md:316 b52fbc90f2fe4982be9284321cf56b03
+msgid "Create helix from MC truth"
+msgstr "由 MC 真值创建 helix"
+
+#: ../../docs/user-manual/helix.md:318 1c509124387b4445aeb3f77615c5bd8b
+msgid ""
+"When creating a helix from MC truth, set `pivot` to the MC truth "
+"position, then change it to `(0, 0, 0)` using the `change_pivot` method:"
+msgstr "由 MC 真值创建 helix 时，把 `pivot` 设为 MC 真值位置，再用 `change_pivot` 方法改为 `(0, 0, 0)`："
+
+#: ../../docs/user-manual/helix.md:329 5d290c0a26a44215b33af44c348c6bb6
+msgid "or, for awkward array:"
+msgstr "或者对 awkward 数组："
+
+#: ../../docs/user-manual/helix.md:340 0e7fe29ca07045f9bb4d34d085e633d6
+msgid ""
+"Then you can retrieve the helix parameters via the `dr`, `phi0`, `kappa`,"
+" `dz`, `tanl` properties."
+msgstr "之后即可通过 `dr`、`phi0`、`kappa`、`dz`、`tanl` 属性获取 helix 参数。"
+
+#: ../../docs/user-manual/helix.md:342 6970dcdae6a94f7d8a87e2edab116c6b
+msgid "Physics information"
+msgstr "物理信息"
+
+#: ../../docs/user-manual/helix.md:344 e7a9b1c3275248e39d734fe9f6cc7e06
+msgid ""
+"Once you have a helix object or awkward array, you can retrieve physical "
+"parameters such as position, momentum, charge, and circular radius."
+msgstr "有了 helix 对象或 awkward 数组之后，可以获取位置、动量、电荷与圆半径等物理量。"
+
+#: ../../docs/user-manual/helix.md:346 ca97c828c8e6471286fc1c52fe8e44d5
+msgid "Position"
+msgstr "位置"
+
+#: ../../docs/user-manual/helix.md:348 3c45742a62bc499ab452e865d1679ab1
+msgid ""
+"The position is defined as the closest point on the helix to the pivot "
+"point:"
+msgstr "位置定义为螺旋线上距 pivot 点最近的点："
+
+#: ../../docs/user-manual/helix.md:354 c1d8e3c3b6ce47bfabaaaab946da762a
+msgid ""
+"This returns a `Vector3D` object. You can access individual coordinates "
+"with:"
+msgstr "它返回一个 `Vector3D` 对象，可以通过以下方式访问各分量："
+
+#: ../../docs/user-manual/helix.md:362 ../../docs/user-manual/helix.md:389
+#: 02135bb12f0d46b1a8e2eed73ae69125 b1b56d97f1d34066b723a344992401bf
+msgid "See Also"
+msgstr "另请参阅"
+
+#: ../../docs/user-manual/helix.md:365 33a43d568d7a45fea95a88dcbd32bb4f
+msgid ""
+"See [Interface for 3D "
+"vectors](https://vector.readthedocs.io/en/latest/src/vector3d.html) for "
+"more properties."
+msgstr ""
+"更多属性见 [Interface for 3D "
+"vectors](https://vector.readthedocs.io/en/latest/src/vector3d.html)。"
+
+#: ../../docs/user-manual/helix.md:368 3dcb33fa17c74570983b9019ba7d051a
+msgid "Momentum"
+msgstr "动量"
+
+#: ../../docs/user-manual/helix.md:370 09aced46ed0847b69964b6887478b9d6
+msgid ""
+"The momentum is defined at the closest point on the helix to the pivot "
+"point:"
+msgstr "动量定义在该螺旋线上距 pivot 点最近的点处："
+
+#: ../../docs/user-manual/helix.md:376 78776f6aae434b7483c45db2f84f49e5
+msgid "This returns a `Momentum3D` object with many accessible components:"
+msgstr "它返回一个 `Momentum3D` 对象，其中包含许多可访问的分量："
+
+#: ../../docs/user-manual/helix.md:392 c1955559a0864083ab6be2ca65e6f3d0
+msgid ""
+"See [Interface for 3D "
+"momentum](https://vector.readthedocs.io/en/latest/src/momentum3d.html) "
+"for more properties."
+msgstr ""
+"更多属性见 [Interface for 3D "
+"momentum](https://vector.readthedocs.io/en/latest/src/momentum3d.html)。"
+
+#: ../../docs/user-manual/helix.md:395 24510155756f4afeab173d0ad02f8569
+msgid "Momentum depends on the pivot point"
+msgstr "动量依赖 pivot 点"
+
+#: ../../docs/user-manual/helix.md:398 49d21c388cac41ccbffaebe93c7bafce
+msgid ""
+"When changing the pivot point, the momentum also changes, because it is "
+"evaluated at the closest point to the pivot."
+msgstr "改变 pivot 点时动量也会改变，因为动量是在距 pivot 最近的点处求值的。"
+
+#: ../../docs/user-manual/helix.md:403 168246b387ac4f23ab805de9c54437b8
+msgid "Retrieve the pivot point of the helix:"
+msgstr "获取 helix 的 pivot 点："
+
+#: ../../docs/user-manual/helix.md:409 3374ae8794e04a3086c5005a2faea129
+msgid "Similar to position, this returns a `Vector3D` object."
+msgstr "与位置类似，它也返回一个 `Vector3D` 对象。"
+
+#: ../../docs/user-manual/helix.md:411 921b0cb15fee4e03bb3d59c2b4da0467
+msgid "Charge"
+msgstr "电荷"
+
+#: ../../docs/user-manual/helix.md:413 acd617ad55694b04b4691aed308ff0e4
+msgid "Retrieve the charge of the track:"
+msgstr "获取径迹的电荷："
+
+#: ../../docs/user-manual/helix.md:419 6da55b4e31904073935a45885ce350a5
+msgid "Returns `1` or `-1`, or an awkward array of these values for helix arrays."
+msgstr "返回 `1` 或 `-1`；对 helix 数组则返回由这些值组成的 awkward 数组。"
+
+#: ../../docs/user-manual/helix.md:421 b840041662c2431bb1f83f6a6db7c2f9
+msgid "Circular radius"
+msgstr "圆半径"
+
+#: ../../docs/user-manual/helix.md:423 b7a201f9bef345239f06a4955f53d26e
+msgid ""
+"The circular radius is the radius of the 2D circle in the XY plane that "
+"the track follows:"
+msgstr "圆半径是径迹在 XY 平面内所走圆弧的半径："
+
+#: ../../docs/user-manual/helix.md:429 5364a6ede244445bb164b1d91ca5e9a6
+msgid "Returns a scalar value or an awkward array, depending on the helix type."
+msgstr "根据 helix 类型返回标量值或 awkward 数组。"
+
+#: ../../docs/user-manual/helix.md:431 c0e6c862fe604b77a4984abb8b4155b1
+msgid "Pivot transformation"
+msgstr "pivot 变换"
+
+#: ../../docs/user-manual/helix.md:433 4144101b882a4eabb4d6654e9f21b83c
+msgid ""
+"Use `change_pivot` to transform the helix parameters and error matrix to "
+"a new pivot point:"
+msgstr "用 `change_pivot` 把 helix 参数与误差矩阵变换到新的 pivot 点："
+
+#: ../../docs/user-manual/helix.md:448 45ae676cb8b94cb78d09e649a5cee5c8
+msgid "or pass a `Vector3D` object:"
+msgstr "或者传入 `Vector3D` 对象："
+
+#: ../../docs/user-manual/helix.md:459 1df985e2875f4707a5cf892062b2c13c
+msgid "You can change the pivot for each track in an awkward array of helix:"
+msgstr "也可以为 awkward 数组中每条径迹单独改变 pivot："
+
+#: ../../docs/user-manual/helix.md:472 892b1fdc676148ff83267ea0f62bdb50
+msgid "or change the pivot point to a specific point for each track:"
+msgstr "或者把每条径迹的 pivot 点改成各自指定的点："
+
+#: ../../docs/user-manual/helix.md:482 48832bd3664c47d5b5184f13409e6f83
+msgid ""
+"`change_pivot` returns a **new** helix object/array; it does not modify "
+"the original."
+msgstr "`change_pivot` 返回**新的** helix 对象/数组，不修改原对象。"
+
+#: ../../docs/user-manual/helix.md:485 d8f4b67bd47d4af6b43b080f33f0bf8f
+msgid "Helix comparison"
+msgstr "helix 比较"
+
+#: ../../docs/user-manual/helix.md:487 8a9de8d0e07b49d98d679c76be6f1f16
+msgid ""
+"Compare two helix objects or arrays using the `isclose` method. If they "
+"have different pivot points, the second helix is automatically "
+"transformed to the first helix's pivot point before comparison."
+msgstr ""
+"用 `isclose` 方法比较两个 helix 对象或数组。若二者的 pivot 点不同，会先把第二个 helix 变换到第一个的 pivot "
+"点再比较。"
+
+#: ../../docs/user-manual/helix.md:517 06376457338341b3817d45b76c5b189a
+msgid ""
+"The comparison uses `numpy.isclose` to check whether the helix parameters"
+" and error matrix are close enough. You can customize the tolerance:"
+msgstr "比较使用 `numpy.isclose` 判断 helix 参数与误差矩阵是否足够接近，容差可以自定义："
+
+#: ../../docs/user-manual/helix.md:523 7cd34e2b7c0c4feca0f322b7f63a5bda
+msgid ""
+"See "
+"[numpy.isclose](https://numpy.org/doc/stable/reference/generated/numpy.isclose.html)"
+" for more details on these parameters."
+msgstr ""
+"这些参数的更多细节见 "
+"[numpy.isclose](https://numpy.org/doc/stable/reference/generated/numpy.isclose.html)。"
+

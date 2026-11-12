@@ -1,0 +1,62 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Pybes3 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Pybes3 0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 21:05+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/api/pybes3.digi_id.md:1 5e967d5fb85a421d811aa12bd51fbf13
+msgid "pybes3.digi_id (deprecated)"
+msgstr "pybes3.digi_id（已废弃）"
+
+#: ../../docs/api/pybes3.digi_id.md:4 eae666c203184e94b1c895c5f7b1f209
+msgid ""
+"The `pybes3.digi_id` module is deprecated and will be removed in a future"
+" release. Use the `pybes3.identifier` module instead."
+msgstr "`pybes3.digi_id` 模块已废弃，将在未来的版本中移除。请改用 `pybes3.identifier` 模块。"
+
+#: ../../docs/api/pybes3.digi_id.md:7 43c83dae09f241cdac6ecf9a690e4ed5
+msgid "Parsing methods"
+msgstr "解析方法"
+
+#: ../../docs/api/pybes3.digi_id.md:9 29086ebd17aa48daa3e8b166972f4409
+msgid ""
+"These methods parse the given ID and return the corresponding components."
+" They are useful for retrieving the components of an ID when you only "
+"have the ID itself."
+msgstr "这些方法解析给定的 ID 并返回相应分量。当你只有 ID 本身时，可以用它们取出 ID 的各分量。"
+
+#: ../../docs/api/pybes3.digi_id.md:27 c98f9aa3f1d140a7b9dded481a267207
+msgid "MDC"
+msgstr "MDC"
+
+#: ../../docs/api/pybes3.digi_id.md:41 7e005b5db9734cecb57e35db5215e34d
+msgid "TOF"
+msgstr "TOF"
+
+#: ../../docs/api/pybes3.digi_id.md:57 6d0b1fd5958c476299000a7ca6c65dd8
+msgid "EMC"
+msgstr "EMC"
+
+#: ../../docs/api/pybes3.digi_id.md:71 4820709346af42f7b2ebeac8ac5072a7
+msgid "MUC"
+msgstr "MUC"
+
+#: ../../docs/api/pybes3.digi_id.md:91 89d339609dae4541a50d970f0d0d6d34
+msgid "CGEM"
+msgstr "CGEM"
+

@@ -1,0 +1,131 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Pybes3 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Pybes3 0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 21:05+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/user-manual/muc.md:1 8e2656d2338d4a6ead44aab23c1729bf
+msgid "MUC"
+msgstr "MUC"
+
+#: ../../docs/user-manual/muc.md:3 d467cf387abc403385fb2c6e8855165a
+msgid ""
+"The MUC has 9152 strips in total: 5056 in the barrel (8 segments × 9 "
+"layers, 48-112 strips per layer) and 2048 in each of the two endcaps (4 "
+"segments × 8 layers × 64 strips)."
+msgstr ""
+"MUC 共有 9152 个 strip：桶部 5056 个（8 个 segment × 9 层，每层 48–112 条），两个端盖各 2048 "
+"个（4 个 segment × 8 层 × 64 条）。"
+
+#: ../../docs/user-manual/muc.md:6 277b8ecb939b4e3c837d7359c0925273
+msgid "GID conversion"
+msgstr "GID 转换"
+
+#: ../../docs/user-manual/muc.md:8 099b9c41983c4153a404186c90e3167d
+msgid ""
+"All `muc_gid_to_*` and `get_muc_gid` are backed by compiled NumPy ufuncs."
+" The calling convention is identical for scalar, NumPy array, and Awkward"
+" Array inputs:"
+msgstr ""
+"`muc_gid_to_*` 与 `get_muc_gid` 都由编译好的 NumPy ufunc 实现。标量、NumPy 数组与 Awkward"
+" Array 三种输入的调用方式完全一致："
+
+#: ../../docs/user-manual/muc.md 05f9b720c4f0447db0e7269528cc2eda
+#: 48ad7e47e3d24770be79a6d105737334 63cd2e656cf94b3ba3560fa35f9ed6be
+msgid "Scalar"
+msgstr "标量"
+
+#: ../../docs/user-manual/muc.md 0664e2516990407484baf9e397c8201b
+#: 68f79b28f0ce4c4e9c476680a894a348 90bce71e2fd844f4a00276187c5b8de1
+msgid "NumPy array"
+msgstr "NumPy 数组"
+
+#: ../../docs/user-manual/muc.md 07656297c2ad457d8368baf8fbabdc99
+#: 766eb1bb28364f9680f9b69908a8e3e4 b79769643cb7447cb6cb3aeaafea4e61
+msgid "Awkward Array"
+msgstr "Awkward Array"
+
+#: ../../docs/user-manual/muc.md:65 790126c6c085425887de71d037212aab
+msgid ""
+"`part` is 0 and 2 for the two endcaps and 1 for the barrel. `segment` is "
+"the segment number, `layer` is the layer (gap) number starting from 0, "
+"and `strip` is the strip (channel) number within the layer."
+msgstr ""
+"`part` 为 0 和 2 表示两个端盖，为 1 表示桶部。`segment` 是 segment 编号，`layer` 是从 0 "
+"开始的层（gap）编号，`strip` 是该层内的 strip（道）编号。"
+
+#: ../../docs/user-manual/muc.md:69 34fc1ce836914005b7242e54514c86aa
+msgid "Use `parse_muc_gid` to parse all fields from a gid at once:"
+msgstr "用 `parse_muc_gid` 一次性解析 gid 的所有字段："
+
+#: ../../docs/user-manual/muc.md:90 d7d62662bd5943f1a4ceefa9648b32ec
+msgid ""
+"The 8 corner points of strips are **not** returned by `parse_muc_gid`. "
+"Use `muc_gid_to_point_x`, `muc_gid_to_point_y`, and `muc_gid_to_point_z` "
+"to get them individually."
+msgstr ""
+"`parse_muc_gid` **不会**返回 strip 的 8 个角点。请用 "
+"`muc_gid_to_point_x`、`muc_gid_to_point_y` 与 `muc_gid_to_point_z` 逐个获取。"
+
+#: ../../docs/user-manual/muc.md:94 19e0da2f179f4eb1bbe0fd0237d64329
+msgid ""
+"When the input is an `ak.Array`, the result is also an `ak.Array` with "
+"record fields."
+msgstr "当输入为 `ak.Array` 时，结果也是带 record 字段的 `ak.Array`。"
+
+#: ../../docs/user-manual/muc.md:96 24882a7a5e8a42c2bb0688ddd3d8a3ba
+msgid "Strip position"
+msgstr "strip 位置"
+
+#: ../../docs/user-manual/muc.md:98 83428b5aac524b80b03809e98af88982
+msgid ""
+"All `muc_gid_to_center_*`, `muc_gid_to_dx`, `muc_gid_to_dy`, "
+"`muc_gid_to_dz` and `muc_gid_to_point_*` are also backed by compiled "
+"NumPy ufuncs."
+msgstr ""
+"`muc_gid_to_center_*`、`muc_gid_to_dx`、`muc_gid_to_dy`、`muc_gid_to_dz` 与 "
+"`muc_gid_to_point_*` 同样由编译好的 NumPy ufunc 实现。"
+
+#: ../../docs/user-manual/muc.md:158 d82cf33678cb41ef9b460511f0d2c47d
+msgid ""
+"`dx`, `dy` and `dz` are the half-lengths of the strip box along the x, y "
+"and z axes."
+msgstr "`dx`、`dy`、`dz` 是 strip 盒体沿 x、y、z 轴的半长。"
+
+#: ../../docs/user-manual/muc.md:162 37e36f800824463b81224988ef76acbd
+msgid ""
+"Each strip has 8 corner points. `muc_gid_to_point_*` take two arguments "
+"(`gid` and `point`), both support scalar/array inputs independently:"
+msgstr ""
+"每个 strip 有 8 个角点。`muc_gid_to_point_*` 接受两个参数（`gid` 与 "
+"`point`），两者都独立支持标量/数组输入："
+
+#: ../../docs/user-manual/muc.md:223 43b2bbaa24804240aeb18517577c5beb
+msgid "Retrieve the full strip position table:"
+msgstr "获取完整的 strip 位置表："
+
+#: ../../docs/user-manual/muc.md:236 a008af9a0c644b5598317ebf5db14a21
+msgid ""
+"The table holds `gid`, `part`, `segment`, `layer`, `strip`, `center_x`, "
+"`center_y`, `center_z`, `dx`, `dy`, `dz`, and the 8 corner points of each"
+" strip (`x0`-`x7`, `y0`-`y7`, `z0`-`z7`)."
+msgstr ""
+"表中包含 "
+"`gid`、`part`、`segment`、`layer`、`strip`、`center_x`、`center_y`、`center_z`、`dx`、`dy`、`dz`，以及每个"
+" strip 的 8 个角点（`x0`-`x7`、`y0`-`y7`、`z0`-`z7`）。"
+

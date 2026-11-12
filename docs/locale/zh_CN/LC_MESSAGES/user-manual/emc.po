@@ -1,0 +1,202 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Pybes3 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Pybes3 0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 21:05+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/user-manual/emc.md:1 f1b4a429ceee4bcbaec90720f01bb4db
+msgid "EMC"
+msgstr "EMC"
+
+#: ../../docs/user-manual/emc.md:3 c19ac0d77ce44ebc9c9ad5c912cd606d
+msgid "GID conversion"
+msgstr "GID 转换"
+
+#: ../../docs/user-manual/emc.md:5 8e3064d850804818a9a4133a519b05f3
+msgid ""
+"All `emc_gid_to_*` and `get_emc_gid` are backed by compiled NumPy ufuncs."
+" The calling convention is identical for scalar, NumPy array, and Awkward"
+" Array inputs:"
+msgstr ""
+"`emc_gid_to_*` 与 `get_emc_gid` 都由编译好的 NumPy ufunc 实现。标量、NumPy 数组与 Awkward"
+" Array 三种输入的调用方式完全一致："
+
+#: ../../docs/user-manual/emc.md 28c147187c9545758971a42730fd638b
+#: 7e913ebc234840a4ae9289bd96a826da 99a3fb3a522c4af4ba0bb276f31c78d9
+msgid "Scalar"
+msgstr "标量"
+
+#: ../../docs/user-manual/emc.md 2017d12a4de842e2b2ca8bee933770c0
+#: 868e723a2c424aa9920af587ae535e54 c9383ef242eb4f25b9b3fec740c91310
+msgid "NumPy array"
+msgstr "NumPy 数组"
+
+#: ../../docs/user-manual/emc.md 6546be88ef6048e885a26e1547f2aa8e
+#: 85d680dc33864c099d1c5120f376426e b7f3c140fdf3468881358bd27fbc0457
+msgid "Awkward Array"
+msgstr "Awkward Array"
+
+#: ../../docs/user-manual/emc.md:59 65d9f1cec3534b3ab663facd1ab749df
+msgid "Use `parse_emc_gid` to parse all fields from a gid at once:"
+msgstr "用 `parse_emc_gid` 一次性解析 gid 的所有字段："
+
+#: ../../docs/user-manual/emc.md:79 a757d6fe3d484a1faf8e0d30509ea7d8
+msgid ""
+"The 8 corner points of crystals are **not** returned by `parse_emc_gid`. "
+"Use `emc_gid_to_point_x`, `emc_gid_to_point_y`, and `emc_gid_to_point_z` "
+"to get them individually."
+msgstr ""
+"`parse_emc_gid` **不会**返回晶体的 8 个角点。请用 "
+"`emc_gid_to_point_x`、`emc_gid_to_point_y` 与 `emc_gid_to_point_z` 逐个获取。"
+
+#: ../../docs/user-manual/emc.md:83 3c17d24a2bec448d9a6f80a9c5ff769f
+msgid ""
+"When the input is an `ak.Array`, the result is also an `ak.Array` with "
+"record fields."
+msgstr "当输入为 `ak.Array` 时，结果也是带 record 字段的 `ak.Array`。"
+
+#: ../../docs/user-manual/emc.md:85 67f35fecc72f49ab90c6fb3950865579
+msgid "Crystal position"
+msgstr "晶体位置"
+
+#: ../../docs/user-manual/emc.md:87 4fef611d5c7146c3a33124941a9c9c24
+msgid ""
+"All `emc_gid_to_front_center_*`, `emc_gid_to_center_*`, "
+"`emc_gid_to_point_*` are also backed by compiled NumPy ufuncs."
+msgstr ""
+"`emc_gid_to_front_center_*`、`emc_gid_to_center_*` 与 `emc_gid_to_point_*` "
+"同样由编译好的 NumPy ufunc 实现。"
+
+#: ../../docs/user-manual/emc.md:148 6a58c05e485741d6962f33a2a39aeb8c
+msgid ""
+"Each crystal has 8 corner points. `emc_gid_to_point_*` take two arguments"
+" (`gid` and `point`), both support scalar/array inputs independently:"
+msgstr "每个晶体有 8 个角点。`emc_gid_to_point_*` 接受两个参数（`gid` 与 `point`），两者都独立支持标量/数组输入："
+
+#: ../../docs/user-manual/emc.md:209 c6c0ca9d04d041e3b3b21d2fd4c8530b
+msgid "Retrieve the full crystal position table:"
+msgstr "获取完整的晶体位置表："
+
+#: ../../docs/user-manual/emc.md:222 209fdd8884fc4943a1d7d9d3b68d9933
+msgid "Barrel geometry"
+msgstr "桶部几何"
+
+#: ../../docs/user-manual/emc.md:224 f278e762ad124beab5bdc7c171c76dbd
+msgid "Some geometry constants of the EMC barrel are available:"
+msgstr "可以获取 EMC 桶部的一些几何常数："
+
+#: ../../docs/user-manual/emc.md:236 4fc2f0fccfd44955b03839ca139fd6e0
+msgid "These constants are exported from `EmcRecGeoSvc` in `BOSS`."
+msgstr "这些常数导出自 `BOSS` 中的 `EmcRecGeoSvc`。"
+
+#: ../../docs/user-manual/emc.md:238 0a057e7dae854632873441fcbd87fb3e
+msgid "Raw data conversion"
+msgstr "原始数据转换"
+
+#: ../../docs/user-manual/emc.md:240 5bb61612ae044f689101068603ead0df
+msgid ""
+"The ADC measure/channel and the TDC channel numbers of a hit can be "
+"converted into charge (raw energy) and time with `emc_adc_to_charge` and "
+"`emc_tdc_to_time`:"
+msgstr ""
+"hit 的 ADC measure/channel 与 TDC 道数可用 `emc_adc_to_charge` 与 "
+"`emc_tdc_to_time` 分别转换为电荷（原始能量）与时间："
+
+#: ../../docs/user-manual/emc.md:254 25742cbc858f4ef9a07d3ce855734371
+msgid "The conversion formula of the charge is:"
+msgstr "电荷的换算公式为："
+
+#: ../../docs/user-manual/emc.md:256 8eb65a446a764882a02b52d9654ea661
+msgid ""
+"\n"
+"\\text{charge} = \\frac{\\text{adc}}{1024} \\times E_{\\text{measure}}\n"
+msgstr ""
+"\n"
+"\\text{charge} = \\frac{\\text{adc}}{1024} \\times E_{\\text{measure}}\n"
+
+#: ../../docs/user-manual/emc.md:260 f7ebd0b48c9344bc8e8598115ade807e
+msgid ""
+"where $adc$ is the charge channel number, $E_{\\text{measure}}$ is the "
+"maximum energy of the corresponding measure:"
+msgstr "其中 $adc$ 是电荷道数，$E_{\\text{measure}}$ 是相应 measure 的最大能量："
+
+#: ../../docs/user-manual/emc.md:262 5e09303d5ae0451fbf05caef55c80118
+msgid ""
+"\n"
+"E_{\\text{measure}} =\n"
+"    \\begin{cases}\n"
+"        0.078~\\mathrm{GeV}, & \\text{measure} = 0 \\\\\n"
+"        0.625~\\mathrm{GeV}, & \\text{measure} = 1 \\\\\n"
+"        2.5~\\mathrm{GeV}, & \\text{measure} = 2 \\\\\n"
+"        2.5~\\mathrm{GeV}, & \\text{measure} = 3 \\\\\n"
+"    \\end{cases}\n"
+msgstr ""
+"\n"
+"E_{\\text{measure}} =\n"
+"    \\begin{cases}\n"
+"        0.078~\\mathrm{GeV}, & \\text{measure} = 0 \\\\\n"
+"        0.625~\\mathrm{GeV}, & \\text{measure} = 1 \\\\\n"
+"        2.5~\\mathrm{GeV}, & \\text{measure} = 2 \\\\\n"
+"        2.5~\\mathrm{GeV}, & \\text{measure} = 3 \\\\\n"
+"    \\end{cases}\n"
+
+#: ../../docs/user-manual/emc.md:272 9dfb187d7a6f4464baa6b13f1f8a132a
+msgid ""
+"Note that `measure=3` indicates that the hit is saturated, and the charge"
+" is calculated with the same formula as `measure=2`."
+msgstr "注意 `measure=3` 表示该 hit 已饱和，其电荷按与 `measure=2` 相同的公式计算。"
+
+#: ../../docs/user-manual/emc.md:274 12fbea501de54e43b03e69abd7085f20
+msgid "Same as BOSS"
+msgstr "与 BOSS 一致"
+
+#: ../../docs/user-manual/emc.md:277 bbde676e0e2a4301a3a4b4f7ed48d19f
+msgid ""
+"EMC charge calculation is the same as the one given by "
+"`RawDataUtil::EmcCharge` in `BOSS`, except that the charge is in GeV in "
+"`pybes3`, while it is in MeV in `BOSS`."
+msgstr ""
+"EMC 的电荷计算与 `BOSS` 中 `RawDataUtil::EmcCharge` 给出的结果一致，区别在于 `pybes3` 中电荷以 "
+"GeV 为单位，而 `BOSS` 中以 MeV 为单位。"
+
+#: ../../docs/user-manual/emc.md:280 fbcdac950d514976bf04a38a60b04d2c
+msgid "The conversion formula of the time is:"
+msgstr "时间的换算公式为："
+
+#: ../../docs/user-manual/emc.md:282 ecc0cf65fc17468eb58eb6414e3e7d79
+#, python-brace-format
+msgid ""
+"\n"
+"\\text{time} = \\text{tdc} \\times 50~\\mathrm{ns}\n"
+msgstr ""
+"\n"
+"\\text{time} = \\text{tdc} \\times 50~\\mathrm{ns}\n"
+
+#: ../../docs/user-manual/emc.md:286 d7694171d8ba4220b8261245aaecc25b
+msgid "Different from BOSS"
+msgstr "与 BOSS 不同"
+
+#: ../../docs/user-manual/emc.md:289 c841de0678124e79b70c30eab6f774c8
+msgid ""
+"EMC time calculation is different from the one given by `RawDataUtil` in "
+"`BOSS`. In `RawDataUtil` it simply multiplies the time channel number by "
+"1 without any unit conversion, while in `pybes3` it multiplies by 50 ns."
+msgstr ""
+"EMC 的时间计算与 `BOSS` 中 `RawDataUtil` 给出的结果不同。`RawDataUtil` 只是把时间道数乘以 "
+"1、不做任何单位换算，而 `pybes3` 中乘以 50 ns。"
+

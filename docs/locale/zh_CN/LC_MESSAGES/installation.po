@@ -1,0 +1,68 @@
+# Translations template for PROJECT.
+# Copyright (C) 2026 ORGANIZATION
+# This file is distributed under the same license as the PROJECT project.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"Report-Msgid-Bugs-To: EMAIL@ADDRESS\n"
+"POT-Creation-Date: 2026-11-12 20:57+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/installation.md:1 7b16a83d262d422ea7a25fa5e0ee1d47
+msgid "Installation"
+msgstr "安装"
+
+#: ../../docs/installation.md:4 d607e4b4a4c74cb698c282df5cddb79c
+msgid "Pybes3 requires Python 3.9 or higher."
+msgstr "Pybes3 需要 Python 3.9 或更高版本。"
+
+#: ../../docs/installation.md:7 a61749c9cfa544fc9a104801aa784562
+msgid "Install Pybes3 using pip"
+msgstr "使用 pip 安装 Pybes3"
+
+#: ../../docs/installation.md:13 6c9905d4560349258d59c5810ed2543c
+msgid "Users on lxlogin server"
+msgstr "lxlogin 服务器上的用户"
+
+#: ../../docs/installation.md:15 2a919ab9aeb34dc9b35d30bc3804d8e6
+msgid ""
+"\"lxlogin server\" refers to the login server of IHEP computation "
+"clusters. If you are not using the lxlogin server, you can skip this "
+"section."
+msgstr "「lxlogin server」指 IHEP 计算集群的登录服务器。若你不使用 lxlogin 服务器，可以跳过本节。"
+
+#: ../../docs/installation.md:17 cc2e93fa78d244de8d3e7ce8e0e59bc9
+msgid ""
+"Since there is a quota limitation on the user's home directory (`~/`), "
+"you need to create symbolic links for `~/.local` and `~/.cache`, which "
+"contain pip packages and caches installed in \"user mode\":"
+msgstr ""
+"由于用户主目录（`~/`）存在配额限制，需要为 `~/.local` 和 `~/.cache` 创建符号链接，它们存放以「用户模式」安装的 pip"
+" 包与缓存："
+
+#: ../../docs/installation.md:35 ddffe19b8b604dfc9086aa78509cc534
+msgid "Using Pybes3 under `BOSS8` environment"
+msgstr "在 `BOSS8` 环境中使用 Pybes3"
+
+#: ../../docs/installation.md:37 f418aa73f03f43d9bd9a931cb0f37a59
+msgid ""
+"If you are using Pybes3 under a `BOSS8` environment, you **must** run the"
+" following commands after setting up the `BOSS8` environment:"
+msgstr "如果要在 `BOSS8` 环境下使用 Pybes3，**必须**在完成 `BOSS8` 环境设置后执行以下命令："
+
+#: ../../docs/installation.md:45 cece556c7fb949c6a56a4de096841b43
+msgid ""
+"Do **not** add these commands to your shell configuration file (e.g., "
+"`~/.bashrc`), since they will conflict with the default Python "
+"environment (without `BOSS8`)."
+msgstr "**不要**把这些命令写进 shell 配置文件（如 `~/.bashrc`），否则会与（未加载 `BOSS8` 的）默认 Python 环境冲突。"
+

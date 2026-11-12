@@ -9,26 +9,25 @@ pytest.importorskip("sphinx")
 ROOT = Path(__file__).resolve().parent.parent
 
 
-def test_sphinx_build(tmp_path):
-    """Test that the Sphinx documentation builds without warnings."""
+@pytest.mark.parametrize(
+    ("language", "manual_snippet", "index_snippet"),
+    [
+        pytest.param(None, "Wire position", "Data reading", id="en"),
+        pytest.param("zh_CN", "丝的位置", "数据读取", id="zh-cn"),
+    ],
+)
+def test_sphinx_build(tmp_path, language, manual_snippet, index_snippet):
+    """
+    Test that the Sphinx documentation builds without warnings.
+    """
 
     out_dir = tmp_path / "site"
-    result = subprocess.run(
-        [
-            sys.executable,
-            "-m",
-            "sphinx",
-            "-b",
-            "dirhtml",
-            "-W",
-            "--keep-going",
-            str(ROOT / "docs"),
-            str(out_dir),
-        ],
-        capture_output=True,
-        check=False,
-        text=True,
-    )
+    command = [sys.executable, "-m", "sphinx", "-b", "dirhtml", "-W", "--keep-going"]
+    if language is not None:
+        command += ["-D", f"language={language}"]
+    command += [str(ROOT / "docs"), str(out_dir)]
+
+    result = subprocess.run(command, capture_output=True, check=False, text=True)
     assert result.returncode == 0, f"sphinx build failed:\n{result.stdout}\n{result.stderr}"
 
     # check that the generated pages contain the expected content
@@ -39,3 +38,22 @@ def test_sphinx_build(tmp_path):
 
     manual_page = (out_dir / "user-manual" / "mdc" / "index.html").read_text(encoding="utf-8")
     assert "mdc_gid_to_west_x" in manual_page
+    assert manual_snippet in manual_page
+
+    index_page = (out_dir / "index.html").read_text(encoding="utf-8")
+    assert index_snippet in index_page
+
+    # The Chinese build must ship a browser-side query splitter; the default one
+    # only splits on whitespace, so queries without spaces would never match.
+    language_data = (out_dir / "_static" / "language_data.js").read_text(encoding="utf-8")
+    if language == "zh_CN":
+        assert "var splitQuery" in language_data
+        # The stemmer must be the identity one from `docs/_ext/zh_search.py`: the
+        # Python index only lowercases, so stemming in the browser would break
+        # the match. Sphinx 9 also emits a broken `ChineseStemmer` alias, and
+        # Sphinx 8 inherits the English Porter stemmer.
+        assert "Identity stemmer" in language_data
+        assert "ChineseStemmer" not in language_data
+        assert "Porter" not in language_data
+    else:
+        assert "var splitQuery" not in language_data
