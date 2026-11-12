@@ -566,7 +566,7 @@ def test_helix_awk_positional_args(
     raw_helix_arr, raw_helix_err_arr, flat_helix_arr, flat_helix_err_arr
 ):
     """
-    Test the positional ``helix, error, pivot`` form and the conflict errors.
+    Test the positional `helix, error, pivot` form and the conflict errors.
     """
     pivot = (10, 10, 10)
 
