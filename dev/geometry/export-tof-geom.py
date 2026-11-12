@@ -1,4 +1,5 @@
-"""Export the TOF geometry to `src/pybes3/data/tof_geom.npz`.
+"""
+Export the TOF geometry to `src/pybes3/data/tof_geom.npz`.
 
 The BOSS algorithms `ExportTofScintGeom` / `ExportTofMrpcGeom` (from `dev/boss-algs`) have
 to be run in a BOSS environment, where `GDMLMANAGEMENTDATAROOT` is set. This script runs

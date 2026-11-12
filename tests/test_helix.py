@@ -8,7 +8,9 @@ import pybes3 as p3
 
 @pytest.mark.parametrize("with_error", [True, False])
 def test_helix_obj_1(flat_helix_arr, with_error, flat_helix_err_arr):
-    """Test initialization, momentum, position, charge, and pivot of helix_obj."""
+    """
+    Test initialization, momentum, position, charge, and pivot of helix_obj.
+    """
     raw_pivot = (0, 0, 0)
     helix_error = flat_helix_err_arr if with_error else None
 
@@ -94,7 +96,9 @@ def test_helix_obj_2(
     flat_helix_arr,
     flat_helix_err_arr,
 ):
-    """Test change_pivot and isclose methods of helix_obj."""
+    """
+    Test change_pivot and isclose methods of helix_obj.
+    """
     new_pivots = [
         (10, 10, 10),
         (10, -10, 10),
@@ -171,14 +175,18 @@ def test_helix_obj_3(
     new_pivot,
     flat_helix_arr,
 ):
-    """Test different pivot arguments."""
+    """
+    Test different pivot arguments.
+    """
     for i in range(len(flat_helix_arr)):
         h1 = p3.helix_obj(params=flat_helix_arr[i].tolist(), pivot=init_pivot)
         assert h1.change_pivot(*new_pivot).change_pivot(*raw_pivot).isclose(h1)
 
 
 def test_helix_awk_1(raw_helix_arr, raw_helix_err_arr):
-    """Test helix_awk, change_pivot, and isclose methods."""
+    """
+    Test helix_awk, change_pivot, and isclose methods.
+    """
     raw_pivot = ak.zip(
         {
             "x": ak.zeros_like(raw_helix_arr[..., 0]),
@@ -287,7 +295,9 @@ def test_helix_awk_2(
     raw_helix_arr,
     raw_helix_err_arr,
 ):
-    """Test helix_awk with different pivot arguments."""
+    """
+    Test helix_awk with different pivot arguments.
+    """
 
     h = p3.helix_awk(
         helix=raw_helix_arr,
@@ -305,7 +315,9 @@ def test_helix_awk_2(
     ],
 )
 def test_helix_awk_3(new_pivot, raw_helix_arr, raw_helix_err_arr):
-    """Test HelixAwkwardArray slices."""
+    """
+    Test HelixAwkwardArray slices.
+    """
 
     helix_arr = p3.helix_awk(helix=raw_helix_arr, error=raw_helix_err_arr)
     helix_rec = helix_arr[0]
@@ -324,7 +336,8 @@ def test_helix_awk_3(new_pivot, raw_helix_arr, raw_helix_err_arr):
 
 
 def test_helix_awk_record_0(mdc_trk):
-    """Regression test: helix_awk must accept a single track's helix read from a DST.
+    """
+    Regression test: helix_awk must accept a single track's helix read from a DST.
 
     Such a helix has no array axis left, so all its parameters are scalars and
     the result must be an awkward record instead of an awkward array.
@@ -340,7 +353,9 @@ def test_helix_awk_record_0(mdc_trk):
 
 
 def test_helix_awk_record_1(flat_helix_arr, flat_helix_err_arr):
-    """Test all construction cases of helix_awk for a single-track helix."""
+    """
+    Test all construction cases of helix_awk for a single-track helix.
+    """
     helix_arr = p3.helix_awk(flat_helix_arr, flat_helix_err_arr)
 
     for i in range(len(flat_helix_arr)):
@@ -409,7 +424,9 @@ def test_helix_awk_record_1(flat_helix_arr, flat_helix_err_arr):
     ],
 )
 def test_helix_awk_record_2(new_pivot, flat_helix_arr, flat_helix_err_arr):
-    """Test change_pivot and isclose for single-track helixes."""
+    """
+    Test change_pivot and isclose for single-track helixes.
+    """
     helix_arr = p3.helix_awk(flat_helix_arr, flat_helix_err_arr)
 
     for i in range(len(flat_helix_arr)):
@@ -440,7 +457,9 @@ def test_helix_awk_record_2(new_pivot, flat_helix_arr, flat_helix_err_arr):
     ],
 )
 def test_helix_awk_record_3(pivot, flat_helix_arr):
-    """Test the different pivot arguments for a single-track helix."""
+    """
+    Test the different pivot arguments for a single-track helix.
+    """
     for i in range(len(flat_helix_arr)):
         h = p3.helix_awk(flat_helix_arr[i], pivot=pivot)
 
@@ -452,7 +471,9 @@ def test_helix_awk_record_3(pivot, flat_helix_arr):
 
 
 def test_helix_awk_record_4(flat_helix_arr, flat_helix_err_arr):
-    """Test isclose with mismatched error matrices for single-track helixes."""
+    """
+    Test isclose with mismatched error matrices for single-track helixes.
+    """
     helix_with_err = p3.helix_awk(flat_helix_arr[0], flat_helix_err_arr[0])
     helix_no_err = p3.helix_awk(flat_helix_arr[0])
 
@@ -482,7 +503,9 @@ def _assert_pivot(helix, expected_pivot):
 
 @pytest.mark.parametrize("pivot, expected_pivot", PIVOT_ARGS)
 def test_helix_awk_record_5(pivot, expected_pivot, flat_helix_arr, flat_helix_err_arr):
-    """Test case 5 (scalar parameters) with the different pivot arguments."""
+    """
+    Test case 5 (scalar parameters) with the different pivot arguments.
+    """
     for i in range(len(flat_helix_arr)):
         dr, phi0, kappa, dz, tanl = (float(v) for v in flat_helix_arr[i])
         helix_err = flat_helix_err_arr[i]
@@ -511,7 +534,8 @@ def test_helix_awk_record_5(pivot, expected_pivot, flat_helix_arr, flat_helix_er
 
 @pytest.mark.parametrize("pivot, expected_pivot", PIVOT_ARGS)
 def test_helix_awk_record_6(pivot, expected_pivot, flat_helix_arr, flat_helix_err_arr):
-    """Test case 6 (momentum, position, charge) with a custom pivot.
+    """
+    Test case 6 (momentum, position, charge) with a custom pivot.
 
     ``position`` is an absolute point, while ``HelixAwkwardRecord.position`` is
     relative to the pivot, so the reference point must be shifted by the pivot.
@@ -541,7 +565,9 @@ def test_helix_awk_record_6(pivot, expected_pivot, flat_helix_arr, flat_helix_er
 def test_helix_awk_positional_args(
     raw_helix_arr, raw_helix_err_arr, flat_helix_arr, flat_helix_err_arr
 ):
-    """Test the positional ``helix, error, pivot`` form and the conflict errors."""
+    """
+    Test the positional ``helix, error, pivot`` form and the conflict errors.
+    """
     pivot = (10, 10, 10)
 
     h_arr = p3.helix_awk(raw_helix_arr, raw_helix_err_arr, pivot)
@@ -569,7 +595,9 @@ def test_helix_awk_positional_args(
     ],
 )
 def test_HelixAwkwardRecord_1(new_pivot, raw_helix_arr, raw_helix_err_arr):
-    """Test HelixAwkwardRecord class with 1 track."""
+    """
+    Test HelixAwkwardRecord class with 1 track.
+    """
     helix_arr = p3.helix_awk(helix=raw_helix_arr, error=raw_helix_err_arr)
     helix_rec = helix_arr[0, 0]
     helix_obj = p3.helix_obj(

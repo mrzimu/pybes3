@@ -202,67 +202,93 @@ def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
 
 
 def tof_hit_status_to_is_raw(status: IntLike) -> BoolLike:
-    """Convert hit status to `is_raw`."""
+    """
+    Convert hit status to `is_raw`.
+    """
     return _ufuncs.tof_hit_status_to_is_raw(status)
 
 
 def tof_hit_status_to_is_readout(status: IntLike) -> BoolLike:
-    """Convert hit status to `is_readout`."""
+    """
+    Convert hit status to `is_readout`.
+    """
     return _ufuncs.tof_hit_status_to_is_readout(status)
 
 
 def tof_hit_status_to_is_counter(status: IntLike) -> BoolLike:
-    """Convert hit status to `is_counter`."""
+    """
+    Convert hit status to `is_counter`.
+    """
     return _ufuncs.tof_hit_status_to_is_counter(status)
 
 
 def tof_hit_status_to_is_cluster(status: IntLike) -> BoolLike:
-    """Convert hit status to `is_cluster`."""
+    """
+    Convert hit status to `is_cluster`.
+    """
     return _ufuncs.tof_hit_status_to_is_cluster(status)
 
 
 def tof_hit_status_to_is_barrel(status: IntLike) -> BoolLike:
-    """Convert hit status to `is_barrel`."""
+    """
+    Convert hit status to `is_barrel`.
+    """
     return _ufuncs.tof_hit_status_to_is_barrel(status)
 
 
 def tof_hit_status_to_is_east(status: IntLike) -> BoolLike:
-    """Convert hit status to `is_east`."""
+    """
+    Convert hit status to `is_east`.
+    """
     return _ufuncs.tof_hit_status_to_is_east(status)
 
 
 def tof_hit_status_to_layer(status: IntLike) -> IntLike:
-    """Convert hit status to `layer`."""
+    """
+    Convert hit status to `layer`.
+    """
     return _ufuncs.tof_hit_status_to_layer(status)
 
 
 def tof_hit_status_to_is_overflow(status: IntLike) -> BoolLike:
-    """Convert hit status to `is_overflow`."""
+    """
+    Convert hit status to `is_overflow`.
+    """
     return _ufuncs.tof_hit_status_to_is_overflow(status)
 
 
 def tof_hit_status_to_is_multihit(status: IntLike) -> BoolLike:
-    """Convert hit status to `is_multihit`."""
+    """
+    Convert hit status to `is_multihit`.
+    """
     return _ufuncs.tof_hit_status_to_is_multihit(status)
 
 
 def tof_hit_status_to_n_counter(status: IntLike) -> IntLike:
-    """Convert hit status to `n_counter`."""
+    """
+    Convert hit status to `n_counter`.
+    """
     return _ufuncs.tof_hit_status_to_n_counter(status)
 
 
 def tof_hit_status_to_n_east(status: IntLike) -> IntLike:
-    """Convert hit status to `n_east`."""
+    """
+    Convert hit status to `n_east`.
+    """
     return _ufuncs.tof_hit_status_to_n_east(status)
 
 
 def tof_hit_status_to_n_west(status: IntLike) -> IntLike:
-    """Convert hit status to `n_west`."""
+    """
+    Convert hit status to `n_west`.
+    """
     return _ufuncs.tof_hit_status_to_n_west(status)
 
 
 def tof_hit_status_to_is_mrpc(status: IntLike) -> BoolLike:
-    """Convert hit status to `is_mrpc`."""
+    """
+    Convert hit status to `is_mrpc`.
+    """
     return _ufuncs.tof_hit_status_to_is_mrpc(status)
 
 

@@ -107,7 +107,9 @@ _EMC_RE_EAWE_MASK = 0x1000
 
 
 def _mdc_wire_type(layer: int) -> int:
-    """Determine MDC wire type from layer number (0=axial, 1=stereo)."""
+    """
+    Determine MDC wire type from layer number (0=axial, 1=stereo).
+    """
     if layer < _MDC_INNER_STEREO_LAYER_MAX:
         return 1  # inner stereo: 0-7
     if layer < _MDC_INNER_STEREO_LAYER_MAX + _MDC_INNER_AXIAL_LAYER_MAX:
@@ -120,7 +122,9 @@ def _mdc_wire_type(layer: int) -> int:
 
 
 def _mdc_get_int_id(te_layer: int, te_wire: int) -> np.uint32:
-    """Compute MDC teid (digi_id) from TE layer and wire numbers."""
+    """
+    Compute MDC teid (digi_id) from TE layer and wire numbers.
+    """
     wt = _mdc_wire_type(te_layer)
     return np.uint32(
         (_MDC_ID << _MDC_INDEX)
@@ -131,7 +135,9 @@ def _mdc_get_int_id(te_layer: int, te_wire: int) -> np.uint32:
 
 
 def _tof_get_int_id(barrel_ec: int, te_layer: int, te_phi: int, end: int) -> np.uint32:
-    """Compute TOF scintillator teid (digi_id)."""
+    """
+    Compute TOF scintillator teid (digi_id).
+    """
     return np.uint32(
         (_TOF_ID << _TOF_INDEX)
         | (barrel_ec << _TOF_BARREL_EC_INDEX)
@@ -142,7 +148,9 @@ def _tof_get_int_id(barrel_ec: int, te_layer: int, te_phi: int, end: int) -> np.
 
 
 def _emc_get_int_id(barrel_ec: int, te_theta: int, te_phi: int) -> np.uint32:
-    """Compute EMC teid (digi_id)."""
+    """
+    Compute EMC teid (digi_id).
+    """
     return np.uint32(
         (_EMC_ID << _EMC_INDEX)
         | (barrel_ec << _EMC_BARREL_EC_INDEX)
@@ -152,7 +160,9 @@ def _emc_get_int_id(barrel_ec: int, te_theta: int, te_phi: int) -> np.uint32:
 
 
 def _muc_get_int_id(part: int, seg: int, layer: int, channel: int) -> np.uint32:
-    """Compute MUC teid (digi_id)."""
+    """
+    Compute MUC teid (digi_id).
+    """
     return np.uint32(
         (_MUC_ID << _MUC_INDEX)
         | (part << _MUC_BARREL_EC_INDEX)
@@ -163,7 +173,9 @@ def _muc_get_int_id(part: int, seg: int, layer: int, channel: int) -> np.uint32:
 
 
 def _emc_phi_endcap_max(theta: int) -> int:
-    """Get the maximum phi for EMC endcap at given theta."""
+    """
+    Get the maximum phi for EMC endcap at given theta.
+    """
     if theta <= 1:
         return 63
     elif theta <= 3:

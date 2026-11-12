@@ -72,6 +72,40 @@ _tmp/                # Temporary/experimental scripts
 - **NumPy C-API**: Every translation unit that uses the NumPy C-API must call `_import_array` / `_import_umath` for initialization, otherwise it will crash at `PyUFunc_FromFuncAndData`.
 - **C++ compilation**: Uses `-Wall -Werror`, C++20 standard.
 
+## Python Style
+
+- **Google-style docstrings**: Every public module, class, and function documents its inputs, outputs, and errors in `Parameters:`, `Returns:`, and `Raises:` sections, which `docs/conf.py` parses through `sphinx.ext.napoleon`.
+- **Docstrings are Markdown-formatted**: use single backticks for inline code (conf.py sets `default_role = "code"`), `**bold**`, `-` bullet lists, and Markdown tables. Autodoc still feeds docstrings to reStructuredText, so block-level constructs that Markdown cannot express there stay RST: `.. note::`, `.. deprecated::`, `.. code-block:: python`, and the `:func:` / `:class:` roles.
+- **Triple quotes stand on their own lines**: A triple-quoted string never starts or ends with text on the delimiter line. This applies to one-line docstrings as well.
+
+  ```python
+  def tof_gid_to_part(gid: IntLike) -> IntLike:
+      """
+      Get the TOF part from gid.
+
+      Parameters:
+          gid: The TOF strip global ID, ranging from 0 to 1135.
+
+      Returns:
+          The part of the TOF strip.
+      """
+      return _ufuncs.tof_gid_to_part(gid)
+  ```
+
+  Not allowed:
+
+  ```python
+  def tof_gid_to_part(gid: IntLike) -> IntLike:
+      """Get the TOF part from gid."""
+      return _ufuncs.tof_gid_to_part(gid)
+  ```
+
+## Markdown and Documentation
+
+- **Markdown only**: All files under `docs/` are written in MyST Markdown (`myst_parser`); do not add reStructuredText sources to `docs/`.
+- **One paragraph, one line**: Do not hard-wrap prose in `.md` files. A paragraph, and each list item, is a single physical line, and a blank line separates paragraphs; let the editor soft-wrap instead. Editing a sentence then touches one line, so diffs stay small and translation `msgid`s stay stable.
+- **Syntax keeps its layout**: tables, code blocks, `:::` directive bodies, block quotes, and nested or indented blocks follow what Markdown/MyST requires, not the one-line rule.
+
 ## More Information
 
 - User documentation: `docs/`
