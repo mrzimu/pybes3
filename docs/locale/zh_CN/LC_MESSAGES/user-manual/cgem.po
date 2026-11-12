@@ -1,0 +1,196 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Pybes3 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Pybes3 0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 21:05+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/user-manual/cgem.md:1 48a3916526d049509952ae5f8c877c43
+msgid "CGEM"
+msgstr "CGEM"
+
+#: ../../docs/user-manual/cgem.md:3 d0b4e52774d942d7ba130bdda020c511
+msgid "GID conversion"
+msgstr "GID 转换"
+
+#: ../../docs/user-manual/cgem.md:5 b5090519ffa6445fb00bb4a8dd338e34
+msgid ""
+"All `cgem_gid_to_*` and `get_cgem_gid` are backed by compiled NumPy "
+"ufuncs. The calling convention is identical for scalar, NumPy array, and "
+"Awkward Array inputs:"
+msgstr ""
+"`cgem_gid_to_*` 与 `get_cgem_gid` 都由编译好的 NumPy ufunc 实现。标量、NumPy 数组与 "
+"Awkward Array 三种输入的调用方式完全一致："
+
+#: ../../docs/user-manual/cgem.md 126bce9720984b42a1e859840072ca1e
+#: 43df1b18f46a422795cc7bf648e41ab3 7e9df0d0e3374351a47385a06685c2b5
+msgid "Scalar"
+msgstr "标量"
+
+#: ../../docs/user-manual/cgem.md eb42bd0bb9a345a9a8817729a2fc1f37
+#: fa09363fc1604ecbb791cf692e90b5d8 fa351444f9d44d029c387ba7fc7766d6
+msgid "NumPy array"
+msgstr "NumPy 数组"
+
+#: ../../docs/user-manual/cgem.md 18844c6244c3414489c22e7b28cac9db
+#: 206be5ffbf2f414f88e0366d5e45ea15 516fa8fae7204172874920f2376928e9
+msgid "Awkward Array"
+msgstr "Awkward Array"
+
+#: ../../docs/user-manual/cgem.md:72 76dc69d1a3cf4dd9a1b26f39a39a3347
+msgid "`strip_type=0` for x-strips and `strip_type=1` for v-strips."
+msgstr "x-strip 的 `strip_type=0`，v-strip 的 `strip_type=1`。"
+
+#: ../../docs/user-manual/cgem.md:75 0306b987b56546d5a84b8a53e5875b36
+msgid "Use `parse_cgem_gid` to parse all fields from a gid at once:"
+msgstr "用 `parse_cgem_gid` 一次性解析 gid 的所有字段："
+
+#: ../../docs/user-manual/cgem.md:88 1fcccb6128154a269fc32335b3549379
+msgid ""
+"When the input is an `ak.Array`, the result is also an `ak.Array` with "
+"record fields."
+msgstr "当输入为 `ak.Array` 时，结果也是带 record 字段的 `ak.Array`。"
+
+#: ../../docs/user-manual/cgem.md:90 ae3c5c679ae44bb8835185c2ae31b8a5
+msgid "Strip geometry"
+msgstr "strip 几何"
+
+#: ../../docs/user-manual/cgem.md:92 d5d86b504b7e4f7c93152c8985aca352
+msgid ""
+"All `cgem_gid_to_width`, `cgem_gid_to_radius`, `cgem_gid_to_phi0`, "
+"`cgem_gid_to_dphi`, `cgem_gid_to_z0` and `cgem_gid_to_dz` are also backed"
+" by compiled NumPy ufuncs. The calling convention is identical for "
+"scalar, NumPy array, and Awkward Array inputs:"
+msgstr ""
+"`cgem_gid_to_width`、`cgem_gid_to_radius`、`cgem_gid_to_phi0`、`cgem_gid_to_dphi`、`cgem_gid_to_z0`"
+" 与 `cgem_gid_to_dz` 同样由编译好的 NumPy ufunc 实现。标量、NumPy 数组与 Awkward Array "
+"三种输入的调用方式完全一致："
+
+#: ../../docs/user-manual/cgem.md:153 7ca9ff902d1747a298cd8520427bc650
+msgid ""
+"The centre line of a strip is described in the global cylindrical "
+"coordinate system. `radius` is the distance (cm) of the strip from the "
+"beam axis, and `width` is the width (cm) of the strip, which is measured "
+"along the arc direction for an x-strip and perpendicular to the strip for"
+" a v-strip."
+msgstr ""
+"strip 的中心线在全局柱坐标系中描述。`radius` 是 strip 到束流轴的距离（cm）；`width` 是 strip "
+"的宽度（cm），对 x-strip 沿弧方向测量，对 v-strip 垂直于 strip 测量。"
+
+#: ../../docs/user-manual/cgem.md:158 5724b56fb00142b4853afd88c89550e7
+msgid ""
+"The other four values parametrise the centre line from its start point "
+"($t = 0$), which is the end with the most negative z, to its other end "
+"($t = 1$):"
+msgstr "另外四个值从中心线的起点（$t = 0$，即 z 最负的一端）到另一端（$t = 1$）参数化这条中心线："
+
+#: ../../docs/user-manual/cgem.md:161 318ff919699f4e9097f105338371d2f6
+msgid ""
+"\\phi(t) = \\phi_0 + t \\cdot \\Delta\\phi, \\qquad z(t) = z_0 + t \\cdot"
+" \\Delta z, \\qquad 0 \\le t \\le 1"
+msgstr ""
+"\\phi(t) = \\phi_0 + t \\cdot \\Delta\\phi, \\qquad z(t) = z_0 + t \\cdot"
+" \\Delta z, \\qquad 0 \\le t \\le 1"
+
+#: ../../docs/user-manual/cgem.md:163 0b6614ef95fd4fce98f722a8351b7bca
+msgid "`phi0`, `z0`: azimuth (rad) and z (cm) of the start point;"
+msgstr "`phi0`、`z0`：起点的方位角（rad）与 z（cm）；"
+
+#: ../../docs/user-manual/cgem.md:164 1997b20370964472ac7c57cbcb4878e4
+msgid ""
+"`dphi`, `dz`: changes of the azimuth (rad) and of the z (cm) along the "
+"strip, from the start point to the other end; their signs give the "
+"direction of the strip (`dz` is always positive, because the start point "
+"is the negative z end)."
+msgstr ""
+"`dphi`、`dz`：从起点到另一端，方位角（rad）与 z（cm）的变化量；其符号给出 strip 的走向（`dz` 恒为正，因为起点是 z "
+"的负端）。"
+
+#: ../../docs/user-manual/cgem.md:168 036bd5d5ffd642fa8e941a28e81e495f
+msgid ""
+"`dphi` is 0 for x-strips, which run along the beam axis, and non-zero for"
+" v-strips, which are tilted by the stereo angle."
+msgstr "x-strip 沿束流轴延伸，`dphi` 为 0；v-strip 因 stereo 角而倾斜，`dphi` 非 0。"
+
+#: ../../docs/user-manual/cgem.md:172 6df24f4c016643709031c483d474b94f
+msgid ""
+"`radius` and `width` only depend on the strip type and the layer, so they"
+" take a few distinct values, whereas `phi0`, `dphi`, `z0` and `dz` vary "
+"from strip to strip."
+msgstr ""
+"`radius` 与 `width` 只取决于 strip 类型和层号，因此只有少数几个取值；而 `phi0`、`dphi`、`z0`、`dz` "
+"逐条 strip 各不相同。"
+
+#: ../../docs/user-manual/cgem.md:178 ad4482e2dbce4a5485184cd2a0b62624
+msgid ""
+"The position along a strip can be converted between the azimuth and the z"
+" coordinate with `cgem_gid_phi_to_z` and `cgem_gid_z_to_phi`. They take "
+"two arguments (`gid` and `phi` or `z`), both supporting scalar/array "
+"inputs independently:"
+msgstr ""
+"strip 上的位置可以在方位角与 z 坐标之间互换，使用 `cgem_gid_phi_to_z` 与 "
+"`cgem_gid_z_to_phi`。它们接受两个参数（`gid` 与 `phi` 或 `z`），两者都独立支持标量/数组输入："
+
+#: ../../docs/user-manual/cgem.md:234 e80aa2bf339a41e2a91b2baf09fc9bd2
+msgid ""
+"Both functions are backed by compiled NumPy ufuncs and use linear "
+"interpolation between the two ends of the strip, without any range check,"
+" so a `phi` or `z` outside the strip is extrapolated."
+msgstr ""
+"这两个函数都由编译好的 NumPy ufunc 实现，在 strip 两端之间做线性插值，且不做范围检查，因此超出 strip 范围的 `phi`"
+" 或 `z` 会被外推。"
+
+#: ../../docs/user-manual/cgem.md:238 23aaca2854304ffdb1e56d4e38c63c2e
+msgid ""
+"They differ in how they treat the azimuth: `cgem_gid_phi_to_z` takes the "
+"offset of `phi` from `phi0` as the representative which is within half a "
+"turn of the middle of the strip. A `phi` given in any period therefore "
+"gives the same z, and every strip, including one spanning more than half "
+"a turn, is covered exactly once. `cgem_gid_z_to_phi` does not reduce "
+"anything: it returns a phi which follows `phi0 + (z - z0) / dz * dphi` "
+"and is not wrapped into $[-\\pi, \\pi]$."
+msgstr ""
+"二者的区别在于对角度的处理：`cgem_gid_phi_to_z` 取 `phi` 相对 `phi0` 的偏移中「与 strip "
+"中点相差不超过半圈」的那个代表值。因此任意周期给出的 `phi` 都得到相同的 z，且每条 "
+"strip（包括跨过半圈以上的）都被恰好覆盖一次。`cgem_gid_z_to_phi` 则不做任何归化：它返回按 `phi0 + (z - "
+"z0) / dz * dphi` 计算出的 phi，不折叠到 $[-\\pi, \\pi]$。"
+
+#: ../../docs/user-manual/cgem.md:246 bf7dc246be2b47f181eefc7031716210
+msgid ""
+"An x-strip runs along the z axis, so `cgem_gid_z_to_phi` always returns "
+"its `phi0`, whereas `cgem_gid_phi_to_z` returns NaN, since its phi does "
+"not give any z."
+msgstr ""
+"x-strip 沿 z 轴延伸，因此 `cgem_gid_z_to_phi` 总是返回其 `phi0`；而 `cgem_gid_phi_to_z`"
+" 返回 NaN，因为它的 phi 无法给出任何 z。"
+
+#: ../../docs/user-manual/cgem.md:252 34f976a39a2f4f15a93fbbf4f0a43f10
+msgid "Retrieve the full strip geometry table:"
+msgstr "获取完整的 strip 几何表："
+
+#: ../../docs/user-manual/cgem.md:265 98131bc3d22a4bcaaf3d3f4739c3fe14
+msgid ""
+"The table holds `gid`, `layer`, `sheet`, `strip_type`, `strip`, `r`, "
+"`width`, `phi0`, `dphi`, `z0` and `dz`. Here `r` and `width` are the same"
+" values as the ones returned by `cgem_gid_to_radius` and "
+"`cgem_gid_to_width`."
+msgstr ""
+"表中包含 "
+"`gid`、`layer`、`sheet`、`strip_type`、`strip`、`r`、`width`、`phi0`、`dphi`、`z0`"
+" 与 `dz`。其中 `r` 与 `width` 就是 `cgem_gid_to_radius` 与 `cgem_gid_to_width` "
+"返回的值。"
+

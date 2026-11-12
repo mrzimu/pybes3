@@ -1,0 +1,266 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Pybes3 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Pybes3 0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 21:05+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/user-manual/tof.md:1 d2a6a0e5f92b451988eda0e230686f84
+msgid "TOF"
+msgstr "TOF"
+
+#: ../../docs/user-manual/tof.md:3 57bf5a461fc74ab8a996426ba77c5035
+msgid "GID conversion"
+msgstr "GID 转换"
+
+#: ../../docs/user-manual/tof.md:5 92e7139ab6f14f45bb78c2a61dcd7043
+msgid ""
+"All `tof_gid_to_*` and `get_tof_gid` are backed by compiled NumPy ufuncs."
+" The calling convention is identical for scalar, NumPy array, and Awkward"
+" Array inputs:"
+msgstr ""
+"`tof_gid_to_*` 与 `get_tof_gid` 都由编译好的 NumPy ufunc 实现。标量、NumPy 数组与 Awkward"
+" Array 三种输入的调用方式完全一致："
+
+#: ../../docs/user-manual/tof.md 7b0679753a994d1498148c9b23ed4172
+#: bfc66cc9d6f046ef9617307e6fcf6f38 c81da15a805b4df5ab65c3fe657250e9
+msgid "Scalar"
+msgstr "标量"
+
+#: ../../docs/user-manual/tof.md c2a51040f5f844e9a7a2fe948c0dbfd9
+#: d6a3239a923341298e5f1d119276d348 e9310a572a3d41f388f5e6fda8ff7f53
+msgid "NumPy array"
+msgstr "NumPy 数组"
+
+#: ../../docs/user-manual/tof.md 59a43060f1d0449186ca80ca660b977e
+#: 62dcd2184d92461c8f17c95ecc1cd08a d0afcb4bb8d34ffdb456671612374039
+msgid "Awkward Array"
+msgstr "Awkward Array"
+
+#: ../../docs/user-manual/tof.md:60 afe2a456b54843a2bdf40b0aa3f0fbad
+msgid "The convention of `part` field is different from BOSS:"
+msgstr "`part` 字段的约定与 BOSS 不同："
+
+#: ../../docs/user-manual/tof.md:62 43c2bdf9d1094aca8c4f95aa1aa0a219
+msgid "0, 1, 2: scintillator endcap 0, barrel, endcap 1"
+msgstr "0、1、2：闪烁体端盖 0、桶部、端盖 1"
+
+#: ../../docs/user-manual/tof.md:63 ad8b6d782e8948449430db966242eece
+msgid "3, 4: MRPC endcap 0, endcap 1"
+msgstr "3、4：MRPC 端盖 0、端盖 1"
+
+#: ../../docs/user-manual/tof.md:65 fdf2b92d805c4291adae52c669e48257
+msgid ""
+"The scintillator `layer` and MRPC `module` share the same axis, and the "
+"`phi` and `strip` fields also share the same axis."
+msgstr "闪烁体的 `layer` 与 MRPC 的 `module` 共用同一坐标轴，`phi` 与 `strip` 字段也共用同一坐标轴。"
+
+#: ../../docs/user-manual/tof.md:68 f0119c049e1c4115a58617755f4f1a36
+msgid "Use `parse_tof_gid` to parse all fields from a gid at once:"
+msgstr "用 `parse_tof_gid` 一次性解析 gid 的所有字段："
+
+#: ../../docs/user-manual/tof.md:78 50f2dc9c752a44e395dbdecfea451d45
+msgid ""
+"When the input is an `ak.Array`, the result is also an `ak.Array` with "
+"record fields."
+msgstr "当输入为 `ak.Array` 时，结果也是带 record 字段的 `ak.Array`。"
+
+#: ../../docs/user-manual/tof.md:80 409a7cfd684347efbbfc1b1614bdfd15
+msgid "Scintillator / MRPC position"
+msgstr "闪烁体 / MRPC 位置"
+
+#: ../../docs/user-manual/tof.md:82 42fa78b3a9dc401996e72c7f3442517a
+msgid ""
+"Each strip (scintillator or MRPC) has 8 vertices. `tof_gid_to_point_*` "
+"take two arguments (`gid` and `point`), both support scalar/array inputs "
+"independently:"
+msgstr ""
+"每个 strip（闪烁体或 MRPC）有 8 个顶点。`tof_gid_to_point_*` 接受两个参数（`gid` 与 "
+"`point`），两者都独立支持标量/数组输入："
+
+#: ../../docs/user-manual/tof.md:140 ea1fada922f14c5897d33670581685e8
+msgid "Retrieve the full strip position table:"
+msgstr "获取完整的 strip 位置表："
+
+#: ../../docs/user-manual/tof.md:153 99bb58674fd0452abadd0cf3569c8645
+msgid "Hit status"
+msgstr "hit 状态字"
+
+#: ../../docs/user-manual/tof.md:155 b242f9d2dc654ae9b657ced10eaf33f8
+msgid ""
+"The hit status of a TOF hit encodes which part of the TOF the hit belongs"
+" to, its layer, and several flags and counters of the hit. It can be "
+"parsed into individual fields, and it can also be combined with the "
+"`tofID` of the hit to get the `gid` of the hit strip."
+msgstr ""
+"TOF hit 的状态字编码了该 hit 属于 TOF 的哪一部分、所在层，以及若干标志位与计数器。它既可以被解析成各个字段，也可以与 hit 的"
+" `tofID` 结合得到该 strip 的 `gid`。"
+
+#: ../../docs/user-manual/tof.md:159 79cacdfdcc5f43ffad8309c5b45d1eaf
+msgid "Fields"
+msgstr "字段"
+
+#: ../../docs/user-manual/tof.md:161 84b999a2ecf44cedbaae741c51d09955
+msgid ""
+"Pybes3 provides implementation of `TofHitStatus` functions. They are "
+"defined as `tof_hit_status_to_*`. All these functions are backed by "
+"compiled NumPy ufuncs. The calling convention is identical for scalar, "
+"NumPy array, and Awkward Array inputs:"
+msgstr ""
+"Pybes3 提供了 `TofHitStatus` 各函数的实现，命名统一为 `tof_hit_status_to_*`。这些函数都由编译好的 "
+"NumPy ufunc 实现，标量、NumPy 数组与 Awkward Array 三种输入的调用方式完全一致："
+
+#: ../../docs/user-manual/tof.md:238 1484752b6ff049b09baecc9af8279857
+msgid "Use `parse_tof_hit_status` to parse all fields from a hit status at once:"
+msgstr "用 `parse_tof_hit_status` 一次性解析状态字的所有字段："
+
+#: ../../docs/user-manual/tof.md:257 99439bdfa3da4b65b37d08907ea5c1f6
+msgid "Strip gid"
+msgstr "strip 的 gid"
+
+#: ../../docs/user-manual/tof.md:259 55ea8862d20d42c3b3c2821605cbace2
+msgid ""
+"`tof_hit_status_id_to_gid` converts the hit status and the `tofID` of a "
+"TOF hit into the `gid` of the strip which was hit:"
+msgstr "`tof_hit_status_id_to_gid` 把 TOF hit 的状态字与其 `tofID` 转换成被击中 strip 的 `gid`："
+
+#: ../../docs/user-manual/tof.md:274 54328897e7a8492d9add45f956a63643
+msgid ""
+"The `tofID` is not the raw digi ID, but a compact index which enumerates "
+"the counters of the part of the TOF the hit belongs to. The two endcaps "
+"of a sub-detector share a single index space, the east one first, and the"
+" hit status tells which sub-detector it is:"
+msgstr ""
+"`tofID` 不是原始 digi ID，而是一个紧凑索引，按该 hit 所属 TOF "
+"部位的各计数器顺序编号。子探测器的两个端盖共用一个索引空间（东端盖在前），由状态字指明它属于哪个子探测器："
+
+#: ../../docs/user-manual/tof.md:213 6a86ebe45a904cf49c93bcce1f54b31a
+msgid "Part"
+msgstr "部位"
+
+#: ../../docs/user-manual/tof.md:213 5f2e7f47ea0143f4aee63036b2ec790c
+#: fb9b05ef068e4b1cb22b651ff6c79e3f
+msgid "`tofID`"
+msgstr "`tofID`"
+
+#: ../../docs/user-manual/tof.md:213 5e0c8dc6f14b443d8664f980d62120cf
+msgid "`gid`"
+msgstr "`gid`"
+
+#: ../../docs/user-manual/tof.md:213 38192283cae6413c87fcd5b1f11ea97d
+msgid "Barrel"
+msgstr "桶部"
+
+#: ../../docs/user-manual/tof.md:213 c89f3a7b21894fc6abc3ef629e532ecb
+msgid "`layer * 88 + phi`"
+msgstr "`layer * 88 + phi`"
+
+#: ../../docs/user-manual/tof.md:213 af259aafd6fc40d8b6a940a1822634ef
+msgid "`48 + tofID`"
+msgstr "`48 + tofID`"
+
+#: ../../docs/user-manual/tof.md:213 771ad757b9e740cf99f84ae39cbd5873
+msgid "Scintillator east endcap"
+msgstr "闪烁体东端盖"
+
+#: ../../docs/user-manual/tof.md:213 3426a85ccc9349999ec7e84bca9eedac
+msgid "`phi`"
+msgstr "`phi`"
+
+#: ../../docs/user-manual/tof.md:213 88a0df4705f0447bb6a8129e00e9874b
+msgid "Scintillator west endcap"
+msgstr "闪烁体西端盖"
+
+#: ../../docs/user-manual/tof.md:213 4943d92133404ee9ab5b114714524bb8
+msgid "`48 + phi`"
+msgstr "`48 + phi`"
+
+#: ../../docs/user-manual/tof.md:213 e764995018894a46b321be3d9fb9c2fa
+msgid "`tofID + 176`"
+msgstr "`tofID + 176`"
+
+#: ../../docs/user-manual/tof.md:213 83c99157e437445cb2907d57df650814
+msgid "MRPC east endcap"
+msgstr "MRPC 东端盖"
+
+#: ../../docs/user-manual/tof.md:213 be34f4d142534f92934d3a76e57501aa
+msgid "`module * 12 + strip`"
+msgstr "`module * 12 + strip`"
+
+#: ../../docs/user-manual/tof.md:213 320d19dbb0e7479fbac545138ddc54b9
+#: 89a3db9de7ad463895c007f71f3bbe06
+msgid "`272 + tofID`"
+msgstr "`272 + tofID`"
+
+#: ../../docs/user-manual/tof.md:213 7a33e8f42cde41eea4b94adc62bdf09f
+msgid "MRPC west endcap"
+msgstr "MRPC 西端盖"
+
+#: ../../docs/user-manual/tof.md:213 81f799cbdc5e4ef78cd423aa6481aed3
+msgid "`432 + module * 12 + strip`"
+msgstr "`432 + module * 12 + strip`"
+
+#: ../../docs/user-manual/tof.md:287 5c8a4b03890548b79764f996d5bd11dc
+msgid ""
+"A hit without a hit status (`status == 0`) stores the raw digi ID in "
+"`m_tofID` instead of the compact index above, and a negative `m_tofID` is"
+" not a valid counter index. Both are rejected with a `ValueError`, so "
+"filter them out before calling the function."
+msgstr ""
+"没有状态字（`status == 0`）的 hit 会在 `m_tofID` 中存放原始 digi ID而不是上面的紧凑索引，负的 "
+"`m_tofID` 也不是有效的计数器索引。这两种情况都会抛出 `ValueError`，请在调用前先过滤掉。"
+
+#: ../../docs/user-manual/tof.md:292 23b1a2a30a604ae8afb8d1a356c6462a
+msgid "Raw data conversion"
+msgstr "原始数据转换"
+
+#: ../../docs/user-manual/tof.md:294 23e04549d99140bebe8f4cbee4400caa
+msgid ""
+"The ADC and the TDC channel numbers of a hit can be converted into charge"
+" and time with `tof_adc_to_charge` and `tof_tdc_to_time`:"
+msgstr "hit 的 ADC 与 TDC 道数可用 `tof_adc_to_charge` 与 `tof_tdc_to_time` 分别转换为电荷与时间："
+
+#: ../../docs/user-manual/tof.md:308 192cbfa2824f406b90c7617cc676fb6b
+msgid ""
+"The charge is calculated as `charge = (adc & 0x1fff) * 0.3`, i.e. only "
+"the lower 13 bits of the ADC word carry the charge channel number, and "
+"the conversion formula of the time is:"
+msgstr "电荷按 `charge = (adc & 0x1fff) * 0.3` 计算，即只有 ADC 字的低 13 位携带电荷道数；时间的换算公式为："
+
+#: ../../docs/user-manual/tof.md:312 b748ad3a6c1147fc9abbb44f3d1a6890
+#, python-brace-format
+msgid ""
+"\n"
+"\\text{time} = \\text{tdc} \\times \\frac{12000}{499.8 \\times 8 \\times "
+"1024}~\\mathrm{ns}\n"
+msgstr ""
+"\n"
+"\\text{time} = \\text{tdc} \\times \\frac{12000}{499.8 \\times 8 \\times "
+"1024}~\\mathrm{ns}\n"
+
+#: ../../docs/user-manual/tof.md:316 11cf2d9bfd2b4cbebd16b462361a33fc
+msgid "Same as BOSS"
+msgstr "与 BOSS 一致"
+
+#: ../../docs/user-manual/tof.md:319 1eb426a8650746029e498c772f22753b
+msgid ""
+"TOF charge and time calculations are the same as the ones given by "
+"`RawDataUtil::TofCharge` and `RawDataUtil::TofTime` in `BOSS`."
+msgstr ""
+"TOF 的电荷与时间计算与 `BOSS` 中 `RawDataUtil::TofCharge` 和 `RawDataUtil::TofTime` "
+"给出的结果一致。"
+

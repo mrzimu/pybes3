@@ -4,6 +4,8 @@
 
 **This is an English-only project. All code, comments, documentation, commit messages, and AI-generated responses must be in English. Do not use Chinese or any other language.**
 
+The only exception is the translation catalogs under `docs/locale/<language>/` and their handbook `docs/locale/README.md`, which are Chinese by design (see [Documentation Translations](#documentation-translations)).
+
 ## Virtual Environment (Critical)
 
 **Always check for and activate the virtual environment before running any Python command.**
@@ -27,8 +29,19 @@ source .venv/bin/activate
 | Lint | `source .venv/bin/activate && ruff check` |
 | Build docs | `source .venv/bin/activate && python -m sphinx -b dirhtml docs build/docs` |
 | Preview docs | `source .venv/bin/activate && sphinx-autobuild docs build/docs -b dirhtml` |
+| Build Chinese docs | `source .venv/bin/activate && python -m sphinx -b dirhtml -W -D language=zh_CN docs build/docs-zh` |
+| Update doc translations | `source .venv/bin/activate && bash dev/update-docs-translations.sh` |
 | Build package | `source .venv/bin/activate && python -m build` |
 | Install in dev mode | `source .venv/bin/activate && pip install -e .` |
+
+## Documentation Translations
+
+`docs/` holds the English sources, which stay the only source of truth. Chinese lives in gettext catalogs under `docs/locale/zh_CN/LC_MESSAGES/`, maintained with `sphinx-intl` and selected at build time (`-D language=zh_CN` locally, `READTHEDOCS_LANGUAGE` on Read the Docs, where `zh-cn` is a separate project added under the English project's Translations).
+
+- **Do not edit the English `.md` files to make the Chinese build work.** Edit the translations; untranslated messages fall back to English.
+- **Regenerate the catalogs with `bash dev/update-docs-translations.sh`** after changing anything under `docs/` (it also prints per-catalog coverage). Then translate the new or `fuzzy` entries; `--no-obsolete` removes entries that disappeared. Rewording or reflowing a paragraph changes its `msgid` and drops the matching translation, so reflow before translating.
+- **Docstrings are not translated.** `dev/strip-docstring-messages.py` strips autodoc messages from the catalogs, so API reference pages stay English.
+- **Translator rules** (what to keep, terminology) are in `docs/locale/README.md`.
 
 ## Project Overview
 
@@ -47,6 +60,7 @@ src/pybes3/          # Python source code
 kernels/             # C++ extensions (pybind11 + CMake)
 tests/               # Tests
 docs/                # Documentation (Sphinx + Furo)
+docs/locale/         # Translation catalogs (zh_CN) + translator handbook
 _tmp/                # Temporary/experimental scripts
 ```
 

@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Pybes3 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Pybes3 0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 21:05+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/convention/unit.md ../../docs/convention/unit.md:1
+#: c210ac7bccfc417bb17ad92af6a76afa d7dd8dd82786452f8932d129b27d4e7e
+msgid "Unit"
+msgstr "单位"
+
+#: ../../docs/convention/unit.md:3 d28b251404264c60927f3047641dd51b
+msgid "Pybes3 uses following unit conventions:"
+msgstr "Pybes3 采用以下单位约定："
+
+#: ../../docs/convention/unit.md a30bece6e413442b96d6a18c7715f819
+msgid "Quantity"
+msgstr "物理量"
+
+#: ../../docs/convention/unit.md ef49e6cca3c2402e838670c6486cbee0
+msgid "Length"
+msgstr "长度"
+
+#: ../../docs/convention/unit.md f69a168eae3c4e509ff34ba8c2fc1663
+#, python-brace-format
+msgid "$\\mathrm{cm}$"
+msgstr "$\\mathrm{cm}$"
+
+#: ../../docs/convention/unit.md 8aed537fbf924b5386afb64be7f9eb10
+msgid "Momentum"
+msgstr "动量"
+
+#: ../../docs/convention/unit.md 24b8270d8fc348b5b0d17bfc66d09895
+#, python-brace-format
+msgid "$\\mathrm{GeV}/c$"
+msgstr "$\\mathrm{GeV}/c$"
+
+#: ../../docs/convention/unit.md 46fc00930e954c6fbc363f186e59455c
+msgid "Energy"
+msgstr "能量"
+
+#: ../../docs/convention/unit.md 6a91ec8c62384c30a5faaed3d6253e44
+#, python-brace-format
+msgid "$\\mathrm{GeV}$"
+msgstr "$\\mathrm{GeV}$"
+
+#: ../../docs/convention/unit.md 0bd8dfe004f64e31a4c84e2c46b47ee7
+msgid "Mass"
+msgstr "质量"
+
+#: ../../docs/convention/unit.md 8bed720c87f94fb0b00e4de8cdf2490c
+#, python-brace-format
+msgid "$\\mathrm{GeV}/c^2$"
+msgstr "$\\mathrm{GeV}/c^2$"
+
+#: ../../docs/convention/unit.md 9dea1305356646db86e79ea050216885
+msgid "Time"
+msgstr "时间"
+
+#: ../../docs/convention/unit.md 1c77ff29f84940b2a59fe8c236e66300
+#, python-brace-format
+msgid "$\\mathrm{ns}$"
+msgstr "$\\mathrm{ns}$"
+

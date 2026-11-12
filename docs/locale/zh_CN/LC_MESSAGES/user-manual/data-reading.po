@@ -1,0 +1,164 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Pybes3 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Pybes3 0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 20:55+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/user-manual/data-reading.md:1 bde15e03b7a643cda15a1b40564ecb3d
+msgid "Data Reading"
+msgstr "数据读取"
+
+#: ../../docs/user-manual/data-reading.md:3 d1013187238249b8800956ba7f969f7c
+msgid "Read ROOT files (rtraw, dst, rec)"
+msgstr "读取 ROOT 文件（rtraw、dst、rec）"
+
+#: ../../docs/user-manual/data-reading.md:5 38a031bd1dec48dab83e578fe87ea5b0
+msgid ""
+"To enable `uproot` to read BES3 ROOT files, import `pybes3` before "
+"opening any file:"
+msgstr "为了让 `uproot` 能读取 BES3 的 ROOT 文件，请在打开任何文件之前先导入 `pybes3`："
+
+#: ../../docs/user-manual/data-reading.md:12 e604ca07532b45d0bd1cf1ea1e7b3bac
+msgid "Then, open file using `uproot`:"
+msgstr "然后用 `uproot` 打开文件："
+
+#: ../../docs/user-manual/data-reading.md:19 e74194d81e554fe8836c19c9f47c0825
+msgid "Print information about this event tree:"
+msgstr "打印这个 event tree 的信息："
+
+#: ../../docs/user-manual/data-reading.md:46 b06da367c13440a9af170809a73d72e8
+msgid "Reading sub-trees"
+msgstr "读取子 tree"
+
+#: ../../docs/user-manual/data-reading.md:48 bb61e73aae9741689af0adf9d6123ad3
+msgid "To read `TMcEvent` (note: use `arrays()` instead of `array()` here):"
+msgstr "读取 `TMcEvent`（注意：这里用 `arrays()` 而不是 `array()`）："
+
+#: ../../docs/user-manual/data-reading.md:56 bb02429a8bc4423fa704f1204cbd5511
+msgid "Now go to event 0:"
+msgstr "现在转到第 0 个事件："
+
+#: ../../docs/user-manual/data-reading.md:67 74652fd8fc094f9d92d7997d1edb757c
+msgid ""
+"This indicates that event 0 contains 12 MC particles. Their PDGIDs are "
+"`23, 4, -3, ...` and initial energies are `3.1, 1.55, 1.55, ... (GeV)`."
+msgstr ""
+"这说明第 0 个事件包含 12 个 MC 粒子，其 PDGID 为 `23, 4, -3, ...`，初始能量为 `3.1, 1.55, "
+"1.55, ... (GeV)`。"
+
+#: ../../docs/user-manual/data-reading.md:69 4441a1e3963d455c97866dc590b41ee5
+msgid "Reading specific branches"
+msgstr "读取指定 branch"
+
+#: ../../docs/user-manual/data-reading.md:72 d31fa21e89b04a9b9d0485fc16102b2a
+msgid ""
+"It is recommended to read only the branches you need for better "
+"performance."
+msgstr "为了更好的性能，建议只读取需要的 branch。"
+
+#: ../../docs/user-manual/data-reading.md:75 2c9926d1104c4930bdcf7c17ad45a6df
+msgid ""
+"To read a specific branch (note: use `array()` instead of `arrays()` "
+"here):"
+msgstr "读取指定的 branch（注意：这里用 `array()` 而不是 `arrays()`）："
+
+#: ../../docs/user-manual/data-reading.md:82 c499f8390725419c908ac3783b73fc8d
+msgid "or retrieve branches from `mc_evt`:"
+msgstr "或者从 `mc_evt` 中取出 branch："
+
+#: ../../docs/user-manual/data-reading.md:89 217f6a60ea564f25badb865b0c5dd9e1
+msgid "Read raw data files"
+msgstr "读取原始数据文件"
+
+#: ../../docs/user-manual/data-reading.md:91 d630b559a7554f24acf3d3e3d4e7a621
+msgid "Read a single file"
+msgstr "读取单个文件"
+
+#: ../../docs/user-manual/data-reading.md:93 b647a06bd7894b93a31c7c9d3b453454
+msgid "To read a raw data file, use `pybes3.open_raw`:"
+msgstr "读取原始数据文件使用 `pybes3.open_raw`："
+
+#: ../../docs/user-manual/data-reading.md:103 4dbdcc0cef1f49259c25b0f5d7c1ebc5
+msgid "Get meta information:"
+msgstr "获取元信息："
+
+#: ../../docs/user-manual/data-reading.md:116 44c7532c86b24ff8b832238d6401b420
+msgid "To read all data:"
+msgstr "读取全部数据："
+
+#: ../../docs/user-manual/data-reading.md:128 f016176c6ec44550b43f4164254730e7
+msgid "To read a portion of the file:"
+msgstr "读取文件的一部分："
+
+#: ../../docs/user-manual/data-reading.md:137 35f4d1bf633f4d3fbae4d21f6ccb14b8
+msgid ""
+"Explicitly specifying `entry_start` and `entry_stop` will slow down the "
+"reading speed ($\\sim 0.33 \\times$), as the reader needs to skip entries"
+" one by one until it reaches `entry_stop`."
+msgstr ""
+"显式指定 `entry_start` 与 `entry_stop` 会降低读取速度（约 $\\sim 0.33 "
+"\\times$），因为读取器需要逐条跳过条目直到 `entry_stop`。"
+
+#: ../../docs/user-manual/data-reading.md:140 e23fc7ea367d450584681e9816e576ef
+msgid "To read only specific fields:"
+msgstr "只读取指定字段："
+
+#: ../../docs/user-manual/data-reading.md:149 a6347845d3a341a5a664a308e4e8443c
+msgid "Available fields are: `cgem`, `mdc`, `tof`, `emc`, `muc`, `trigGTD`."
+msgstr "可用字段为：`cgem`、`mdc`、`tof`、`emc`、`muc`、`trigGTD`。"
+
+#: ../../docs/user-manual/data-reading.md:151 73bfedad8a0b4d87950cea54a81a5754
+msgid "`evt_header` is always read and cannot be filtered out."
+msgstr "`evt_header` 总会被读取，无法过滤掉。"
+
+#: ../../docs/user-manual/data-reading.md:155 e0c3cfdbfada448394e2448e7979e74c
+msgid "Close the file when done:"
+msgstr "用完后关闭文件："
+
+#: ../../docs/user-manual/data-reading.md:162 c00320d3f1ea43ac8f87f3ec0a61d2fc
+msgid "Always close the file after reading to free up system resources."
+msgstr "读取后请务必关闭文件，以释放系统资源。"
+
+#: ../../docs/user-manual/data-reading.md:165 6ee47f237e7b4c4b84fa11c3e641477b
+msgid ""
+"Open the file using a context manager to automatically close it after "
+"reading:"
+msgstr "用上下文管理器打开文件，可在读取结束后自动关闭："
+
+#: ../../docs/user-manual/data-reading.md:172 c218ec643c174fc0985391f6cd646014
+msgid "Concatenate multiple files"
+msgstr "拼接多个文件"
+
+#: ../../docs/user-manual/data-reading.md:174 c5b332236b1240eb909bd707d212cd46
+msgid ""
+"To read multiple files and concatenate them into a single array, use "
+"`pybes3.concatenate_raw`:"
+msgstr "读取多个文件并拼接成单个数组，请使用 `pybes3.concatenate_raw`："
+
+#: ../../docs/user-manual/data-reading.md:186 53f7213f5e0d412aa0adc19ec3f1d821
+msgid "Set `verbose=True` to print progress:"
+msgstr "设置 `verbose=True` 可打印进度："
+
+#: ../../docs/user-manual/data-reading.md:194 f4056cfefaa94fc4b786f8549c24a58e
+msgid ""
+"`entry_start`, `entry_stop` and `filter_name` can also be used in "
+"`concatenate_raw` to read only a portion of the files or specific fields:"
+msgstr ""
+"`concatenate_raw` 同样支持 `entry_start`、`entry_stop` 与 "
+"`filter_name`，用于只读取部分文件或指定字段："
+

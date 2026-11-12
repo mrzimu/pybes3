@@ -18,6 +18,9 @@ __pycache__/
 # C extensions
 *.so
 
+# Compiled translation catalogs (Sphinx writes them next to the .po files)
+*.mo
+
 # Distribution / packaging
 .Python
 build/

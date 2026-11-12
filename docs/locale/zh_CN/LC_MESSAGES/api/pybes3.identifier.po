@@ -1,0 +1,56 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C)
+# This file is distributed under the same license as the Pybes3 package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, 2026.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Pybes3 0.5\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-11-12 21:05+0800\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language: zh_CN\n"
+"Language-Team: zh_CN <LL@li.org>\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel 2.18.0\n"
+
+#: ../../docs/api/pybes3.identifier.md:1 3bb7678922a041649e88ce29e298d6b3
+msgid "pybes3.identifier"
+msgstr "pybes3.identifier"
+
+#: ../../docs/api/pybes3.identifier.md:3 5bb2024eb06246089acf2c86e34f578c
+msgid "Parsing methods"
+msgstr "解析方法"
+
+#: ../../docs/api/pybes3.identifier.md:5 d2afca4e36f14b3f9eacfff735b13d9d
+msgid ""
+"These methods parse the given ID and return the corresponding components."
+" They are useful for retrieving the components of an ID when you only "
+"have the ID itself."
+msgstr "这些方法解析给定的 ID 并返回相应分量。当你只有 ID 本身时，可以用它们取出 ID 的各分量。"
+
+#: ../../docs/api/pybes3.identifier.md:29 1a2562eaba4744beb4313ce0d77dae17
+msgid "MDC"
+msgstr "MDC"
+
+#: ../../docs/api/pybes3.identifier.md:45 82c1c48ce01646ee8e16b7d06f2c825d
+msgid "TOF"
+msgstr "TOF"
+
+#: ../../docs/api/pybes3.identifier.md:63 079f1c2f868a4c89b2de714115fef656
+msgid "EMC"
+msgstr "EMC"
+
+#: ../../docs/api/pybes3.identifier.md:79 c14f50df2c56415e9f2a390189d0f4aa
+msgid "MUC"
+msgstr "MUC"
+
+#: ../../docs/api/pybes3.identifier.md:99 68a67dbaf34f47e7b63a1a194672e6c3
+msgid "CGEM"
+msgstr "CGEM"
+
