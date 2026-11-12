@@ -203,91 +203,213 @@ def parse_tof_gid(gid: IntLike) -> ak.Array | dict[str, Any]:
 
 def tof_hit_status_to_is_raw(status: IntLike) -> BoolLike:
     """
-    Convert hit status to `is_raw`.
+    Convert the TOF hit status to the `is_raw` flag.
+
+    It tests bit 0 (`1 << 0`, mask `0x00000001`) of the hit status, which the TOF
+    reconstruction sets for the hits taken directly from the raw data.
+
+    Parameters:
+        status: The hit status of the TOF hit, encoded as an integer.
+
+    Returns:
+        Whether the hit is a raw hit.
     """
     return _ufuncs.tof_hit_status_to_is_raw(status)
 
 
 def tof_hit_status_to_is_readout(status: IntLike) -> BoolLike:
     """
-    Convert hit status to `is_readout`.
+    Convert the TOF hit status to the `is_readout` flag.
+
+    It tests bit 1 (`1 << 1`, mask `0x00000002`) of the hit status, which the TOF
+    reconstruction sets for the hits whose counter was read out.
+
+    Parameters:
+        status: The hit status of the TOF hit, encoded as an integer.
+
+    Returns:
+        Whether the hit is a readout hit.
     """
     return _ufuncs.tof_hit_status_to_is_readout(status)
 
 
 def tof_hit_status_to_is_counter(status: IntLike) -> BoolLike:
     """
-    Convert hit status to `is_counter`.
+    Convert the TOF hit status to the `is_counter` flag.
+
+    It tests bit 2 (`1 << 2`, mask `0x00000004`) of the hit status, which the TOF
+    reconstruction sets for the hits built from a single counter.
+
+    Parameters:
+        status: The hit status of the TOF hit, encoded as an integer.
+
+    Returns:
+        Whether the hit is a counter hit.
     """
     return _ufuncs.tof_hit_status_to_is_counter(status)
 
 
 def tof_hit_status_to_is_cluster(status: IntLike) -> BoolLike:
     """
-    Convert hit status to `is_cluster`.
+    Convert the TOF hit status to the `is_cluster` flag.
+
+    It tests bit 3 (`1 << 3`, mask `0x00000008`) of the hit status, which the TOF
+    reconstruction sets for the hits built from a cluster of neighbouring counters.
+
+    Parameters:
+        status: The hit status of the TOF hit, encoded as an integer.
+
+    Returns:
+        Whether the hit is a cluster hit.
     """
     return _ufuncs.tof_hit_status_to_is_cluster(status)
 
 
 def tof_hit_status_to_is_barrel(status: IntLike) -> BoolLike:
     """
-    Convert hit status to `is_barrel`.
+    Convert the TOF hit status to the `is_barrel` flag.
+
+    It tests bit 4 (`1 << 4`, mask `0x00000010`) of the hit status, which the TOF
+    reconstruction sets for the hits of the barrel (scintillator) part of the TOF.
+    The flag is unset for the endcap hits.
+
+    Parameters:
+        status: The hit status of the TOF hit, encoded as an integer.
+
+    Returns:
+        Whether the hit is in the TOF barrel.
     """
     return _ufuncs.tof_hit_status_to_is_barrel(status)
 
 
 def tof_hit_status_to_is_east(status: IntLike) -> BoolLike:
     """
-    Convert hit status to `is_east`.
+    Convert the TOF hit status to the `is_east` flag.
+
+    It tests bit 5 (`1 << 5`, mask `0x00000020`) of the hit status, which the TOF
+    reconstruction sets for the endcap hits read out on the east side. The flag is
+    only meaningful for endcap hits, i.e. when `is_barrel` is false.
+
+    Parameters:
+        status: The hit status of the TOF hit, encoded as an integer.
+
+    Returns:
+        Whether the hit is in an east endcap.
     """
     return _ufuncs.tof_hit_status_to_is_east(status)
 
 
 def tof_hit_status_to_layer(status: IntLike) -> IntLike:
     """
-    Convert hit status to `layer`.
+    Convert the TOF hit status to the barrel layer number.
+
+    It extracts bits 6 and 7 (`0x000000C0`) of the hit status, which store the layer
+    of the hit in the barrel, as a number ranging from 0 to 3. The field is unset for
+    the endcap hits.
+
+    Parameters:
+        status: The hit status of the TOF hit, encoded as an integer.
+
+    Returns:
+        The layer of the hit in the TOF barrel, ranging from 0 to 3.
     """
     return _ufuncs.tof_hit_status_to_layer(status)
 
 
 def tof_hit_status_to_is_overflow(status: IntLike) -> BoolLike:
     """
-    Convert hit status to `is_overflow`.
+    Convert the TOF hit status to the `is_overflow` flag.
+
+    It tests bit 8 (`1 << 8`, mask `0x00000100`) of the hit status, which the TOF
+    reconstruction sets when the TDC of the hit overflowed.
+
+    Parameters:
+        status: The hit status of the TOF hit, encoded as an integer.
+
+    Returns:
+        Whether the TDC of the hit overflowed.
     """
     return _ufuncs.tof_hit_status_to_is_overflow(status)
 
 
 def tof_hit_status_to_is_multihit(status: IntLike) -> BoolLike:
     """
-    Convert hit status to `is_multihit`.
+    Convert the TOF hit status to the `is_multihit` flag.
+
+    It tests bit 9 (`1 << 9`, mask `0x00000200`) of the hit status, which the TOF
+    reconstruction sets when more than one hit was found in the same counter.
+
+    Parameters:
+        status: The hit status of the TOF hit, encoded as an integer.
+
+    Returns:
+        Whether the hit is a multihit.
     """
     return _ufuncs.tof_hit_status_to_is_multihit(status)
 
 
 def tof_hit_status_to_n_counter(status: IntLike) -> IntLike:
     """
-    Convert hit status to `n_counter`.
+    Convert the TOF hit status to the number of counters of the hit.
+
+    It extracts bits 12 to 15 (`0x0000F000`) of the hit status, i.e. the number of
+    counters which were combined into the hit, as a number ranging from 0 to 15.
+
+    Parameters:
+        status: The hit status of the TOF hit, encoded as an integer.
+
+    Returns:
+        The number of counters of the hit, ranging from 0 to 15.
     """
     return _ufuncs.tof_hit_status_to_n_counter(status)
 
 
 def tof_hit_status_to_n_east(status: IntLike) -> IntLike:
     """
-    Convert hit status to `n_east`.
+    Convert the TOF hit status to the number of hits at the east end.
+
+    It extracts bits 16 to 19 (`0x000F0000`) of the hit status, i.e. the number of
+    hits read out at the east end of the counter, as a number ranging from 0 to 15.
+
+    Parameters:
+        status: The hit status of the TOF hit, encoded as an integer.
+
+    Returns:
+        The number of hits at the east end, ranging from 0 to 15.
     """
     return _ufuncs.tof_hit_status_to_n_east(status)
 
 
 def tof_hit_status_to_n_west(status: IntLike) -> IntLike:
     """
-    Convert hit status to `n_west`.
+    Convert the TOF hit status to the number of hits at the west end.
+
+    It extracts bits 20 to 23 (`0x00F00000`) of the hit status, i.e. the number of
+    hits read out at the west end of the counter, as a number ranging from 0 to 15.
+
+    Parameters:
+        status: The hit status of the TOF hit, encoded as an integer.
+
+    Returns:
+        The number of hits at the west end, ranging from 0 to 15.
     """
     return _ufuncs.tof_hit_status_to_n_west(status)
 
 
 def tof_hit_status_to_is_mrpc(status: IntLike) -> BoolLike:
     """
-    Convert hit status to `is_mrpc`.
+    Convert the TOF hit status to the `is_mrpc` flag.
+
+    It tests bit 24 (`1 << 24`, mask `0x01000000`) of the hit status, which the TOF
+    reconstruction sets for the endcap hits read out by an MRPC module rather than
+    by a scintillator counter. The flag is only meaningful for endcap hits, i.e.
+    when `is_barrel` is false.
+
+    Parameters:
+        status: The hit status of the TOF hit, encoded as an integer.
+
+    Returns:
+        Whether the hit is in an MRPC endcap.
     """
     return _ufuncs.tof_hit_status_to_is_mrpc(status)
 
