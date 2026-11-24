@@ -3,6 +3,7 @@ find_package(Python COMPONENTS Interpreter Development.Module NumPy REQUIRED)
 pybind11_add_module(_io
     src/mod.cc
     src/raw_io.cc
+    src/raw_file.cc
 )
 
 target_link_libraries(_io PRIVATE uproot-custom Python::NumPy)

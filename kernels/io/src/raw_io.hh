@@ -58,11 +58,12 @@ class RawBinaryParser {
     static constexpr size_t CGEM_N_ELEC_STRIPS = 11008;
 
   public:
-    RawBinaryParser( py::array_t<uint32_t> data, vector<string> fields,
-                     map<string, py::array> info_tables )
-        : m_data_start( static_cast<uint32_t*>( data.request().ptr ) )
-        , m_data_end( static_cast<uint32_t*>( data.request().ptr ) + data.size() )
-        , m_cursor( static_cast<uint32_t*>( data.request().ptr ) ) {
+    RawBinaryParser( vector<string> fields, map<string, py::array> info_tables )
+        : m_data_start( nullptr ), m_data_end( nullptr ), m_cursor( nullptr ) {
+
+        // The table pointers below refer to buffers owned by these arrays, so the
+        // parser holds its own references for as long as it lives.
+        m_info_tables = info_tables;
 
         /* Initialize CGEM table */
         auto np_layer      = info_tables["cgem_layer"].cast<py::array_t<uint8_t>>();
@@ -144,22 +145,49 @@ class RawBinaryParser {
         }
     }
 
+    RawBinaryParser( py::array_t<uint32_t> data, vector<string> fields,
+                     map<string, py::array> info_tables )
+        : RawBinaryParser( std::move( fields ), std::move( info_tables ) ) {
+        auto* begin = static_cast<const uint32_t*>( data.request().ptr );
+        set_range( begin, begin + data.size() );
+    }
+
+    /**
+     * Point the parser at one event and reset its cursor.
+     */
+    void set_range( const uint32_t* begin, const uint32_t* end ) {
+        m_data_start = begin;
+        m_data_end   = end;
+        m_cursor     = begin;
+    }
+
+    /**
+     * Record the initial offsets of every active field.
+     *
+     * Must be called once before the first read_one(), so that the offset arrays
+     * hold one more entry than there are parsed events.
+     */
+    void begin() { fill_offsets(); }
+
+    /**
+     * Parse one event from the current range into the output buffers.
+     */
+    void read_one();
+
+    /**
+     * Parse every event of the current range.
+     */
+    void parse_all();
+
     py::dict arrays();
 
   private:
     uint32_t read();
-    vector<uint32_t> read( size_t n );
     void read( size_t n, uint32_t* data );
 
     void skip();
     void skip( size_t n );
 
-    void reset_cursor();
-
-    void preprocess_file();
-    void skip_to_entry( long entry_start );
-    void skip_event();
-    void read_event();
     void fill_offsets();
 
     uint32_t read_field();
@@ -176,10 +204,13 @@ class RawBinaryParser {
     void read_trg_buffer();
     void read_cgem_buffer();
 
+    // lookup tables whose buffers the pointers below refer into
+    map<string, py::array> m_info_tables;
+
     // binary data
     const uint32_t* m_data_start;
     const uint32_t* m_data_end;
-    uint32_t* m_cursor;
+    const uint32_t* m_cursor;
 
     // parsed data
     set<uint32_t> m_active_field_ids;
@@ -321,9 +352,6 @@ class RawBinaryParser {
         SharedVector<double> time{ make_shared_vector<double>() };
         size_t size() const { return id->size(); }
     } m_cgem_data;
-
-    /* reading status */
-    int64_t m_current_entry = -1;
 };
 
 py::dict py_read_bes_raw( py::array_t<uint32_t> data, vector<string> fields,

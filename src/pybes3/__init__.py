@@ -51,7 +51,7 @@ from pybes3.helix import (
     kappa_to_radius,
     phi0_to_phi,
 )
-from pybes3.io import concatenate, concatenate_raw, open, open_raw
+from pybes3.io import concatenate, concatenate_raw, iterate_raw, open, open_raw
 from pybes3.mc import (
     parse_particle_status,
     particle_decay_from_generator,
@@ -178,6 +178,7 @@ __all__ = [
     "get_tof_gid",
     "helix_awk",
     "helix_obj",
+    "iterate_raw",
     "kappa_to_charge",
     "kappa_to_pt",
     "kappa_to_radius",
