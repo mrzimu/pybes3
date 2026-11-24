@@ -1,0 +1,28 @@
+boss_add_module(AccessTds
+    SOURCES
+        src/AccessTdsAlg.cc
+    LINK
+        Gaudi::GaudiKernel
+        EventModel
+        McTruth
+        MdcRawEvent
+        EmcRawEvent
+        TofRawEvent
+        MucRawEvent
+        CgemRawEvent
+        LumiDigi
+        DstEvent
+        ExtEvent
+        MdcRecEvent
+        EmcRecEventModel
+        TofRecEvent
+        MucRecEvent
+)
+
+gaudi_add_executable(ReadEvent
+    SOURCES
+        src/ReadEvent.cc
+    LINK
+        Gaudi::GaudiKernel
+        RootEventData
+)
