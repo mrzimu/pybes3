@@ -2,14 +2,11 @@
 
 #include <algorithm>
 #include <cstring>
+#include <filesystem>
 #include <stdexcept>
 
 #include "raw_file.hh"
 #include "raw_io.hh"
-
-#ifdef _WIN32
-#    include <windows.h>
-#endif
 
 namespace {
 
@@ -35,25 +32,20 @@ namespace {
         return s.substr( begin, end - begin );
     }
 
-#ifdef _WIN32
-    std::wstring utf8_to_wide( const std::string& s ) {
-        if ( s.empty() ) return {};
-        int n = MultiByteToWideChar( CP_UTF8, 0, s.c_str(), int( s.size() ), nullptr, 0 );
-        std::wstring w( size_t( n ), L'\0' );
-        MultiByteToWideChar( CP_UTF8, 0, s.c_str(), int( s.size() ), w.data(), n );
-        return w;
+    // std::filesystem::path decodes UTF-8 to the native encoding itself (UTF-16 on
+    // Windows), so the file can be opened without <windows.h>. That header would
+    // also bring in a global `byte` typedef, which is ambiguous with std::byte
+    // because raw_io.hh has a `using namespace std`, and min/max macros that
+    // break std::min/std::max below.
+    std::filesystem::path utf8_path( const std::string& utf8 ) {
+        return std::filesystem::path( std::u8string( utf8.begin(), utf8.end() ) );
     }
-#endif
 
 } // namespace
 
 RawFileReader::RawFileReader( const std::string& path ) : m_path( path ) {
 
-#ifdef _WIN32
-    m_file.open( utf8_to_wide( path ), std::ios::binary );
-#else
-    m_file.open( path, std::ios::binary );
-#endif
+    m_file.open( utf8_path( path ), std::ios::binary );
     if ( !m_file.is_open() )
     {
         PyErr_SetFromErrnoWithFilename( PyExc_OSError, path.c_str() );
