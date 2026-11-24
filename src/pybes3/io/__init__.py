@@ -6,8 +6,7 @@ from warnings import warn
 import uproot
 
 from pybes3.io import root_io  # noqa: F401
-from pybes3.io.raw_io import RawBinaryReader
-from pybes3.io.raw_io import concatenate as concatenate_raw
+from pybes3.io.raw_io import RawBinaryReader, concatenate_raw, iterate_raw
 
 
 def open(file: str, **kwargs: object) -> Any:
@@ -68,4 +67,4 @@ def open_raw(file: str) -> RawBinaryReader:
     return RawBinaryReader(file)
 
 
-__all__ = ["concatenate", "concatenate_raw", "open", "open_raw"]
+__all__ = ["concatenate", "concatenate_raw", "iterate_raw", "open", "open_raw"]

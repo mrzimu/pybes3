@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import enum
 import glob
+from collections.abc import Iterator
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import awkward as ak
@@ -13,9 +15,9 @@ from uproot._util import regularize_filter
 
 from pybes3.data import CGEM_ELEC_TABLE
 from pybes3.io import _reid
-from pybes3.kernels._io import read_bes_raw
+from pybes3.kernels._io import RawFileReader
 
-_info_tables: dict[str, np.ndarray] = None
+_info_tables: dict[str, np.ndarray] | None = None
 
 _RAW_FIELDS = [
     "cgem",
@@ -77,6 +79,13 @@ def _raw_dict_to_ak(raw_dict: dict[str, object]) -> ak.Array:
 
 
 class RawBinaryReader:
+    """
+    Sequential and random-access reader for a BES3 raw file.
+
+    Instances are created by `pybes3.open_raw`. The file is opened on construction and
+    must be released with `close()` or a `with` block.
+    """
+
     def __init__(self, file: str):
         # load cgem-elec-table
         global _info_tables
@@ -96,45 +105,161 @@ class RawBinaryReader:
             _info_tables["muc_strsqc"] = _reid.build_muc_strsqc()
 
         self.path = str(Path(file).resolve())
-        self._file = open(file, "rb")  # noqa: SIM115
+        self._reader = RawFileReader(self.path)
 
-        self.file_version: int = -1
-        self.file_number: int = -1
-        self.file_date: int = -1
-        self.file_time: int = -1
+    @property
+    def file_version(self) -> int:
+        """
+        Version of the file format.
+        """
+        return self._reader.file_version
 
-        self.app_name: str = None
-        self.app_tag: str = None
+    @property
+    def file_number(self) -> int:
+        """
+        Number of the file in the run.
+        """
+        return self._reader.file_number
 
-        self.run_number: int = -1
-        self.max_events: int = -1
-        self.rec_enable: int = -1
-        self.trigger_type: int = -1
-        self.detector_mask: int = -1
-        self.beam_type: int = -1
-        self.beam_energy: int = -1
+    @property
+    def file_date(self) -> int:
+        """
+        Creation date of the file.
+        """
+        return self._reader.file_date
 
-        self.entries: int = -1
+    @property
+    def file_time(self) -> int:
+        """
+        Creation time of the file.
+        """
+        return self._reader.file_time
 
-        self._data_start: int = 0  # in char
-        self._data_end: int = 0  # in char
-        self.size: int = 0  # in char
-        self._data_size: int = 0  # in char
+    @property
+    def file_name(self) -> str:
+        """
+        Name stored in the file header.
+        """
+        return self._reader.file_name
 
-        self._entry_starts: np.ndarray = None  # in char
-        self._entry_stops: np.ndarray = None  # in char
-        self._max_looped_entry: int = -1
+    @property
+    def file_tag(self) -> str:
+        """
+        Tag stored in the file header.
+        """
+        return self._reader.file_tag
 
-        self._preprocess_file()
+    @property
+    def run_number(self) -> int:
+        """
+        Run number.
+        """
+        return self._reader.run_number
+
+    @property
+    def max_events(self) -> int:
+        """
+        Maximum number of events the run can contain.
+        """
+        return self._reader.max_events
+
+    @property
+    def rec_enable(self) -> int:
+        """
+        Reconstruction flag of the run.
+        """
+        return self._reader.rec_enable
+
+    @property
+    def trigger_type(self) -> int:
+        """
+        Trigger type of the run.
+        """
+        return self._reader.trigger_type
+
+    @property
+    def detector_mask(self) -> int:
+        """
+        Detector mask of the run.
+        """
+        return self._reader.detector_mask
+
+    @property
+    def beam_type(self) -> int:
+        """
+        Beam type of the run.
+        """
+        return self._reader.beam_type
+
+    @property
+    def beam_energy(self) -> int:
+        """
+        Beam energy of the run.
+        """
+        return self._reader.beam_energy
+
+    @property
+    def entries(self) -> int:
+        """
+        Number of events in the file.
+        """
+        return self._reader.entries
+
+    @property
+    def size(self) -> int:
+        """
+        File size in bytes.
+        """
+        return self._reader.size
+
+    @property
+    def _data_start(self) -> int:
+        """
+        Byte offset of the first event.
+        """
+        return self._reader.data_start
+
+    @property
+    def _data_end(self) -> int:
+        """
+        Byte offset of the end of the data section.
+        """
+        return self._reader.data_end
+
+    @property
+    def closed(self) -> bool:
+        """
+        Whether the file is closed.
+        """
+        return self._reader.closed
 
     def close(self) -> None:
-        self._file.close()
+        """
+        Close the file.
+        """
+        self._reader.close()
+
+    @property
+    def index_status(self) -> str:
+        """
+        Return the state of the in-memory entry index.
+
+        The index is built lazily while reading: opening a file does not scan it,
+        and reading from entry 0 never needs it.
+
+        Returns:
+            `"complete"`, `"partial"` or `"missing"`.
+        """
+        valid = self._reader.index_valid()
+        if self.entries == 0 or valid >= self.entries:
+            return "complete"
+        return "partial" if valid > 0 else "missing"
 
     def arrays(
         self,
         *,
         entry_start: int = 0,
-        entry_stop: int = -1,
+        entry_stop: int | None = None,
         filter_name: str | list | None = None,
     ) -> ak.Array:
         """
@@ -142,198 +267,110 @@ class RawBinaryReader:
 
         Parameters:
             entry_start (int, optional): The starting entry to read. Defaults to 0.
-            entry_stop (int, optional): The stopping entry to read. Defaults to -1, which means read all entries.
+            entry_stop (int, optional): The stopping entry to read. Defaults to `None`, which means read all entries. `-1` is accepted as an alias of `None`.
             filter_name (Union[str, list, None], optional): A filter to select specific fields to read. Defaults to `None`, which means read all fields.
 
         Returns:
             An Awkward Array containing the read data.
+
+        Raises:
+            ValueError: If `entry_start` is negative or the file is closed.
         """
-        # process parameters
-        if entry_stop == -1:
-            entry_stop = self.entries
-        entry_stop = min(entry_stop, self.entries)
+        start, stop = _normalize_range(self.entries, entry_start, entry_stop)
+        fields = _select_fields(filter_name)
 
-        filter_func = regularize_filter(filter_name)
-        fields = [field for field in _RAW_FIELDS if filter_func(field)]
-
-        batch_data = self._read_event(entry_start, entry_stop)
-
-        org_dict = read_bes_raw(batch_data, fields, _info_tables)
+        org_dict = self._reader.read(start, stop - start, fields, _info_tables)
         return _raw_dict_to_ak(org_dict)
 
-    def _read(self) -> int:
-        return int.from_bytes(self._file.read(4), "little")
-
-    def _skip(self, n: int = 1) -> None:
-        self._file.seek(4 * n, 1)
-
-    def _preprocess_file(self):
-        # file header
-        assert self._read() == BesFlag.FILE_START, "Invalid start flag"
-        self._skip()
-
-        self.file_version = self._read()
-        self.file_number = self._read()
-        self.file_date = self._read()
-        self.file_time = self._read()
-        self._skip(2)
-
-        # file name
-        assert self._read() == BesFlag.FILE_NAME, "Invalid file name flag"
-
-        nchar_name = self._read()
-        nbytes_name = np.ceil(nchar_name / 4).astype(int)
-        self.file_name = self._file.read(nbytes_name * 4).decode("utf-8").strip()
-
-        nchar_tag = self._read()
-        nbytes_tag = np.ceil(nchar_tag / 4).astype(int)
-        self.file_tag = self._file.read(nbytes_tag * 4).decode("utf-8").strip()
-
-        # run parameters
-        assert self._read() == BesFlag.RUN_PARAMS, "Invalid run params flag"
-        self._skip()
-
-        self.run_number = self._read()
-        self.max_events = self._read()
-        self.rec_enable = self._read()
-        self.trigger_type = self._read()
-        self.detector_mask = self._read()
-        self.beam_type = self._read()
-        self.beam_energy = self._read()
-
-        # other information
-        self._data_start = self._file.tell()
-        self._file.seek(0, 2)
-        self.size = self._file.tell()
-        self._data_end = self.size - 10 * 4
-        self._data_size = self._data_end - self._data_start
-
-        # read file tail
-        self._file.seek(-10 * 4, 2)
-        assert self._read() == BesFlag.FILE_TAIL_START, "Invalid file tail start flag"
-        self._skip(3)
-        self.entries = self._read()
-        self._skip(4)
-        assert self._read() == BesFlag.FILE_END, "Invalid file end flag"
-
-        # post process
-        self._entry_starts = np.full(self.entries, -1, dtype=np.int64)
-        self._entry_stops = np.full(self.entries, -1, dtype=np.int64)
-        self._reset_cursor()
-
-    def _reset_cursor(self) -> None:
-        self._file.seek(self._data_start)
-
-    def _skip_event(self) -> tuple[int, int]:
-        flag = self._read()
-        if flag == BesFlag.DATA_SEPERATOR:
-            self._skip(3)
-            flag = self._read()
-
-        assert flag == BesFlag.FULL_EVENT_FRAGMENT, "Invalid event fragment flag"
-        pos_start = self._file.tell() - 4
-
-        total_size = self._read()
-        self._skip(total_size - 2)
-        pos_end = self._file.tell()
-
-        return pos_start, pos_end
-
-    def _read_block(self, n_blocks: int) -> NDArray[np.uint32]:
+    def iterate(
+        self,
+        *,
+        step_size: int = 5000,
+        entry_start: int = 0,
+        entry_stop: int | None = None,
+        filter_name: str | list | None = None,
+        report: bool = False,
+    ) -> Iterator[ak.Array | tuple[int, int, ak.Array]]:
         """
-        Read a batch of data with the specified number of blocks.
-          - If n_blocks < 0, read all data.
-          - If n_blocks >= 0, read n_blocks blocks of data. Each block is separated by a DATA_SEPERATOR flag.
+        Iterate over the entries in batches.
+
+        Parameters:
+            step_size (int, optional): Number of entries per batch. Defaults to 5000.
+            entry_start (int, optional): The first entry to read. Defaults to 0.
+            entry_stop (int, optional): The entry to stop at. Defaults to `None`, which means read until the end.
+            filter_name (Union[str, list, None], optional): A filter to select specific fields to read. Defaults to `None`, which means read all fields.
+            report (bool, optional): If `True`, yield `(start, stop, array)` tuples. Defaults to `False`.
+
+        Returns:
+            An iterator of Awkward Arrays, or of `(start, stop, array)` tuples.
+
+        Raises:
+            ValueError: If `step_size` is not a positive integer.
+        """
+        if not isinstance(step_size, (int, np.integer)) or step_size <= 0:
+            raise ValueError(f"step_size must be a positive integer, got {step_size!r}")
+
+        start, stop = _normalize_range(self.entries, entry_start, entry_stop)
+        fields = _select_fields(filter_name)
+
+        return self._iterate(start, stop, int(step_size), fields, report)
+
+    def _iterate(
+        self,
+        start: int,
+        stop: int,
+        step_size: int,
+        fields: list[str],
+        report: bool,
+    ) -> Iterator[ak.Array | tuple[int, int, ak.Array]]:
+        pos = start
+        while pos < stop:
+            count = min(step_size, stop - pos)
+            array = _raw_dict_to_ak(self._reader.read(pos, count, fields, _info_tables))
+            yield (pos, pos + count, array) if report else array
+            pos += count
+
+    @property
+    def entry_byte_offsets(self) -> NDArray[np.int64]:
+        """
+        Return the byte offset of every entry, followed by the end of the data section.
+
+        The first access scans the file once; the offsets are kept in the reader and
+        reused by later reads.
+
+        Raises:
+            ValueError: If the file is closed.
+        """
+        if self.closed:
+            raise ValueError("I/O operation on closed raw file")
+
+        self._reader.build_entry_index()
+
+        starts = np.asarray(self._reader.entry_starts(), dtype=np.int64)
+        return np.append(starts, self._data_end)
+
+    def read_block(self, n_blocks: int = -1) -> NDArray[np.uint32]:
+        """
+        Read raw 32-bit words from the data section.
 
         This method is designed for generating testing data.
 
         Parameters:
-            n_blocks: The number of blocks to read. If negative, read all data.
+            n_blocks (int, optional): The number of data blocks to read. If negative, read the whole data section. Defaults to -1.
 
         Returns:
-            NDArray[np.uint32]: The batch of data read.
+            The requested words of the data section.
+
+        Raises:
+            ValueError: If the file is closed.
         """
-
-        self._reset_cursor()
-        if n_blocks < 0:
-            return np.frombuffer(self._file.read(self._data_size), dtype=np.uint32)
-
-        for _ in range(n_blocks):
-            if self._file.tell() >= self._data_end:
-                assert self._file.tell() == self._data_end, "Invalid data end"
-                break
-
-            assert self._read() == BesFlag.DATA_SEPERATOR, "Invalid data seperator flag"
-            self._skip(2)
-            block_size = self._read()
-            self._skip(block_size // 4)
-
-        pos_end = self._file.tell()
-
-        self._file.seek(self._data_start)
-        batch_data = np.frombuffer(
-            self._file.read(pos_end - self._data_start), dtype=np.uint32
-        )
-
-        return batch_data
-
-    def _read_event(self, entry_start: int, entry_stop: int) -> np.ndarray:
-        if entry_start >= entry_stop or entry_start >= self.entries:
-            return np.array([], dtype=np.uint32)
-
-        pos_start = None
-        pos_stop = None
-        if entry_start == 0:
-            pos_start = self._data_start
-        if entry_stop == self.entries:
-            pos_stop = self._data_end
-
-        if pos_start is not None and pos_stop is not None:
-            self._file.seek(self._data_start)
-            return np.frombuffer(self._file.read(self._data_size), dtype=np.uint32)
-
-        cur_entry = self._max_looped_entry
-
-        # move cursor to the maximum position of the already looped events to avoid unnecessary skipping
-        if cur_entry < 0:
-            self._file.seek(self._data_start)
-        else:
-            self._file.seek(self._entry_stops[cur_entry])
-
-        # loop until the entry_start-1 entry is reached, to record the start position of the entry_start entry
-        if pos_start is None:
-            while cur_entry < entry_start:
-                cur_entry += 1
-                self._entry_starts[cur_entry], self._entry_stops[cur_entry] = (
-                    self._skip_event()
-                )
-
-            self._max_looped_entry = cur_entry
-            pos_start = self._entry_starts[entry_start]
-
-        # loop until the entry_stop-1 entry is reached, to record the stop position of the entry_stop entry
-        if pos_stop is None:
-            while cur_entry < entry_stop - 1:
-                cur_entry += 1
-                self._entry_starts[cur_entry], self._entry_stops[cur_entry] = (
-                    self._skip_event()
-                )
-
-            self._max_looped_entry = cur_entry
-            pos_stop = self._entry_stops[entry_stop - 1]
-
-        # read the target entries
-        self._file.seek(pos_start)
-        return np.frombuffer(
-            self._file.read(pos_stop - pos_start),
-            dtype=np.uint32,
-        )
+        return self._reader.read_block(n_blocks)
 
     def __enter__(self):
         return self
 
     def __exit__(self, *args):
-        self._file.close()
+        self.close()
 
     def __repr__(self) -> str:
         file_name = Path(self.path).name
@@ -346,12 +383,105 @@ def _is_raw(file: str | Path) -> bool:
         return int.from_bytes(f.read(4), "little") == BesFlag.FILE_START
 
 
-def concatenate(
+def _normalize_range(
+    entries: int,
+    entry_start: int | None,
+    entry_stop: int | None,
+) -> tuple[int, int]:
+    """
+    Normalize an entry range against a total number of entries.
+    """
+    if entry_start is None:
+        entry_start = 0
+    entry_start = int(entry_start)
+    if entry_start < 0:
+        raise ValueError(f"entry_start must not be negative, got {entry_start}")
+
+    if entry_stop is None or entry_stop == -1:
+        stop = entries
+    else:
+        entry_stop = int(entry_stop)
+        if entry_stop < -1:
+            raise ValueError(
+                f"entry_stop must be -1 or a non-negative integer, got {entry_stop}"
+            )
+        stop = min(entry_stop, entries)
+
+    start = min(entry_start, entries)
+    return start, max(start, stop)
+
+
+def _select_fields(filter_name: str | list | None) -> list[str]:
+    """
+    Resolve `filter_name` into the list of fields to read.
+    """
+    filter_func = regularize_filter(filter_name)
+    return [field for field in _RAW_FIELDS if filter_func(field)]
+
+
+def _resolve_files(files: str | Path | list[str | Path]) -> list[str]:
+    """
+    Expand a glob and keep only valid raw files.
+    """
+    if not isinstance(files, list):
+        files = glob.glob(files, recursive=True)
+
+    return [str(Path(file).resolve()) for file in files if _is_raw(file)]
+
+
+def _file_ranges(
+    files: list[str],
+    entry_start: int,
+    entry_stop: int | None,
+) -> list[tuple[str, int, int, int]]:
+    """
+    Split a global entry range into per-file local ranges.
+
+    Returns:
+        A list of `(path, local_start, local_stop, global_start)`, with empty files omitted.
+    """
+    entries_per_file = []
+    total = 0
+    for file in files:
+        with RawBinaryReader(file) as reader:
+            n_entries = reader.entries
+        entries_per_file.append((file, n_entries))
+        total += n_entries
+
+    start, stop = _normalize_range(total, entry_start, entry_stop)
+
+    ranges = []
+    offset = 0
+    for file, n_entries in entries_per_file:
+        local_start = max(0, start - offset)
+        local_stop = min(n_entries, stop - offset)
+        if local_stop > local_start:
+            ranges.append((file, local_start, local_stop, offset))
+        offset += n_entries
+
+    return ranges
+
+
+def _read_range(
+    item: tuple[str, int, int, int],
+    filter_name: str | list | None,
+) -> ak.Array:
+    path, local_start, local_stop, _ = item
+    with RawBinaryReader(path) as reader:
+        return reader.arrays(
+            entry_start=local_start,
+            entry_stop=local_stop,
+            filter_name=filter_name,
+        )
+
+
+def concatenate_raw(
     files: str | Path | list[str | Path],
     *,
     entry_start: int = 0,
-    entry_stop: int = -1,
+    entry_stop: int | None = None,
     filter_name: str | list | None = None,
+    workers: int = 1,
     verbose: bool = False,
 ) -> ak.Array:
     """
@@ -359,89 +489,120 @@ def concatenate(
 
     Parameters:
         files (str | Path | list[str | Path]): files to be read.
-        entry_start (int, optional): The starting entry to read. Defaults to 0.
-        entry_stop (int, optional): The stopping entry to read. Defaults to -1, which means read until the end.
+        entry_start (int, optional): The first entry to read across all files. Defaults to 0.
+        entry_stop (int, optional): The entry to stop at across all files. Defaults to `None`, which means read until the end.
         filter_name (Union[str, list, None], optional): A filter to select specific fields to read. Defaults to `None`, which means read all fields.
+        workers (int, optional): Number of files to read concurrently. Defaults to 1.
         verbose (bool, optional): Show reading process. Defaults to `False`.
 
     Returns:
         Concatenated raw data array.
+
+    Raises:
+        ValueError: If no valid raw file is found or `workers` is not positive.
     """
-    if not isinstance(files, list):
-        files = glob.glob(files, recursive=True)
+    if workers <= 0:
+        raise ValueError(f"workers must be a positive integer, got {workers}")
 
-    files = [str(Path(file).resolve()) for file in files if _is_raw(file)]
-
-    if len(files) == 0:
+    paths = _resolve_files(files)
+    if len(paths) == 0:
         raise ValueError("No valid raw files found")
 
-    n_cum_entries = 0
-    readers_with_entry_range: list[tuple[RawBinaryReader, int, int]] = []
-    for file in files:
-        reader = RawBinaryReader(file)
-
-        if n_cum_entries + reader.entries < entry_start:
-            n_cum_entries += reader.entries
-            continue
-
-        entry_start_for_reader = None
-        entry_stop_for_reader = None
-
-        # entry_start for this reader
-        if n_cum_entries < entry_start and n_cum_entries + reader.entries >= entry_start:
-            entry_start_for_reader = entry_start - n_cum_entries
-        else:
-            entry_start_for_reader = 0
-
-        # entry_stop for this reader
-        if entry_stop < 0:
-            entry_stop_for_reader = -1
-        elif n_cum_entries <= entry_stop and n_cum_entries + reader.entries > entry_stop:
-            entry_stop_for_reader = entry_stop - n_cum_entries
-        else:
-            entry_stop_for_reader = -1
-
-        readers_with_entry_range.append(
-            (reader, entry_start_for_reader, entry_stop_for_reader)
-        )
-
-        n_cum_entries += reader.entries
-        if entry_stop >= 0 and n_cum_entries >= entry_stop:
-            break
-
-    try:
-        res = []
-        n_cum_read = 0
-        for (
-            reader,
-            entry_start_for_reader,
-            entry_stop_for_reader,
-        ) in readers_with_entry_range:
-            n_read = (
-                entry_stop_for_reader - entry_start_for_reader
-                if entry_stop_for_reader >= 0
-                else reader.entries - entry_start_for_reader
-            )
-
-            if verbose:
-                print(
-                    f"Reading file {reader.path}: {n_cum_read} -> {n_cum_read + n_read} entries ...",
-                )
-
-            res.append(
-                reader.arrays(
-                    entry_start=entry_start_for_reader,
-                    entry_stop=entry_stop_for_reader,
-                    filter_name=filter_name,
-                )
-            )
-
-            n_cum_read += n_read
-    finally:
-        for reader, _, _ in readers_with_entry_range:
-            reader.close()
-
-    if len(res) == 0:
+    ranges = _file_ranges(paths, entry_start, entry_stop)
+    if len(ranges) == 0:
         return ak.Array([])
 
+    res = []
+    n_cum_read = 0
+
+    if workers == 1:
+        for item in ranges:
+            n_read = item[2] - item[1]
+            if verbose:
+                print(
+                    f"Reading file {item[0]}: {n_cum_read} -> {n_cum_read + n_read} entries ...",
+                )
+            res.append(_read_range(item, filter_name))
+            n_cum_read += n_read
+    else:
+        with ThreadPoolExecutor(max_workers=workers) as executor:
+            for item, array in zip(
+                ranges, executor.map(lambda it: _read_range(it, filter_name), ranges)
+            ):
+                n_read = item[2] - item[1]
+                if verbose:
+                    print(
+                        f"Reading file {item[0]}: {n_cum_read} -> {n_cum_read + n_read} entries ...",
+                    )
+                res.append(array)
+                n_cum_read += n_read
+
     return ak.concatenate(res)
+
+
+def _iterate_files(
+    ranges: list[tuple[str, int, int, int]],
+    step_size: int,
+    filter_name: str | list | None,
+    report: bool,
+    verbose: bool,
+) -> Iterator[ak.Array | tuple[int, int, ak.Array]]:
+    n_cum_read = 0
+    for path, local_start, local_stop, global_start in ranges:
+        with RawBinaryReader(path) as reader:
+            if verbose:
+                print(
+                    f"Reading file {path}: {n_cum_read} -> {n_cum_read + local_stop - local_start} entries ...",
+                )
+
+            for start, stop, array in reader.iterate(
+                step_size=step_size,
+                entry_start=local_start,
+                entry_stop=local_stop,
+                filter_name=filter_name,
+                report=True,
+            ):
+                yield (global_start + start, global_start + stop, array) if report else array
+
+            n_cum_read += local_stop - local_start
+
+
+def iterate_raw(
+    files: str | Path | list[str | Path],
+    *,
+    step_size: int = 5000,
+    entry_start: int = 0,
+    entry_stop: int | None = None,
+    filter_name: str | list | None = None,
+    report: bool = False,
+    verbose: bool = False,
+) -> Iterator[ak.Array | tuple[int, int, ak.Array]]:
+    """
+    Iterate over multiple raw binary files in batches.
+
+    Batches never span two files, so the last batch of a file may be smaller than `step_size`.
+
+    Parameters:
+        files (str | Path | list[str | Path]): files to be read.
+        step_size (int, optional): Number of entries per batch. Defaults to 5000.
+        entry_start (int, optional): The first entry to read across all files. Defaults to 0.
+        entry_stop (int, optional): The entry to stop at across all files. Defaults to `None`, which means read until the end.
+        filter_name (Union[str, list, None], optional): A filter to select specific fields to read. Defaults to `None`, which means read all fields.
+        report (bool, optional): If `True`, yield `(start, stop, array)` tuples with global entry indices. Defaults to `False`.
+        verbose (bool, optional): Show reading process. Defaults to `False`.
+
+    Returns:
+        An iterator of Awkward Arrays, or of `(start, stop, array)` tuples.
+
+    Raises:
+        ValueError: If `step_size` is not a positive integer or no valid raw file is found.
+    """
+    if not isinstance(step_size, (int, np.integer)) or step_size <= 0:
+        raise ValueError(f"step_size must be a positive integer, got {step_size!r}")
+
+    paths = _resolve_files(files)
+    if len(paths) == 0:
+        raise ValueError("No valid raw files found")
+
+    ranges = _file_ranges(paths, entry_start, entry_stop)
+    return _iterate_files(ranges, int(step_size), filter_name, report, verbose)

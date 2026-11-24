@@ -1,4 +1,7 @@
+import struct
+
 import awkward as ak
+import numpy as np
 import pytest
 import uproot
 import uproot_custom
@@ -252,6 +255,181 @@ def test_concatenate_raw(test_data_dir):
 
     arr = p3.concatenate_raw(files, entry_start=35)
     assert len(arr) == 0
+
+
+def test_raw_iterate_matches_arrays(test_data_dir):
+    with p3.open_raw(test_data_dir / "test_raw_data.raw") as reader:
+        full = reader.arrays()
+
+        for step in (1, 3, 7, 5000):
+            parts = list(reader.iterate(step_size=step))
+            assert sum(len(p) for p in parts) == len(full)
+            assert ak.array_equal(ak.concatenate(parts), full)
+
+        filtered = list(reader.iterate(step_size=4, filter_name=["cgem", "mdc"]))
+        assert filtered[0].fields == ["evt_header", "cgem", "mdc"]
+
+
+def test_raw_iterate_report(test_data_dir):
+    with p3.open_raw(test_data_dir / "test_raw_data.raw") as reader:
+        report = [(start, stop) for start, stop, _ in reader.iterate(step_size=4, report=True)]
+        assert report == [(0, 4), (4, 8), (8, 10)]
+
+        report = [
+            (start, stop)
+            for start, stop, _ in reader.iterate(
+                step_size=2,
+                entry_start=3,
+                entry_stop=8,
+                report=True,
+            )
+        ]
+        assert report == [(3, 5), (5, 7), (7, 8)]
+
+
+def test_raw_iterate_ranges(test_data_dir):
+    with p3.open_raw(test_data_dir / "test_raw_data.raw") as reader:
+        full = reader.arrays()
+
+        tail = list(reader.iterate(entry_start=4, step_size=3))
+        assert ak.array_equal(ak.concatenate(tail), full[4:])
+
+        head = list(reader.iterate(entry_stop=5, step_size=2))
+        assert ak.array_equal(ak.concatenate(head), full[:5])
+
+        assert list(reader.iterate(entry_start=10)) == []
+        assert list(reader.iterate(entry_start=10, entry_stop=5)) == []
+        assert len(reader.arrays(entry_stop=-1)) == len(full)
+
+        with pytest.raises(ValueError):
+            reader.iterate(step_size=0)
+        with pytest.raises(ValueError):
+            reader.arrays(entry_start=-1)
+
+
+def test_raw_entry_byte_offsets(test_data_dir):
+    with p3.open_raw(test_data_dir / "test_raw_data.raw") as reader:
+        offsets = reader.entry_byte_offsets
+        assert len(offsets) == reader.entries + 1
+        assert offsets[-1] == reader._data_end
+        assert list(offsets[:-1]) == sorted(offsets[:-1])
+
+
+def test_raw_entry_index_is_lazy(test_data_dir):
+    with p3.open_raw(test_data_dir / "test_raw_data.raw") as reader:
+        assert reader.index_status == "missing"
+
+        # starting at entry 0 needs no scan
+        reader.arrays(entry_start=0, entry_stop=1)
+        assert reader.index_status == "missing"
+
+        # a partial read scans only up to the requested entry
+        reader.arrays(entry_start=4, entry_stop=5)
+        assert reader.index_status == "partial"
+
+        reader.entry_byte_offsets
+        assert reader.index_status == "complete"
+
+
+def test_raw_closed_reader(test_data_dir):
+    reader = p3.open_raw(test_data_dir / "test_raw_data.raw")
+    assert not reader.closed
+
+    reader.close()
+    assert reader.closed
+
+    with pytest.raises(ValueError):
+        reader.arrays()
+    with pytest.raises(ValueError):
+        reader.entry_byte_offsets
+    with pytest.raises(ValueError):
+        reader.read_block(1)
+
+
+def test_raw_read_block(test_data_dir):
+    with p3.open_raw(test_data_dir / "test_raw_data.raw") as reader:
+        whole = reader.read_block(-1)
+        assert whole.dtype == np.uint32
+        assert whole.size * 4 == reader._data_end - reader._data_start
+
+        first = reader.read_block(1)
+        assert 0 < first.size < whole.size
+        assert np.array_equal(first, whole[: first.size])
+
+        assert reader.read_block(0).size == 0
+
+
+def test_raw_rejects_bad_entry_count(test_data_dir, tmp_path):
+    data = bytearray((test_data_dir / "test_raw_data.raw").read_bytes())
+    struct.pack_into("<I", data, len(data) - 40 + 16, 0xFFFFFFFF)
+
+    path = tmp_path / "bad_entries.raw"
+    path.write_bytes(data)
+
+    with pytest.raises(RuntimeError, match="Invalid number of entries"):
+        p3.open_raw(path)
+
+
+def test_raw_recovers_after_failed_read(test_data_dir, tmp_path):
+    with p3.open_raw(test_data_dir / "test_raw_data.raw") as reader:
+        offsets = reader.entry_byte_offsets
+
+    data = bytearray((test_data_dir / "test_raw_data.raw").read_bytes())
+    struct.pack_into("<I", data, int(offsets[4]) + 4, 0x00FFFFFF)  # size of event 4
+
+    path = tmp_path / "corrupt_event.raw"
+    path.write_bytes(data)
+
+    with p3.open_raw(path) as reader:
+        expected = reader.arrays(entry_start=2, entry_stop=4)
+
+        with pytest.raises(RuntimeError):
+            reader.arrays(entry_start=2, entry_stop=5)
+
+        # the failed read must not leave a stale cursor behind
+        assert ak.array_equal(reader.arrays(entry_start=2, entry_stop=4), expected)
+
+
+def test_concatenate_raw_workers(test_data_dir):
+    files = [str(test_data_dir / "test_raw_data.raw")] * 3
+    serial = p3.concatenate_raw(files)
+    parallel = p3.concatenate_raw(files, workers=3)
+    assert ak.array_equal(serial, parallel)
+
+    sliced = p3.concatenate_raw(files, entry_start=5, entry_stop=23)
+    assert ak.array_equal(sliced, serial[5:23])
+
+    crossing = p3.concatenate_raw(files, entry_start=8, entry_stop=12)
+    assert ak.array_equal(crossing, serial[8:12])
+
+    assert len(p3.concatenate_raw(files, entry_start=30)) == 0
+
+    with pytest.raises(ValueError):
+        p3.concatenate_raw(files, workers=0)
+
+
+def test_iterate_raw_boundaries(test_data_dir):
+    files = [str(test_data_dir / "test_raw_data.raw")] * 3
+    full = p3.concatenate_raw(files)
+
+    parts = list(p3.iterate_raw(files, step_size=4))
+    assert [len(p) for p in parts] == [4, 4, 2, 4, 4, 2, 4, 4, 2]
+    assert ak.array_equal(ak.concatenate(parts), full)
+
+    report = [
+        (start, stop)
+        for start, stop, _ in p3.iterate_raw(
+            files,
+            step_size=6,
+            entry_start=7,
+            entry_stop=24,
+            report=True,
+        )
+    ]
+    assert report[0][0] == 7
+    assert report[-1][1] == 24
+    for start, stop in report:
+        assert start // 10 == (stop - 1) // 10
 
 
 if __name__ == "__main__":

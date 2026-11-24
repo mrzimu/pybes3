@@ -6,8 +6,7 @@ reader = RawBinaryReader(
     "/besfs8/offline/data/merge/raw/round19/260409/run_0091668_All_merge0_file002_SFO-1.raw"
 )
 
-reader._reset_cursor()
-block_data = reader._read_block(10)
+block_data = reader.read_block(10)
 
 fin = open(
     "/besfs8/offline/data/merge/raw/round19/260409/run_0091668_All_merge0_file002_SFO-1.raw",

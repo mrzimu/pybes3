@@ -134,7 +134,7 @@ To read a portion of the file:
 ```
 
 :::{warning}
-Explicitly specifying `entry_start` and `entry_stop` will slow down the reading speed ($\sim 0.33 \times$), as the reader needs to skip entries one by one until it reaches `entry_stop`.
+Reading a portion of a file still has to scan the events before `entry_start`. On a Lustre-backed 2 GB file this costs about 1.5 s per long prefix, while reading the events themselves stays at the sequential bandwidth. Opening a file never scans it: the entry offsets are built lazily while reading and kept in the open reader, so later reads through the same object do not scan again.
 :::
 
 To read only specific fields:
@@ -150,6 +150,35 @@ Available fields are: `cgem`, `mdc`, `tof`, `emc`, `muc`, `trigGTD`.
 
 `evt_header` is always read and cannot be filtered out.
 :::
+
+### Iterate over entries
+
+For files that do not fit in memory, read them in batches with `iterate`:
+
+```python
+>>> for batch in raw_file.iterate(step_size=5000):
+...     print(len(batch))
+```
+
+Each batch is an independent `ak.Array`. `entry_start` and `entry_stop` work as in `arrays`, and `report=True` yields `(start, stop, array)` tuples:
+
+```python
+>>> for start, stop, batch in raw_file.iterate(step_size=1000, entry_start=100, entry_stop=3000, report=True):
+...     print(start, stop, len(batch))
+```
+
+Batches are read with a single sequential pass over the same open file handle, so iterating is as fast as reading the file at once and only holds one batch in memory.
+
+### Entry offsets
+
+The raw format stores the number of entries but not their offsets, so a partial read scans the preceding events once. `entry_byte_offsets` exposes that scan and keeps the result in the reader:
+
+```python
+>>> raw_file.entry_byte_offsets[:3]
+array([     108,    10480,    22340])
+```
+
+Nothing is written to disk. Opening a file only parses its header and tail, and the entry index is extended lazily as reads move forward.
 
 
 Close the file when done:
@@ -197,4 +226,17 @@ Reading file run_0087397_All_merge0_file001_SFO-1.raw: 180322 -> 363492 entries 
 >>> raw_data = p3.concatenate_raw(files, entry_start=100, entry_stop=200, filter_name=['cgem', 'mdc'])
 >>> raw_data
 <Array [{evt_header: {...}, ...}, ..., {...}] type='100 * {evt_header: {evt...'>
+```
+
+Set `workers` to read several files at once. Each worker opens its own reader and keeps its own read buffer of up to 64 MB, so memory grows with the number of workers:
+
+```python
+>>> raw_data = p3.concatenate_raw(files, workers=2)
+```
+
+To process several files in batches, use `pybes3.iterate_raw`. `entry_start` and `entry_stop` count entries across all files, and a batch never spans two files:
+
+```python
+>>> for batch in p3.iterate_raw(files, step_size=5000, entry_start=100, entry_stop=300000):
+...     print(len(batch))
 ```

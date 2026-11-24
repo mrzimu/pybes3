@@ -19,44 +19,31 @@
 
 using uproot::make_array;
 
-uint32_t RawBinaryParser::read() { return *( m_cursor++ ); }
-
-vector<uint32_t> RawBinaryParser::read( size_t n ) {
-    vector<uint32_t> data( m_cursor, m_cursor + n );
-    m_cursor += n;
-    return data;
+uint32_t RawBinaryParser::read() {
+    if ( m_cursor >= m_data_end ) throw runtime_error( "Raw event overrun" );
+    return *( m_cursor++ );
 }
 
 void RawBinaryParser::read( size_t n, uint32_t* data ) {
     for ( size_t i = 0; i < n; i++ ) { data[i] = read(); }
 }
 
-void RawBinaryParser::skip() { m_cursor++; }
-
-void RawBinaryParser::skip( size_t n ) { m_cursor += n; }
-
-void RawBinaryParser::skip_event() {
-    auto flag = read();
-
-    if ( flag == RawFlag::DATA_SEPERATOR )
-    {
-        skip( 3 ); // header_size, data_block_number, data_block_size
-        flag = read();
-    }
-
-    if ( flag != RawFlag::FULL_EVENT ) { throw runtime_error( "Invalid event header flag" ); }
-
-    auto total_size = read();
-    skip( total_size - 2 );
-
-    m_current_entry++;
+void RawBinaryParser::skip() {
+    if ( m_cursor >= m_data_end ) throw runtime_error( "Raw event overrun" );
+    m_cursor++;
 }
 
-void RawBinaryParser::skip_to_entry( long entry ) {
-    while ( m_current_entry < entry ) { skip_event(); }
+void RawBinaryParser::skip( size_t n ) {
+    if ( size_t( m_data_end - m_cursor ) < n ) throw runtime_error( "Raw event overrun" );
+    m_cursor += n;
 }
 
-void RawBinaryParser::read_event() {
+void RawBinaryParser::parse_all() {
+    fill_offsets();
+    while ( m_cursor < m_data_end ) { read_one(); }
+}
+
+void RawBinaryParser::read_one() {
     m_buffers.clear();
 
     auto flag = read();
@@ -111,7 +98,6 @@ void RawBinaryParser::read_event() {
     read_data_from_buffers();
 
     fill_offsets();
-    m_current_entry++;
 }
 
 void RawBinaryParser::read_data_from_buffers() {
@@ -250,8 +236,8 @@ uint32_t RawBinaryParser::read_ROB( const uint32_t field_id ) {
     auto rod_n_data     = read();
     auto rod_status_pos = read();
 
-    uint32_t* data_begin{ nullptr };
-    uint32_t* data_end{ nullptr };
+    const uint32_t* data_begin{ nullptr };
+    const uint32_t* data_end{ nullptr };
 
     if ( rod_status_pos == 0 )
     {
@@ -760,12 +746,6 @@ void RawBinaryParser::read_cgem_buffer() {
 }
 
 py::dict RawBinaryParser::arrays() {
-    // - read data
-    py::gil_scoped_release release;
-    fill_offsets(); // fill the first offset
-    while ( m_cursor < m_data_end ) { read_event(); }
-    py::gil_scoped_acquire acquire;
-
     // - convert data to numpy array
     py::dict res;
 
@@ -878,5 +858,12 @@ py::dict RawBinaryParser::arrays() {
 
 py::dict py_read_bes_raw( py::array_t<uint32_t> data, vector<string> fields,
                           map<string, py::array> info_tables ) {
-    return RawBinaryParser( data, fields, info_tables ).arrays();
+    RawBinaryParser parser( data, fields, info_tables );
+
+    {
+        py::gil_scoped_release release;
+        parser.parse_all();
+    }
+
+    return parser.arrays();
 }

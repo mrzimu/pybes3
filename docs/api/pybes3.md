@@ -10,6 +10,8 @@
 .. autofunction:: pybes3.open_raw
 
 .. autofunction:: pybes3.concatenate_raw
+
+.. autofunction:: pybes3.iterate_raw
 ```
 
 ## Detectors
