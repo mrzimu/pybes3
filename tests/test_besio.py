@@ -80,10 +80,12 @@ def test_cgem_dst(test_data_dir):
     assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
 
-def test_cgem_rec(test_data_dir):
+@pytest.mark.parametrize("backend", ["cpp", "python", "detree"])
+def test_cgem_rec(test_data_dir, backend):
     f_dst = uproot.open(test_data_dir / "test_cgem.rec")
     truth_arr = ak.from_parquet(test_data_dir / "test_cgem.rec.parquet")
-    arr = f_dst["Event"].arrays()
+    with uproot_custom.use_backend(backend):
+        arr = f_dst["Event"].arrays()
     assert len(arr) == 10
     assert ak.array_equal(arr, truth_arr, equal_nan=True)
 
