@@ -77,65 +77,68 @@ Pybes3 is designed to be fast and efficient. It uses C++ to accelerate some of t
 
 ### Data reading
 
-A simple benchmark is provided to compare the performance of Pybes3 and `BOSS8` in reading `dst` files:
+The benchmark compares three readers on identical work: the seven Dst collections of every event are decoded and nothing is written back. The other branches of the `Event` tree (`TEvtHeader`, `TTrigEvent`, `TEvtRecObject`, `THltEvent`) are not read.
 
-- For Pybes3, we directly read out the `Event` tree:
+All readers read the same sub-branches of `TDstEvent`:
+
+| Branch                       | Collection          |
+| :--------------------------- | :------------------ |
+| `TDstEvent/m_mdcTrackCol`    | `DstMdcTrackCol`    |
+| `TDstEvent/m_mdcKalTrackCol` | `DstMdcKalTrackCol` |
+| `TDstEvent/m_mdcDedxCol`     | `DstMdcDedxCol`     |
+| `TDstEvent/m_extTrackCol`    | `DstExtTrackCol`    |
+| `TDstEvent/m_tofTrackCol`    | `DstTofTrackCol`    |
+| `TDstEvent/m_emcTrackCol`    | `DstEmcShowerCol`   |
+| `TDstEvent/m_mucTrackCol`    | `DstMucTrackCol`    |
+
+- Pybes3 reads those sub-branches with `uproot`:
 
     ```python
     import uproot
     import pybes3
 
-    n_evt = ... # number of events to read
-    files = [...] # list of ROOT files to read
+    n_evt = ...  # number of events to read
+    files = [...]  # list of ROOT files to read
+    branches = [
+        "TDstEvent/m_mdcTrackCol",
+        "TDstEvent/m_mdcKalTrackCol",
+        "TDstEvent/m_mdcDedxCol",
+        "TDstEvent/m_extTrackCol",
+        "TDstEvent/m_tofTrackCol",
+        "TDstEvent/m_emcTrackCol",
+        "TDstEvent/m_mucTrackCol",
+    ]
 
-    data_array = uproot.concatenate({f: "Event" for f in files}, entry_stop=n_evt)
+    data = uproot.concatenate({f: "Event" for f in files}, expressions=branches, entry_stop=n_evt)
     ```
 
-- For `BOSS8`, since when reading reconstruction data, it will load a `RecMakerAlg` algorithm for each event, which slows down the reading performance significantly (4~5 times slower than pure reading), we test 2 cases:
+- A plain `ROOT` C++ program opens the same file, points a branch address at the `TDstEvent` object, enables the same sub-branches and loops over `TTree::GetEntry`. This is the fastest reading available without an experiment framework.
 
-    - A loop on all events with default job-options (with `RecMakerAlg` algorithm):
+- A `BOSS8` job loops over all events and reads the same collections through the transient data store, so each collection is first converted from its ROOT representation into data-store objects by the Gaudi converters.
 
-        ```
-        #include "$ROOTIOROOT/share/jobOptions_ReadRec.txt"
-        #include "$OFFLINEEVENTLOOPMGRROOT/share/OfflineEventLoopMgr_Option.txt"
+Each point is measured with `hyperfine`, using two warm-up runs and five measured runs, for `1000`, `5000`, `10000`, `50000` and `100000` events.
 
-        EventCnvSvc.digiRootInputFile = { ... }; // list of ROOT files to read
-        ApplicationMgr.EvtMax = ...; // number of events to read
-        MessageSvc.OutputLevel = 7; // suppress messages
-        ```
-
-    - A loop on all events without loading `RecMakerAlg` algorithm. This is similar to reading `rtraw` files and is the closest case to raw `ROOT` reading:
-
-        ```
-        ApplicationMgr.ExtSvc += {"EvtPersistencySvc/EventPersistencySvc"};
-        ApplicationMgr.ExtSvc +={"RootEvtSelector/EventSelector","RootCnvSvc/EventCnvSvc"};
-        EventPersistencySvc.CnvServices += {"EventCnvSvc"};
-        #include "$OFFLINEEVENTLOOPMGRROOT/share/OfflineEventLoopMgr_Option.txt"
-
-        EventCnvSvc.digiRootInputFile = { ... }; // list of ROOT files to read
-        ApplicationMgr.EvtMax = ...; // number of events to read
-        MessageSvc.OutputLevel = 7; // suppress messages
-        ```
-
-The machine used for the benchmark is a `Intel i7-12700` with `Great Wall GW7000 4TB` SSD. The operating system is `AlmaLinuxOS9` on `WSL2`. The number of events is set to `1000`, `5000`, `10000`, `50000`, `100000`, `500000`, and `1000000`.
+The benchmark machine is an `AMD EPYC 9654` (96 cores) and the input file is `/bes3fs/offline/data/712-1/psipp/round17/dst/231029/run_0078615_All_file001_SFO-1.dst`.
 
 The results are shown below:
 
 <div align="center">
     <picture>
         <source srcset="./docs/_static/image/io-benchmarking-dark.svg" media="(prefers-color-scheme: dark)">
-        <img src="./docs/_static/image/io-benchmarking-light.svg" alt="Dummy Reading Performance">
+        <img src="./docs/_static/image/io-benchmarking-light.svg" alt="DST reading performance">
     </picture>
 </div>
 
-The fitting results with a linear function is:
+Fitting the reading time with `t = a + b * N` separates the fixed start-up cost from the per-event cost:
 
-|                            | Initialization time (s) | Slope (s/10k-event) |
-| :------------------------: | :---------------------: | :-----------------: |
-| BOSS8 (with `RecMakerAlg`) | 0.615                   | 2.766               |
-| BOSS8 (no `RecMakerAlg`)   | 0.451                   | 0.338               |
-| Pybes3                     | 1.135                   | 0.326               |
+| Reader       | Start-up time (ms) | Time per event (µs) |
+| :----------- | -----------------: | ------------------: |
+| `BOSS8`      | 658                | 55.2                |
+| Plain `ROOT` | 429                | 23.6                |
+| Pybes3       | 566                | 24.3                |
 
-The result shows that Pybes3 is also comparable to `BOSS8` when `RecMakerAlg` is not loaded, which means that the reading performance of Pybes3 is close to the reading performance of `ROOT` itself. Pybes3 is several times faster than `BOSS8` with default settings, and slower when reading small number of events (~1000), since the module importing and initialization time is counted in the benchmark.
+`BOSS8` pays 55.2 µs per event, more than twice what the other readers pay, because the Gaudi converters rebuild every collection in the transient data store. The file is read once in all cases; the extra time is the conversion, not the I/O.
 
-Since users may have to use the default settings of `BOSS` to read reconstruction data, Pybes3 is still several times faster in this case.
+Pybes3 is almost on top of plain `ROOT` at 24.3 µs per event against 23.6 µs. The few percent in between is the cost of building the awkward arrays on top of the decoded data, while the decoding itself costs no more than the generic ROOT object streamer, since the C++ kernels are generated for the BES3 event layout.
+
+Start-up goes the other way: Pybes3 spends 566 ms before the first event against 429 ms for plain `ROOT`, mostly importing the module and loading its kernels, and 658 ms for `BOSS8`, which also configures the event loop and the persistency services. Start-up is paid once per job, so the per-event column decides long jobs and this column decides short ones; either way Pybes3 is twice as cheap per event as `BOSS8` and within a few percent of plain `ROOT`.
