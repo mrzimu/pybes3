@@ -125,7 +125,7 @@ The results are shown below:
 <div align="center">
     <picture>
         <source srcset="./docs/_static/image/io-benchmarking-dark.png" media="(prefers-color-scheme: dark)">
-        <img src="./docs/_static/image/io-benchmarking-light.png" alt="DST reading performance" width="40%">
+        <img src="./docs/_static/image/io-benchmarking-light.png" alt="DST reading performance" width="50%">
     </picture>
 </div>
 
