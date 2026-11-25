@@ -317,7 +317,7 @@ class HelixObject:
     def change_pivot(self, *args):
         """
         Change the pivot point of the helix.
-        The transformation refers to `Helix` class in `BOSS`.
+        The transformation refers to `Helix` class in BOSS.
         """
         # transform helix parameters
         r = self.radius

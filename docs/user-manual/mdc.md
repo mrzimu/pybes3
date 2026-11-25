@@ -270,5 +270,5 @@ In BOSS there is no concrete physics unit of the MDC charge: the raw channel num
 :::{admonition} Same as BOSS
 :class: hint
 
-MDC charge and time calculations are the same as the ones given by `RawDataUtil::MdcCharge` and `RawDataUtil::MdcTime` in `BOSS`.
+MDC charge and time calculations are the same as the ones given by `RawDataUtil::MdcCharge` and `RawDataUtil::MdcTime` in BOSS.
 :::

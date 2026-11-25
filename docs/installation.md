@@ -32,9 +32,9 @@ ln -s /path/to/somewhere/.local ~/.local
 ln -s /path/to/somewhere/.cache ~/.cache
 ```
 
-## Using Pybes3 under `BOSS8` environment
+## Using Pybes3 under BOSS environment
 
-If you are using Pybes3 under a `BOSS8` environment, you **must** run the following commands after setting up the `BOSS8` environment:
+If you are using Pybes3 under a BOSS environment, you **must** run the following commands after setting up the BOSS environment:
 
 ```bash
 export PYTHONPATH=`python -m site --user-site`:$PYTHONPATH
@@ -42,5 +42,5 @@ export PATH=`python -m site --user-base`/bin:$PATH
 ```
 
 :::{warning}
-Do **not** add these commands to your shell configuration file (e.g., `~/.bashrc`), since they will conflict with the default Python environment (without `BOSS8`).
+Do **not** add these commands to your shell configuration file (e.g., `~/.bashrc`), since they will conflict with the default Python environment (without BOSS).
 :::

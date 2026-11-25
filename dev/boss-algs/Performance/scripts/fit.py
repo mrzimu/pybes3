@@ -18,7 +18,7 @@ from pathlib import Path
 import numpy as np
 
 # The command names that `bench.sh` passes to hyperfine, and the names used in the documentation.
-READERS = {"boss": "BOSS8", "root": "Plain ROOT", "pybes3 (c++": "Pybes3"}
+READERS = {"boss": "BOSS", "root": "Plain ROOT", "pybes3 (c++": "Pybes3"}
 
 
 def load(directory):

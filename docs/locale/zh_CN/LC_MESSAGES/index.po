@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pybes3 0.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-25 06:33+0800\n"
+"POT-Creation-Date: 2026-11-25 20:08+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_CN\n"
@@ -19,34 +19,34 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: ../../docs/index.md:152
+#: ../../docs/index.md:150
 msgid "Convention"
 msgstr "约定"
 
-#: ../../docs/index.md:39 ../../docs/index.md:161
-#: 707d4642ebc04dd796a38ada309e663f
+#: ../../docs/index.md:39 ../../docs/index.md:159
+#: 71022f0b31e049c5b3384abfa9bada71
 msgid "User manual"
 msgstr "用户指南"
 
-#: ../../docs/index.md:177
+#: ../../docs/index.md:175
 msgid "API Reference"
 msgstr "API 参考"
 
-#: ../../docs/index.md:1 0e6771e34f884a7d8155f0901d09600e
+#: ../../docs/index.md:1 5a21dc18572a4f23b151d5bd191f0b3a
 msgid "Documentation for Pybes3"
 msgstr "Pybes3 文档"
 
-#: ../../docs/index.md:3 5321ba5cee0f475799e6f1e26a1fe9b6
+#: ../../docs/index.md:3 5b78659418a74916b3b31e2cdddd3a8c
 msgid ""
 "Pybes3 is a Python module that aims to make it easier for BES3 users to "
 "work with Python."
 msgstr "Pybes3 是一个 Python 模块，旨在让 BES3 用户更方便地用 Python 处理数据。"
 
-#: ../../docs/index.md:5 82a3bb8cf6e94939b0f451bc692da993
+#: ../../docs/index.md:5 9353e824cede4da786868afbc9ee7864
 msgid "Help us improve Pybes3!"
 msgstr "帮助我们改进 Pybes3！"
 
-#: ../../docs/index.md:8 2eb52374bedb489685640bc12c092c14
+#: ../../docs/index.md:8 da49308644b8406bb86cb33f69b89a5f
 msgid ""
 "If you have any suggestions, questions, or issues, please feel free to "
 "[open an issue](https://github.com/mrzimu/pybes3/issues/new/choose)."
@@ -54,17 +54,17 @@ msgstr ""
 "如果你有任何建议、疑问或问题，欢迎[提交 "
 "issue](https://github.com/mrzimu/pybes3/issues/new/choose)。"
 
-#: ../../docs/index.md:12 9a8fb9f3b5f849c682900a3986bf2700
+#: ../../docs/index.md:12 661e03176cf8407f8227900dce32238f
 msgid "See Also"
 msgstr "另请参阅"
 
-#: ../../docs/index.md:15 76db960af58e47c2a48ed41a5142b5c0
+#: ../../docs/index.md:15 7d2fae173cc74531bc2a5dd5bafc06ce
 msgid ""
 "It is highly recommended to take a look at these Python modules before "
 "using Pybes3:"
 msgstr "强烈建议在使用 Pybes3 之前先了解以下 Python 模块："
 
-#: ../../docs/index.md:17 139a263f96334665bec0d72e2bb9f892
+#: ../../docs/index.md:17 81cd5b72d0114f3aac5525b24f36c402
 msgid ""
 "[`awkward`](https://awkward-array.org/doc/stable/index.html): A Python "
 "module that can handle ragged-like array."
@@ -72,7 +72,7 @@ msgstr ""
 "[`awkward`](https://awkward-"
 "array.org/doc/stable/index.html)：一个可处理不规则（ragged）数组的 Python 模块。"
 
-#: ../../docs/index.md:18 845c883055d24e02a51fd9973a885b49
+#: ../../docs/index.md:18 7097cb7f5ba840fca74da6447fbc67eb
 msgid ""
 "[`uproot`](https://uproot.readthedocs.io/en/stable/): A ROOT I/O Python "
 "module. Pybes3 uses `uproot` to read BES3 ROOT files."
@@ -80,67 +80,67 @@ msgstr ""
 "[`uproot`](https://uproot.readthedocs.io/en/stable/)：一个 ROOT I/O 的 Python"
 " 模块。Pybes3 使用 `uproot` 读取 BES3 的 ROOT 文件。"
 
-#: ../../docs/index.md:24 dae7a57d3e5d4c3d911197f968bfaf2d
+#: ../../docs/index.md:24 2749d916faab4d93b7c30dc946e0aa25
 msgid "Install Pybes3 using pip"
 msgstr "使用 pip 安装 Pybes3"
 
-#: ../../docs/index.md:28 85a95afd7dc14ae2bf876903a10c71f3
+#: ../../docs/index.md:28 1f9efe06238f4bc3803542cdadf09865
 msgid "Get Pybes3 from PyPI."
 msgstr "从 PyPI 获取 Pybes3。"
 
-#: ../../docs/index.md:31 a1a01f65d83e4dbf9005583b9aca467f
+#: ../../docs/index.md:31 def0312873a14bcdbd81a85deee8d77f
 msgid "Get started with user manual"
 msgstr "从用户指南开始"
 
-#: ../../docs/index.md:35 4506cc5a00b243738a227fef4b785b01
+#: ../../docs/index.md:35 f9d0993b39da488ca80ae3427392e286
 msgid "Learn how to read data and use detector utilities."
 msgstr "学习如何读取数据并使用探测器工具。"
 
 #: ../../docs/index.md:44 ../../docs/index.md:77
-#: 5b3cba6e049e4c7b895655cca9a801c7 61e89c3838f8450594e713860875ff1c
+#: 16f90e7d477e4b42bbddc1a769a782bc cae7717e94ca4921b4244e524f4c389f
 msgid "Data reading"
 msgstr "数据读取"
 
-#: ../../docs/index.md:48 15735f07be2c48c9b7ce730a4d62a524
+#: ../../docs/index.md:48 5039b72988ed45008e0308681c9752d2
 msgid "Read `rtraw`, `rec`, `dst`, and even `raw` files."
 msgstr "读取 `rtraw`、`rec`、`dst` 乃至 `raw` 文件。"
 
-#: ../../docs/index.md:51 12d7d2fe3ecd4041a1e6cb7aabf04258
+#: ../../docs/index.md:51 a4c8d5c3b8334111a1064d38042eccbe
 msgid "Global ID (gid)"
 msgstr "全局 ID（gid）"
 
-#: ../../docs/index.md:55 55273bc94c5a409d883b0c003a032f3a
+#: ../../docs/index.md:55 70b1fd0fdaac40c396160e3f05821e06
 msgid "Zero-based global ID (gid) for detector elements in Pybes3."
 msgstr "Pybes3 中探测器元素的全局 ID（gid），从 0 开始。"
 
-#: ../../docs/index.md:58 c1796ab7718b45b6b3f1b1bdb91c64d8
+#: ../../docs/index.md:58 471288982fab47389c1146de82917a6f
 msgid "BOSS identifier"
 msgstr "BOSS 探测器标识符"
 
-#: ../../docs/index.md:62 30cff9117a90459eaf8729e7b4952e0d
+#: ../../docs/index.md:62 b6678de1c19746aeba999e667447277d
 msgid "Convert BOSS detector identifier number to a human-readable format."
 msgstr "把 BOSS 探测器标识符编号转换为易读的形式。"
 
-#: ../../docs/index.md:65 ae89c15d3c2a4f6c857e18bd6d4e2e4b
+#: ../../docs/index.md:65 eab077a6a95b48f8b943a9c57b7688eb
 msgid "Helix operations"
 msgstr "螺旋线参数操作"
 
-#: ../../docs/index.md:69 1de81ed2bcd7496a876c1763aff76eeb
+#: ../../docs/index.md:69 c64faeb466594e58b96b5abaa6b2daff
 msgid "Parse and transform helix parameters."
 msgstr "解析并变换螺旋线参数。"
 
-#: ../../docs/index.md:73 8ceaaafdd453489da6fa78655f610da7
+#: ../../docs/index.md:73 7e66f42bd6664529bb80f2a4273e16fa
 msgid "Performance"
 msgstr "性能"
 
-#: ../../docs/index.md:75 46a9204b0be0453f97ce53848134d46d
+#: ../../docs/index.md:75 f5268d8e50224ecfb5107712e17440fd
 msgid ""
 "Pybes3 is designed to be fast and efficient. It uses C++ to accelerate "
 "some of the operations, such as helix operations, detector identifier "
 "conversion, etc."
 msgstr "Pybes3 注重速度与效率，部分操作（如螺旋线参数运算、探测器标识符转换等）使用 C++ 加速。"
 
-#: ../../docs/index.md:79 f5a4591601944284abb600ddd8f1869d
+#: ../../docs/index.md:79 f08c1a11e5654b0dbd8c101c7755b85c
 msgid ""
 "The benchmark compares three readers on identical work: the seven Dst "
 "collections of every event are decoded and nothing is written back. The "
@@ -150,99 +150,98 @@ msgstr ""
 "该基准在相同的工作量下比较三个读取器：每个事件的七个 Dst 集合都会被解码，且不写回任何内容。`Event` tree "
 "的其他分支（`TEvtHeader`、`TTrigEvent`、`TEvtRecObject`、`THltEvent`）不会被读取。"
 
-#: ../../docs/index.md:81 2ac02920105c40d3b2d014e0919275cc
+#: ../../docs/index.md:81 0759b3155a254aff8b45689a0cbcef32
 msgid "All readers read the same sub-branches of `TDstEvent`:"
 msgstr "所有读取器都读取 `TDstEvent` 的相同子分支："
 
-#: ../../docs/index.md:65 7ca9750f39fa47f5af751b209803ad29
+#: ../../docs/index.md:65 6452942d55c64fa6951d8e0d0133c535
 msgid "Branch"
 msgstr "分支"
 
-#: ../../docs/index.md:65 1937f6f8c2354db6a2f22ebb2a1da55f
+#: ../../docs/index.md:65 ef7ac745f40a4c3a9e63b7ce9e82d53a
 msgid "Collection"
 msgstr "集合"
 
-#: ../../docs/index.md:65 daa194b300c94b2fb77ef03cf393a6d1
+#: ../../docs/index.md:65 0b7cacd1ee27470f8af6dce6dc1dc1d2
 msgid "`TDstEvent/m_mdcTrackCol`"
 msgstr "`TDstEvent/m_mdcTrackCol`"
 
-#: ../../docs/index.md:65 ab8eadea14484f0b9e6c78df2d13841b
+#: ../../docs/index.md:65 9b83126e8a4d4937a3e8ad9dd98ae3e6
 msgid "`DstMdcTrackCol`"
 msgstr "`DstMdcTrackCol`"
 
-#: ../../docs/index.md:65 b3a2fd045fae43068366fa155ed16d3a
+#: ../../docs/index.md:65 dcd3b70a726d42dc83cf9bce7687a8a8
 msgid "`TDstEvent/m_mdcKalTrackCol`"
 msgstr "`TDstEvent/m_mdcKalTrackCol`"
 
-#: ../../docs/index.md:65 5090fd34ad8f450bb3afea807b09ab28
+#: ../../docs/index.md:65 d9de16976f7541268f1dbd8a878da389
 msgid "`DstMdcKalTrackCol`"
 msgstr "`DstMdcKalTrackCol`"
 
-#: ../../docs/index.md:65 50f0d8a5278a4973807b9d82334b92a5
+#: ../../docs/index.md:65 89e26771cddb49d291786379d59eb962
 msgid "`TDstEvent/m_mdcDedxCol`"
 msgstr "`TDstEvent/m_mdcDedxCol`"
 
-#: ../../docs/index.md:65 124a241a13bb4308becb9ecd6b116e5b
+#: ../../docs/index.md:65 bf680f6c9e5f46858352e4e83224cca3
 msgid "`DstMdcDedxCol`"
 msgstr "`DstMdcDedxCol`"
 
-#: ../../docs/index.md:65 e849be52c85246caaf671aae44542f43
+#: ../../docs/index.md:65 6179bf08322746c99b77ed0de8a20d75
 msgid "`TDstEvent/m_extTrackCol`"
 msgstr "`TDstEvent/m_extTrackCol`"
 
-#: ../../docs/index.md:65 da22b13eb7844904970baaa96b6428e9
+#: ../../docs/index.md:65 d6343991de6347669a21d777d6a2fbc6
 msgid "`DstExtTrackCol`"
 msgstr "`DstExtTrackCol`"
 
-#: ../../docs/index.md:65 f7ec8f0e1b234f8e88342006f078b66d
+#: ../../docs/index.md:65 d8cda17ba9c746de92da12bb8e173627
 msgid "`TDstEvent/m_tofTrackCol`"
 msgstr "`TDstEvent/m_tofTrackCol`"
 
-#: ../../docs/index.md:65 f9a0826b193445e9ad93122df19feeab
+#: ../../docs/index.md:65 9c5405b1edbd4faa89e367ef809b99c1
 msgid "`DstTofTrackCol`"
 msgstr "`DstTofTrackCol`"
 
-#: ../../docs/index.md:65 246d2dad2c95441399e89674366a9ede
+#: ../../docs/index.md:65 803631e9f1de431788a908e5d64eb7bb
 msgid "`TDstEvent/m_emcTrackCol`"
 msgstr "`TDstEvent/m_emcTrackCol`"
 
-#: ../../docs/index.md:65 d642ee12adad4842837e5b5b256c5562
+#: ../../docs/index.md:65 5aaeac67d5414b24892719022b7182ad
 msgid "`DstEmcShowerCol`"
 msgstr "`DstEmcShowerCol`"
 
-#: ../../docs/index.md:65 58035a364c6641cf83d265b9382834fd
+#: ../../docs/index.md:65 5f24cca2a1034e2ea1ea321f9210164e
 msgid "`TDstEvent/m_mucTrackCol`"
 msgstr "`TDstEvent/m_mucTrackCol`"
 
-#: ../../docs/index.md:65 d2273d128f824430baa3673c83a5a075
+#: ../../docs/index.md:65 79518548c27a42abba6fea73235ca157
 msgid "`DstMucTrackCol`"
 msgstr "`DstMucTrackCol`"
 
-#: ../../docs/index.md:93 571b3ecfe91b486f9978643374d09a2f
+#: ../../docs/index.md:93 873cee2ba8214ed0aa5a2cb5c41dcdd9
 msgid "Pybes3 reads those sub-branches with `uproot`:"
 msgstr "Pybes3 用 `uproot` 读取这些子分支："
 
-#: ../../docs/index.md:114 c0ac508840d14ce8a4f512e66917558f
+#: ../../docs/index.md:114 3b81fd88e9fc4265a021ab0697f864ae
 msgid ""
-"A plain `ROOT` C++ program opens the same file, points a branch address "
-"at the `TDstEvent` object, enables the same sub-branches and loops over "
+"A plain ROOT C++ program opens the same file, points a branch address at "
+"the `TDstEvent` object, enables the same sub-branches and loops over "
 "`TTree::GetEntry`. This is the fastest reading available without an "
 "experiment framework."
 msgstr ""
-"一个纯 `ROOT` 的 C++ 程序打开同一个文件，把分支地址指向 `TDstEvent` 对象，启用相同的子分支，然后循环调用 "
+"一个纯 ROOT 的 C++ 程序打开同一个文件，把分支地址指向 `TDstEvent` 对象，启用相同的子分支，然后循环调用 "
 "`TTree::GetEntry`。这是不借助实验组框架时最快的读取方式。"
 
-#: ../../docs/index.md:116 457bc65fbf554943a4b76f800b6fab60
+#: ../../docs/index.md:116 143ff2843d504ed4ac13b6c0759082d1
 msgid ""
-"A `BOSS8` job loops over all events and reads the same collections "
-"through the transient data store, so each collection is first converted "
-"from its ROOT representation into data-store objects by the Gaudi "
-"converters."
+"A BOSS job loops over all events and reads the same collections through "
+"the transient data store, so each collection is first converted from its "
+"ROOT representation into data-store objects by the Gaudi converters."
 msgstr ""
-"一个 `BOSS8` 作业遍历所有事件，并通过 transient data store 读取相同的集合，因此每个集合都会先由 Gaudi "
+"一个 BOSS 作业遍历所有事件，并通过 transient data store 读取相同的集合，因此每个集合都会先由 Gaudi "
 "converter 从 ROOT 表示转换成 data store 对象。"
 
-#: ../../docs/index.md:118 c0521076e2f64bc28850749c913259ab
+#: ../../docs/index.md:118 10e63375ad0d4537bb33db57d2e58010
 msgid ""
 "Each point is measured with `hyperfine`, using two warm-up runs and five "
 "measured runs, for `1000`, `5000`, `10000`, `50000` and `100000` events."
@@ -250,7 +249,7 @@ msgstr ""
 "每个数据点都用 `hyperfine` 测量，先做两次预热运行，再做五次正式测量，事件数依次为 "
 "`1000`、`5000`、`10000`、`50000` 和 `100000`。"
 
-#: ../../docs/index.md:120 43537f133eb743aa9fd9eac9ba26c59b
+#: ../../docs/index.md:120 c0c5a46039594ecf8bf101988b35b138
 msgid ""
 "The benchmark machine is an `AMD EPYC 9654` (96 cores) and the input file"
 " is "
@@ -259,98 +258,98 @@ msgstr ""
 "基准测试机器为 `AMD EPYC 9654`（96 核），输入文件为 "
 "`/bes3fs/offline/data/712-1/psipp/round17/dst/231029/run_0078615_All_file001_SFO-1.dst`。"
 
-#: ../../docs/index.md:122 fe08228b0b3a4fc186fd07ad6fdc2f6b
+#: ../../docs/index.md:122 0ab908c0ef3d410793c0b59e1882469f
 msgid "The results are shown below:"
 msgstr "结果如下："
 
-#: ../../docs/index.md:131 6c16ed2f13e040b396c97abf4fb9b2ed
+#: ../../docs/index.md:129 5863168d63d14f00a3216cf00eed8693
 msgid ""
 "Fitting the reading time with `t = a + b * N` separates the fixed start-"
 "up cost from the per-event cost:"
 msgstr "用 `t = a + b * N` 拟合读取时间，可以把固定的启动开销与每事件开销分开："
 
-#: ../../docs/index.md:65 e1732a7ca7b14fa39e58bb1e9ec9f797
+#: ../../docs/index.md:65 ec93b5474d8a4653a3b083d6b8c551c9
 msgid "Reader"
 msgstr "读取器"
 
-#: ../../docs/index.md:65 c11a48c55b9241038f1689b22814dcb3
+#: ../../docs/index.md:65 aca54b7f8a3f40ef83a3527ff2cc1280
 msgid "Start-up time (ms)"
 msgstr "启动时间（ms）"
 
-#: ../../docs/index.md:65 fd14408d924b40189268225a0aa7048f
+#: ../../docs/index.md:65 605be4ebde4542499bf7393ede93aa7e
 msgid "Time per event (µs)"
 msgstr "每事件耗时（µs）"
 
-#: ../../docs/index.md:65 6e3eb350971a443cb67b1279b8e5e2a9
-msgid "`BOSS8`"
-msgstr "`BOSS8`"
+#: ../../docs/index.md:65 551e1804f3294da8aee2b2b6d8d1cb80
+msgid "BOSS"
+msgstr "BOSS"
 
-#: ../../docs/index.md:65 8e24906bb06f467ebba7b5fdcb85fa66
+#: ../../docs/index.md:65 54d6df97eddf4a128e69caac600755b3
 msgid "658"
 msgstr "658"
 
-#: ../../docs/index.md:65 0fa1a3609f9f4ab684984a5e4b6dd288
+#: ../../docs/index.md:65 79bf05b4ee454ae69e05e9b36bf3adce
 msgid "55.2"
 msgstr "55.2"
 
-#: ../../docs/index.md:65 f1f7b761bd2142edb145a4321fe0502d
-msgid "Plain `ROOT`"
-msgstr "纯 `ROOT`"
+#: ../../docs/index.md:65 0beea8a3ea274beda75444050924866b
+msgid "Plain ROOT"
+msgstr "纯 ROOT"
 
-#: ../../docs/index.md:65 c76aa1056e134def9c08627e450b9b5f
+#: ../../docs/index.md:65 3afeb23331e04f74a768c31194e03a3c
 msgid "429"
 msgstr "429"
 
-#: ../../docs/index.md:65 449844376b584bf49235167f0f639c77
+#: ../../docs/index.md:65 be4d890fa3b3411a911f4784136353f7
 msgid "23.6"
 msgstr "23.6"
 
-#: ../../docs/index.md:65 8d62afb5eae544d6b90f4007b61faf82
+#: ../../docs/index.md:65 a9fa7dcc67a04d6ca5881d761b06704c
 msgid "Pybes3"
 msgstr "Pybes3"
 
-#: ../../docs/index.md:65 f73b5bf8c75a4a99adc85d54c13a14ca
+#: ../../docs/index.md:65 86e6d9db5b4848179753cff56d79c3bd
 msgid "566"
 msgstr "566"
 
-#: ../../docs/index.md:65 b4b1db117199447f902d43afbe9e9676
+#: ../../docs/index.md:65 45ed5992f539418f85e98ea763c95c0c
 msgid "24.3"
 msgstr "24.3"
 
-#: ../../docs/index.md:139 698d899d60da4eeb86e5e28a4cdd1b03
+#: ../../docs/index.md:137 01edf74470374d5b9a2accafae0a2379
 msgid ""
-"`BOSS8` pays 55.2 µs per event, more than twice what the other readers "
-"pay, because the Gaudi converters rebuild every collection in the "
-"transient data store. The file is read once in all cases; the extra time "
-"is the conversion, not the I/O."
+"BOSS pays 55.2 µs per event, more than twice what the other readers pay, "
+"because the Gaudi converters rebuild every collection in the transient "
+"data store. The file is read once in all cases; the extra time is the "
+"conversion, not the I/O."
 msgstr ""
-"`BOSS8` 每事件要付出 55.2 µs，超过另外两个读取器的两倍，因为 Gaudi converter 要在 transient data "
+"BOSS 每事件要付出 55.2 µs，超过另外两个读取器的两倍，因为 Gaudi converter 要在 transient data "
 "store 中重建每个集合。三种情况下文件都只读取一次，多出来的时间是转换，而不是 I/O。"
 
-#: ../../docs/index.md:141 2ab8e7b1fd4242b7bcce2f252957be0e
+#: ../../docs/index.md:139 72ab037137a54367a01aa44529a49872
 msgid ""
-"Pybes3 is almost on top of plain `ROOT` at 24.3 µs per event against 23.6"
-" µs. The few percent in between is the cost of building the awkward "
-"arrays on top of the decoded data, while the decoding itself costs no "
-"more than the generic ROOT object streamer, since the C++ kernels are "
-"generated for the BES3 event layout."
+"Pybes3 is almost on top of plain ROOT at 24.3 µs per event against 23.6 "
+"µs. The few percent in between is the cost of building the awkward arrays"
+" on top of the decoded data, while the decoding itself costs no more than"
+" the generic ROOT object streamer, since the C++ kernels are generated "
+"for the BES3 event layout."
 msgstr ""
-"Pybes3 的每事件耗时为 24.3 µs，与纯 `ROOT` 的 23.6 µs 几乎持平。两者之间的几个百分点来自在解码后的数据上构建 "
+"Pybes3 的每事件耗时为 24.3 µs，与纯 ROOT 的 23.6 µs 几乎持平。两者之间的几个百分点来自在解码后的数据上构建 "
 "awkward 数组的开销；由于 C++ kernel 是针对 BES3 事件布局生成的，解码本身并不比通用的 ROOT object "
 "streamer 更贵。"
 
-#: ../../docs/index.md:143 b283b37184064931b5931234a71cad7b
+#: ../../docs/index.md:141 c3c3b9509a77495a90a75600f9ff7bab
 msgid ""
 "Start-up goes the other way: Pybes3 spends 566 ms before the first event "
-"against 429 ms for plain `ROOT`, mostly importing the module and loading "
-"its kernels, and 658 ms for `BOSS8`, which also configures the event loop"
-" and the persistency services. Start-up is paid once per job, so the per-"
+"against 429 ms for plain ROOT, mostly importing the module and loading "
+"its kernels, and 658 ms for BOSS, which also configures the event loop "
+"and the persistency services. Start-up is paid once per job, so the per-"
 "event column decides long jobs and this column decides short ones; either"
-" way Pybes3 is twice as cheap per event as `BOSS8` and within a few "
-"percent of plain `ROOT`."
+" way Pybes3 is twice as cheap per event as BOSS and within a few percent "
+"of plain ROOT."
 msgstr ""
-"启动开销则相反：Pybes3 在第一个事件之前要花 566 ms，纯 `ROOT` 为 429 ms，`BOSS8` 为 658 "
-"ms。Pybes3 的这部分主要是导入模块和加载 kernel，`BOSS8` "
+"启动开销则相反：Pybes3 在第一个事件之前要花 566 ms，纯 ROOT 为 429 ms，BOSS 为 658 ms。Pybes3 "
+"的这部分主要是导入模块和加载 kernel，BOSS "
 "还需要配置事件循环与持久化服务。启动开销每个作业只付一次，因此长作业由每事件耗时一列决定，短作业由这一列决定；无论哪种情况，Pybes3 "
-"的每事件开销都只有 `BOSS8` 的一半，且与纯 `ROOT` 相差几个百分点。"
+"的每事件开销都只有 BOSS 的一半，且与纯 ROOT 相差几个百分点。"
 

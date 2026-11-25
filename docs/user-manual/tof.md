@@ -316,5 +316,5 @@ $$
 :::{admonition} Same as BOSS
 :class: hint
 
-TOF charge and time calculations are the same as the ones given by `RawDataUtil::TofCharge` and `RawDataUtil::TofTime` in `BOSS`.
+TOF charge and time calculations are the same as the ones given by `RawDataUtil::TofCharge` and `RawDataUtil::TofTime` in BOSS.
 :::

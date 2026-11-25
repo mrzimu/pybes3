@@ -27,7 +27,7 @@ This section only describes the numbering scheme of global ID (gid) for each det
 :::{admonition} Same as BOSS
 :class: hint
 
-MDC gid is the same as the one given by `MdcGeomSvc` in `BOSS`.
+MDC gid is the same as the one given by `MdcGeomSvc` in BOSS.
 :::
 
 ## TOF
@@ -77,7 +77,7 @@ The concrete relationship between gid and `(theta, phi)` for EMC endcap 1 is:
 :::{admonition} Same as BOSS
 :class: hint
 
-EMC gid is the same as the one given by `EmcCalibSvc` in `BOSS`.
+EMC gid is the same as the one given by `EmcCalibSvc` in BOSS.
 :::
 
 ## MUC
@@ -89,7 +89,7 @@ EMC gid is the same as the one given by `EmcCalibSvc` in `BOSS`.
 :::{admonition} Same as BOSS
 :class: hint
 
-MUC gid is the same as the one given by `MucCalib/MucIdTransform` in `BOSS`.
+MUC gid is the same as the one given by `MucCalib/MucIdTransform` in BOSS.
 :::
 
 ## CGEM

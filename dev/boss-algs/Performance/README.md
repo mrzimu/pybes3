@@ -1,13 +1,13 @@
 # DST reading performance
 
-Measures how long three readers need to decode the same DST file: a BOSS 8 job, a plain `ROOT` C++ program and pybes3. The numbers quoted in `README.md` and `docs/index.md` come from this harness.
+Measures how long three readers need to decode the same DST file: a BOSS job, a plain ROOT C++ program and pybes3. The numbers quoted in `README.md` and `docs/index.md` come from this harness.
 
 All three read the seven Dst collections of `TDstEvent` (`m_mdcTrackCol`, `m_mdcKalTrackCol`, `m_mdcDedxCol`, `m_extTrackCol`, `m_tofTrackCol`, `m_emcTrackCol`, `m_mucTrackCol`) and throw the result away, so only the reading and decoding cost is measured. The other branches of the `Event` tree are not read.
 
 ## Layout
 
 - `src/AccessTdsAlg.cc`: the BOSS algorithm, built into the `AccessTds` module. What it reads is a compile-time choice, see the access config block at the top of the file.
-- `src/ReadEvent.cc`: the plain `ROOT` reader. Takes the input file and the number of events on the command line.
+- `src/ReadEvent.cc`: the plain ROOT reader. Takes the input file and the number of events on the command line.
 - `opts/AccessTDS.txt`: example job options file; `scripts/gen-jobs.py` writes the ones actually used.
 - `scripts/`: the harness, see below.
 
@@ -18,7 +18,7 @@ All three read the seven Dst collections of `TDstEvent` (`m_mdcTrackCol`, `m_mdc
 | `bench.sh <dst>` | times the three readers for every event count in `nevt_list` with `hyperfine` (two warm-up runs, five measured runs) and exports `results/hyperfine_<nevt>.json` |
 | `gen-jobs.py <dst>` | expands `pure-dst.txt` into `jobs/job_<nevt>.txt`, one per event count |
 | `read-boss.sh <nevt>` | one BOSS measurement, running that job options file |
-| `read-root.sh <dst> <nevt>` | one plain `ROOT` measurement |
+| `read-root.sh <dst> <nevt>` | one plain ROOT measurement |
 | `read-pybes3.py <dst> <nevt> <backend>` | one pybes3 measurement; `cpp` is the backend measured in the docs |
 | `fit.py [results-dir]` | fits `t = a + b * N` to the exported results and prints the table below |
 
@@ -26,7 +26,7 @@ All three read the seven Dst collections of `TDstEvent` (`m_mdcTrackCol`, `m_mdc
 
 ## Running
 
-The benchmark needs a BOSS 8 environment. Source it, then build and install the two targets, and source the `InstallArea` that belongs to your platform (for example `dev/boss-algs/InstallArea/x86_64-el9-gcc13-dbg`), because a plain `make` does not update it, see the traps below:
+The benchmark needs a BOSS environment. Source it, then build and install the two targets, and source the `InstallArea` that belongs to your platform (for example `dev/boss-algs/InstallArea/x86_64-el9-gcc13-dbg`), because a plain `make` does not update it, see the traps below:
 
 ```bash
 make -C dev/boss-algs/build AccessTds ReadEvent
@@ -51,13 +51,13 @@ python3 dev/boss-algs/Performance/scripts/fit.py dev/boss-algs/Performance/scrip
 
 AMD EPYC 9654 (96 cores), two warm-up runs and five measured runs per point, weighted fit of `t = a + b * N`:
 
-| Reader       | Start-up time (ms) | Time per event (µs) |
-| :----------- | -----------------: | ------------------: |
-| `BOSS8`      | 658                | 55.2                |
-| Plain `ROOT` | 429                | 23.6                |
-| Pybes3       | 566                | 24.3                |
+| Reader     | Start-up time (ms) | Time per event (µs) |
+| :--------- | -----------------: | ------------------: |
+| BOSS       | 658                | 55.2                |
+| Plain ROOT | 429                | 23.6                |
+| Pybes3     | 566                | 24.3                |
 
-BOSS is more than twice as expensive per event as the other two, because the Gaudi converters rebuild every collection in the transient data store; the file is read once either way, so the difference is conversion, not I/O. pybes3 decodes about as fast as plain `ROOT`: the C++ kernels are generated for the BES3 event layout and cost no more than the generic `ROOT` object streamer, so the few percent between the two rows is the awkward arrays built on top of the decoded data.
+BOSS is more than twice as expensive per event as the other two, because the Gaudi converters rebuild every collection in the transient data store; the file is read once either way, so the difference is conversion, not I/O. pybes3 decodes about as fast as plain ROOT: the C++ kernels are generated for the BES3 event layout and cost no more than the generic ROOT object streamer, so the few percent between the two rows is the awkward arrays built on top of the decoded data.
 
 ## Traps found while building this
 
