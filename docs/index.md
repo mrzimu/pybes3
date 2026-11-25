@@ -122,10 +122,8 @@ The benchmark machine is an `AMD EPYC 9654` (96 cores) and the input file is `/b
 The results are shown below:
 
 <div align="center">
-    <picture>
-        <source srcset="_static/image/io-benchmarking-dark.svg" media="(prefers-color-scheme: dark)">
-        <img src="_static/image/io-benchmarking-light.svg" alt="DST reading performance">
-    </picture>
+    <img class="only-light" src="_static/image/io-benchmarking-light.png" alt="DST reading performance" width="50%">
+    <img class="only-dark" src="_static/image/io-benchmarking-dark.png" alt="DST reading performance" width="50%">
 </div>
 
 Fitting the reading time with `t = a + b * N` separates the fixed start-up cost from the per-event cost:
