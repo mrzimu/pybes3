@@ -233,7 +233,7 @@ p3.emc_barrel_offset_1
 p3.emc_barrel_offset_2
 ```
 
-These constants are exported from `EmcRecGeoSvc` in `BOSS`.
+These constants are exported from `EmcRecGeoSvc` in BOSS.
 
 ## Raw data conversion
 
@@ -274,7 +274,7 @@ Note that `measure=3` indicates that the hit is saturated, and the charge is cal
 :::{admonition} Same as BOSS
 :class: hint
 
-EMC charge calculation is the same as the one given by `RawDataUtil::EmcCharge` in `BOSS`, except that the charge is in GeV in `pybes3`, while it is in MeV in `BOSS`.
+EMC charge calculation is the same as the one given by `RawDataUtil::EmcCharge` in BOSS, except that the charge is in GeV in `pybes3`, while it is in MeV in BOSS.
 :::
 
 The conversion formula of the time is:
@@ -286,5 +286,5 @@ $$
 :::{admonition} Different from BOSS
 :class: warning
 
-EMC time calculation is different from the one given by `RawDataUtil` in `BOSS`. In `RawDataUtil` it simply multiplies the time channel number by 1 without any unit conversion, while in `pybes3` it multiplies by 50 ns.
+EMC time calculation is different from the one given by `RawDataUtil` in BOSS. In `RawDataUtil` it simply multiplies the time channel number by 1 without any unit conversion, while in `pybes3` it multiplies by 50 ns.
 :::

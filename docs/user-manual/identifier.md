@@ -1,6 +1,6 @@
 # Identifier
 
-When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, `muc`, and `cgem` branches represents the electronics readout ID (TEID), also known as `Identifier` in `BOSS`. Pybes3 provides methods to parse and calculate the identifier for each detector.
+When reading `TDigiEvent`, the `m_intId` field in `mdc`, `tof`, `emc`, `muc`, and `cgem` branches represents the electronics readout ID (TEID), also known as `Identifier` in BOSS. Pybes3 provides methods to parse and calculate the identifier for each detector.
 
 ## Identifier array parsing
 

@@ -111,9 +111,9 @@ All readers read the same sub-branches of `TDstEvent`:
     data = uproot.concatenate({f: "Event" for f in files}, expressions=branches, entry_stop=n_evt)
     ```
 
-- A plain `ROOT` C++ program opens the same file, points a branch address at the `TDstEvent` object, enables the same sub-branches and loops over `TTree::GetEntry`. This is the fastest reading available without an experiment framework.
+- A plain ROOT C++ program opens the same file, points a branch address at the `TDstEvent` object, enables the same sub-branches and loops over `TTree::GetEntry`. This is the fastest reading available without an experiment framework.
 
-- A `BOSS8` job loops over all events and reads the same collections through the transient data store, so each collection is first converted from its ROOT representation into data-store objects by the Gaudi converters.
+- A BOSS job loops over all events and reads the same collections through the transient data store, so each collection is first converted from its ROOT representation into data-store objects by the Gaudi converters.
 
 Each point is measured with `hyperfine`, using two warm-up runs and five measured runs, for `1000`, `5000`, `10000`, `50000` and `100000` events.
 
@@ -128,17 +128,17 @@ The results are shown below:
 
 Fitting the reading time with `t = a + b * N` separates the fixed start-up cost from the per-event cost:
 
-| Reader       | Start-up time (ms) | Time per event (µs) |
-| :----------- | -----------------: | ------------------: |
-| `BOSS8`      | 658                | 55.2                |
-| Plain `ROOT` | 429                | 23.6                |
-| Pybes3       | 566                | 24.3                |
+| Reader     | Start-up time (ms) | Time per event (µs) |
+| :--------- | -----------------: | ------------------: |
+| BOSS       | 658                | 55.2                |
+| Plain ROOT | 429                | 23.6                |
+| Pybes3     | 566                | 24.3                |
 
-`BOSS8` pays 55.2 µs per event, more than twice what the other readers pay, because the Gaudi converters rebuild every collection in the transient data store. The file is read once in all cases; the extra time is the conversion, not the I/O.
+BOSS pays 55.2 µs per event, more than twice what the other readers pay, because the Gaudi converters rebuild every collection in the transient data store. The file is read once in all cases; the extra time is the conversion, not the I/O.
 
-Pybes3 is almost on top of plain `ROOT` at 24.3 µs per event against 23.6 µs. The few percent in between is the cost of building the awkward arrays on top of the decoded data, while the decoding itself costs no more than the generic ROOT object streamer, since the C++ kernels are generated for the BES3 event layout.
+Pybes3 is almost on top of plain ROOT at 24.3 µs per event against 23.6 µs. The few percent in between is the cost of building the awkward arrays on top of the decoded data, while the decoding itself costs no more than the generic ROOT object streamer, since the C++ kernels are generated for the BES3 event layout.
 
-Start-up goes the other way: Pybes3 spends 566 ms before the first event against 429 ms for plain `ROOT`, mostly importing the module and loading its kernels, and 658 ms for `BOSS8`, which also configures the event loop and the persistency services. Start-up is paid once per job, so the per-event column decides long jobs and this column decides short ones; either way Pybes3 is twice as cheap per event as `BOSS8` and within a few percent of plain `ROOT`.
+Start-up goes the other way: Pybes3 spends 566 ms before the first event against 429 ms for plain ROOT, mostly importing the module and loading its kernels, and 658 ms for BOSS, which also configures the event loop and the persistency services. Start-up is paid once per job, so the per-event column decides long jobs and this column decides short ones; either way Pybes3 is twice as cheap per event as BOSS and within a few percent of plain ROOT.
 
 :::{toctree}
 :hidden:

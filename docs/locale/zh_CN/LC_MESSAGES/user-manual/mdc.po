@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Pybes3 0.5\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-12 21:05+0800\n"
+"POT-Creation-Date: 2026-11-25 20:08+0800\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language: zh_CN\n"
@@ -19,15 +19,15 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Generated-By: Babel 2.18.0\n"
 
-#: ../../docs/user-manual/mdc.md:1 27bb4e32d8db46479bffe4746f983b51
+#: ../../docs/user-manual/mdc.md:1 95197e8d6dd647219aefce256db6a6a9
 msgid "MDC"
 msgstr "MDC"
 
-#: ../../docs/user-manual/mdc.md:3 dde73578f4c142a7b3e1d5b6e9c372b8
+#: ../../docs/user-manual/mdc.md:3 906ceccc05c942a684ba3765e76672a7
 msgid "GID conversion"
 msgstr "GID 转换"
 
-#: ../../docs/user-manual/mdc.md:5 48c3d59c1dc24e1d8d377b7256ce4840
+#: ../../docs/user-manual/mdc.md:5 1c95045b884944a7b38242c45bf558d8
 msgid ""
 "All `mdc_gid_to_*`, `mdc_layer_to_*` and `get_mdc_gid` are backed by "
 "compiled NumPy ufuncs. The calling convention is identical for scalar, "
@@ -36,22 +36,22 @@ msgstr ""
 "`mdc_gid_to_*`、`mdc_layer_to_*` 与 `get_mdc_gid` 都由编译好的 NumPy ufunc "
 "实现。标量、NumPy 数组与 Awkward Array 三种输入的调用方式完全一致："
 
-#: ../../docs/user-manual/mdc.md 09d40b84c6214b20917a4a046a666d67
-#: b87eae149d504a66bf334d178dffad91 f4d8ffc5f5cf4d03924c4a310f1758f7
+#: ../../docs/user-manual/mdc.md 2c033156e49d4d3b9ccce2be78a18a48
+#: 30c26c45338a493187dc408ab4c06e70 98cd92879a4e4b709470a41b6872095d
 msgid "Scalar"
 msgstr "标量"
 
-#: ../../docs/user-manual/mdc.md 4f2316a232f1428fa1048dff6989e19b
-#: 919f65b55a094a2488e76bf813a98851 a3b62b51a6ef47aca784fd0644dbc145
+#: ../../docs/user-manual/mdc.md 02bccb3e386a4041b5a540df70e9bbe5
+#: 8fafb545f4be46ae96606a4b04a2f8dd fc5994e97f3247d4a5be248a2085cc11
 msgid "NumPy array"
 msgstr "NumPy 数组"
 
-#: ../../docs/user-manual/mdc.md 8340c8f51cff4127a718321f76125bfb
-#: d12290dc6d0541039e906e54b3e26e9d d526d9a309114433adc7cc33d73413fc
+#: ../../docs/user-manual/mdc.md 54e1d544eb584a4588f56d53b33f6209
+#: cb99d5fd0d94446cb6080cd6785a3697 dc22009099de4097ae74816be0836063
 msgid "Awkward Array"
 msgstr "Awkward Array"
 
-#: ../../docs/user-manual/mdc.md:78 db70c078eddc4bd79d18fba234da1d14
+#: ../../docs/user-manual/mdc.md:78 97f0c97e4a9c4f038e92aea1c24314ab
 msgid ""
 "`mdc_gid_to_stereo` returns the stereo type of the wire, which can be `0`"
 " (axial), `-1` for `west_phi < east_phi` and `1` for `west_phi > "
@@ -60,21 +60,21 @@ msgstr ""
 "`mdc_gid_to_stereo` 返回丝的 stereo 类型：`0` 表示 axial，`-1` 表示 `west_phi < "
 "east_phi`，`1` 表示 `west_phi > east_phi`。"
 
-#: ../../docs/user-manual/mdc.md:81 e0d231be05934fd69c6689d071b5a4b4
+#: ../../docs/user-manual/mdc.md:81 589db4a54f234e0fa0dc26e51bb1e56e
 msgid "Use `parse_mdc_gid` to parse all fields from a gid at once:"
 msgstr "用 `parse_mdc_gid` 一次性解析 gid 的所有字段："
 
-#: ../../docs/user-manual/mdc.md:110 bfc46bcde90f4faa834fc0414ffbacb3
+#: ../../docs/user-manual/mdc.md:110 bc3a975a3eb344678c113a2883fe5459
 msgid ""
 "When the input is an `ak.Array`, the result is also an `ak.Array` with "
 "record fields."
 msgstr "当输入为 `ak.Array` 时，结果也是带 record 字段的 `ak.Array`。"
 
-#: ../../docs/user-manual/mdc.md:112 6cf003e229554583aff09b93d4163598
+#: ../../docs/user-manual/mdc.md:112 787803e4d1724dd88583001b7211c294
 msgid "Wire position"
 msgstr "丝的位置"
 
-#: ../../docs/user-manual/mdc.md:114 f02a5a6d7c5745bd84afb9eea41f0472
+#: ../../docs/user-manual/mdc.md:114 618b99878dca4124bd75fe83ef3ce567
 msgid ""
 "All `mdc_gid_to_west_*`, `mdc_gid_to_east_*`, `mdc_gid_z_to_*` are also "
 "backed by compiled NumPy ufuncs."
@@ -82,7 +82,7 @@ msgstr ""
 "`mdc_gid_to_west_*`、`mdc_gid_to_east_*` 与 `mdc_gid_z_to_*` 同样由编译好的 NumPy "
 "ufunc 实现。"
 
-#: ../../docs/user-manual/mdc.md:175 f0737f5c435746fda8bcbd89968d0754
+#: ../../docs/user-manual/mdc.md:175 ad2fe258bc6640da803f089548a8d132
 msgid ""
 "Get the x, y coordinates of a wire at a specific z position. "
 "`mdc_gid_z_to_x` / `mdc_gid_z_to_y` take two arguments (`gid` and `z`), "
@@ -91,25 +91,25 @@ msgstr ""
 "获取某条丝在给定 z 处的 x、y 坐标。`mdc_gid_z_to_x` / `mdc_gid_z_to_y` 接受两个参数（`gid` 与 "
 "`z`），两者都独立支持标量/数组输入："
 
-#: ../../docs/user-manual/mdc.md:232 93157349a250471e80d1b08065abfc4c
+#: ../../docs/user-manual/mdc.md:232 38dce9e8e7544f419fabbdd2230e59a9
 msgid "Retrieve the full wire position table:"
 msgstr "获取完整的丝位置表："
 
-#: ../../docs/user-manual/mdc.md:245 9b793a2d433647a89be27d5dbb642c55
+#: ../../docs/user-manual/mdc.md:245 98e69293c4964845ac1e4284fef74f8d
 msgid "Raw data conversion"
 msgstr "原始数据转换"
 
-#: ../../docs/user-manual/mdc.md:247 a7ec3490908e428484f725d873d5f072
+#: ../../docs/user-manual/mdc.md:247 0282e9f0ba31420d993d469ebf4abffb
 msgid ""
 "The ADC and the TDC channel numbers of a hit can be converted into charge"
 " and time with `mdc_adc_to_charge` and `mdc_tdc_to_time`:"
 msgstr "hit 的 ADC 与 TDC 道数可用 `mdc_adc_to_charge` 与 `mdc_tdc_to_time` 分别转换为电荷与时间："
 
-#: ../../docs/user-manual/mdc.md:260 25bd0c4b02f64a3bba4fb30a2c3e0edd
+#: ../../docs/user-manual/mdc.md:260 8c5527c0455d4a148a2f39039f67182f
 msgid "The conversion formula of the time is:"
 msgstr "时间的换算公式为："
 
-#: ../../docs/user-manual/mdc.md:262 f06f8f9e108b4b5c8c0e68a1d459dd89
+#: ../../docs/user-manual/mdc.md:262 9bd0fc1cc67e4cb581e68dfa4f0a1cf1
 #, python-brace-format
 msgid ""
 "\n"
@@ -118,7 +118,7 @@ msgstr ""
 "\n"
 "\\text{time} = \\text{tdc} \\times 0.09375~\\mathrm{ns}\n"
 
-#: ../../docs/user-manual/mdc.md:267 3462f825300a4c57ba485b9d735087d9
+#: ../../docs/user-manual/mdc.md:267 6f646e6ef53e4025971ede67a0655690
 msgid ""
 "In BOSS there is no concrete physics unit of the MDC charge: the raw "
 "channel number is used in the reconstruction, hence `mdc_adc_to_charge` "
@@ -127,15 +127,15 @@ msgstr ""
 "BOSS 中 MDC 的电荷没有具体的物理单位：重建时直接使用原始道数，因此 `mdc_adc_to_charge` 只是把 ADC 转成 "
 "`float64`。"
 
-#: ../../docs/user-manual/mdc.md:270 7c60e66808c64c10956bac729c071ffb
+#: ../../docs/user-manual/mdc.md:270 ae1cfb00cb554c83b1ca2f9dde6fe802
 msgid "Same as BOSS"
 msgstr "与 BOSS 一致"
 
-#: ../../docs/user-manual/mdc.md:273 c2a58037db024ae2a7158c26eb3014bd
+#: ../../docs/user-manual/mdc.md:273 10f5807e046a44beadd48cf6513788a4
 msgid ""
 "MDC charge and time calculations are the same as the ones given by "
-"`RawDataUtil::MdcCharge` and `RawDataUtil::MdcTime` in `BOSS`."
+"`RawDataUtil::MdcCharge` and `RawDataUtil::MdcTime` in BOSS."
 msgstr ""
-"MDC 的电荷与时间计算与 `BOSS` 中 `RawDataUtil::MdcCharge` 和 `RawDataUtil::MdcTime` "
+"MDC 的电荷与时间计算与 BOSS 中 `RawDataUtil::MdcCharge` 和 `RawDataUtil::MdcTime` "
 "给出的结果一致。"
 
