@@ -219,8 +219,12 @@ msgid "`DstMucTrackCol`"
 msgstr "`DstMucTrackCol`"
 
 #: ../../docs/index.md:93 873cee2ba8214ed0aa5a2cb5c41dcdd9
-msgid "Pybes3 reads those sub-branches with `uproot`:"
-msgstr "Pybes3 用 `uproot` 读取这些子分支："
+msgid ""
+"Pybes3 reads those sub-branches of `TDstEvent` with `uproot`, using the default "
+"`\"cpp\"` reader backend of `uproot-custom`:"
+msgstr ""
+"Pybes3 用 `uproot` 读取 `TDstEvent` 的这些子分支，使用的是 `uproot-custom` 默认的 "
+"`\"cpp\"` 读取后端："
 
 #: ../../docs/index.md:114 3b81fd88e9fc4265a021ab0697f864ae
 msgid ""

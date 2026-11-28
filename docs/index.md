@@ -90,25 +90,26 @@ All readers read the same sub-branches of `TDstEvent`:
 | `TDstEvent/m_emcTrackCol`    | `DstEmcShowerCol`   |
 | `TDstEvent/m_mucTrackCol`    | `DstMucTrackCol`    |
 
-- Pybes3 reads those sub-branches with `uproot`:
+- Pybes3 reads those sub-branches of `TDstEvent` with `uproot`, using the default `"cpp"` reader backend of `uproot-custom`:
 
     ```python
     import uproot
     import pybes3
 
+    file = ...  # DST file to read
     n_evt = ...  # number of events to read
-    files = [...]  # list of ROOT files to read
-    branches = [
-        "TDstEvent/m_mdcTrackCol",
-        "TDstEvent/m_mdcKalTrackCol",
-        "TDstEvent/m_mdcDedxCol",
-        "TDstEvent/m_extTrackCol",
-        "TDstEvent/m_tofTrackCol",
-        "TDstEvent/m_emcTrackCol",
-        "TDstEvent/m_mucTrackCol",
+    collections = [
+        "m_mdcTrackCol",
+        "m_mdcKalTrackCol",
+        "m_mdcDedxCol",
+        "m_extTrackCol",
+        "m_tofTrackCol",
+        "m_emcTrackCol",
+        "m_mucTrackCol",
     ]
 
-    data = uproot.concatenate({f: "Event" for f in files}, expressions=branches, entry_stop=n_evt)
+    evt = uproot.open(file)["Event"]
+    data = evt.arrays(filter_name=collections, entry_stop=n_evt)
     ```
 
 - A plain ROOT C++ program opens the same file, points a branch address at the `TDstEvent` object, enables the same sub-branches and loops over `TTree::GetEntry`. This is the fastest reading available without an experiment framework.
